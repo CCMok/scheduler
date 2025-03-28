@@ -2,6 +2,6 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
-@app.get("/")
+@app.post("/schedule")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Schedule arranged"}
