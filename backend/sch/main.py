@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-from services.schedule_service import arrange_schedule
+from services.roster_service import arrange_roster
 
 app = FastAPI()
 
 
-@app.post("/schedule")
-async def arrangeSchedule():
-    arrange_schedule()
-    return {"message": "Schedule arranged"}
+@app.post("/roster")
+async def postRoster():
+    arrange_roster()
+    return {"message": "Roster arranged"}
