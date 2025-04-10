@@ -1,32 +1,14 @@
 from fastapi import FastAPI
 from models.schedule import Schedule
-from services.roster_service import arrange_roster
+from services.roster_service import arrange_roster_service
 
-app = FastAPI()
+app = FastAPI(
+    version="0.1.0",
+    title="SCH",
+    summary="Scheduler System - Scheduler Module",
+)
 
 
 @app.post("/roster")
-async def postRoster() -> list[Schedule]:
-    arrange_roster()
-    return [
-        {
-            "week": 1,
-            "arrangement": {
-                "host": "Alice",
-                "worshipLeader": "Bob",
-                "piano": "Charlie",
-                "drum": "David",
-                "vocal1": "Eve",
-            },
-        },
-        {
-            "week": 2,
-            "arrangement": {
-                "host": "Frank",
-                "worshipLeader": "Grace",
-                "piano": "Heidi",
-                "drum": "Ivan",
-                "vocal1": "Judy",
-            },
-        },
-    ]
+async def arrange_roster() -> list[Schedule]:
+    return arrange_roster_service()
