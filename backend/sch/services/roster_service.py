@@ -1,7 +1,20 @@
 from models.schedule import Schedule
+from ortools.sat.python import cp_model
 
 
 def arrange_roster_service() -> list[Schedule]:
+    model = cp_model.CpModel()
+
+    # Define variables
+
+    # Define constrints
+
+    # Solve model
+
+    # Map result to response
+
+    # Return response
+
     return get_dummy_response()
 
 
