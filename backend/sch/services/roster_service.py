@@ -2,11 +2,15 @@ from models.schedule import Schedule
 
 
 def arrange_roster_service() -> list[Schedule]:
+    return get_dummy_response()
+
+
+def get_dummy_response():
     return [
         {
             "week": 1,
             "arrangement": {
-                "host": "aAlice",
+                "host": "Alice",
                 "worshipLeader": "Bob",
                 "piano": "Charlie",
                 "drum": "David",
