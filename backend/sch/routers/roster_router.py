@@ -4,7 +4,7 @@ from services.roster_service import arrange_roster_service
 
 router = APIRouter(
     prefix='/roster',
-    tags=['Roster'],
+    tags=['roster'],
 )
 
 
