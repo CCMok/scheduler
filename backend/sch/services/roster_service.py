@@ -13,13 +13,23 @@ def arrange_roster_service() -> list[Schedule]:
 
     shifts = create_shifts(model, weeks, posts, workers)
 
-    print(shifts)
-
     # Define constrints
+    define_each_post_max_worker(model, shifts, weeks, posts, workers)
+    define_max_constraint(model, shifts, weeks, posts, workers)
 
-    # Solve model
+    # TODO
+
+    solver = cp_model.CpSolver()
+    status = solver.solve(model)
+
+    if status != cp_model.OPTIMAL:
+        # TODO
+        return []
 
     # Map result to response
+    for i in shifts:
+        # TODO
+        print(f'{i}: {solver.value(shifts[i])}')
 
     # Return response
 
@@ -88,10 +98,10 @@ def get_weeks() -> range:
 
 
 def create_shifts(
-        model: cp_model.CpModel,
-        weeks: range,
-        posts: list[Post],
-        workers: list[Worker],
+    model: cp_model.CpModel,
+    weeks: range,
+    posts: list[Post],
+    workers: list[Worker],
 ) -> dict[tuple[int, int, int], cp_model.IntVar]:
     shifts: dict[tuple[int, int, int], cp_model.IntVar] = {}
 
@@ -106,3 +116,37 @@ def create_shifts(
                 )
 
     return shifts
+
+
+def define_each_post_max_worker(
+    model: cp_model.CpModel,
+    shifts: dict[tuple[int, int, int], cp_model.IntVar],
+    weeks: range,
+    posts: list[Post],
+    workers: list[Worker],
+) -> None:
+    for week in weeks:
+        for post in posts:
+            model.add_at_most_one(
+                shifts[(week, post.id, worker.id)]
+                for worker in workers
+                if post.id in worker.posts
+            )
+
+
+def define_max_constraint(
+    model: cp_model.CpModel,
+    shifts: dict[tuple[int, int, int], cp_model.IntVar],
+    weeks: range,
+    posts: list[Post],
+    workers: list[Worker],
+) -> None:
+    model.Maximize(
+        sum(
+            shifts[(week, post.id, worker.id)]
+            for week in weeks
+            for post in posts
+            for worker in workers
+            if post.id in worker.posts
+        )
+    )
