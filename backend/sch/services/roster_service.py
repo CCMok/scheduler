@@ -12,8 +12,9 @@ def arrange_roster_service() -> list[Schedule]:
 
     shifts = create_shifts(material, model)
 
-    # Define constrints
+    # Define constraints
     define_each_post_max_worker(material, model, shifts)
+    define_each_worker_max_post_per_week(material, model, shifts)
     define_max_constraint(material, model, shifts)
 
     # TODO
@@ -26,9 +27,21 @@ def arrange_roster_service() -> list[Schedule]:
         return []
 
     # Map result to response
-    for i in shifts:
-        # TODO
-        print(f'{i}: {solver.value(shifts[i])}')
+    for week in material.weeks:
+        print(f'\nWeek: {week}')
+
+        for post in material.posts:
+            print(f'{post.name}:', end=' ')
+
+            for worker in material.workers:
+                if post.id not in worker.posts:
+                    continue
+
+                isOff = solver.value(shifts[(week, post.id, worker.id)]) == 0
+                if isOff:
+                    continue
+
+                print(worker.name)
 
     # Return response
 
@@ -72,6 +85,10 @@ def get_posts() -> list[Post]:
             id=1,
             name='worshipLeader',
         ),
+        Post(
+            id=2,
+            name='keyboard',
+        )
     ]
 
 
@@ -80,12 +97,12 @@ def get_workers() -> list[Worker]:
         Worker(
             id=0,
             name='Alice',
-            posts=[0],
+            posts=[0, 2],
         ),
         Worker(
             id=1,
             name='Bob',
-            posts=[1],
+            posts=[0, 1],
         ),
         Worker(
             id=2,
@@ -133,6 +150,20 @@ def define_each_post_max_worker(
             model.add_at_most_one(
                 shifts[(week, post.id, worker.id)]
                 for worker in material.workers
+                if post.id in worker.posts
+            )
+
+
+def define_each_worker_max_post_per_week(
+    material: RosterMaterial,
+    model: cp_model.CpModel,
+    shifts: dict[tuple[int, int, int], cp_model.IntVar],
+) -> None:
+    for worker in material.workers:
+        for week in material.weeks:
+            model.add_at_most_one(
+                shifts[(week, post.id, worker.id)]
+                for post in material.posts
                 if post.id in worker.posts
             )
 
