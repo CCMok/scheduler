@@ -14,8 +14,8 @@ def arrange_roster_service() -> list[Schedule]:
     define_each_post_max_worker(material, model, shifts)
     define_each_worker_max_post_per_week(material, model, shifts)
     define_each_worker_max_post_per_roster(material, model, shifts)
-    define_worker_balancing(material, model, shifts)
-    define_max_constraint(material, model, shifts)
+
+    define_objective(material, model, shifts)
 
     # TODO
 
@@ -310,11 +310,30 @@ def define_each_worker_max_post_per_roster(
         )
 
 
-def define_worker_balancing(
+def define_objective(
     material: RosterMaterial,
     model: cp_model.CpModel,
     shifts: dict[tuple[int, int, int], cp_model.IntVar],
 ) -> None:
+    worker_balancing_expression = define_worker_balancing(
+        material, model, shifts
+    )
+
+    model.maximize(
+        sum(
+            shifts[(week, post_id, worker.id)]
+            for week in material.weeks
+            for worker in material.workers
+            for post_id in worker.post_ids
+        ) - worker_balancing_expression
+    )
+
+
+def define_worker_balancing(
+    material: RosterMaterial,
+    model: cp_model.CpModel,
+    shifts: dict[tuple[int, int, int], cp_model.IntVar],
+) -> cp_model.LinearExpr:
     worker_assignment = {
         worker.id: sum(
             shifts[(week, post_id, worker.id)]
@@ -336,18 +355,3 @@ def define_worker_balancing(
         model.add(total_assignment <= max_assignment)
 
     return max_assignment - min_assignment
-
-
-def define_max_constraint(
-    material: RosterMaterial,
-    model: cp_model.CpModel,
-    shifts: dict[tuple[int, int, int], cp_model.IntVar],
-) -> None:
-    model.maximize(
-        sum(
-            shifts[(week, post_id, worker.id)]
-            for week in material.weeks
-            for worker in material.workers
-            for post_id in worker.post_ids
-        )
-    )
