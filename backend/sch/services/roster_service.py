@@ -15,6 +15,7 @@ def arrange_roster_service() -> list[Schedule]:
     # Define constraints
     define_each_post_max_worker(material, model, shifts)
     define_each_worker_max_post_per_week(material, model, shifts)
+    define_each_worker_max_post_per_roster(material, model, shifts)
     define_max_constraint(material, model, shifts)
 
     # TODO
@@ -31,7 +32,7 @@ def arrange_roster_service() -> list[Schedule]:
         print(f'\nWeek: {week}')
 
         for post in material.posts:
-            print(f'{post.name}:', end=' ')
+            result_worker = ''
 
             for worker in material.workers:
                 if post.id not in worker.posts:
@@ -41,7 +42,10 @@ def arrange_roster_service() -> list[Schedule]:
                 if isOff:
                     continue
 
-                print(worker.name)
+                result_worker = worker.name
+                continue
+
+            print(f'{post.name}: {result_worker}')
 
     # Return response
 
@@ -79,16 +83,44 @@ def get_posts() -> list[Post]:
     return [
         Post(
             id=0,
-            name='host',
+            name='Host',
         ),
         Post(
             id=1,
-            name='worshipLeader',
+            name='Worship Leader',
         ),
         Post(
             id=2,
-            name='keyboard',
-        )
+            name='Keyboard',
+        ),
+        Post(
+            id=3,
+            name='Guitar',
+        ),
+        Post(
+            id=4,
+            name='Drum',
+        ),
+        Post(
+            id=5,
+            name='Bass',
+        ),
+        Post(
+            id=6,
+            name='Vocal Women',
+        ),
+        Post(
+            id=7,
+            name='Vocal Men',
+        ),
+        Post(
+            id=8,
+            name='Audio',
+        ),
+        Post(
+            id=9,
+            name='Powerpoint',
+        ),
     ]
 
 
@@ -96,23 +128,123 @@ def get_workers() -> list[Worker]:
     return [
         Worker(
             id=0,
-            name='Alice',
-            posts=[0, 2],
-        ),
-        Worker(
-            id=1,
-            name='Bob',
-            posts=[0, 1],
-        ),
-        Worker(
-            id=2,
-            name='Charlie',
+            name='Jane',
             posts=[0],
         ),
         Worker(
-            id=3,
-            name='David',
+            id=1,
+            name='Alan',
             posts=[1],
+        ),
+        Worker(
+            id=2,
+            name='QQ',
+            posts=[2],
+        ),
+        Worker(
+            id=3,
+            name='Gogo',
+            posts=[3],
+        ),
+        Worker(
+            id=4,
+            name='Jeffery',
+            posts=[4],
+        ),
+        Worker(
+            id=5,
+            name='Shu Yan',
+            posts=[6],
+        ),
+        Worker(
+            id=6,
+            name='Vincent',
+            posts=[7],
+        ),
+        Worker(
+            id=7,
+            name='Marco',
+            posts=[8],
+        ),
+        Worker(
+            id=8,
+            name='YL',
+            posts=[9],
+        ),
+        Worker(
+            id=9,
+            name='Foon',
+            posts=[0],
+        ),
+        Worker(
+            id=10,
+            name='Chow Sir',
+            posts=[0, 1, 8],
+        ),
+        Worker(
+            id=11,
+            name='Sunny',
+            posts=[4],
+        ),
+        Worker(
+            id=12,
+            name='Pakho',
+            posts=[7],
+        ),
+        Worker(
+            id=13,
+            name='Andrea',
+            posts=[9],
+        ),
+        Worker(
+            id=14,
+            name='Jason',
+            posts=[1, 7],
+        ),
+        Worker(
+            id=15,
+            name='Kathryn',
+            posts=[6],
+        ),
+        Worker(
+            id=16,
+            name='Simmon',
+            posts=[0],
+        ),
+        Worker(
+            id=17,
+            name='Florence',
+            posts=[1],
+        ),
+        Worker(
+            id=18,
+            name='Amy',
+            posts=[6],
+        ),
+        Worker(
+            id=19,
+            name='Kwok Fai',
+            posts=[0],
+        ),
+        Worker(
+            id=20,
+            name='Betty',
+            posts=[1],
+        ),
+        Worker(
+            id=21,
+            name='Picnic',
+            posts=[8],
+        ),
+        Worker(
+            id=22,
+            name='Ka yan',
+            posts=[9],
+        ),
+        Worker(
+            id=23,
+            name='Louis',
+            posts=[8],
         ),
     ]
 
@@ -166,6 +298,22 @@ def define_each_worker_max_post_per_week(
                 for post in material.posts
                 if post.id in worker.posts
             )
+
+
+def define_each_worker_max_post_per_roster(
+    material: RosterMaterial,
+    model: cp_model.CpModel,
+    shifts: dict[tuple[int, int, int], cp_model.IntVar],
+) -> None:
+    for worker in material.workers:
+        model.add(
+            sum(
+                shifts[(week, post.id, worker.id)]
+                for week in material.weeks
+                for post in material.posts
+                if post.id in worker.posts
+            ) <= 2
+        )
 
 
 def define_max_constraint(
