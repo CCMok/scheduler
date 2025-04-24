@@ -315,21 +315,30 @@ def define_objective(
     model: cp_model.CpModel,
     shifts: dict[tuple[int, int, int], cp_model.IntVar],
 ) -> None:
-    worker_balancing_expression = define_worker_balancing(
+    total_assignment_expression = create_total_assignment_expression(
+        material, shifts
+    )
+
+    worker_balancing_expression = create_worker_balancing_expression(
         material, model, shifts
     )
 
-    model.maximize(
-        sum(
-            shifts[(week, post_id, worker.id)]
-            for week in material.weeks
-            for worker in material.workers
-            for post_id in worker.post_ids
-        ) - worker_balancing_expression
+    model.maximize(total_assignment_expression - worker_balancing_expression)
+
+
+def create_total_assignment_expression(
+    material: RosterMaterial,
+    shifts: dict[tuple[int, int, int], cp_model.IntVar],
+) -> cp_model.LinearExpr:
+    return sum(
+        shifts[(week, post_id, worker.id)]
+        for week in material.weeks
+        for worker in material.workers
+        for post_id in worker.post_ids
     )
 
 
-def define_worker_balancing(
+def create_worker_balancing_expression(
     material: RosterMaterial,
     model: cp_model.CpModel,
     shifts: dict[tuple[int, int, int], cp_model.IntVar],
