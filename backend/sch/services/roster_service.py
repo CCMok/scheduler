@@ -264,7 +264,7 @@ def create_shifts(
                 if post.id not in worker.posts:
                     continue
 
-                shifts[(week, post.id, worker.id)] = model.NewBoolVar(
+                shifts[(week, post.id, worker.id)] = model.new_bool_var(
                     f'shift_{week}_{post.id}_{worker.id}'
                 )
 
@@ -349,7 +349,7 @@ def define_max_constraint(
     model: cp_model.CpModel,
     shifts: dict[tuple[int, int, int], cp_model.IntVar],
 ) -> None:
-    model.Maximize(
+    model.maximize(
         sum(
             shifts[(week, post.id, worker.id)]
             for week in material.weeks
