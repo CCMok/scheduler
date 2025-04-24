@@ -34,7 +34,7 @@ def arrange_roster_service() -> list[Schedule]:
             result_worker = ''
 
             for worker in material.workers:
-                if post.id not in worker.posts:
+                if post.id not in worker.post_ids:
                     continue
 
                 isOff = solver.value(shifts[(week, post.id, worker.id)]) == 0
@@ -128,122 +128,122 @@ def get_workers() -> list[Worker]:
         Worker(
             id=0,
             name='Jane',
-            posts=[0],
+            post_ids=[0],
         ),
         Worker(
             id=1,
             name='Alan',
-            posts=[1],
+            post_ids=[1],
         ),
         Worker(
             id=2,
             name='QQ',
-            posts=[2],
+            post_ids=[2],
         ),
         Worker(
             id=3,
             name='Gogo',
-            posts=[3],
+            post_ids=[3],
         ),
         Worker(
             id=4,
             name='Jeffery',
-            posts=[4],
+            post_ids=[4],
         ),
         Worker(
             id=5,
             name='Shu Yan',
-            posts=[6],
+            post_ids=[6],
         ),
         Worker(
             id=6,
             name='Vincent',
-            posts=[7],
+            post_ids=[7],
         ),
         Worker(
             id=7,
             name='Marco',
-            posts=[8],
+            post_ids=[8],
         ),
         Worker(
             id=8,
             name='YL',
-            posts=[9],
+            post_ids=[9],
         ),
         Worker(
             id=9,
             name='Foon',
-            posts=[0],
+            post_ids=[0],
         ),
         Worker(
             id=10,
             name='Chow Sir',
-            posts=[0, 1, 8],
+            post_ids=[0, 1, 8],
         ),
         Worker(
             id=11,
             name='Sunny',
-            posts=[4],
+            post_ids=[4],
         ),
         Worker(
             id=12,
             name='Pakho',
-            posts=[7],
+            post_ids=[7],
         ),
         Worker(
             id=13,
             name='Andrea',
-            posts=[9],
+            post_ids=[9],
         ),
         Worker(
             id=14,
             name='Jason',
-            posts=[1, 7],
+            post_ids=[1, 7],
         ),
         Worker(
             id=15,
             name='Kathryn',
-            posts=[6],
+            post_ids=[6],
         ),
         Worker(
             id=16,
             name='Simmon',
-            posts=[0],
+            post_ids=[0],
         ),
         Worker(
             id=17,
             name='Florence',
-            posts=[1],
+            post_ids=[1],
         ),
         Worker(
             id=18,
             name='Amy',
-            posts=[6],
+            post_ids=[6],
         ),
         Worker(
             id=19,
             name='Kwok Fai',
-            posts=[0],
+            post_ids=[0],
         ),
         Worker(
             id=20,
             name='Betty',
-            posts=[1],
+            post_ids=[1],
         ),
         Worker(
             id=21,
             name='Picnic',
-            posts=[8],
+            post_ids=[8],
         ),
         Worker(
             id=22,
             name='Ka yan',
-            posts=[9],
+            post_ids=[9],
         ),
         Worker(
             id=23,
             name='Louis',
-            posts=[8],
+            post_ids=[8],
         ),
     ]
 
@@ -259,13 +259,10 @@ def create_shifts(
     shifts: dict[tuple[int, int, int], cp_model.IntVar] = {}
 
     for week in material.weeks:
-        for post in material.posts:
-            for worker in material.workers:
-                if post.id not in worker.posts:
-                    continue
-
-                shifts[(week, post.id, worker.id)] = model.new_bool_var(
-                    f'shift_{week}_{post.id}_{worker.id}'
+        for worker in material.workers:
+            for post_id in worker.post_ids:
+                shifts[(week, post_id, worker.id)] = model.new_bool_var(
+                    f'shift_{week}_{post_id}_{worker.id}'
                 )
 
     return shifts
@@ -281,7 +278,7 @@ def define_each_post_max_worker(
             model.add_at_most_one(
                 shifts[(week, post.id, worker.id)]
                 for worker in material.workers
-                if post.id in worker.posts
+                if post.id in worker.post_ids
             )
 
 
@@ -290,12 +287,11 @@ def define_each_worker_max_post_per_week(
     model: cp_model.CpModel,
     shifts: dict[tuple[int, int, int], cp_model.IntVar],
 ) -> None:
-    for worker in material.workers:
-        for week in material.weeks:
+    for week in material.weeks:
+        for worker in material.workers:
             model.add_at_most_one(
-                shifts[(week, post.id, worker.id)]
-                for post in material.posts
-                if post.id in worker.posts
+                shifts[(week, post_id, worker.id)]
+                for post_id in worker.post_ids
             )
 
 
@@ -307,10 +303,9 @@ def define_each_worker_max_post_per_roster(
     for worker in material.workers:
         model.add(
             sum(
-                shifts[(week, post.id, worker.id)]
+                shifts[(week, post_id, worker.id)]
                 for week in material.weeks
-                for post in material.posts
-                if post.id in worker.posts
+                for post_id in worker.post_ids
             ) <= 2
         )
 
@@ -322,10 +317,9 @@ def define_worker_balancing(
 ) -> None:
     worker_assignment = {
         worker.id: sum(
-            shifts[(week, post.id, worker.id)]
+            shifts[(week, post_id, worker.id)]
             for week in material.weeks
-            for post in material.posts
-            if post.id in worker.posts
+            for post_id in worker.post_ids
         )
         for worker in material.workers
     }
@@ -341,7 +335,7 @@ def define_worker_balancing(
         model.add(total_assignment >= min_assignment)
         model.add(total_assignment <= max_assignment)
 
-    model.minimize(max_assignment - min_assignment)
+    return max_assignment - min_assignment
 
 
 def define_max_constraint(
@@ -351,10 +345,9 @@ def define_max_constraint(
 ) -> None:
     model.maximize(
         sum(
-            shifts[(week, post.id, worker.id)]
+            shifts[(week, post_id, worker.id)]
             for week in material.weeks
-            for post in material.posts
             for worker in material.workers
-            if post.id in worker.posts
+            for post_id in worker.post_ids
         )
     )

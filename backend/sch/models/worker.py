@@ -4,4 +4,4 @@ from pydantic import BaseModel
 class Worker(BaseModel):
     id: int
     name: str
-    posts: list[int]
+    post_ids: list[int]
