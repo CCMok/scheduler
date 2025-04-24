@@ -7,15 +7,14 @@ from ortools.sat.python import cp_model
 
 def arrange_roster_service() -> list[Schedule]:
     material = get_material()
-
     model = cp_model.CpModel()
-
     shifts = create_shifts(material, model)
 
     # Define constraints
     define_each_post_max_worker(material, model, shifts)
     define_each_worker_max_post_per_week(material, model, shifts)
     define_each_worker_max_post_per_roster(material, model, shifts)
+    define_worker_balancing(material, model, shifts)
     define_max_constraint(material, model, shifts)
 
     # TODO
@@ -314,6 +313,35 @@ def define_each_worker_max_post_per_roster(
                 if post.id in worker.posts
             ) <= 2
         )
+
+
+def define_worker_balancing(
+    material: RosterMaterial,
+    model: cp_model.CpModel,
+    shifts: dict[tuple[int, int, int], cp_model.IntVar],
+) -> None:
+    worker_assignment = {
+        worker.id: sum(
+            shifts[(week, post.id, worker.id)]
+            for week in material.weeks
+            for post in material.posts
+            if post.id in worker.posts
+        )
+        for worker in material.workers
+    }
+
+    min_assignment = model.new_int_var(
+        0, len(material.weeks), 'min_assignement'
+    )
+    max_assignment = model.new_int_var(
+        0, len(material.weeks), 'max_assignement'
+    )
+
+    for worker_id, total_assignment in worker_assignment.items():
+        model.add(total_assignment >= min_assignment)
+        model.add(total_assignment <= max_assignment)
+
+    model.minimize(max_assignment - min_assignment)
 
 
 def define_max_constraint(
