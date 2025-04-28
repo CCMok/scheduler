@@ -94,18 +94,18 @@ def define_objective(
     model: cp_model.CpModel,
     shifts: dict[tuple[int, int, int], cp_model.IntVar],
 ) -> None:
-    total_assignment_expression = create_total_assignment_expression(
+    total_assignment_reward = create_total_assignment_reward(
         material, shifts
     )
 
-    worker_balancing_expression = create_worker_balancing_expression(
+    worker_balancing_reward = create_worker_balancing_reward(
         material, model, shifts
     )
 
-    model.maximize(total_assignment_expression - worker_balancing_expression)
+    model.maximize(total_assignment_reward + worker_balancing_reward)
 
 
-def create_total_assignment_expression(
+def create_total_assignment_reward(
     material: RosterMaterial,
     shifts: dict[tuple[int, int, int], cp_model.IntVar],
 ) -> cp_model.LinearExpr:
@@ -117,7 +117,8 @@ def create_total_assignment_expression(
     )
 
 
-def create_worker_balancing_expression(
+# TODO: Change to per post arocss all days
+def create_worker_balancing_reward(
     material: RosterMaterial,
     model: cp_model.CpModel,
     shifts: dict[tuple[int, int, int], cp_model.IntVar],
@@ -142,4 +143,4 @@ def create_worker_balancing_expression(
         model.add(total_assignment >= min_assignment)
         model.add(total_assignment <= max_assignment)
 
-    return max_assignment - min_assignment
+    return min_assignment - max_assignment
