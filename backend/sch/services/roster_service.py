@@ -21,8 +21,8 @@ def arrange_roster_service() -> list[Schedule]:
         return []
 
     # Map result to response
-    for week in material.weeks:
-        print(f'\nWeek: {week}')
+    for day in material.days:
+        print(f'\nDay: {day}')
 
         for post in material.posts:
             result_worker = ''
@@ -31,7 +31,7 @@ def arrange_roster_service() -> list[Schedule]:
                 if post.id not in worker.post_ids:
                     continue
 
-                isOff = solver.value(shifts[(week, post.id, worker.id)]) == 0
+                isOff = solver.value(shifts[(day, post.id, worker.id)]) == 0
                 if isOff:
                     continue
 
@@ -48,14 +48,14 @@ def arrange_roster_service() -> list[Schedule]:
 def get_dummy_response():
     return [
         {
-            'week': 1,
+            'day': 1,
             'arrangement': {
                 'host': 'Alice',
                 'worshipLeader': 'Bob',
             },
         },
         {
-            'week': 2,
+            'day': 2,
             'arrangement': {
                 'host': 'Frank',
                 'worshipLeader': 'Grace',
@@ -66,7 +66,7 @@ def get_dummy_response():
 
 def get_material() -> RosterMaterial:
     return RosterMaterial(
-        weeks=get_weeks(),
+        days=get_days(),
         posts=get_posts(),
         workers=get_workers(),
     )
@@ -242,7 +242,7 @@ def get_workers() -> list[Worker]:
     ]
 
 
-def get_weeks() -> range:
+def get_days() -> range:
     return range(4)
 
 
@@ -252,11 +252,11 @@ def create_shifts(
 ) -> dict[tuple[int, int, int], cp_model.IntVar]:
     shifts: dict[tuple[int, int, int], cp_model.IntVar] = {}
 
-    for week in material.weeks:
+    for day in material.days:
         for worker in material.workers:
             for post_id in worker.post_ids:
-                shifts[(week, post_id, worker.id)] = model.new_bool_var(
-                    f'shift_{week}_{post_id}_{worker.id}'
+                shifts[(day, post_id, worker.id)] = model.new_bool_var(
+                    f'shift_{day}_{post_id}_{worker.id}'
                 )
 
     return shifts
@@ -268,7 +268,7 @@ def define_constraints(
     shifts: dict[tuple[int, int, int], cp_model.IntVar],
 ) -> None:
     define_each_post_max_worker(material, model, shifts)
-    define_each_worker_max_post_per_week(material, model, shifts)
+    define_each_worker_max_post_per_day(material, model, shifts)
     define_each_worker_max_post_per_roster(material, model, shifts)
 
 
@@ -277,24 +277,24 @@ def define_each_post_max_worker(
     model: cp_model.CpModel,
     shifts: dict[tuple[int, int, int], cp_model.IntVar],
 ) -> None:
-    for week in material.weeks:
+    for day in material.days:
         for post in material.posts:
             model.add_at_most_one(
-                shifts[(week, post.id, worker.id)]
+                shifts[(day, post.id, worker.id)]
                 for worker in material.workers
                 if post.id in worker.post_ids
             )
 
 
-def define_each_worker_max_post_per_week(
+def define_each_worker_max_post_per_day(
     material: RosterMaterial,
     model: cp_model.CpModel,
     shifts: dict[tuple[int, int, int], cp_model.IntVar],
 ) -> None:
-    for week in material.weeks:
+    for day in material.days:
         for worker in material.workers:
             model.add_at_most_one(
-                shifts[(week, post_id, worker.id)]
+                shifts[(day, post_id, worker.id)]
                 for post_id in worker.post_ids
             )
 
@@ -307,8 +307,8 @@ def define_each_worker_max_post_per_roster(
     for worker in material.workers:
         model.add(
             sum(
-                shifts[(week, post_id, worker.id)]
-                for week in material.weeks
+                shifts[(day, post_id, worker.id)]
+                for day in material.days
                 for post_id in worker.post_ids
             ) <= 2
         )
@@ -335,8 +335,8 @@ def create_total_assignment_expression(
     shifts: dict[tuple[int, int, int], cp_model.IntVar],
 ) -> cp_model.LinearExpr:
     return sum(
-        shifts[(week, post_id, worker.id)]
-        for week in material.weeks
+        shifts[(day, post_id, worker.id)]
+        for day in material.days
         for worker in material.workers
         for post_id in worker.post_ids
     )
@@ -349,18 +349,18 @@ def create_worker_balancing_expression(
 ) -> cp_model.LinearExpr:
     worker_assignment = {
         worker.id: sum(
-            shifts[(week, post_id, worker.id)]
-            for week in material.weeks
+            shifts[(day, post_id, worker.id)]
+            for day in material.days
             for post_id in worker.post_ids
         )
         for worker in material.workers
     }
 
     min_assignment = model.new_int_var(
-        0, len(material.weeks), 'min_assignement'
+        0, len(material.days), 'min_assignement'
     )
     max_assignment = model.new_int_var(
-        0, len(material.weeks), 'max_assignement'
+        0, len(material.days), 'max_assignement'
     )
 
     for total_assignment in worker_assignment.values():

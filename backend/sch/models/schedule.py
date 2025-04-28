@@ -3,5 +3,5 @@ from pydantic import BaseModel
 
 
 class Schedule(BaseModel):
-    week: int
+    day: int
     arrangement: Dict[str, str]
