@@ -249,7 +249,7 @@ def get_posts_constraint_settings() -> list:
     return [
         PostsConstraintSetting(
             id=0,
-            constraint_type=ConstraintType.AT_LEAST_1,
+            constraint_type=ConstraintType.AT_LEAST_1_WORKER_PER_DAY,
             post_ids=[2, 3],
         ),
     ]
@@ -335,13 +335,15 @@ def define_addition_constraints(
 ) -> None:
     for setting in material.posts_constraint_settings:
         match setting.constraint_type:
-            case ConstraintType.AT_LEAST_1:
-                define_at_least_1_constraint(material, model, shifts, setting)
+            case ConstraintType.AT_LEAST_1_WORKER_PER_DAY:
+                define_at_least_1_worker_per_day_constraint(
+                    material, model, shifts, setting
+                )
             case _:
                 print('Unkown constraint type : ', setting.constraint_type)
 
 
-def define_at_least_1_constraint(
+def define_at_least_1_worker_per_day_constraint(
     material: RosterMaterial,
     model: cp_model.CpModel,
     shifts: dict[tuple[int, int, int], cp_model.IntVar],
