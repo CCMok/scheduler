@@ -22,29 +22,7 @@ def arrange_roster_service() -> list[Schedule]:
         # TODO
         return []
 
-    # Map result to response
-    for day in material.days:
-        print(f'\nDay: {day}')
-
-        for post in material.posts:
-            result_worker = ''
-
-            for worker in material.workers:
-                if post.id not in worker.post_ids:
-                    continue
-
-                isOff = solver.value(shifts[(day, post.id, worker.id)]) == 0
-                if isOff:
-                    continue
-
-                result_worker = worker.name
-                continue
-
-            print(f'{post.name}: {result_worker}')
-
-    # Return response
-
-    return get_dummy_response()
+    return map_resposne(material, shifts, solver)
 
 
 def get_dummy_response():
@@ -336,14 +314,14 @@ def define_addition_constraints(
     for setting in material.posts_constraint_settings:
         match setting.constraint_type:
             case ConstraintType.AT_LEAST_1_WORKER_PER_DAY:
-                define_at_least_1_worker_per_day_constraint(
+                define_at_least_1_worker_per_day_per_posts(
                     material, model, shifts, setting
                 )
             case _:
                 print('Unkown constraint type : ', setting.constraint_type)
 
 
-def define_at_least_1_worker_per_day_constraint(
+def define_at_least_1_worker_per_day_per_posts(
     material: RosterMaterial,
     model: cp_model.CpModel,
     shifts: dict[tuple[int, int, int], cp_model.IntVar],
@@ -414,3 +392,34 @@ def create_worker_balancing_expression(
         model.add(total_assignment <= max_assignment)
 
     return max_assignment - min_assignment
+
+
+def map_resposne(
+    material: RosterMaterial,
+    shifts: dict[tuple[int, int, int], cp_model.IntVar],
+    solver: cp_model.CpSolver,
+) -> list[Schedule]:
+    schedules: list[Schedule] = []
+
+    for day in material.days:
+        schedule = Schedule(day=day, arrangement={})
+
+        for post in material.posts:
+            result_worker = ''
+
+            for worker in material.workers:
+                if post.id not in worker.post_ids:
+                    continue
+
+                isOff = solver.value(shifts[(day, post.id, worker.id)]) == 0
+                if isOff:
+                    continue
+
+                result_worker = worker.name
+                continue
+
+            schedule.arrangement[post.name] = result_worker
+        
+        schedules.append(schedule)
+
+    return schedules
