@@ -1,3 +1,5 @@
+from enums.constraint_type import ConstraintType
+from models.posts_constraint_setting import PostsConstraintSetting
 from models.worker import Worker
 from models.post import Post
 from models.schedule import Schedule
@@ -69,6 +71,7 @@ def get_material() -> RosterMaterial:
         days=get_days(),
         posts=get_posts(),
         workers=get_workers(),
+        posts_constraint_settings=get_posts_constraint_settings(),
     )
 
 
@@ -242,6 +245,16 @@ def get_workers() -> list[Worker]:
     ]
 
 
+def get_posts_constraint_settings() -> list:
+    return [
+        PostsConstraintSetting(
+            id=0,
+            constraint_type=ConstraintType.AT_LEAST_1,
+            post_ids=[2, 3],
+        ),
+    ]
+
+
 def get_days() -> range:
     return range(4)
 
@@ -270,6 +283,7 @@ def define_constraints(
     define_each_post_max_worker(material, model, shifts)
     define_each_worker_max_post_per_day(material, model, shifts)
     define_each_worker_max_post_per_roster(material, model, shifts)
+    define_addition_constraints(material, model, shifts)
 
 
 def define_each_post_max_worker(
@@ -311,6 +325,36 @@ def define_each_worker_max_post_per_roster(
                 for day in material.days
                 for post_id in worker.post_ids
             ) <= 2
+        )
+
+
+def define_addition_constraints(
+    material: RosterMaterial,
+    model: cp_model.CpModel,
+    shifts: dict[tuple[int, int, int], cp_model.IntVar],
+) -> None:
+    for setting in material.posts_constraint_settings:
+        match setting.constraint_type:
+            case ConstraintType.AT_LEAST_1:
+                define_at_least_1_constraint(material, model, shifts, setting)
+            case _:
+                print('Unkown constraint type : ', setting.constraint_type)
+
+
+def define_at_least_1_constraint(
+    material: RosterMaterial,
+    model: cp_model.CpModel,
+    shifts: dict[tuple[int, int, int], cp_model.IntVar],
+    posts_constraint_setting: PostsConstraintSetting,
+) -> None:
+    for day in material.days:
+        model.add(
+            sum(
+                shifts[(day, post_id, worker.id)]
+                for worker in material.workers
+                for post_id in posts_constraint_setting.post_ids
+                if post_id in worker.post_ids
+            ) >= 1
         )
 
 
