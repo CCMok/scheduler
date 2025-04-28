@@ -10,14 +10,8 @@ def arrange_roster_service() -> list[Schedule]:
     model = cp_model.CpModel()
     shifts = create_shifts(material, model)
 
-    # Define constraints
-    define_each_post_max_worker(material, model, shifts)
-    define_each_worker_max_post_per_week(material, model, shifts)
-    define_each_worker_max_post_per_roster(material, model, shifts)
-
+    define_constraints(material, model, shifts)
     define_objective(material, model, shifts)
-
-    # TODO
 
     solver = cp_model.CpSolver()
     status = solver.solve(model)
@@ -268,6 +262,16 @@ def create_shifts(
     return shifts
 
 
+def define_constraints(
+    material: RosterMaterial,
+    model: cp_model.CpModel,
+    shifts: dict[tuple[int, int, int], cp_model.IntVar],
+) -> None:
+    define_each_post_max_worker(material, model, shifts)
+    define_each_worker_max_post_per_week(material, model, shifts)
+    define_each_worker_max_post_per_roster(material, model, shifts)
+
+
 def define_each_post_max_worker(
     material: RosterMaterial,
     model: cp_model.CpModel,
@@ -359,7 +363,7 @@ def create_worker_balancing_expression(
         0, len(material.weeks), 'max_assignement'
     )
 
-    for worker_id, total_assignment in worker_assignment.items():
+    for total_assignment in worker_assignment.values():
         model.add(total_assignment >= min_assignment)
         model.add(total_assignment <= max_assignment)
 
