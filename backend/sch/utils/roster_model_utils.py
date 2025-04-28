@@ -10,6 +10,8 @@ def define_constraints(
     shifts: dict[tuple[int, int, int], cp_model.IntVar],
 ) -> None:
     define_each_post_max_worker(material, model, shifts)
+
+    # TODO: change to soft constraint
     define_each_worker_max_post_per_day(material, model, shifts)
     define_each_worker_max_post_per_roster(material, model, shifts)
     define_addition_constraints(material, model, shifts)
