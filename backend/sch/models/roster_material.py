@@ -5,7 +5,7 @@ from ortools.sat.python import cp_model
 from enums.constraint_type import ConstraintType
 
 
-class RosterMaterial():
+class RosterMaterial:
     days: range
     posts: list[Post]
     workers: list[Worker]
