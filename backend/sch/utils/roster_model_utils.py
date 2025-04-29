@@ -100,11 +100,11 @@ def define_objective(
         material, shifts
     )
 
-    worker_balancing_reward = create_worker_balancing_reward(
+    worker_balancing_penalty = create_worker_balancing_per_post_penalty(
         material, model, shifts
     )
 
-    model.maximize(total_assignment_reward + worker_balancing_reward)
+    model.maximize(2 * total_assignment_reward - worker_balancing_penalty)
 
 
 def create_total_assignment_reward(
@@ -119,30 +119,46 @@ def create_total_assignment_reward(
     )
 
 
-# TODO: Change to per post arocss all days
-def create_worker_balancing_reward(
+def create_worker_balancing_per_post_penalty(
     material: RosterMaterial,
     model: cp_model.CpModel,
     shifts: dict[tuple[int, int, int], cp_model.IntVar],
 ) -> cp_model.LinearExpr:
-    worker_assignment = {
-        worker.id: sum(
-            shifts[(day, post_id, worker.id)]
-            for day in material.days
-            for post_id in worker.post_ids
-        )
-        for worker in material.workers
+    post_worker_assignment = {
+        post.id: {
+            worker.id: sum(
+                shifts[(day, post.id, worker.id)]
+                for day in material.days
+            )
+            for worker in material.workers
+            if post.id in worker.post_ids
+        }
+        for post in material.posts
     }
 
-    min_assignment = model.new_int_var(
-        0, len(material.days), 'min_assignement'
-    )
-    max_assignment = model.new_int_var(
-        0, len(material.days), 'max_assignement'
-    )
+    post_min_assignment = {
+        post.id: model.new_int_var(
+            0, len(material.days), f'min_assignment_{post.id}'
+        )
+        for post in material.posts
+    }
 
-    for total_assignment in worker_assignment.values():
-        model.add(total_assignment >= min_assignment)
-        model.add(total_assignment <= max_assignment)
+    post_max_assignment = {
+        post.id: model.new_int_var(
+            0, len(material.days), f'max_assignment_{post.id}'
+        )
+        for post in material.posts
+    }
 
-    return min_assignment - max_assignment
+    for post_id, worker_assignments in post_worker_assignment.items():
+        if worker_assignments == {}:
+            continue
+
+        for total_assignment in worker_assignments.values():
+            model.add(total_assignment >= post_min_assignment[post_id])
+            model.add(total_assignment <= post_max_assignment[post_id])
+
+    return sum(
+        post_max_assignment[post.id] - post_min_assignment[post.id]
+        for post in material.posts
+    )
