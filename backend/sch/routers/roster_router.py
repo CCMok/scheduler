@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from models.schedule import Schedule
-from services.roster_service import arrange_roster_service
+from services.roster_service import RosterService
 
 router = APIRouter(
     prefix='/roster',
@@ -10,4 +10,4 @@ router = APIRouter(
 
 @router.post('')
 async def arrange_roster() -> list[Schedule]:
-    return arrange_roster_service()
+    return RosterService.arrange()
