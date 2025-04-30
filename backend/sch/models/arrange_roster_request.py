@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class OffRequest(BaseModel):
     worker_id: int
-    day: int
+    days: list[int]
 
 
 class ArrangeRosterRequest(BaseModel):

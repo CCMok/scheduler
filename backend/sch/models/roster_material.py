@@ -122,13 +122,13 @@ class RosterMaterialDefault:
                 worker_ids=[14, 15],
             ),
             WorkersConstraintSetting(
-                id=0,
+                id=1,
                 constraint_type=WorkersConstraintType.CORRELATE,
                 weighting=1,
                 worker_ids=[16, 17],
             ),
             WorkersConstraintSetting(
-                id=0,
+                id=2,
                 constraint_type=WorkersConstraintType.CORRELATE,
                 weighting=1,
                 worker_ids=[22, 23],

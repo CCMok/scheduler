@@ -10,7 +10,7 @@ class RosterService:
     def arrange(request: ArrangeRosterRequest) -> list[Schedule]:
         material = RosterMaterial()
 
-        RosterModelHelper.define_constraints(material)
+        RosterModelHelper.define_constraints(material, request.offs)
         RosterModelHelper.define_objective(material)
 
         solver = cp_model.CpSolver()

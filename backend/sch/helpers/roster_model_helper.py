@@ -1,4 +1,5 @@
 from enums.constraint_type import PostsConstraintType, WorkersConstraintType
+from models.arrange_roster_request import OffRequest
 from models.constraint_setting import PostsConstraintSetting, WorkersConstraintSetting
 from models.roster_material import RosterMaterial
 from ortools.sat.python import cp_model
@@ -6,10 +7,11 @@ from ortools.sat.python import cp_model
 
 class RosterModelHelper:
     @staticmethod
-    def define_constraints(material: RosterMaterial) -> None:
+    def define_constraints(material: RosterMaterial, off_requests: list[OffRequest]) -> None:
         RosterModelHelper.__define_each_post_max_worker(material)
         RosterModelHelper.__define_each_worker_max_post_per_day(material)
         RosterModelHelper.__define_each_worker_max_post_per_roster(material)
+        RosterModelHelper.__define_off_constraint(material, off_requests)
 
     @staticmethod
     def __define_each_post_max_worker(material: RosterMaterial) -> None:
@@ -40,6 +42,24 @@ class RosterModelHelper:
                     for post_id in worker.post_ids
                 ) <= 2
             )
+
+    @staticmethod
+    def __define_off_constraint(material: RosterMaterial, off_requests: list[OffRequest]) -> None:
+        for off_request in off_requests:
+            worker = next((
+                worker
+                for worker in material.workers
+                if worker.id == off_request.worker_id
+            ), None)
+
+            if worker is None:
+                continue
+
+            for day in off_request.days:
+                for post_id in worker.post_ids:
+                    material.model.add(
+                        material.shifts[(day, post_id, off_request.worker_id)] == 0
+                    )
 
     @staticmethod
     def define_objective(material: RosterMaterial) -> None:
