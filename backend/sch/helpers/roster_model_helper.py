@@ -118,7 +118,7 @@ class RosterModelHelper:
                     penalties.append(
                         RosterModelHelper.__create_at_least_1_worker_per_day_in_posts(
                             material, setting
-                        )
+                        ) * setting.weighting
                     )
 
                 case _:
@@ -129,7 +129,7 @@ class RosterModelHelper:
     @staticmethod
     def __create_at_least_1_worker_per_day_in_posts(
         material: RosterMaterial,
-        posts_constraint_setting: PostsConstraintSetting,
+        constraint_setting: PostsConstraintSetting,
     ) -> cp_model.LinearExpr:
         penalties = []
 
@@ -140,7 +140,7 @@ class RosterModelHelper:
                 sum(
                     material.shifts[(day, post_id, worker.id)]
                     for worker in material.workers
-                    for post_id in posts_constraint_setting.post_ids
+                    for post_id in constraint_setting.post_ids
                     if post_id in worker.post_ids
                 ) >= 1
             ).only_enforce_if(penalty.Not())
@@ -149,7 +149,7 @@ class RosterModelHelper:
                 sum(
                     material.shifts[(day, post_id, worker.id)]
                     for worker in material.workers
-                    for post_id in posts_constraint_setting.post_ids
+                    for post_id in constraint_setting.post_ids
                     if post_id in worker.post_ids
                 ) < 1
             ).only_enforce_if(penalty)

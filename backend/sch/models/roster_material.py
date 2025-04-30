@@ -100,6 +100,7 @@ class RosterMaterialDefault:
             PostsConstraintSetting(
                 id=0,
                 constraint_type=ConstraintType.AT_LEAST_1_WORKER_PER_DAY,
+                weighting=1,
                 post_ids=[2, 3],
             ),
         ]
