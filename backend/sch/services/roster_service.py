@@ -1,4 +1,5 @@
 from helpers.roster_model_helper import RosterModelHelper
+from models.arrange_roster_request import ArrangeRosterRequest
 from models.schedule import Schedule
 from models.roster_material import RosterMaterial
 from ortools.sat.python import cp_model
@@ -6,7 +7,7 @@ from ortools.sat.python import cp_model
 
 class RosterService:
     @staticmethod
-    def arrange() -> list[Schedule]:
+    def arrange(request: ArrangeRosterRequest) -> list[Schedule]:
         material = RosterMaterial()
 
         RosterModelHelper.define_constraints(material)
