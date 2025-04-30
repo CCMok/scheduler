@@ -1,5 +1,5 @@
-from enums.constraint_type import ConstraintType
-from models.posts_constraint_setting import PostsConstraintSetting
+from enums.constraint_type import PostsConstraintType, WorkersConstraintType
+from models.constraint_setting import PostsConstraintSetting, WorkersConstraintSetting
 from models.roster_material import RosterMaterial
 from ortools.sat.python import cp_model
 
@@ -47,15 +47,20 @@ class RosterModelHelper:
             material
         )
 
+        posts_constraint_reward = RosterModelHelper.__create_posts_constraint_reward(
+            material
+        )
+
+        workers_constraint_reward = RosterModelHelper.__create_workers_constraint_reward(
+            material
+        )
+
         worker_balancing_penalty = RosterModelHelper.__create_worker_balancing_per_post_penalty(
             material
         )
 
-        addition_penalty = RosterModelHelper.__create_addition_penalty(
-            material)
-
         material.model.maximize(
-            2 * total_assignment_reward - worker_balancing_penalty - addition_penalty
+            2 * total_assignment_reward + posts_constraint_reward + workers_constraint_reward - worker_balancing_penalty
         )
 
     @staticmethod
@@ -109,14 +114,14 @@ class RosterModelHelper:
         )
 
     @staticmethod
-    def __create_addition_penalty(material: RosterMaterial) -> cp_model.LinearExpr:
-        penalties: list[cp_model.LinearExpr] = []
+    def __create_posts_constraint_reward(material: RosterMaterial) -> cp_model.LinearExpr:
+        rewards: list[cp_model.LinearExpr] = []
 
         for setting in material.posts_constraint_settings:
             match setting.constraint_type:
-                case ConstraintType.AT_LEAST_1_WORKER_PER_DAY:
-                    penalties.append(
-                        RosterModelHelper.__create_at_least_1_worker_per_day_in_posts(
+                case PostsConstraintType.AT_LEAST_1_WORKER_PER_DAY:
+                    rewards.append(
+                        RosterModelHelper.__create_posts_at_least_1_worker_per_day_reward(
                             material, setting
                         ) * setting.weighting
                     )
@@ -124,17 +129,20 @@ class RosterModelHelper:
                 case _:
                     print('Unkown constraint type : ', setting.constraint_type)
 
-        return sum(penalties)
+        return sum(rewards)
 
     @staticmethod
-    def __create_at_least_1_worker_per_day_in_posts(
+    def __create_posts_at_least_1_worker_per_day_reward(
         material: RosterMaterial,
         constraint_setting: PostsConstraintSetting,
     ) -> cp_model.LinearExpr:
-        penalties = []
+        rewards: list[cp_model.LinearExpr] = []
 
         for day in material.days:
-            penalty = material.model.new_bool_var(f"penalty_{day}")
+            reward = material.model.new_bool_var(
+                f'reward_posts_at_least_1_worker_per_day_{constraint_setting.id}_{day}'
+            )
+            rewards.append(reward)
 
             material.model.add(
                 sum(
@@ -143,7 +151,7 @@ class RosterModelHelper:
                     for post_id in constraint_setting.post_ids
                     if post_id in worker.post_ids
                 ) >= 1
-            ).only_enforce_if(penalty.Not())
+            ).only_enforce_if(reward)
 
             material.model.add(
                 sum(
@@ -152,8 +160,70 @@ class RosterModelHelper:
                     for post_id in constraint_setting.post_ids
                     if post_id in worker.post_ids
                 ) < 1
-            ).only_enforce_if(penalty)
+            ).only_enforce_if(reward.Not())
 
-            penalties.append(penalty)
+        return sum(rewards)
 
-        return sum(penalties)
+    @staticmethod
+    def __create_workers_constraint_reward(material: RosterMaterial) -> cp_model.LinearExpr:
+        rewards: list[cp_model.LinearExpr] = []
+
+        for setting in material.workers_constraint_settings:
+            match setting.constraint_type:
+                case WorkersConstraintType.CORRELATE:
+                    rewards.append(
+                        RosterModelHelper.__create_workers_correlate_reward(
+                            material, setting
+                        ) * setting.weighting
+                    )
+
+                case _:
+                    print('Unkown constraint type : ', setting.constraint_type)
+
+        return sum(rewards)
+
+    @staticmethod
+    def __create_workers_correlate_reward(
+            material: RosterMaterial, constraint_setting: WorkersConstraintSetting
+    ) -> cp_model.LinearExpr:
+        rewards: list[cp_model.LinearExpr] = []
+
+        workers = [
+            worker
+            for worker in material.workers
+            if worker.id in constraint_setting.worker_ids
+        ]
+
+        for day in material.days:
+            reward = material.model.new_bool_var(f'reward_workers_correlate_{constraint_setting.id}_{day}')
+            rewards.append(reward)
+
+            worker_assigneds: list[cp_model.IntVar] = []
+
+            for worker in workers:
+                worker_assigned = material.model.new_bool_var(
+                    f'reward_workers_correlate_{constraint_setting.id}_{day}_worker_assigned_{worker.id}'
+                )
+                worker_assigneds.append(worker_assigned)
+
+                material.model.add(
+                    sum(
+                        material.shifts[(day, post_id, worker.id)]
+                        for post_id in worker.post_ids
+                    ) >= 1
+                ).only_enforce_if(worker_assigned)
+
+                material.model.add(
+                    sum(
+                        material.shifts[(day, post_id, worker.id)]
+                        for post_id in worker.post_ids
+                    ) < 1
+                ).only_enforce_if(worker_assigned.Not())
+
+            material.model.add_bool_and(worker_assigneds).only_enforce_if(reward)
+            material.model.add_bool_or([
+                worker_assigned.Not()
+                for worker_assigned in worker_assigneds
+            ]).only_enforce_if(reward.Not())
+
+        return sum(rewards)

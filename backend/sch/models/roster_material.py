@@ -1,8 +1,8 @@
-from models.posts_constraint_setting import PostsConstraintSetting
+from models.constraint_setting import PostsConstraintSetting, WorkersConstraintSetting
 from models.post import Post
 from models.worker import Worker
 from ortools.sat.python import cp_model
-from enums.constraint_type import ConstraintType
+from enums.constraint_type import PostsConstraintType, WorkersConstraintType
 
 
 class RosterMaterial:
@@ -10,6 +10,7 @@ class RosterMaterial:
     posts: list[Post]
     workers: list[Worker]
     posts_constraint_settings: list[PostsConstraintSetting]
+    workers_constraint_settings: list[WorkersConstraintSetting]
     model: cp_model.CpModel
     shifts: dict[tuple[int, int, int], cp_model.IntVar]
 
@@ -19,6 +20,7 @@ class RosterMaterial:
         posts: list[Post] = None,
         workers: list[Worker] = None,
         posts_constraint_settings: list[PostsConstraintSetting] = None,
+        workers_constraint_settings: list[WorkersConstraintSetting] = None,
     ):
         self.days = days if days else RosterMaterialDefault.days()
         self.posts = posts if posts else RosterMaterialDefault.posts()
@@ -28,6 +30,11 @@ class RosterMaterial:
             self.posts_constraint_settings = posts_constraint_settings
         else:
             self.posts_constraint_settings = RosterMaterialDefault.posts_constraint_settings()
+
+        if workers_constraint_settings:
+            self.workers_constraint_settings = workers_constraint_settings
+        else:
+            self.workers_constraint_settings = RosterMaterialDefault.workers_constraint_settings()
 
         self.model = cp_model.CpModel()
         self.shifts = self.__create_shifts()
@@ -99,8 +106,31 @@ class RosterMaterialDefault:
         return [
             PostsConstraintSetting(
                 id=0,
-                constraint_type=ConstraintType.AT_LEAST_1_WORKER_PER_DAY,
+                constraint_type=PostsConstraintType.AT_LEAST_1_WORKER_PER_DAY,
                 weighting=1,
                 post_ids=[2, 3],
+            ),
+        ]
+
+    @staticmethod
+    def workers_constraint_settings() -> list[Worker]:
+        return [
+            WorkersConstraintSetting(
+                id=0,
+                constraint_type=WorkersConstraintType.CORRELATE,
+                weighting=1,
+                worker_ids=[14, 15],
+            ),
+            WorkersConstraintSetting(
+                id=0,
+                constraint_type=WorkersConstraintType.CORRELATE,
+                weighting=1,
+                worker_ids=[16, 17],
+            ),
+            WorkersConstraintSetting(
+                id=0,
+                constraint_type=WorkersConstraintType.CORRELATE,
+                weighting=1,
+                worker_ids=[22, 23],
             ),
         ]
