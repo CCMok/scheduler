@@ -19,7 +19,6 @@ class RosterMaterial:
         posts: list[Post] = None,
         workers: list[Worker] = None,
         posts_constraint_settings: list[PostsConstraintSetting] = None,
-        model: cp_model.CpModel = None,
     ):
         self.days = days if days else RosterMaterialDefault.days()
         self.posts = posts if posts else RosterMaterialDefault.posts()
@@ -30,7 +29,7 @@ class RosterMaterial:
         else:
             self.posts_constraint_settings = RosterMaterialDefault.posts_constraint_settings()
 
-        self.model = model if model else cp_model.CpModel()
+        self.model = cp_model.CpModel()
         self.shifts = self.__create_shifts()
 
     def __create_shifts(self) -> dict[tuple[int, int, int], cp_model.IntVar]:

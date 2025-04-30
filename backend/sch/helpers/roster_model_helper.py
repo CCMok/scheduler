@@ -8,11 +8,8 @@ class RosterModelHelper:
     @staticmethod
     def define_constraints(material: RosterMaterial) -> None:
         RosterModelHelper.__define_each_post_max_worker(material)
-
-        # TODO: change to soft constraint
         RosterModelHelper.__define_each_worker_max_post_per_day(material)
         RosterModelHelper.__define_each_worker_max_post_per_roster(material)
-        RosterModelHelper.__define_addition_constraints(material)
 
     @staticmethod
     def __define_each_post_max_worker(material: RosterMaterial) -> None:
@@ -45,32 +42,6 @@ class RosterModelHelper:
             )
 
     @staticmethod
-    def __define_addition_constraints(material: RosterMaterial) -> None:
-        for setting in material.posts_constraint_settings:
-            match setting.constraint_type:
-                case ConstraintType.AT_LEAST_1_WORKER_PER_DAY:
-                    RosterModelHelper.__define_at_least_1_worker_per_day_per_posts(
-                        material, setting
-                    )
-                case _:
-                    print('Unkown constraint type : ', setting.constraint_type)
-
-    @staticmethod
-    def __define_at_least_1_worker_per_day_per_posts(
-        material: RosterMaterial,
-        posts_constraint_setting: PostsConstraintSetting,
-    ) -> None:
-        for day in material.days:
-            material.model.add(
-                sum(
-                    material.shifts[(day, post_id, worker.id)]
-                    for worker in material.workers
-                    for post_id in posts_constraint_setting.post_ids
-                    if post_id in worker.post_ids
-                ) >= 1
-            )
-
-    @staticmethod
     def define_objective(material: RosterMaterial) -> None:
         total_assignment_reward = RosterModelHelper.__create_total_assignment_reward(
             material
@@ -80,8 +51,11 @@ class RosterModelHelper:
             material
         )
 
+        addition_penalty = RosterModelHelper.__create_addition_penalty(
+            material)
+
         material.model.maximize(
-            2 * total_assignment_reward - worker_balancing_penalty
+            2 * total_assignment_reward - worker_balancing_penalty - addition_penalty
         )
 
     @staticmethod
@@ -126,12 +100,60 @@ class RosterModelHelper:
                 continue
 
             for total_assignment in worker_assignments.values():
-                material.model.add(total_assignment >=
-                                   post_min_assignment[post_id])
-                material.model.add(total_assignment <=
-                                   post_max_assignment[post_id])
+                material.model.add(total_assignment >= post_min_assignment[post_id])
+                material.model.add(total_assignment <= post_max_assignment[post_id])
 
         return sum(
             post_max_assignment[post.id] - post_min_assignment[post.id]
             for post in material.posts
         )
+
+    @staticmethod
+    def __create_addition_penalty(material: RosterMaterial) -> cp_model.LinearExpr:
+        penalties: list[cp_model.LinearExpr] = []
+
+        for setting in material.posts_constraint_settings:
+            match setting.constraint_type:
+                case ConstraintType.AT_LEAST_1_WORKER_PER_DAY:
+                    penalties.append(
+                        RosterModelHelper.__create_at_least_1_worker_per_day_in_posts(
+                            material, setting
+                        )
+                    )
+
+                case _:
+                    print('Unkown constraint type : ', setting.constraint_type)
+
+        return sum(penalties)
+
+    @staticmethod
+    def __create_at_least_1_worker_per_day_in_posts(
+        material: RosterMaterial,
+        posts_constraint_setting: PostsConstraintSetting,
+    ) -> cp_model.LinearExpr:
+        penalties = []
+
+        for day in material.days:
+            penalty = material.model.new_bool_var(f"penalty_{day}")
+
+            material.model.add(
+                sum(
+                    material.shifts[(day, post_id, worker.id)]
+                    for worker in material.workers
+                    for post_id in posts_constraint_setting.post_ids
+                    if post_id in worker.post_ids
+                ) >= 1
+            ).only_enforce_if(penalty.Not())
+
+            material.model.add(
+                sum(
+                    material.shifts[(day, post_id, worker.id)]
+                    for worker in material.workers
+                    for post_id in posts_constraint_setting.post_ids
+                    if post_id in worker.post_ids
+                ) < 1
+            ).only_enforce_if(penalty)
+
+            penalties.append(penalty)
+
+        return sum(penalties)
