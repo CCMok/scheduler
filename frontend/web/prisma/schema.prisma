@@ -8,18 +8,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Tenant {
+  id         Int          @id @default(autoincrement())
+  name       String       @unique
+  posts      Post[]
+  Worker     Worker[]
+  PostWorker PostWorker[]
+
+  @@map("tenant")
+}
+
 model Post {
-  id     Int    @id @default(autoincrement())
-  tenant String
-  name   String
+  id          Int          @id @default(autoincrement())
+  tenantId    Int          @map("tenant_id")
+  name        String
+  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  postWorkers PostWorker[]
 
   @@map("post")
 }
 
 model Worker {
-  id     Int    @id @default(autoincrement())
-  tenant String
-  name   String
+  id       Int    @id @default(autoincrement())
+  tenantId Int    @map("tenant_id")
+  name     String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  postWorkers PostWorker[]
 
   @@map("worker")
+}
+
+model PostWorker {
+  id       Int    @id @default(autoincrement())
+  tenantId Int    @map("tenant_id")
+  postId   Int    @map("post_id")
+  workerId Int    @map("worker_id")
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  worker   Worker @relation(fields: [workerId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, postId, workerId])
+  @@map("post_worker")
 }
