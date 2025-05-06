@@ -9,11 +9,10 @@ datasource db {
 }
 
 model Tenant {
-  id         Int          @id @default(autoincrement())
-  name       String       @unique
-  posts      Post[]
-  Worker     Worker[]
-  PostWorker PostWorker[]
+  id     Int      @id @default(autoincrement())
+  name   String   @unique
+  posts  Post[]
+  Worker Worker[]
 
   @@map("tenant")
 }
@@ -29,11 +28,10 @@ model Post {
 }
 
 model Worker {
-  id       Int    @id @default(autoincrement())
-  tenantId Int    @map("tenant_id")
-  name     String
-  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-
+  id          Int          @id @default(autoincrement())
+  tenantId    Int          @map("tenant_id")
+  name        String
+  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   postWorkers PostWorker[]
 
   @@map("worker")
@@ -41,13 +39,11 @@ model Worker {
 
 model PostWorker {
   id       Int    @id @default(autoincrement())
-  tenantId Int    @map("tenant_id")
   postId   Int    @map("post_id")
   workerId Int    @map("worker_id")
-  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   worker   Worker @relation(fields: [workerId], references: [id], onDelete: Cascade)
 
-  @@unique([tenantId, postId, workerId])
+  @@unique([postId, workerId])
   @@map("post_worker")
 }
