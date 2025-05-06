@@ -1,3 +1,4 @@
+from managers.db import DbSession
 from helpers.roster_model_helper import RosterModelHelper
 from models.arrange_roster_request import ArrangeRosterRequest
 from models.schedule import Schedule
@@ -7,8 +8,8 @@ from ortools.sat.python import cp_model
 
 class RosterService:
     @staticmethod
-    def arrange(request: ArrangeRosterRequest) -> list[Schedule]:
-        material = RosterMaterial(days=range(request.day_count))
+    def arrange(request: ArrangeRosterRequest, db_session: DbSession) -> list[Schedule]:
+        material = RosterMaterial(request=request, db_session=db_session)
 
         RosterModelHelper.define_constraints(material, request.offs)
         RosterModelHelper.define_objective(material)

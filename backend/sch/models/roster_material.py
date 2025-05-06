@@ -1,3 +1,6 @@
+from sqlmodel import select
+from models.arrange_roster_request import ArrangeRosterRequest
+from managers.db import DbSession
 from models.constraint_setting import PostsConstraintSetting, WorkersConstraintSetting
 from models.post import Post
 from models.worker import Worker
@@ -16,14 +19,14 @@ class RosterMaterial:
 
     def __init__(
         self,
-        days: range = None,
-        posts: list[Post] = None,
+        request: ArrangeRosterRequest,
+        db_session: DbSession,
         workers: list[Worker] = None,
         posts_constraint_settings: list[PostsConstraintSetting] = None,
         workers_constraint_settings: list[WorkersConstraintSetting] = None,
     ):
-        self.days = days if days is not None else RosterMaterialDefault.days()
-        self.posts = posts if posts else RosterMaterialDefault.posts()
+        self.days = range(request.day_count)
+        self.posts = self.find_post(db_session, request.tenant_id)
         self.workers = workers if workers else RosterMaterialDefault.workers()
 
         if posts_constraint_settings:
@@ -38,6 +41,11 @@ class RosterMaterial:
 
         self.model = cp_model.CpModel()
         self.shifts = self.__create_shifts()
+
+    def find_post(self, db_session: DbSession, tenant_id: int) -> list[Post]:
+        return db_session.exec(
+            select(Post).where(Post.tenant_id == tenant_id)
+        ).all()
 
     def __create_shifts(self) -> dict[tuple[int, int, int], cp_model.IntVar]:
         shifts: dict[tuple[int, int, int], cp_model.IntVar] = {}
@@ -58,47 +66,32 @@ class RosterMaterialDefault:
         return range(4)
 
     @staticmethod
-    def posts() -> list[Post]:
-        return [
-            Post(id=0, name='Host'),
-            Post(id=1, name='Worship Leader'),
-            Post(id=2, name='Keyboard'),
-            Post(id=3, name='Guitar'),
-            Post(id=4, name='Drum'),
-            Post(id=5, name='Bass'),
-            Post(id=6, name='Vocal Women'),
-            Post(id=7, name='Vocal Men'),
-            Post(id=8, name='Audio'),
-            Post(id=9, name='Powerpoint'),
-        ]
-
-    @staticmethod
     def workers() -> list[Worker]:
         return [
-            Worker(id=0, name='Jane', post_ids=[0]),
-            Worker(id=1, name='Alan', post_ids=[1]),
-            Worker(id=2, name='QQ', post_ids=[2]),
-            Worker(id=3, name='Gogo', post_ids=[3]),
-            Worker(id=4, name='Jeffery', post_ids=[4]),
-            Worker(id=5, name='Shu Yan', post_ids=[6]),
-            Worker(id=6, name='Vincent', post_ids=[7]),
-            Worker(id=7, name='Marco', post_ids=[8]),
-            Worker(id=8, name='YL', post_ids=[9]),
-            Worker(id=9, name='Foon', post_ids=[0]),
-            Worker(id=10, name='Chow Sir', post_ids=[0, 1, 8]),
-            Worker(id=11, name='Sunny', post_ids=[4]),
-            Worker(id=12, name='Pakho', post_ids=[7]),
-            Worker(id=13, name='Andrea', post_ids=[9]),
-            Worker(id=14, name='Jason', post_ids=[1, 7]),
-            Worker(id=15, name='Kathryn', post_ids=[6]),
-            Worker(id=16, name='Simmon', post_ids=[0]),
-            Worker(id=17, name='Florence', post_ids=[1]),
-            Worker(id=18, name='Amy', post_ids=[6]),
-            Worker(id=19, name='Kwok Fai', post_ids=[0]),
-            Worker(id=20, name='Betty', post_ids=[1]),
-            Worker(id=21, name='Picnic', post_ids=[8]),
-            Worker(id=22, name='Ka yan', post_ids=[9]),
-            Worker(id=23, name='Louis', post_ids=[8]),
+            Worker(id=0, name='Jane', post_ids=[2]),
+            Worker(id=1, name='Alan', post_ids=[3]),
+            Worker(id=2, name='QQ', post_ids=[4]),
+            Worker(id=3, name='Gogo', post_ids=[5]),
+            Worker(id=4, name='Jeffery', post_ids=[6]),
+            Worker(id=5, name='Shu Yan', post_ids=[8]),
+            Worker(id=6, name='Vincent', post_ids=[9]),
+            Worker(id=7, name='Marco', post_ids=[10]),
+            Worker(id=8, name='YL', post_ids=[11]),
+            Worker(id=9, name='Foon', post_ids=[2]),
+            Worker(id=10, name='Chow Sir', post_ids=[2, 3, 10]),
+            Worker(id=11, name='Sunny', post_ids=[6]),
+            Worker(id=12, name='Pakho', post_ids=[9]),
+            Worker(id=13, name='Andrea', post_ids=[11]),
+            Worker(id=14, name='Jason', post_ids=[3, 9]),
+            Worker(id=15, name='Kathryn', post_ids=[8]),
+            Worker(id=16, name='Simmon', post_ids=[2]),
+            Worker(id=17, name='Florence', post_ids=[3]),
+            Worker(id=18, name='Amy', post_ids=[8]),
+            Worker(id=19, name='Kwok Fai', post_ids=[2]),
+            Worker(id=20, name='Betty', post_ids=[3]),
+            Worker(id=21, name='Picnic', post_ids=[10]),
+            Worker(id=22, name='Ka yan', post_ids=[11]),
+            Worker(id=23, name='Louis', post_ids=[10]),
         ]
 
     @staticmethod
@@ -108,7 +101,7 @@ class RosterMaterialDefault:
                 id=0,
                 constraint_type=PostsConstraintType.AT_LEAST_1_WORKER_PER_DAY,
                 weighting=1,
-                post_ids=[2, 3],
+                post_ids=[4, 5],
             ),
         ]
 
