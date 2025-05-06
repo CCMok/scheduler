@@ -8,7 +8,7 @@ from ortools.sat.python import cp_model
 class RosterService:
     @staticmethod
     def arrange(request: ArrangeRosterRequest) -> list[Schedule]:
-        material = RosterMaterial()
+        material = RosterMaterial(days=range(request.day_count))
 
         RosterModelHelper.define_constraints(material, request.offs)
         RosterModelHelper.define_objective(material)

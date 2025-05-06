@@ -22,7 +22,7 @@ class RosterMaterial:
         posts_constraint_settings: list[PostsConstraintSetting] = None,
         workers_constraint_settings: list[WorkersConstraintSetting] = None,
     ):
-        self.days = days if days else RosterMaterialDefault.days()
+        self.days = days if days is not None else RosterMaterialDefault.days()
         self.posts = posts if posts else RosterMaterialDefault.posts()
         self.workers = workers if workers else RosterMaterialDefault.workers()
 

@@ -56,6 +56,9 @@ class RosterModelHelper:
                 continue
 
             for day in off_request.days:
+                if day not in material.days:
+                    continue
+
                 for post_id in worker.post_ids:
                     material.model.add(
                         material.shifts[(day, post_id, off_request.worker_id)] == 0
