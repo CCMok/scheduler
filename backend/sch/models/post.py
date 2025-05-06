@@ -1,10 +1,4 @@
-from pydantic import BaseModel
 from sqlmodel import Field, SQLModel
-
-
-class PostDto(BaseModel):
-    id: int
-    name: str
 
 
 class Post(SQLModel, table=True):

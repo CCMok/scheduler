@@ -11,7 +11,7 @@ class RosterService:
     def arrange(request: ArrangeRosterRequest, db_session: DbSession) -> list[Schedule]:
         material = RosterMaterial(request=request, db_session=db_session)
 
-        RosterModelHelper.define_constraints(material, request.offs)
+        RosterModelHelper.define_constraints(material)
         RosterModelHelper.define_objective(material)
 
         solver = cp_model.CpSolver()

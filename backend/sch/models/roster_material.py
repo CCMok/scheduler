@@ -1,6 +1,6 @@
 from sqlmodel import select
-from models.arrange_roster_request import ArrangeRosterRequest
 from managers.db import DbSession
+from models.arrange_roster_request import ArrangeRosterRequest, OffRequest
 from models.constraint_setting import PostsConstraintSetting, WorkersConstraintSetting
 from models.post import Post
 from models.worker import Worker
@@ -12,6 +12,7 @@ class RosterMaterial:
     days: range
     posts: list[Post]
     workers: list[Worker]
+    offs: list[OffRequest]
     posts_constraint_settings: list[PostsConstraintSetting]
     workers_constraint_settings: list[WorkersConstraintSetting]
     model: cp_model.CpModel
@@ -28,6 +29,7 @@ class RosterMaterial:
         self.days = range(request.day_count)
         self.posts = self.find_post(db_session, request.tenant_id)
         self.workers = workers if workers else RosterMaterialDefault.workers()
+        self.offs = request.offs
 
         if posts_constraint_settings:
             self.posts_constraint_settings = posts_constraint_settings
