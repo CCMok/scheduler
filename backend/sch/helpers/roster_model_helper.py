@@ -19,7 +19,7 @@ class RosterModelHelper:
                 material.model.add_at_most_one(
                     material.shifts[(day, post.id, worker.id)]
                     for worker in material.workers
-                    if post.id in worker.post_ids
+                    if post.id in worker.post_ids # TODO
                 )
 
     @staticmethod
@@ -28,7 +28,7 @@ class RosterModelHelper:
             for worker in material.workers:
                 material.model.add_at_most_one(
                     material.shifts[(day, post_id, worker.id)]
-                    for post_id in worker.post_ids
+                    for post_id in worker.post_ids # TODO
                 )
 
     @staticmethod
@@ -38,7 +38,7 @@ class RosterModelHelper:
                 sum(
                     material.shifts[(day, post_id, worker.id)]
                     for day in material.days
-                    for post_id in worker.post_ids
+                    for post_id in worker.post_ids # TODO
                 ) <= 2
             )
 
@@ -58,7 +58,7 @@ class RosterModelHelper:
                 if day not in material.days:
                     continue
 
-                for post_id in worker.post_ids:
+                for post_id in worker.post_ids: # TODO
                     material.model.add(
                         material.shifts[(day, post_id, off.worker_id)] == 0
                     )
@@ -91,7 +91,7 @@ class RosterModelHelper:
             material.shifts[(day, post_id, worker.id)]
             for day in material.days
             for worker in material.workers
-            for post_id in worker.post_ids
+            for post_id in worker.post_ids # TODO
         )
 
     @staticmethod
@@ -103,7 +103,7 @@ class RosterModelHelper:
                     for day in material.days
                 )
                 for worker in material.workers
-                if post.id in worker.post_ids
+                if post.id in worker.post_ids # TODO
             }
             for post in material.posts
         }
@@ -171,7 +171,7 @@ class RosterModelHelper:
                     material.shifts[(day, post_id, worker.id)]
                     for worker in material.workers
                     for post_id in constraint_setting.post_ids
-                    if post_id in worker.post_ids
+                    if post_id in worker.post_ids # TODO
                 ) >= 1
             ).only_enforce_if(reward)
 
@@ -180,7 +180,7 @@ class RosterModelHelper:
                     material.shifts[(day, post_id, worker.id)]
                     for worker in material.workers
                     for post_id in constraint_setting.post_ids
-                    if post_id in worker.post_ids
+                    if post_id in worker.post_ids # TODO
                 ) < 1
             ).only_enforce_if(reward.Not())
 
@@ -231,14 +231,14 @@ class RosterModelHelper:
                 material.model.add(
                     sum(
                         material.shifts[(day, post_id, worker.id)]
-                        for post_id in worker.post_ids
+                        for post_id in worker.post_ids # TODO
                     ) >= 1
                 ).only_enforce_if(worker_assigned)
 
                 material.model.add(
                     sum(
                         material.shifts[(day, post_id, worker.id)]
-                        for post_id in worker.post_ids
+                        for post_id in worker.post_ids # TODO
                     ) < 1
                 ).only_enforce_if(worker_assigned.Not())
 

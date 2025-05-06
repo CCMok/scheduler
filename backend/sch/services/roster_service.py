@@ -37,6 +37,7 @@ class RosterService:
                 result_worker = ''
 
                 for worker in material.workers:
+                    # TODO
                     if post.id not in worker.post_ids:
                         continue
 
