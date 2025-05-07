@@ -19,7 +19,7 @@ class RosterModelHelper:
                 material.model.add_at_most_one(
                     material.shifts[(day, post.id, worker.id)]
                     for worker in material.workers
-                    if post.id in worker.post_ids # TODO
+                    if any(post.id == worker_post.id for worker_post in worker.posts)
                 )
 
     @staticmethod
@@ -27,8 +27,8 @@ class RosterModelHelper:
         for day in material.days:
             for worker in material.workers:
                 material.model.add_at_most_one(
-                    material.shifts[(day, post_id, worker.id)]
-                    for post_id in worker.post_ids # TODO
+                    material.shifts[(day, post.id, worker.id)]
+                    for post in worker.posts
                 )
 
     @staticmethod
@@ -36,9 +36,9 @@ class RosterModelHelper:
         for worker in material.workers:
             material.model.add(
                 sum(
-                    material.shifts[(day, post_id, worker.id)]
+                    material.shifts[(day, post.id, worker.id)]
                     for day in material.days
-                    for post_id in worker.post_ids # TODO
+                    for post in worker.posts
                 ) <= 2
             )
 
@@ -58,9 +58,9 @@ class RosterModelHelper:
                 if day not in material.days:
                     continue
 
-                for post_id in worker.post_ids: # TODO
+                for post in worker.posts:
                     material.model.add(
-                        material.shifts[(day, post_id, off.worker_id)] == 0
+                        material.shifts[(day, post.id, off.worker_id)] == 0
                     )
 
     @staticmethod
@@ -88,10 +88,10 @@ class RosterModelHelper:
     @staticmethod
     def __create_total_assignment_reward(material: RosterMaterial) -> cp_model.LinearExpr:
         return sum(
-            material.shifts[(day, post_id, worker.id)]
+            material.shifts[(day, post.id, worker.id)]
             for day in material.days
             for worker in material.workers
-            for post_id in worker.post_ids # TODO
+            for post in worker.posts
         )
 
     @staticmethod
@@ -103,7 +103,7 @@ class RosterModelHelper:
                     for day in material.days
                 )
                 for worker in material.workers
-                if post.id in worker.post_ids # TODO
+                if any(post.id == worker_post.id for worker_post in worker.posts)
             }
             for post in material.posts
         }
@@ -171,7 +171,7 @@ class RosterModelHelper:
                     material.shifts[(day, post_id, worker.id)]
                     for worker in material.workers
                     for post_id in constraint_setting.post_ids
-                    if post_id in worker.post_ids # TODO
+                    if any(post_id == worker_post.id for worker_post in worker.posts)
                 ) >= 1
             ).only_enforce_if(reward)
 
@@ -180,7 +180,7 @@ class RosterModelHelper:
                     material.shifts[(day, post_id, worker.id)]
                     for worker in material.workers
                     for post_id in constraint_setting.post_ids
-                    if post_id in worker.post_ids # TODO
+                    if any(post_id == worker_post.id for worker_post in worker.posts)
                 ) < 1
             ).only_enforce_if(reward.Not())
 
@@ -230,15 +230,15 @@ class RosterModelHelper:
 
                 material.model.add(
                     sum(
-                        material.shifts[(day, post_id, worker.id)]
-                        for post_id in worker.post_ids # TODO
+                        material.shifts[(day, post.id, worker.id)]
+                        for post in worker.posts
                     ) >= 1
                 ).only_enforce_if(worker_assigned)
 
                 material.model.add(
                     sum(
-                        material.shifts[(day, post_id, worker.id)]
-                        for post_id in worker.post_ids # TODO
+                        material.shifts[(day, post.id, worker.id)]
+                        for post in worker.posts
                     ) < 1
                 ).only_enforce_if(worker_assigned.Not())
 

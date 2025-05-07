@@ -37,8 +37,7 @@ class RosterService:
                 result_worker = ''
 
                 for worker in material.workers:
-                    # TODO
-                    if post.id not in worker.post_ids:
+                    if not any(post.id == worker_post.id for worker_post in worker.posts):
                         continue
 
                     isOff = solver.value(
