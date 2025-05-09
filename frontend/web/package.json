@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "migrate": "prisma migrate dev",
-    "seed": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/seed/seed.ts",
+    "seed-tenant": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/seed/seed-tenant.ts",
+    "seed-system": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/seed/seed-system.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
