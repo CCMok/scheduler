@@ -20,8 +20,7 @@ class RosterModelHelper:
             for post in material.posts:
                 material.model.add_at_most_one(
                     material.shifts[(day, post.id, worker.id)]
-                    for worker in material.workers
-                    if any(post.id == worker_post.id for worker_post in worker.posts)
+                    for worker in post.workers
                 )
 
     @staticmethod
