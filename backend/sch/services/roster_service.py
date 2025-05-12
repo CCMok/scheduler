@@ -12,7 +12,7 @@ class RosterService:
         material = RosterMaterial(request=request, db_session=db_session)
 
         RosterModelHelper.define_constraints(material)
-        RosterModelHelper.define_objective(material)
+        RosterModelHelper.define_objective(db_session, material)
 
         solver = cp_model.CpSolver()
         status = solver.solve(material.model)

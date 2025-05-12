@@ -1,5 +1,8 @@
+from sqlmodel import select
+from models.dao import PostConstraintSetting
+from managers.db import DbSession
 from enums.constraint_type import PostsConstraintType, WorkersConstraintType
-from models.constraint_setting import PostsConstraintSetting, WorkersConstraintSetting
+from models.constraint_setting import WorkersConstraintSetting
 from models.roster_material import RosterMaterial
 from ortools.sat.python import cp_model
 
@@ -64,13 +67,13 @@ class RosterModelHelper:
                     )
 
     @staticmethod
-    def define_objective(material: RosterMaterial) -> None:
+    def define_objective(db_session: DbSession, material: RosterMaterial) -> None:
         total_assignment_reward = RosterModelHelper.__create_total_assignment_reward(
             material
         )
 
         posts_constraint_reward = RosterModelHelper.__create_posts_constraint_reward(
-            material
+            db_session, material
         )
 
         workers_constraint_reward = RosterModelHelper.__create_workers_constraint_reward(
@@ -136,27 +139,36 @@ class RosterModelHelper:
         )
 
     @staticmethod
-    def __create_posts_constraint_reward(material: RosterMaterial) -> cp_model.LinearExpr:
+    def __create_posts_constraint_reward(db_session: DbSession, material: RosterMaterial) -> cp_model.LinearExpr:
         rewards: list[cp_model.LinearExpr] = []
 
-        for setting in material.posts_constraint_settings:
-            match setting.constraint_type:
-                case PostsConstraintType.AT_LEAST_1_WORKER_PER_DAY:
+        post_constraint_settings = RosterModelHelper.__find_post_constraint_setting(db_session, material.tenant_id)
+
+        for constraint_setting in post_constraint_settings:
+            match constraint_setting.constraint_type.enum:
+                case PostsConstraintType.AT_LEAST_1_WORKER_PER_DAY.value:
                     rewards.append(
                         RosterModelHelper.__create_posts_at_least_1_worker_per_day_reward(
-                            material, setting
-                        ) * setting.weighting
+                            material, constraint_setting
+                        ) * constraint_setting.weighting
                     )
 
                 case _:
-                    print('Unkown constraint type : ', setting.constraint_type)
+                    print('Unknown constraint type', constraint_setting.constraint_type)
 
         return sum(rewards)
 
     @staticmethod
+    def __find_post_constraint_setting(db_session: DbSession, tenant_id: int):
+        return db_session.exec(
+            select(PostConstraintSetting)
+            .where(PostConstraintSetting.tenant_id == tenant_id)
+        ).all()
+
+    @staticmethod
     def __create_posts_at_least_1_worker_per_day_reward(
         material: RosterMaterial,
-        constraint_setting: PostsConstraintSetting,
+        constraint_setting: PostConstraintSetting,
     ) -> cp_model.LinearExpr:
         rewards: list[cp_model.LinearExpr] = []
 
@@ -168,19 +180,19 @@ class RosterModelHelper:
 
             material.model.add(
                 sum(
-                    material.shifts[(day, post_id, worker.id)]
+                    material.shifts[(day, setting_post.post_id, worker.id)]
                     for worker in material.workers
-                    for post_id in constraint_setting.post_ids
-                    if any(post_id == worker_post.id for worker_post in worker.posts)
+                    for setting_post in constraint_setting.setting_posts
+                    if any(setting_post.post_id == worker_post.id for worker_post in worker.posts)
                 ) >= 1
             ).only_enforce_if(reward)
 
             material.model.add(
                 sum(
-                    material.shifts[(day, post_id, worker.id)]
+                    material.shifts[(day, setting_post.post_id, worker.id)]
                     for worker in material.workers
-                    for post_id in constraint_setting.post_ids
-                    if any(post_id == worker_post.id for worker_post in worker.posts)
+                    for setting_post in constraint_setting.setting_posts
+                    if any(setting_post.post_id == worker_post.id for worker_post in worker.posts)
                 ) < 1
             ).only_enforce_if(reward.Not())
 

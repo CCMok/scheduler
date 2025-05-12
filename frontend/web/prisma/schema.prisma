@@ -74,7 +74,7 @@ model PostConstraintSetting {
   weighting        Int
   tenant           Tenant                      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   constraintType   PostConstraintType          @relation(fields: [constraintTypeId], references: [id], onDelete: Cascade)
-  posts            PostConstraintSettingPost[]
+  settingPosts     PostConstraintSettingPost[]
 
   @@index([tenantId])
   @@index([constraintTypeId])
@@ -110,7 +110,7 @@ model WorkerConstraintSetting {
   weighting        Int
   tenant           Tenant                          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   constraintType   WorkerConstraintType            @relation(fields: [constraintTypeId], references: [id], onDelete: Cascade)
-  workers          WorkerConstraintSettingWorker[]
+  settingWorkers   WorkerConstraintSettingWorker[]
 
   @@index([tenantId])
   @@index([constraintTypeId])

@@ -1,8 +1,8 @@
-from enum import StrEnum
+from enum import StrEnum, Enum
 
 
-class PostsConstraintType(StrEnum):
-    AT_LEAST_1_WORKER_PER_DAY = 'AT_LEAST_1_WORKER_PER_DAY'
+class PostsConstraintType(Enum):
+    AT_LEAST_1_WORKER_PER_DAY = 0
 
 
 class WorkersConstraintType(StrEnum):
