@@ -46,7 +46,7 @@ class RosterModelHelper:
 
     @staticmethod
     def __define_off_constraint(material: RosterMaterial) -> None:
-        for off in material.offs:
+        for off in material.request.offs:
             worker = next((
                 worker
                 for worker in material.workers
@@ -66,17 +66,17 @@ class RosterModelHelper:
                     )
 
     @staticmethod
-    def define_objective(db_session: DbSession, material: RosterMaterial) -> None:
+    def define_objective(material: RosterMaterial) -> None:
         total_assignment_reward = RosterModelHelper.__create_total_assignment_reward(
             material
         )
 
         posts_constraint_reward = RosterModelHelper.__create_posts_constraint_reward(
-            db_session, material
+            material
         )
 
         workers_constraint_reward = RosterModelHelper.__create_workers_constraint_reward(
-            db_session, material
+            material
         )
 
         worker_balancing_penalty = RosterModelHelper.__create_worker_balancing_per_post_penalty(
@@ -138,10 +138,12 @@ class RosterModelHelper:
         )
 
     @staticmethod
-    def __create_posts_constraint_reward(db_session: DbSession, material: RosterMaterial) -> cp_model.LinearExpr:
+    def __create_posts_constraint_reward(material: RosterMaterial) -> cp_model.LinearExpr:
         rewards: list[cp_model.LinearExpr] = []
 
-        post_constraint_settings = RosterModelHelper.__find_post_constraint_setting(db_session, material.tenant_id)
+        post_constraint_settings = RosterModelHelper.__find_post_constraint_setting(
+            material.db_session, material.request.tenant_id
+        )
 
         for constraint_setting in post_constraint_settings:
             match constraint_setting.constraint_type.enum:
@@ -198,10 +200,12 @@ class RosterModelHelper:
         return sum(rewards)
 
     @staticmethod
-    def __create_workers_constraint_reward(db_session: DbSession, material: RosterMaterial) -> cp_model.LinearExpr:
+    def __create_workers_constraint_reward(material: RosterMaterial) -> cp_model.LinearExpr:
         rewards: list[cp_model.LinearExpr] = []
 
-        worker_constraint_settings = RosterModelHelper.__find_worker_constraint_setting(db_session, material.tenant_id)
+        worker_constraint_settings = RosterModelHelper.__find_worker_constraint_setting(
+            material.db_session, material.request.tenant_id
+        )
 
         for constraint_setting in worker_constraint_settings:
             match constraint_setting.constraint_type.enum:

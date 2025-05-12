@@ -9,10 +9,10 @@ from ortools.sat.python import cp_model
 class RosterService:
     @staticmethod
     def arrange(request: ArrangeRosterRequest, db_session: DbSession) -> list[Schedule]:
-        material = RosterMaterial(request=request, db_session=db_session)
+        material = RosterMaterial(db_session=db_session, request=request)
 
         RosterModelHelper.define_constraints(material)
-        RosterModelHelper.define_objective(db_session, material)
+        RosterModelHelper.define_objective(material)
 
         solver = cp_model.CpSolver()
         status = solver.solve(material.model)
