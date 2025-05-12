@@ -9,23 +9,23 @@ datasource db {
 }
 
 model Tenant {
-  id                       Int                       @id @default(autoincrement())
-  name                     String                    @unique
-  posts                    Post[]
-  workers                  Worker[]
-  postconstraintSettings   PostConstraintSetting[]
-  workerConstraintSettings WorkerConstraintSetting[]
+  id                Int                @id @default(autoincrement())
+  name              String             @unique
+  posts             Post[]
+  workers           Worker[]
+  postConstraints   PostConstraint[]
+  workerConstraints WorkerConstraint[]
 
   @@map("tenant")
 }
 
 model Post {
-  id                     Int                         @id @default(autoincrement())
-  tenantId               Int                         @map("tenant_id")
-  name                   String
-  tenant                 Tenant                      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  postWorkers            PostWorker[]
-  constraintSettingPosts PostConstraintSettingPost[]
+  id                  Int                  @id @default(autoincrement())
+  tenantId            Int                  @map("tenant_id")
+  name                String
+  tenant              Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  postWorkers         PostWorker[]
+  postConstraintPosts PostConstraintPost[]
 
   @@unique([tenantId, name])
   @@index([tenantId])
@@ -33,12 +33,12 @@ model Post {
 }
 
 model Worker {
-  id                       Int                             @id @default(autoincrement())
-  tenantId                 Int                             @map("tenant_id")
-  name                     String
-  tenant                   Tenant                          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  postWorkers              PostWorker[]
-  constraintSettingWorkers WorkerConstraintSettingWorker[]
+  id                      Int                      @id @default(autoincrement())
+  tenantId                Int                      @map("tenant_id")
+  name                    String
+  tenant                  Tenant                   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  postWorkers             PostWorker[]
+  workerConstraintWorkers WorkerConstraintWorker[]
 
   @@unique([tenantId, name])
   @@index([tenantId])
@@ -59,73 +59,73 @@ model PostWorker {
 }
 
 model PostConstraintType {
-  id                 Int                     @id @default(autoincrement())
-  name               String                  @unique
-  enum               Int                     @unique
-  constraintSettings PostConstraintSetting[]
+  id              Int              @id @default(autoincrement())
+  name            String           @unique
+  enum            Int              @unique
+  postConstraints PostConstraint[]
 
   @@map("post_constraint_type")
 }
 
-model PostConstraintSetting {
-  id               Int                         @id @default(autoincrement())
-  tenantId         Int                         @map("tenant_id")
-  constraintTypeId Int                         @map("constraint_type_id")
-  weighting        Int
-  tenant           Tenant                      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  constraintType   PostConstraintType          @relation(fields: [constraintTypeId], references: [id], onDelete: Cascade)
-  settingPosts     PostConstraintSettingPost[]
+model PostConstraint {
+  id                   Int                  @id @default(autoincrement())
+  tenantId             Int                  @map("tenant_id")
+  postConstraintTypeId Int                  @map("post_constraint_type_id")
+  weighting            Int
+  tenant               Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  postConstraintType   PostConstraintType   @relation(fields: [postConstraintTypeId], references: [id], onDelete: Cascade)
+  postConstraintPosts  PostConstraintPost[]
 
   @@index([tenantId])
-  @@index([constraintTypeId])
-  @@map("post_constraint_setting")
+  @@index([postConstraintTypeId])
+  @@map("post_constraint")
 }
 
-model PostConstraintSettingPost {
-  id                  Int                   @id @default(autoincrement())
-  constraintSettingId Int                   @map("constraint_setting_id")
-  postId              Int                   @map("post_id")
-  constraintSetting   PostConstraintSetting @relation(fields: [constraintSettingId], references: [id], onDelete: Cascade)
-  post                Post                  @relation(fields: [postId], references: [id], onDelete: Cascade)
+model PostConstraintPost {
+  id               Int            @id @default(autoincrement())
+  postConstraintId Int            @map("post_constraint_id")
+  postId           Int            @map("post_id")
+  postConstraint   PostConstraint @relation(fields: [postConstraintId], references: [id], onDelete: Cascade)
+  post             Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-  @@unique([constraintSettingId, postId])
-  @@index([constraintSettingId])
+  @@unique([postConstraintId, postId])
+  @@index([postConstraintId])
   @@index([postId])
-  @@map("post_constraint_setting_post")
+  @@map("post_constraint_post")
 }
 
 model WorkerConstraintType {
-  id                 Int                       @id @default(autoincrement())
-  name               String                    @unique
-  enum               Int                       @unique
-  constraintSettings WorkerConstraintSetting[]
+  id                Int                @id @default(autoincrement())
+  name              String             @unique
+  enum              Int                @unique
+  workerConstraints WorkerConstraint[]
 
   @@map("worker_constraint_type")
 }
 
-model WorkerConstraintSetting {
-  id               Int                             @id @default(autoincrement())
-  tenantId         Int                             @map("tenant_id")
-  constraintTypeId Int                             @map("constraint_type_id")
-  weighting        Int
-  tenant           Tenant                          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  constraintType   WorkerConstraintType            @relation(fields: [constraintTypeId], references: [id], onDelete: Cascade)
-  settingWorkers   WorkerConstraintSettingWorker[]
+model WorkerConstraint {
+  id                      Int                      @id @default(autoincrement())
+  tenantId                Int                      @map("tenant_id")
+  workerConstraintTypeId  Int                      @map("worker_constraint_type_id")
+  weighting               Int
+  tenant                  Tenant                   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  workerConstraintType    WorkerConstraintType     @relation(fields: [workerConstraintTypeId], references: [id], onDelete: Cascade)
+  workerConstraintWorkers WorkerConstraintWorker[]
 
   @@index([tenantId])
-  @@index([constraintTypeId])
-  @@map("worker_constraint_setting")
+  @@index([workerConstraintTypeId])
+  @@map("worker_constraint")
 }
 
-model WorkerConstraintSettingWorker {
-  id                  Int                     @id @default(autoincrement())
-  constraintSettingId Int                     @map("constraint_setting_id")
-  workerId            Int                     @map("worker_id")
-  constraintSetting   WorkerConstraintSetting @relation(fields: [constraintSettingId], references: [id], onDelete: Cascade)
-  worker              Worker                  @relation(fields: [workerId], references: [id], onDelete: Cascade)
+model WorkerConstraintWorker {
+  id                 Int              @id @default(autoincrement())
+  workerConstraintId Int              @map("worker_constraint_id")
+  workerId           Int              @map("worker_id")
+  workerConstraint   WorkerConstraint @relation(fields: [workerConstraintId], references: [id], onDelete: Cascade)
+  worker             Worker           @relation(fields: [workerId], references: [id], onDelete: Cascade)
 
-  @@unique([constraintSettingId, workerId])
-  @@index([constraintSettingId])
+  @@unique([workerConstraintId, workerId])
+  @@index([workerConstraintId])
   @@index([workerId])
-  @@map("worker_constraint_setting_worker")
+  @@map("worker_constraint_worker")
 }

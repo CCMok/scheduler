@@ -1,5 +1,5 @@
 from sqlmodel import select
-from models.dao import PostConstraintSetting, WorkerConstraintSetting
+from models.dao import PostConstraint, WorkerConstraint
 from managers.db import DbSession
 from enums.constraint_type import PostsConstraintType, WorkersConstraintType
 from models.roster_material import RosterMaterial
@@ -141,59 +141,59 @@ class RosterModelHelper:
     def __create_posts_constraint_reward(material: RosterMaterial) -> cp_model.LinearExpr:
         rewards: list[cp_model.LinearExpr] = []
 
-        post_constraint_settings = RosterModelHelper.__find_post_constraint_setting(
+        post_constraints = RosterModelHelper.__find_post_constraints(
             material.db_session, material.request.tenant_id
         )
 
-        for constraint_setting in post_constraint_settings:
-            match constraint_setting.constraint_type.enum:
+        for post_constraint in post_constraints:
+            match post_constraint.post_constraint_type.enum:
                 case PostsConstraintType.AT_LEAST_1_WORKER_PER_DAY.value:
                     rewards.append(
                         RosterModelHelper.__create_posts_at_least_1_worker_per_day_reward(
-                            material, constraint_setting
-                        ) * constraint_setting.weighting
+                            material, post_constraint
+                        ) * post_constraint.weighting
                     )
 
                 case _:
-                    print('Unknown constraint type:', constraint_setting.constraint_type)
+                    print('Unknown post constraint type:', post_constraint.post_constraint_type)
 
         return sum(rewards)
 
     @staticmethod
-    def __find_post_constraint_setting(db_session: DbSession, tenant_id: int):
+    def __find_post_constraints(db_session: DbSession, tenant_id: int):
         return db_session.exec(
-            select(PostConstraintSetting)
-            .where(PostConstraintSetting.tenant_id == tenant_id)
+            select(PostConstraint)
+            .where(PostConstraint.tenant_id == tenant_id)
         ).all()
 
     @staticmethod
     def __create_posts_at_least_1_worker_per_day_reward(
         material: RosterMaterial,
-        constraint_setting: PostConstraintSetting,
+        post_constraint: PostConstraint,
     ) -> cp_model.LinearExpr:
         rewards: list[cp_model.LinearExpr] = []
 
         for day in material.days:
             reward = material.model.new_bool_var(
-                f'reward_posts_at_least_1_worker_per_day_{constraint_setting.id}_{day}'
+                f'reward_posts_at_least_1_worker_per_day_{post_constraint.id}_{day}'
             )
             rewards.append(reward)
 
             material.model.add(
                 sum(
-                    material.shifts[(day, setting_post.post_id, worker.id)]
+                    material.shifts[(day, post_constraint_post.post_id, worker.id)]
                     for worker in material.workers
-                    for setting_post in constraint_setting.setting_posts
-                    if any(setting_post.post_id == worker_post.id for worker_post in worker.posts)
+                    for post_constraint_post in post_constraint.post_constraint_posts
+                    if any(post_constraint_post.post_id == worker_post.id for worker_post in worker.posts)
                 ) >= 1
             ).only_enforce_if(reward)
 
             material.model.add(
                 sum(
-                    material.shifts[(day, setting_post.post_id, worker.id)]
+                    material.shifts[(day, post_constraint_post.post_id, worker.id)]
                     for worker in material.workers
-                    for setting_post in constraint_setting.setting_posts
-                    if any(setting_post.post_id == worker_post.id for worker_post in worker.posts)
+                    for post_constraint_post in post_constraint.post_constraint_posts
+                    if any(post_constraint_post.post_id == worker_post.id for worker_post in worker.posts)
                 ) < 1
             ).only_enforce_if(reward.Not())
 
@@ -203,55 +203,54 @@ class RosterModelHelper:
     def __create_workers_constraint_reward(material: RosterMaterial) -> cp_model.LinearExpr:
         rewards: list[cp_model.LinearExpr] = []
 
-        worker_constraint_settings = RosterModelHelper.__find_worker_constraint_setting(
+        worker_constraints = RosterModelHelper.__find_worker_constraints(
             material.db_session, material.request.tenant_id
         )
 
-        for constraint_setting in worker_constraint_settings:
-            match constraint_setting.constraint_type.enum:
+        for worker_constraint in worker_constraints:
+            match worker_constraint.worker_constraint_type.enum:
                 case WorkersConstraintType.CORRELATE.value:
                     rewards.append(
                         RosterModelHelper.__create_workers_correlate_reward(
-                            material, constraint_setting
-                        ) * constraint_setting.weighting
+                            material, worker_constraint
+                        ) * worker_constraint.weighting
                     )
 
                 case _:
-                    print('Unkown constraint type: ', constraint_setting.constraint_type)
+                    print('Unkown worker constraint type: ', worker_constraint.worker_constraint_type)
 
         return sum(rewards)
 
     @staticmethod
-    def __find_worker_constraint_setting(db_session: DbSession, tenant_id: int):
+    def __find_worker_constraints(db_session: DbSession, tenant_id: int):
         return db_session.exec(
-            select(WorkerConstraintSetting)
-            .where(WorkerConstraintSetting.tenant_id == tenant_id)
+            select(WorkerConstraint)
+            .where(WorkerConstraint.tenant_id == tenant_id)
         ).all()
 
     @staticmethod
     def __create_workers_correlate_reward(
-            material: RosterMaterial, constraint_setting: WorkerConstraintSetting
+            material: RosterMaterial, worker_constraint: WorkerConstraint
     ) -> cp_model.LinearExpr:
         rewards: list[cp_model.LinearExpr] = []
 
         workers = [
             worker
             for worker in material.workers
-            if worker.id in [
-                setting_worker.worker_id
-                for setting_worker in constraint_setting.setting_workers
-            ]
+            if any(worker.id == worker_constraint_worker.worker_id
+                   for worker_constraint_worker in worker_constraint.worker_constraint_workers
+                   )
         ]
 
         for day in material.days:
-            reward = material.model.new_bool_var(f'reward_workers_correlate_{constraint_setting.id}_{day}')
+            reward = material.model.new_bool_var(f'reward_workers_correlate_{worker_constraint.id}_{day}')
             rewards.append(reward)
 
             worker_assigneds: list[cp_model.IntVar] = []
 
             for worker in workers:
                 worker_assigned = material.model.new_bool_var(
-                    f'reward_workers_correlate_{constraint_setting.id}_{day}_worker_assigned_{worker.id}'
+                    f'reward_workers_correlate_{worker_constraint.id}_{day}_worker_assigned_{worker.id}'
                 )
                 worker_assigneds.append(worker_assigned)
 

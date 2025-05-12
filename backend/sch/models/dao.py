@@ -28,27 +28,27 @@ class PostConstraintType(SQLModel, table=True):
     name: str
     enum: int
 
-    constraint_settings: list['PostConstraintSetting'] = Relationship(back_populates='constraint_type')
+    post_constraints: list['PostConstraint'] = Relationship(back_populates='post_constraint_type')
 
 
-class PostConstraintSetting(SQLModel, table=True):
-    __tablename__ = 'post_constraint_setting'
+class PostConstraint(SQLModel, table=True):
+    __tablename__ = 'post_constraint'
     id: int = Field(primary_key=True)
     tenant_id: int = Field(foreign_key='tenant.id')
-    constraint_type_id: int = Field(foreign_key='post_constraint_type.id')
+    post_constraint_type_id: int = Field(foreign_key='post_constraint_type.id')
     weighting: int
 
-    setting_posts: list['PostConstraintSettingPost'] = Relationship(back_populates='constraint_setting')
-    constraint_type: PostConstraintType = Relationship(back_populates='constraint_settings')
+    post_constraint_type: PostConstraintType = Relationship(back_populates='post_constraints')
+    post_constraint_posts: list['PostConstraintPost'] = Relationship(back_populates='post_constraint')
 
 
-class PostConstraintSettingPost(SQLModel, table=True):
-    __tablename__ = 'post_constraint_setting_post'
+class PostConstraintPost(SQLModel, table=True):
+    __tablename__ = 'post_constraint_post'
     id: int = Field(primary_key=True)
-    constraint_setting_id: int = Field(foreign_key='post_constraint_setting.id')
+    post_constraint_id: int = Field(foreign_key='post_constraint.id')
     post_id: int = Field(foreign_key='post.id')
 
-    constraint_setting: PostConstraintSetting = Relationship(back_populates='setting_posts')
+    post_constraint: PostConstraint = Relationship(back_populates='post_constraint_posts')
 
 
 class WorkerConstraintType(SQLModel, table=True):
@@ -57,24 +57,24 @@ class WorkerConstraintType(SQLModel, table=True):
     name: str
     enum: int
 
-    constraint_settings: list['WorkerConstraintSetting'] = Relationship(back_populates='constraint_type')
+    worker_constraints: list['WorkerConstraint'] = Relationship(back_populates='worker_constraint_type')
 
 
-class WorkerConstraintSetting(SQLModel, table=True):
-    __tablename__ = 'worker_constraint_setting'
+class WorkerConstraint(SQLModel, table=True):
+    __tablename__ = 'worker_constraint'
     id: int = Field(primary_key=True)
     tenant_id: int = Field(foreign_key='tenant.id')
-    constraint_type_id: int = Field(foreign_key='worker_constraint_type.id')
+    worker_constraint_type_id: int = Field(foreign_key='worker_constraint_type.id')
     weighting: int
 
-    setting_workers: list['WorkerConstraintSettingWorker'] = Relationship(back_populates='constraint_setting')
-    constraint_type: WorkerConstraintType = Relationship(back_populates='constraint_settings')
+    worker_constraint_type: WorkerConstraintType = Relationship(back_populates='worker_constraints')
+    worker_constraint_workers: list['WorkerConstraintWorker'] = Relationship(back_populates='worker_constraint')
 
 
-class WorkerConstraintSettingWorker(SQLModel, table=True):
-    __tablename__ = 'worker_constraint_setting_worker'
+class WorkerConstraintWorker(SQLModel, table=True):
+    __tablename__ = 'worker_constraint_worker'
     id: int = Field(primary_key=True)
-    constraint_setting_id: int = Field(foreign_key='worker_constraint_setting.id')
+    worker_constraint_id: int = Field(foreign_key='worker_constraint.id')
     worker_id: int = Field(foreign_key='worker.id')
 
-    constraint_setting: WorkerConstraintSetting = Relationship(back_populates='setting_workers')
+    worker_constraint: WorkerConstraint = Relationship(back_populates='worker_constraint_workers')

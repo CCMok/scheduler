@@ -1,6 +1,6 @@
 import { DefaultArgs } from "../../prisma-generated/runtime/library"
 import { Post, PostConstraintType, Prisma, PrismaClient, Worker, WorkerConstraintType } from "../../prisma-generated"
-import { postConstraintSettings, postNames, postWorkers, tenantName, workerConstraintSettings, workerNames } from "./data/seed-data-demo"
+import { postConstraints, postNames, postWorkers, tenantName, workerConstraints, workerNames } from "./data/seed-data-demo"
 import { PostConstraintType as EPostConstraintType, WorkerConstraintType as EWorkerConstraintType } from "../../libs/share/enums/constraint-type";
 
 const prisma = new PrismaClient()
@@ -37,7 +37,7 @@ async function main() {
 }
 
 const removeExistingData = async (tx: Transaction): Promise<void> => {
-  await tx.tenant.delete({
+  await tx.tenant.deleteMany({
     where: { name: tenantName },
   })
 }
@@ -103,29 +103,29 @@ const seedPostWorker = async (tx: Transaction, postMap: Map<string, Post>, worke
 const seedPostConstraintSetting = async (tx: Transaction, tenantId: number, postMap: Map<string, Post>): Promise<void> => {
   const postConstraintTypeMap = await getPostConstraintTypeMap(tx);
 
-  for (const constraintSetting of postConstraintSettings) {
-    const constraintSettingPosts: { postId: number }[] = [];
+  for (const postConstraint of postConstraints) {
+    const postConstraintPosts: { postId: number }[] = [];
 
-    for (const postName of constraintSetting.postNames) {
+    for (const postName of postConstraint.postNames) {
       const post = postMap.get(postName)
       if (!post) {
         throw new Error(`Post not found: ${postName}`)
       }
-      constraintSettingPosts.push({ postId: post.id })
+      postConstraintPosts.push({ postId: post.id })
     }
 
-    let postConstraintType = postConstraintTypeMap.get(constraintSetting.constraintTypeEnum);
+    let postConstraintType = postConstraintTypeMap.get(postConstraint.constraintTypeEnum);
     if (!postConstraintType) {
-      throw new Error(`Post constraint type not found. enum: ${constraintSetting.constraintTypeEnum}`)
+      throw new Error(`Post constraint type not found. enum: ${postConstraint.constraintTypeEnum}`)
     }
 
-    await tx.postConstraintSetting.create({
+    await tx.postConstraint.create({
       data: {
         tenantId,
-        constraintTypeId: postConstraintType.id,
-        weighting: constraintSetting.weighting,
-        posts: {
-          create: constraintSettingPosts,
+        postConstraintTypeId: postConstraintType.id,
+        weighting: postConstraint.weighting,
+        postConstraintPosts: {
+          create: postConstraintPosts,
         },
       }
     })
@@ -144,29 +144,29 @@ const getPostConstraintTypeMap = async (tx: Transaction): Promise<Map<EPostConst
 const seedWorkerConstraintSetting = async (tx: Transaction, tenantId: number, workerMap: Map<string, Worker>): Promise<void> => {
   const workerConstraintTypeMap = await getWorkerConstraintTypeMap(tx);
 
-  for (const constraintSetting of workerConstraintSettings) {
-    const constraintSettingWorkers: { workerId: number }[] = [];
+  for (const workerConstraint of workerConstraints) {
+    const workerConstraintWorkers: { workerId: number }[] = [];
 
-    for (const workerName of constraintSetting.workerNames) {
+    for (const workerName of workerConstraint.workerNames) {
       const worker = workerMap.get(workerName)
       if (!worker) {
         throw new Error(`Worker not found: ${workerName}`)
       }
-      constraintSettingWorkers.push({ workerId: worker.id })
+      workerConstraintWorkers.push({ workerId: worker.id })
     }
 
-    let workerConstraintType = workerConstraintTypeMap.get(constraintSetting.constraintTypeEnum);
+    let workerConstraintType = workerConstraintTypeMap.get(workerConstraint.constraintTypeEnum);
     if (!workerConstraintType) {
-      throw new Error(`Worker constraint type not found. enum: ${constraintSetting.constraintTypeEnum}`)
+      throw new Error(`Worker constraint type not found. enum: ${workerConstraint.constraintTypeEnum}`)
     }
 
-    await tx.workerConstraintSetting.create({
+    await tx.workerConstraint.create({
       data: {
         tenantId,
-        constraintTypeId: workerConstraintType.id,
-        weighting: constraintSetting.weighting,
-        workers: {
-          create: constraintSettingWorkers,
+        workerConstraintTypeId: workerConstraintType.id,
+        weighting: workerConstraint.weighting,
+        workerConstraintWorkers: {
+          create: workerConstraintWorkers,
         },
       }
     })

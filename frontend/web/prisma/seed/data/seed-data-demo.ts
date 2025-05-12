@@ -72,7 +72,7 @@ export const postWorkers = [
   { postName: 'Worship Leader', workerName: 'Jason' },
 ]
 
-export const postConstraintSettings = [
+export const postConstraints = [
   {
     constraintTypeEnum: PostConstraintType.AT_LEAST_1_WORKER_PER_DAY,
     weighting: 1,
@@ -80,7 +80,7 @@ export const postConstraintSettings = [
   },
 ]
 
-export const workerConstraintSettings = [
+export const workerConstraints = [
   {
     constraintTypeEnum: WorkerConstraintType.CORRELATE,
     weighting: 1,
