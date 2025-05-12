@@ -11,6 +11,9 @@ async function main() {
   await prisma.$transaction(async tx => {
     console.log(`Start seed tenant data : ${tenantName} ...`)
 
+    await removeExistingData(tx)
+    console.log('Remove existing data OK')
+
     const tenantId = await seedTenant(tx)
     console.log('Tenant OK')
 
@@ -33,27 +36,27 @@ async function main() {
   })
 }
 
-const seedTenant = async (tx: Transaction): Promise<number> => {
-  const tenant = await tx.tenant.upsert({
+const removeExistingData = async (tx: Transaction): Promise<void> => {
+  await tx.tenant.delete({
     where: { name: tenantName },
-    update: {},
-    create: { name: tenantName },
+  })
+}
+
+const seedTenant = async (tx: Transaction): Promise<number> => {
+  const tenant = await tx.tenant.create({
+    data: { name: tenantName },
   })
 
   return tenant.id;
 }
 
 const seedPost = async (tx: Transaction, tenantId: number): Promise<Map<string, Post>> => {
-  const posts: Post[] = [];
-  for (const postName of postNames) {
-    const post = await tx.post.upsert({
-      where: { tenantId_name: { tenantId, name: postName } },
-      update: {},
-      create: { tenantId, name: postName },
-    })
-
-    posts.push(post)
-  }
+  const posts = await tx.post.createManyAndReturn({
+    data: postNames.map(name => ({
+      tenantId,
+      name,
+    })),
+  })
 
   return posts.reduce((map, post) => {
     map.set(post.name, post)
@@ -62,16 +65,12 @@ const seedPost = async (tx: Transaction, tenantId: number): Promise<Map<string, 
 }
 
 const seedWorker = async (tx: Transaction, tenantId: number): Promise<Map<string, Worker>> => {
-  const workers: Worker[] = [];
-  for (const workerName of workerNames) {
-    const worker = await tx.worker.upsert({
-      where: { tenantId_name: { tenantId, name: workerName } },
-      update: {},
-      create: { tenantId, name: workerName },
-    })
-
-    workers.push(worker)
-  }
+  const workers = await tx.worker.createManyAndReturn({
+    data: workerNames.map(name => ({
+      tenantId,
+      name,
+    })),
+  })
 
   return workers.reduce((map, worker) => {
     map.set(worker.name, worker)
@@ -80,6 +79,8 @@ const seedWorker = async (tx: Transaction, tenantId: number): Promise<Map<string
 }
 
 const seedPostWorker = async (tx: Transaction, postMap: Map<string, Post>, workers: Map<string, Worker>): Promise<void> => {
+  const postWorkerIds: { postId: number, workerId: number }[] = [];
+  
   for (const postWorker of postWorkers) {
     const post = postMap.get(postWorker.postName)
     if (!post) {
@@ -91,19 +92,15 @@ const seedPostWorker = async (tx: Transaction, postMap: Map<string, Post>, worke
       throw new Error(`Worker not found: ${postWorker.workerName}`)
     }
 
-    await tx.postWorker.upsert({
-      where: { postId_workerId: { postId: post.id, workerId: worker.id } },
-      update: {},
-      create: { postId: post.id, workerId: worker.id },
-    })
+    postWorkerIds.push({ postId: post.id, workerId: worker.id })
   }
+
+  await tx.postWorker.createMany({
+    data: postWorkerIds,
+  })
 }
 
 const seedPostConstraintSetting = async (tx: Transaction, tenantId: number, postMap: Map<string, Post>): Promise<void> => {
-  await tx.postConstraintSetting.deleteMany({
-    where: { tenantId },
-  })
-
   const postConstraintTypeMap = await getPostConstraintTypeMap(tx);
 
   for (const constraintSetting of postConstraintSettings) {
@@ -145,10 +142,6 @@ const getPostConstraintTypeMap = async (tx: Transaction): Promise<Map<EPostConst
 }
 
 const seedWorkerConstraintSetting = async (tx: Transaction, tenantId: number, workerMap: Map<string, Worker>): Promise<void> => {
-  await tx.workerConstraintSetting.deleteMany({
-    where: { tenantId },
-  })
-
   const workerConstraintTypeMap = await getWorkerConstraintTypeMap(tx);
 
   for (const constraintSetting of workerConstraintSettings) {
