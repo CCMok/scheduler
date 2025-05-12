@@ -1,8 +1,7 @@
 from sqlmodel import select
-from models.dao import PostConstraintSetting
+from models.dao import PostConstraintSetting, WorkerConstraintSetting
 from managers.db import DbSession
 from enums.constraint_type import PostsConstraintType, WorkersConstraintType
-from models.constraint_setting import WorkersConstraintSetting
 from models.roster_material import RosterMaterial
 from ortools.sat.python import cp_model
 
@@ -77,7 +76,7 @@ class RosterModelHelper:
         )
 
         workers_constraint_reward = RosterModelHelper.__create_workers_constraint_reward(
-            material
+            db_session, material
         )
 
         worker_balancing_penalty = RosterModelHelper.__create_worker_balancing_per_post_penalty(
@@ -154,7 +153,7 @@ class RosterModelHelper:
                     )
 
                 case _:
-                    print('Unknown constraint type', constraint_setting.constraint_type)
+                    print('Unknown constraint type:', constraint_setting.constraint_type)
 
         return sum(rewards)
 
@@ -199,33 +198,45 @@ class RosterModelHelper:
         return sum(rewards)
 
     @staticmethod
-    def __create_workers_constraint_reward(material: RosterMaterial) -> cp_model.LinearExpr:
+    def __create_workers_constraint_reward(db_session: DbSession, material: RosterMaterial) -> cp_model.LinearExpr:
         rewards: list[cp_model.LinearExpr] = []
 
-        for setting in material.workers_constraint_settings:
-            match setting.constraint_type:
-                case WorkersConstraintType.CORRELATE:
+        worker_constraint_settings = RosterModelHelper.__find_worker_constraint_setting(db_session, material.tenant_id)
+
+        for constraint_setting in worker_constraint_settings:
+            match constraint_setting.constraint_type.enum:
+                case WorkersConstraintType.CORRELATE.value:
                     rewards.append(
                         RosterModelHelper.__create_workers_correlate_reward(
-                            material, setting
-                        ) * setting.weighting
+                            material, constraint_setting
+                        ) * constraint_setting.weighting
                     )
 
                 case _:
-                    print('Unkown constraint type : ', setting.constraint_type)
+                    print('Unkown constraint type: ', constraint_setting.constraint_type)
 
         return sum(rewards)
 
     @staticmethod
+    def __find_worker_constraint_setting(db_session: DbSession, tenant_id: int):
+        return db_session.exec(
+            select(WorkerConstraintSetting)
+            .where(WorkerConstraintSetting.tenant_id == tenant_id)
+        ).all()
+
+    @staticmethod
     def __create_workers_correlate_reward(
-            material: RosterMaterial, constraint_setting: WorkersConstraintSetting
+            material: RosterMaterial, constraint_setting: WorkerConstraintSetting
     ) -> cp_model.LinearExpr:
         rewards: list[cp_model.LinearExpr] = []
 
         workers = [
             worker
             for worker in material.workers
-            if worker.id in constraint_setting.worker_ids
+            if worker.id in [
+                setting_worker.worker_id
+                for setting_worker in constraint_setting.setting_workers
+            ]
         ]
 
         for day in material.days:

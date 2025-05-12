@@ -49,3 +49,32 @@ class PostConstraintSettingPost(SQLModel, table=True):
     post_id: int = Field(foreign_key='post.id')
 
     constraint_setting: PostConstraintSetting = Relationship(back_populates='setting_posts')
+
+
+class WorkerConstraintType(SQLModel, table=True):
+    __tablename__ = 'worker_constraint_type'
+    id: int = Field(primary_key=True)
+    name: str
+    enum: int
+
+    constraint_settings: list['WorkerConstraintSetting'] = Relationship(back_populates='constraint_type')
+
+
+class WorkerConstraintSetting(SQLModel, table=True):
+    __tablename__ = 'worker_constraint_setting'
+    id: int = Field(primary_key=True)
+    tenant_id: int = Field(foreign_key='tenant.id')
+    constraint_type_id: int = Field(foreign_key='worker_constraint_type.id')
+    weighting: int
+
+    setting_workers: list['WorkerConstraintSettingWorker'] = Relationship(back_populates='constraint_setting')
+    constraint_type: WorkerConstraintType = Relationship(back_populates='constraint_settings')
+
+
+class WorkerConstraintSettingWorker(SQLModel, table=True):
+    __tablename__ = 'worker_constraint_setting_worker'
+    id: int = Field(primary_key=True)
+    constraint_setting_id: int = Field(foreign_key='worker_constraint_setting.id')
+    worker_id: int = Field(foreign_key='worker.id')
+
+    constraint_setting: WorkerConstraintSetting = Relationship(back_populates='setting_workers')
