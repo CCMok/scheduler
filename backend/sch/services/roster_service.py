@@ -18,7 +18,6 @@ class RosterService:
         status = solver.solve(material.model)
 
         if status != cp_model.OPTIMAL:
-            # TODO
             return []
 
         return RosterService.__map_resposne(material, solver)
@@ -32,14 +31,12 @@ class RosterService:
 
         for day in material.days:
             schedule = Schedule(day=day, arrangement={})
+            schedules.append(schedule)
 
             for post in material.posts:
                 result_worker = ''
 
-                for worker in material.workers:
-                    if not any(post.id == worker_post.id for worker_post in worker.posts):
-                        continue
-
+                for worker in post.workers:
                     isOff = solver.value(
                         material.shifts[(day, post.id, worker.id)]
                     ) == 0
@@ -48,10 +45,8 @@ class RosterService:
                         continue
 
                     result_worker = worker.name
-                    continue
-
+                    break
+                
                 schedule.arrangement[post.name] = result_worker
-
-            schedules.append(schedule)
 
         return schedules
