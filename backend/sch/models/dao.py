@@ -12,14 +12,18 @@ class Post(SQLModel, table=True):
     id: int = Field(primary_key=True)
     tenant_id: int = Field(foreign_key='tenant.id')
     name: str
+
     workers: list['Worker'] = Relationship(back_populates='posts', link_model=PostWorker)
+    post_constraint_posts: list['PostConstraintPost'] = Relationship(back_populates='post')
 
 
 class Worker(SQLModel, table=True):
     id: int = Field(primary_key=True)
     tenant_id: int = Field(foreign_key="tenant.id")
     name: str
+
     posts: list['Post'] = Relationship(back_populates='workers', link_model=PostWorker)
+    worker_constraint_workers: list['WorkerConstraintWorker'] = Relationship(back_populates='worker')
 
 
 class PostConstraintType(SQLModel, table=True):
@@ -49,6 +53,7 @@ class PostConstraintPost(SQLModel, table=True):
     post_id: int = Field(foreign_key='post.id')
 
     post_constraint: PostConstraint = Relationship(back_populates='post_constraint_posts')
+    post: Post = Relationship(back_populates='post_constraint_posts')
 
 
 class WorkerConstraintType(SQLModel, table=True):
@@ -78,3 +83,4 @@ class WorkerConstraintWorker(SQLModel, table=True):
     worker_id: int = Field(foreign_key='worker.id')
 
     worker_constraint: WorkerConstraint = Relationship(back_populates='worker_constraint_workers')
+    worker: Worker = Relationship(back_populates='worker_constraint_workers')

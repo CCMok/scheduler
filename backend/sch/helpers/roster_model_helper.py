@@ -91,8 +91,8 @@ class RosterModelHelper:
         return sum(
             material.shifts[(day, post.id, worker.id)]
             for day in material.days
-            for worker in material.workers
-            for post in worker.posts
+            for post in material.posts
+            for worker in post.workers
         )
 
     @staticmethod
@@ -103,8 +103,7 @@ class RosterModelHelper:
                     material.shifts[(day, post.id, worker.id)]
                     for day in material.days
                 )
-                for worker in material.workers
-                if any(post.id == worker_post.id for worker_post in worker.posts)
+                for worker in post.workers
             }
             for post in material.posts
         }
@@ -181,18 +180,16 @@ class RosterModelHelper:
             material.model.add(
                 sum(
                     material.shifts[(day, post_constraint_post.post_id, worker.id)]
-                    for worker in material.workers
                     for post_constraint_post in post_constraint.post_constraint_posts
-                    if any(post_constraint_post.post_id == worker_post.id for worker_post in worker.posts)
+                    for worker in post_constraint_post.post.workers
                 ) >= 1
             ).only_enforce_if(reward)
 
             material.model.add(
                 sum(
                     material.shifts[(day, post_constraint_post.post_id, worker.id)]
-                    for worker in material.workers
                     for post_constraint_post in post_constraint.post_constraint_posts
-                    if any(post_constraint_post.post_id == worker_post.id for worker_post in worker.posts)
+                    for worker in post_constraint_post.post.workers
                 ) < 1
             ).only_enforce_if(reward.Not())
 
@@ -233,37 +230,30 @@ class RosterModelHelper:
     ) -> cp_model.LinearExpr:
         rewards: list[cp_model.LinearExpr] = []
 
-        workers = [
-            worker
-            for worker in material.workers
-            if any(worker.id == worker_constraint_worker.worker_id
-                   for worker_constraint_worker in worker_constraint.worker_constraint_workers
-                   )
-        ]
-
         for day in material.days:
             reward = material.model.new_bool_var(f'reward_workers_correlate_{worker_constraint.id}_{day}')
             rewards.append(reward)
 
             worker_assigneds: list[cp_model.IntVar] = []
 
-            for worker in workers:
+            for worker_constraint_worker in worker_constraint.worker_constraint_workers:
                 worker_assigned = material.model.new_bool_var(
-                    f'reward_workers_correlate_{worker_constraint.id}_{day}_worker_assigned_{worker.id}'
+                    f'reward_workers_correlate_{worker_constraint.id}_{day}_worker_assigned_'
+                    f'{worker_constraint_worker.worker.id}'
                 )
                 worker_assigneds.append(worker_assigned)
 
                 material.model.add(
                     sum(
-                        material.shifts[(day, post.id, worker.id)]
-                        for post in worker.posts
+                        material.shifts[(day, post.id, worker_constraint_worker.worker.id)]
+                        for post in worker_constraint_worker.worker.posts
                     ) >= 1
                 ).only_enforce_if(worker_assigned)
 
                 material.model.add(
                     sum(
-                        material.shifts[(day, post.id, worker.id)]
-                        for post in worker.posts
+                        material.shifts[(day, post.id, worker_constraint_worker.worker.id)]
+                        for post in worker_constraint_worker.worker.posts
                     ) < 1
                 ).only_enforce_if(worker_assigned.Not())
 
