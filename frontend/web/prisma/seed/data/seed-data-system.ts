@@ -1,3 +1,4 @@
+import { Role } from "../../../libs/share/enums/role";
 import { PostConstraintType, WorkerConstraintType } from "../../../libs/share/enums/constraint-type";
 
 export const postConstraintTypes = [
@@ -6,4 +7,9 @@ export const postConstraintTypes = [
 
 export const workerConstraintTypes = [
   { name: 'Correlate', enum: WorkerConstraintType.CORRELATE },
+]
+
+export const roles = [
+  { name: 'System Admin', enum: Role.SYSTEM_ADMIN },
+  { name: 'Admin', enum: Role.ADMIN },
 ]

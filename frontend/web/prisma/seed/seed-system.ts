@@ -1,6 +1,6 @@
 import { DefaultArgs } from "../../prisma-generated/runtime/library"
 import { Prisma, PrismaClient } from "../../prisma-generated"
-import { postConstraintTypes, workerConstraintTypes } from "./data/seed-data-system"
+import { postConstraintTypes, roles, workerConstraintTypes } from "./data/seed-data-system"
 
 const prisma = new PrismaClient()
 
@@ -15,6 +15,9 @@ async function main() {
 
     await seedWorkerConstraintType(tx);
     console.log('Worker constraint type OK')
+
+    await seedRole(tx);
+    console.log('Role OK')
 
     console.log('Finish!')
   })
@@ -36,6 +39,16 @@ const seedWorkerConstraintType = async (tx: Transaction): Promise<void> => {
       where: { name: workerConstraintType.name },
       update: { enum: workerConstraintType.enum },
       create: workerConstraintType,
+    })
+  }
+}
+
+const seedRole = async (tx: Transaction): Promise<void> => {
+  for (const role of roles) {
+    await tx.role.upsert({
+      where: { name: role.name },
+      update: { enum: role.enum },
+      create: role,
     })
   }
 }
