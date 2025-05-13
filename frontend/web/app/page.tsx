@@ -1,7 +1,18 @@
 import Image from "next/image";
 
 export default async function Home() {
-  // const data = await fetch(`${process.env.SCH_HOST}/schedule`, { method: 'POST' })
+  // const data = await fetch(`${process.env.SCH_HOST}/roster`, { 
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  //   body: JSON.stringify({
+  //     tenantId: 7,
+  //     dayCount: 4,
+  //     offs: [],
+  //   }),
+  //   cache: 'no-store',
+  // })
   // console.log(await data.json());
 
   // const posts = await prisma.post.findMany()
