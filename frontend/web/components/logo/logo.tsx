@@ -1,4 +1,4 @@
-import { ClassNameProps } from "@/libs/share/props/class-name-props";
+import { ClassNameProps } from "@/libs/share/_general/props/class-name-props";
 import { Leckerli_One } from "next/font/google";
 
 const leckerliOne = Leckerli_One({ weight: '400', subsets: ["latin"] });

@@ -1,5 +1,5 @@
 import Logo from '@/components/logo/logo';
-import { ClassNameProps } from '@/libs/share/props/class-name-props';
+import { ClassNameProps } from '@/libs/share/_general/props/class-name-props';
 import { AnimatedGridPattern } from '@/magicui/animated-grid-pattern';
 import { cn } from '@/shadcn/libs/utils';
 

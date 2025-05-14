@@ -1,7 +1,7 @@
 'use client'
 
-import { LoginFormInput, loginFormInputSchema } from '@/libs/client/models/login/login-form-input';
-import { ClassNameProps } from '@/libs/share/props/class-name-props';
+import { LoginFormInput, loginFormInputSchema } from '@/libs/client/login/models/login-form-input';
+import { ClassNameProps } from '@/libs/share/_general/props/class-name-props';
 import { Button } from '@/shadcn/components/ui/button';
 import { Form, FormField } from '@/shadcn/components/ui/form';
 import { Input } from '@/shadcn/components/ui/input';
@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import FormItem from '@/components/form/form-item';
 import FormRootMessage from '@/components/form/form-root-message';
+import { loginAction } from '@/libs/server/login/action/login-action';
 
 export default function LoginForm({
   className,
@@ -22,8 +23,8 @@ export default function LoginForm({
     },
   })
 
-  const onSubmit = (data: LoginFormInput) => {
-    console.log(data)
+  const onSubmit = async (input: LoginFormInput) => {
+    await loginAction(input)
   }
 
   return (

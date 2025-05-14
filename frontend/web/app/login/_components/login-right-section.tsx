@@ -1,4 +1,4 @@
-import { ClassNameProps } from '@/libs/share/props/class-name-props';
+import { ClassNameProps } from '@/libs/share/_general/props/class-name-props';
 import { cn } from '@/shadcn/libs/utils';
 import LoginForm from './login-form';
 

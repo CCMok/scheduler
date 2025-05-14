@@ -1,5 +1,5 @@
 import { ThemeToggle } from '@/components/button/theme-toggle';
-import { Path } from '@/libs/share/enums/path';
+import { Path } from '@/libs/share/_general/enums/path';
 import { Button } from '@/shadcn/components/ui/button';
 import Link from 'next/link';
 

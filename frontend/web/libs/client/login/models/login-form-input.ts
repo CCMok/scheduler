@@ -1,4 +1,4 @@
-import { Message } from "@/libs/share/enums/message";
+import { Message } from "@/libs/share/_general/enums/message";
 import { z } from "zod";
 
 export const loginFormInputSchema = z.object({
