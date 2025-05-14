@@ -1,7 +1,7 @@
 import Logo from '@/components/logo/logo';
 import { ClassNameProps } from '@/libs/share/_general/props/class-name-props';
-import { AnimatedGridPattern } from '@/magicui/animated-grid-pattern';
-import { cn } from '@/shadcn/libs/utils';
+import { AnimatedGridPattern } from '@/external/magicui/animated-grid-pattern';
+import { cn } from '@/external/shadcn/libs/utils';
 
 export default function LoginLeftSection({
   className,

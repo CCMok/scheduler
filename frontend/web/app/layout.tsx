@@ -3,7 +3,7 @@ import "./globals.css";
 import { ChildrenProps } from "@/libs/share/_general/props/children-props";
 import { Noto_Sans_HK } from "next/font/google";
 import RootProvider from "@/app/_components/root-provider";
-import { cn } from "@/shadcn/libs/utils";
+import { cn } from "@/external/shadcn/libs/utils";
 
 export const metadata: Metadata = {
   title: "Scheduler",

@@ -8,9 +8,12 @@
     "start": "next start",
     "lint": "next lint",
     "migrate": "prisma migrate dev",
-    "seed-tenant": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/seed/seed-tenant.ts",
-    "seed-system": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/seed/seed-system.ts",
+    "seed-tenant": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" external/prisma/seed/seed-tenant.ts",
+    "seed-system": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" external/prisma/seed/seed-system.ts",
     "postinstall": "prisma generate"
+  },
+  "prisma": {
+    "schema": "external/prisma/schema.prisma"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",

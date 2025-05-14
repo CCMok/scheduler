@@ -2,7 +2,7 @@
 
 import { ReactNode } from "react"
 import { useFormContext } from "react-hook-form";
-import { Alert, AlertDescription, AlertTitle } from "@/shadcn/components/ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "@/external/shadcn/components/ui/alert"
 import { CircleAlert } from 'lucide-react';
 
 type Props = {

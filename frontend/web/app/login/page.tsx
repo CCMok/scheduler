@@ -1,6 +1,4 @@
 import { ThemeToggle } from '@/components/button/theme-toggle';
-import { Button } from '@/shadcn/components/ui/button';
-import { Input } from '@/shadcn/components/ui/input';
 import LoginLeftSection from './_components/login-left-section';
 import LoginRightSection from './_components/login-right-section';
 

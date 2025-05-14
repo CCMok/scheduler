@@ -1,6 +1,6 @@
 import { ThemeToggle } from '@/components/button/theme-toggle';
 import { Path } from '@/libs/share/_general/enums/path';
-import { Button } from '@/shadcn/components/ui/button';
+import { Button } from '@/external/shadcn/components/ui/button';
 import Link from 'next/link';
 
 export default function Home() {

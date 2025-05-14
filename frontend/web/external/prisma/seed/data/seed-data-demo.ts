@@ -1,4 +1,4 @@
-import { PostConstraintType, WorkerConstraintType } from "../../../libs/share/enums/constraint-type";
+import { PostConstraintType, WorkerConstraintType } from "../../../../libs/share/_general/enums/constraint-type";
 
 export const tenantName = 'demo'
 

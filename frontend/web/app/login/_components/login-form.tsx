@@ -2,10 +2,10 @@
 
 import { LoginFormInput, loginFormInputSchema } from '@/libs/client/login/models/login-form-input';
 import { ClassNameProps } from '@/libs/share/_general/props/class-name-props';
-import { Button } from '@/shadcn/components/ui/button';
-import { Form, FormField } from '@/shadcn/components/ui/form';
-import { Input } from '@/shadcn/components/ui/input';
-import { cn } from '@/shadcn/libs/utils';
+import { Button } from '@/external/shadcn/components/ui/button';
+import { Form, FormField } from '@/external/shadcn/components/ui/form';
+import { Input } from '@/external/shadcn/components/ui/input';
+import { cn } from '@/external/shadcn/libs/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import FormItem from '@/components/form/form-item';

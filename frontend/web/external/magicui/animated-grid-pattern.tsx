@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 
-import { cn } from "@/shadcn/libs/utils";
+import { cn } from "@/external/shadcn/libs/utils";
 
 export interface AnimatedGridPatternProps
   extends ComponentPropsWithoutRef<"svg"> {

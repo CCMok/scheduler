@@ -2,13 +2,13 @@
 
 import { Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
-import { Button } from '@/shadcn/components/ui/button'
+import { Button } from '@/external/shadcn/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/shadcn/components/ui/dropdown-menu'
+} from '@/external/shadcn/components/ui/dropdown-menu'
 
 export function ThemeToggle() {
   const { setTheme } = useTheme()
