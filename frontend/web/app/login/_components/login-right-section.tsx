@@ -6,7 +6,7 @@ export default function LoginRightSection({
   className,
 }: Readonly<ClassNameProps>) {
   return (
-    <section className={cn('flex flex-col justify-center items-center px-8 space-y-6', className)}>
+    <section className={cn('flex flex-col items-center mt-55 px-8 space-y-6', className)}>
       <div className='space-y-2 flex flex-col items-center'>
         <h1 className='text-2xl font-bold'>登入</h1>
         <p className='text-secondary-foreground'>

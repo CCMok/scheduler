@@ -2,6 +2,9 @@ import 'server-only'
 import { LoginRequest, loginRequestSchema } from '@/libs/share/login/model/login-request'
 import { ServerResponse } from '@/libs/share/_general/model/server-response'
 import { ServerResponseStatus } from '@/libs/share/_general/enums/server-response-status';
+import { User } from '@/external/prisma-generated';
+import { findUserByEmail } from '../../user/repository/user-repository';
+import { ServerMessage } from '../../_general/enums/server-message';
 
 export const login = async (request: LoginRequest): Promise<ServerResponse> => {
   const requestValid = checkRequest(request);
@@ -11,9 +14,15 @@ export const login = async (request: LoginRequest): Promise<ServerResponse> => {
     }
   }
 
-  // TODO
-  // check eamil and password
+  const checkLoginInfoResponse = await checkLoginInfo(request)
+  if (!checkLoginInfoResponse.success) {
+    return {
+      status: ServerResponseStatus.BAD_REQUEST,
+      message: checkLoginInfoResponse.message,
+    }
+  }
 
+  // TODO
   // set session
 
   // redirect
@@ -30,4 +39,25 @@ const checkRequest = (request: LoginRequest): boolean => {
   }
 
   return result.success;
+}
+
+type CheckLoginInfoSuccessResponse = {
+  success: true;
+  user: User;
+}
+
+type CheckLoginInfoFailResponse = {
+  success: false;
+  message: string;
+}
+
+const checkLoginInfo = async (request: LoginRequest): Promise<CheckLoginInfoSuccessResponse | CheckLoginInfoFailResponse> => {
+  const user = await findUserByEmail(request.email)
+  
+  if (!user) {
+    return { success: false, message: ServerMessage.EMAIL_OR_PASSWORD_INCORRECT }
+  }
+
+  // check password
+  return { success: true, user };
 }

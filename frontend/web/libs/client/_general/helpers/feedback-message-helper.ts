@@ -1,10 +1,10 @@
 import { ServerResponseStatus } from "@/libs/share/_general/enums/server-response-status"
 import { ServerResponse } from "@/libs/share/_general/model/server-response"
-import { Message, MessageTitle } from "../enums/message"
+import { ClientMessage, MessageTitle } from "../enums/client-message"
 
 export type FeedbackMessage = {
-  messageTitle: string,
-  message: string,
+  title: string,
+  content: string,
 }
 
 export const getFeedbackMessage = (response: ServerResponse): FeedbackMessage | undefined => {
@@ -14,13 +14,13 @@ export const getFeedbackMessage = (response: ServerResponse): FeedbackMessage | 
 
   if (response.status === ServerResponseStatus.BAD_REQUEST && response.message) {
     return {
-      messageTitle: MessageTitle.INPUT_ERROR,
-      message: response.message,
+      title: MessageTitle.INPUT_ERROR,
+      content: response.message,
     }
   }
   
   return {
-    messageTitle: MessageTitle.SYSTEM_ERROR,
-    message: Message.SYSTEM_ERROR,
+    title: MessageTitle.SYSTEM_ERROR,
+    content: ClientMessage.SYSTEM_ERROR,
   }
 }
