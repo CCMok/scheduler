@@ -7,7 +7,7 @@ export default function LoginLeftSection({
   className,
 }: Readonly<ClassNameProps>) {
   return (
-    <section className={cn('relative bg-black', className)}>
+    <section className={cn('relative bg-zinc-900', className)}>
       <div className="relative flex h-[500px] w-full items-center justify-center overflow-hidden rounded-lg bg-transparent p-20">
         <AnimatedGridPattern
           numSquares={30}
@@ -15,7 +15,7 @@ export default function LoginLeftSection({
           duration={3}
           repeatDelay={1}
           className={cn(
-            '[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]',
+            '[mask-image:radial-gradient(300px_circle_at_center,white,transparent)]',
             'inset-x-0 inset-y-[-30%] h-[200%] skew-y-12',
           )}
         />
