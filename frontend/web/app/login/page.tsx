@@ -1,3 +1,4 @@
+import Logo from '@/components/general/logo/logo';
 import { ThemeToggle } from '@/components/root/buttons/theme-toggle';
 import { AnimatedGridPattern } from '@/magicui/animated-grid-pattern';
 import { Button } from '@/shadcn/components/ui/button';
@@ -10,17 +11,20 @@ export default function LoginPage() {
       <div className='absolute top-4 right-4'>
         <ThemeToggle />
       </div>
-      <section className='hidden md:block w-1/2 relative bg-neutral-950 border-r'>
-        <AnimatedGridPattern
-          numSquares={30}
-          maxOpacity={0.1}
-          duration={3}
-          repeatDelay={1}
-          className={cn(
-            '[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]',
-            'inset-y-[30%] skew-y-12 h-1/2',
-          )}
-        />
+      <section className='hidden md:block w-1/2 relative bg-black border-r'>
+        <div className="relative flex h-[500px] w-full items-center justify-center overflow-hidden rounded-lg bg-transparent p-20">
+          <AnimatedGridPattern
+            numSquares={30}
+            maxOpacity={0.1}
+            duration={3}
+            repeatDelay={1}
+            className={cn(
+              '[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]',
+              'inset-x-0 inset-y-[-30%] h-[200%] skew-y-12',
+            )}
+          />
+        </div>
+        <Logo className='absolute top-8 left-8 text-white' />
         <p className='text-lg italic absolute bottom-8 left-8 text-white'>
           讓計劃更有效率
         </p>
