@@ -11,6 +11,8 @@ import { useForm } from 'react-hook-form';
 import FormItem from '@/components/form/form-item';
 import FormRootMessage from '@/components/form/form-root-message';
 import { loginAction } from '@/libs/server/login/action/login-action';
+import { useState } from 'react';
+import { getFeedbackMessage } from '@/libs/client/_general/helpers/feedback-message-helper';
 
 export default function LoginForm({
   className,
@@ -23,8 +25,23 @@ export default function LoginForm({
     },
   })
 
+  const [showRootMessage, setShowRootMessage] = useState(false)
+  const [rootMessageTitle, setRootMessageTitle] = useState<string | undefined>()
+
   const onSubmit = async (input: LoginFormInput) => {
-    await loginAction(input)
+    setShowRootMessage(false)
+
+    const response = await loginAction(input)
+
+    const feedbackMessage = getFeedbackMessage(response)
+    if (feedbackMessage) {
+      setRootMessageTitle(feedbackMessage.messageTitle)
+      form.setError('root', { message: feedbackMessage.message })
+      setShowRootMessage(true)
+      return
+    }
+
+    // TODO
   }
 
   return (
@@ -68,7 +85,7 @@ export default function LoginForm({
           登入
         </Button>
 
-        <FormRootMessage />
+        {showRootMessage && <FormRootMessage title={rootMessageTitle} />}
       </form>
     </Form>
   )
