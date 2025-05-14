@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ChildrenProps } from "@/libs/share/props/children-props";
 import { Noto_Sans_HK } from "next/font/google";
-import RootProvider from "@/components/root/providers/root-provider";
+import RootProvider from "@/app/_components/root-provider";
+import { cn } from "@/shadcn/libs/utils";
 
 export const metadata: Metadata = {
   title: "Scheduler",
@@ -17,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="zh-Hant-HK" suppressHydrationWarning>
       <body
-        className={`${noto.className} antialiased`}
+        className={cn('antialiased', noto.className)}
       >
         <RootProvider>
           {children}

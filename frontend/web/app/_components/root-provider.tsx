@@ -1,5 +1,5 @@
 import { ChildrenProps } from "@/libs/share/props/children-props";
-import { ThemeProvider } from "../../general/providers/theme-provider";
+import { ThemeProvider } from "./theme-provider";
 
 export default function RootProvider({ children }: ChildrenProps) {
   return (
