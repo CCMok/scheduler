@@ -1,4 +1,4 @@
-import { ServerResponseStatus } from "@/libs/share/_general/enums/server-response-status"
+import { ServerResponseStatus } from "@/libs/server/_general/enums/server-response-status"
 import { ServerResponse } from "@/libs/share/_general/model/server-response"
 import { ClientMessage, MessageTitle } from "../enums/client-message"
 

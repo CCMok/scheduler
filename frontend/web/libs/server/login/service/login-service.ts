@@ -1,10 +1,11 @@
 import 'server-only'
 import { LoginRequest, loginRequestSchema } from '@/libs/share/login/model/login-request'
 import { ServerResponse } from '@/libs/share/_general/model/server-response'
-import { ServerResponseStatus } from '@/libs/share/_general/enums/server-response-status';
+import { ServerResponseStatus } from '@/libs/server/_general/enums/server-response-status';
 import { User } from '@/external/prisma-generated';
 import { findUserByEmail } from '../../user/repository/user-repository';
 import { ServerMessage } from '../../_general/enums/server-message';
+import { compare } from '../../_general/manager/bcrypt-manager';
 
 export const login = async (request: LoginRequest): Promise<ServerResponse> => {
   const requestValid = checkRequest(request);
@@ -58,6 +59,10 @@ const checkLoginInfo = async (request: LoginRequest): Promise<CheckLoginInfoSucc
     return { success: false, message: ServerMessage.EMAIL_OR_PASSWORD_INCORRECT }
   }
 
-  // check password
+  const samePassword = await compare(request.password, user.password)
+  if (!samePassword) {
+    return { success: false, message: ServerMessage.EMAIL_OR_PASSWORD_INCORRECT }
+  }
+
   return { success: true, user };
 }

@@ -1,4 +1,4 @@
-import { ServerResponseStatus } from "../enums/server-response-status"
+import { ServerResponseStatus } from "../../../server/_general/enums/server-response-status"
 
 export type ServerResponse<T = {}> = SuccessResponse<T> | FailResponse
 
