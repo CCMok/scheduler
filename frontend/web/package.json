@@ -9,8 +9,7 @@
     "lint": "next lint",
     "migrate": "prisma migrate dev",
     "seed-tenant": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" external/prisma/seed/seed-tenant.ts",
-    "seed-system": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" external/prisma/seed/seed-system.ts",
-    "postinstall": "prisma generate"
+    "seed-system": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" external/prisma/seed/seed-system.ts"
   },
   "prisma": {
     "schema": "external/prisma/schema.prisma"
@@ -24,6 +23,7 @@
     "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "jose": "^6.0.11",
     "lucide-react": "^0.510.0",
     "motion": "^12.11.0",
     "next": "15.3.0",
