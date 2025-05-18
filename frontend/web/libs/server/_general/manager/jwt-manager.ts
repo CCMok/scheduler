@@ -1,5 +1,5 @@
 import 'server-only'
-import { JWTPayload, JWTVerifyResult, SignJWT, jwtVerify } from 'jose'
+import { JWTPayload, SignJWT, jwtVerify } from 'jose'
 import { JWTExpired } from 'jose/errors';
 import { SessionPayload } from '@/libs/server/_general/models/session-payload'
 
@@ -20,28 +20,17 @@ export const issueToken = async (payload: TokenPayload, expirationTime: string):
     .sign(encodedKey)
 
 export const verifyToken = async (token: string): Promise<TokenPayload | undefined> => {
-  const tokenPayload = await getTokenPayload(token);
-  if (!tokenPayload) return;
-
-  return tokenPayload;
-}
-
-const getTokenPayload = async (token: string): Promise<TokenPayload | undefined> => {
-  let verifyResult: JWTVerifyResult<TokenPayload>;
-
   try {
-    verifyResult = await jwtVerify<TokenPayload>(
+    const verifyResult = await jwtVerify<TokenPayload>(
       token,
       encodedKey,
       { algorithms: [algorithm] }
     )
+
+    return verifyResult.payload;
   } catch (error) {
     if (!(error instanceof JWTExpired)) {
-      console.log('Unknown JWT verify error. error=', error);
+      console.error('Unknown JWT verify error. error=', error);
     }
-
-    return
   }
-
-  return verifyResult.payload;
 }

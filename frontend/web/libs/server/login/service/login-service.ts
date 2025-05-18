@@ -2,10 +2,11 @@ import 'server-only'
 import { LoginRequest, loginRequestSchema } from '@/libs/share/login/model/login-request'
 import { ServerResponse } from '@/libs/share/_general/model/server-response'
 import { ServerResponseStatus } from '@/libs/server/_general/enums/server-response-status';
-import { User } from '@/external/prisma-generated';
-import { findUserByEmail } from '../../user/repository/user-repository';
+import { findUserByEmail } from '../../user/repositories/user-repository';
 import { ServerMessage } from '../../_general/enums/server-message';
 import { compare } from '../../_general/manager/bcrypt-manager';
+import { UserRole } from '../../user/models/user-models';
+import { setSession } from '../../_general/manager/session-manager';
 
 export const login = async (request: LoginRequest): Promise<ServerResponse> => {
   const requestValid = checkRequest(request);
@@ -15,21 +16,19 @@ export const login = async (request: LoginRequest): Promise<ServerResponse> => {
     }
   }
 
-  const checkLoginInfoResponse = await checkLoginInfo(request)
-  if (!checkLoginInfoResponse.success) {
+  const userRole = await checkLoginInfo(request)
+  if (!userRole) {
     return {
       status: ServerResponseStatus.BAD_REQUEST,
-      message: checkLoginInfoResponse.message,
+      message: ServerMessage.EMAIL_OR_PASSWORD_INCORRECT,
     }
   }
 
-  // TODO
-  // set session
-
-  // redirect
+  await setSession(userRole)
 
   return {
-    status: ServerResponseStatus.INTERNAL_ERROR,
+    status: ServerResponseStatus.OK,
+    data: {},
   }
 }
 
@@ -42,27 +41,17 @@ const checkRequest = (request: LoginRequest): boolean => {
   return result.success;
 }
 
-type CheckLoginInfoSuccessResponse = {
-  success: true;
-  user: User;
-}
+const checkLoginInfo = async (request: LoginRequest): Promise<UserRole | undefined> => {
+  const userRole = await findUserByEmail(request.email, true)
 
-type CheckLoginInfoFailResponse = {
-  success: false;
-  message: string;
-}
-
-const checkLoginInfo = async (request: LoginRequest): Promise<CheckLoginInfoSuccessResponse | CheckLoginInfoFailResponse> => {
-  const user = await findUserByEmail(request.email)
-  
-  if (!user) {
-    return { success: false, message: ServerMessage.EMAIL_OR_PASSWORD_INCORRECT }
+  if (!userRole) {
+    return
   }
 
-  const samePassword = await compare(request.password, user.password)
+  const samePassword = await compare(request.password, userRole.password)
   if (!samePassword) {
-    return { success: false, message: ServerMessage.EMAIL_OR_PASSWORD_INCORRECT }
+    return
   }
 
-  return { success: true, user };
+  return userRole;
 }
