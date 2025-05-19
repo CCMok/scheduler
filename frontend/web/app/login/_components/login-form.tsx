@@ -2,7 +2,6 @@
 
 import { LoginFormInput, loginFormInputSchema } from '@/libs/client/login/models/login-form-input';
 import { ClassNameProps } from '@/libs/share/_general/props/class-name-props';
-import { Button } from '@/external/shadcn/components/ui/button';
 import { Form, FormField } from '@/external/shadcn/components/ui/form';
 import { Input } from '@/external/shadcn/components/ui/input';
 import { cn } from '@/external/shadcn/libs/utils';
@@ -11,7 +10,12 @@ import { useForm } from 'react-hook-form';
 import FormItem from '@/components/form/form-item';
 import FormRootMessage from '@/components/form/form-root-message';
 import { loginAction } from '@/libs/server/login/action/login-action';
-import { getFeedbackMessage } from '@/libs/client/_general/helpers/feedback-message-helper';
+import { getMessageBoxMessage } from '@/libs/client/_general/helpers/message-box-message-helper';
+import { ServerResponseStatus } from '@/libs/server/_general/enums/server-response-status';
+import { useRouter } from 'next/navigation';
+import { Path } from '@/libs/share/_general/enums/path';
+import LoadingButton from '@/components/button/loading-button';
+import { useState } from 'react';
 
 export default function LoginForm({
   className,
@@ -24,16 +28,29 @@ export default function LoginForm({
     },
   })
 
-  const onSubmit = async (input: LoginFormInput) => {
+  const router = useRouter()
+
+  const [loading, setLoading] = useState(false)
+
+  const doSubmit = async (input: LoginFormInput) => {
     const response = await loginAction(input)
 
-    const feedbackMessage = getFeedbackMessage(response)
-    if (feedbackMessage) {
-      form.setError('root', { type: feedbackMessage.title, message: feedbackMessage.content })
+    if (response.status !== ServerResponseStatus.OK) {
+      const messageBoxMessage = getMessageBoxMessage(response)
+      form.setError('root', { type: messageBoxMessage.title, message: messageBoxMessage.content })
       return
     }
 
-    // TODO
+    router.push(Path.DASHBOARD)
+  }
+
+  const onSubmit = async (input: LoginFormInput) => {
+    setLoading(true)
+    try {
+      await doSubmit(input)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -70,12 +87,13 @@ export default function LoginForm({
           )}
         />
 
-        <Button
+        <LoadingButton
           type='submit'
           className='w-full'
+          loading={loading}
         >
           登入
-        </Button>
+        </LoadingButton>
 
         <FormRootMessage />
       </form>
