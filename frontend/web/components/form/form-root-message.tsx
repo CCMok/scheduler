@@ -14,11 +14,9 @@ export default function FormRootMessage() {
     <Alert>
       <CircleAlert className="h-4 w-4" />
       <AlertTitle>{errors.root.type ?? MessageTitle.CAUTION}</AlertTitle>
-      {errors.root?.message && (
-        <AlertDescription>
-          {errors.root.message}
-        </AlertDescription>
-      )}
+      <AlertDescription>
+        {errors.root.message}
+      </AlertDescription>
     </Alert>
   )
 }

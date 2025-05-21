@@ -30,7 +30,7 @@ export default function LoginForm({
 
   const router = useRouter()
 
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const doSubmit = async (input: LoginFormInput) => {
     const response = await loginAction(input)
@@ -45,11 +45,11 @@ export default function LoginForm({
   }
 
   const onSubmit = async (input: LoginFormInput) => {
-    setLoading(true)
+    setIsLoading(true)
     try {
       await doSubmit(input)
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
@@ -90,7 +90,7 @@ export default function LoginForm({
         <LoadingButton
           type='submit'
           className='w-full'
-          loading={loading}
+          isLoading={isLoading}
         >
           登入
         </LoadingButton>

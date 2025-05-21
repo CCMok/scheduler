@@ -7,22 +7,22 @@ import Link from "next/link";
 const leckerliOne = Leckerli_One({ weight: '400', subsets: ["latin"] });
 
 type Props = ClassNameProps & {
-  redirectHome?: boolean;
+  isRedirectHome?: boolean;
 }
 
 export default function Logo({
   className,
-  redirectHome = true,
+  isRedirectHome = true,
 }: Readonly<Props>) {
   return (
     <Link
       href={Path.HOME}
       className={cn(
         'space-x-2 flex items-center',
-        !redirectHome && 'pointer-events-none',
+        !isRedirectHome && 'pointer-events-none',
         className,
       )}
-      aria-disabled={redirectHome ? undefined : true}
+      aria-disabled={isRedirectHome ? undefined : true}
       tabIndex={-1}
     >
       <span className={`${leckerliOne.className} text-2xl`}>

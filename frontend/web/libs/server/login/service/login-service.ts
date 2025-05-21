@@ -9,8 +9,8 @@ import { UserRole } from '../../user/models/user-models';
 import { setSession } from '../../_general/manager/session-manager';
 
 export const login = async (request: LoginRequest): Promise<ServerResponse> => {
-  const requestValid = checkRequest(request);
-  if (!requestValid) {
+  const isRequestValid = checkRequest(request);
+  if (!isRequestValid) {
     return {
       status: ServerResponseStatus.BAD_REQUEST,
     }

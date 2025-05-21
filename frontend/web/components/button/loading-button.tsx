@@ -3,20 +3,20 @@ import { Loader2 } from "lucide-react"
 import { ComponentProps } from "react"
 
 type Props = ComponentProps<typeof Button> & {
-  loading?: boolean
+  isLoading?: boolean
 }
 
 export default function LoadingButton({
-  loading = false,
+  isLoading = false,
   children,
   ...props
 }: Readonly<Props>) {
   return (
     <Button
-      disabled={loading}
+      disabled={isLoading}
       {...props}
     >
-      {loading && <Loader2 className='animate-spin' />}
+      {isLoading && <Loader2 className='animate-spin' />}
       {children}
     </Button>
   )
