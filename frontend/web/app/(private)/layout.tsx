@@ -2,7 +2,7 @@ import { SidebarProvider, SidebarTrigger } from "@/external/shadcn/components/ui
 import { ChildrenProps } from "@/libs/share/_general/props/children-props"
 import { PrivateSidebar } from "./_components/private-sidebar"
 
-export default function Layout({
+export default function PrivateLayout({
   children,
 }: Readonly<ChildrenProps>) {
   return (
