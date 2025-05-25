@@ -9,6 +9,7 @@ import {
   SidebarMenuItem,
 } from "@/external/shadcn/components/ui/sidebar"
 import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { ComponentProps } from "react"
 
 // TODO: Replace with actual data
 const items = [
@@ -39,9 +40,11 @@ const items = [
   },
 ]
 
-export function PrivateSidebar() {
+type Props = ComponentProps<typeof Sidebar>
+
+export function PrivateSidebar(props : Readonly<Props>) {
   return (
-    <Sidebar>
+    <Sidebar {...props}>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
