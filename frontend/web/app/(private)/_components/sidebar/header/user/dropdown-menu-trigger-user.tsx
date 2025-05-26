@@ -1,7 +1,5 @@
 import { DropdownMenuTrigger } from "@/external/shadcn/components/ui/dropdown-menu"
-import {
-  SidebarMenuButton,
-} from "@/external/shadcn/components/ui/sidebar"
+import { SidebarMenuButton } from "@/external/shadcn/components/ui/sidebar"
 import { getSession } from "@/libs/server/_general/manager/session-manager"
 import { ChevronDown, User } from "lucide-react"
 

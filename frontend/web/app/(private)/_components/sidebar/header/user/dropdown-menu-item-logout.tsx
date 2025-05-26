@@ -1,6 +1,6 @@
 'use client'
 
-import DropdownMenuItem from "@/components/dropdown/dropdown-menu-item"
+import DropdownMenuItemCustom from "@/components/dropdown/dropdown-menu-item-custom"
 import { ServerResponseStatus } from "@/libs/server/_general/enums/server-response-status"
 import { logoutAction } from "@/libs/server/logout/action/logout-action"
 import { redirectPublicPath } from "@/libs/share/_general/enums/path"
@@ -21,9 +21,9 @@ export default function DropdownMenuItemLogout() {
   }
 
   return (
-    <DropdownMenuItem onClick={onClick}>
+    <DropdownMenuItemCustom onClick={onClick}>
       <LogOut />
       <span>登出</span>
-    </DropdownMenuItem>
+    </DropdownMenuItemCustom>
   )
 }

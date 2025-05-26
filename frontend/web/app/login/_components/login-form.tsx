@@ -7,7 +7,7 @@ import { Input } from '@/external/shadcn/components/ui/input';
 import { cn } from '@/external/shadcn/libs/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import FormItem from '@/components/form/form-item';
+import FormItemCustom from '@/components/form/form-item-custom';
 import FormRootMessage from '@/components/form/form-root-message';
 import { loginAction } from '@/libs/server/login/action/login-action';
 import { getMessageBoxMessage } from '@/libs/client/_general/helpers/message-box-message-helper';
@@ -63,13 +63,13 @@ export default function LoginForm({
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem label='電郵地址'>
+            <FormItemCustom label='電郵地址'>
               <Input
                 type='email'
                 autoComplete='email'
                 {...field}
               />
-            </FormItem>
+            </FormItemCustom>
           )}
         />
 
@@ -77,13 +77,13 @@ export default function LoginForm({
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem label='密碼'>
+            <FormItemCustom label='密碼'>
               <Input
                 type='password'
                 autoComplete='current-password'
                 {...field}
               />
-            </FormItem>
+            </FormItemCustom>
           )}
         />
 

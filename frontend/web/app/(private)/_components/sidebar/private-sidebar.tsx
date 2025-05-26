@@ -1,5 +1,5 @@
-import DropdownMenuItem from "@/components/dropdown/dropdown-menu-item"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/external/shadcn/components/ui/dropdown-menu"
+import DropdownMenuItemCustom from "@/components/dropdown/dropdown-menu-item-custom"
+import { DropdownMenu, DropdownMenuTrigger } from "@/external/shadcn/components/ui/dropdown-menu"
 import { Separator } from "@/external/shadcn/components/ui/separator"
 import {
   Sidebar,
@@ -16,6 +16,7 @@ import { Calendar, ChevronDown, Home, Moon, Settings, Sun } from "lucide-react"
 import Link from "next/link"
 import { ComponentProps } from "react"
 import PrivateSidebarHeader from "./header/private-sidebar-header"
+import DropdownMenuContentSidebar from "@/components/dropdown/dropdown-menu-content-sidebar"
 
 const mainMenuItems = [
   {
@@ -74,22 +75,20 @@ export async function PrivateSidebar(props: Readonly<Props>) {
                   <ChevronDown className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className='w-(--radix-dropdown-menu-trigger-width)'
-              >
-                <DropdownMenuItem asChild>
+              <DropdownMenuContentSidebar>
+                <DropdownMenuItemCustom asChild>
                   <Link href="/logout">
                     <Moon />
                     <span>Dark</span>
                   </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
+                </DropdownMenuItemCustom>
+                <DropdownMenuItemCustom asChild>
                   <Link href="/logout">
                     <Moon />
                     <span>System</span>
                   </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
+                </DropdownMenuItemCustom>
+              </DropdownMenuContentSidebar>
             </DropdownMenu>
           </SidebarMenuItem>
         </SidebarMenu>
