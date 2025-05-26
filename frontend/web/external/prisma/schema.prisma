@@ -8,41 +8,88 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Tenant {
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  enum  Int    @unique
+  users User[]
+
+  @@map("role")
+}
+
+model User {
   id                Int                @id @default(autoincrement())
+  email             String             @unique
+  password          String
+  name              String?
+  roleId            Int                @map("role_id")
+  role              Role               @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  userOrganizations UserOrganization[]
+
+  @@index([roleId])
+  @@map("user")
+}
+
+model Organization {
+  id                Int                @id @default(autoincrement())
+  name              String             @unique
+  userOrganizations UserOrganization[]
+  departments       Department[]
+
+  @@map("organization")
+}
+
+model UserOrganization {
+  id             Int          @id @default(autoincrement())
+  userId         Int          @map("user_id")
+  organizationId Int          @map("organization_id")
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizationId])
+  @@index([userId])
+  @@index([organizationId])
+  @@map("user_organization")
+}
+
+model Department {
+  id                Int                @id @default(autoincrement())
+  organizationId    Int                @map("organization_id")
   name              String             @unique
   posts             Post[]
   workers           Worker[]
   postConstraints   PostConstraint[]
   workerConstraints WorkerConstraint[]
-  userTenants       UserTenant[]
+  organization      Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
-  @@map("tenant")
+  @@unique([organizationId, name])
+  @@index([organizationId])
+  @@map("department")
 }
 
 model Post {
   id                  Int                  @id @default(autoincrement())
-  tenantId            Int                  @map("tenant_id")
+  departmentId        Int                  @map("department_id")
   name                String
-  tenant              Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant              Department           @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   postWorkers         PostWorker[]
   postConstraintPosts PostConstraintPost[]
 
-  @@unique([tenantId, name])
-  @@index([tenantId])
+  @@unique([departmentId, name])
+  @@index([departmentId])
   @@map("post")
 }
 
 model Worker {
   id                      Int                      @id @default(autoincrement())
-  tenantId                Int                      @map("tenant_id")
+  departmentId            Int                      @map("department_id")
   name                    String
-  tenant                  Tenant                   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant                  Department               @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   postWorkers             PostWorker[]
   workerConstraintWorkers WorkerConstraintWorker[]
 
-  @@unique([tenantId, name])
-  @@index([tenantId])
+  @@unique([departmentId, name])
+  @@index([departmentId])
   @@map("worker")
 }
 
@@ -70,14 +117,14 @@ model PostConstraintType {
 
 model PostConstraint {
   id                   Int                  @id @default(autoincrement())
-  tenantId             Int                  @map("tenant_id")
+  departmentId         Int                  @map("department_id")
   postConstraintTypeId Int                  @map("post_constraint_type_id")
   weighting            Int
-  tenant               Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant               Department           @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   postConstraintType   PostConstraintType   @relation(fields: [postConstraintTypeId], references: [id], onDelete: Cascade)
   postConstraintPosts  PostConstraintPost[]
 
-  @@index([tenantId])
+  @@index([departmentId])
   @@index([postConstraintTypeId])
   @@map("post_constraint")
 }
@@ -106,14 +153,14 @@ model WorkerConstraintType {
 
 model WorkerConstraint {
   id                      Int                      @id @default(autoincrement())
-  tenantId                Int                      @map("tenant_id")
+  departmentId            Int                      @map("department_id")
   workerConstraintTypeId  Int                      @map("worker_constraint_type_id")
   weighting               Int
-  tenant                  Tenant                   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant                  Department               @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   workerConstraintType    WorkerConstraintType     @relation(fields: [workerConstraintTypeId], references: [id], onDelete: Cascade)
   workerConstraintWorkers WorkerConstraintWorker[]
 
-  @@index([tenantId])
+  @@index([departmentId])
   @@index([workerConstraintTypeId])
   @@map("worker_constraint")
 }
@@ -129,39 +176,4 @@ model WorkerConstraintWorker {
   @@index([workerConstraintId])
   @@index([workerId])
   @@map("worker_constraint_worker")
-}
-
-model User {
-  id          Int          @id @default(autoincrement())
-  email       String       @unique
-  password    String
-  name        String?
-  roleId      Int          @map("role_id")
-  role        Role         @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  userTenants UserTenant[]
-
-  @@index([roleId])
-  @@map("user")
-}
-
-model Role {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  enum  Int    @unique
-  users User[]
-
-  @@map("role")
-}
-
-model UserTenant {
-  id       Int    @id @default(autoincrement())
-  userId   Int    @map("user_id")
-  tenantId Int    @map("tenant_id")
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, tenantId])
-  @@index([userId])
-  @@index([tenantId])
-  @@map("user_tenant")
 }
