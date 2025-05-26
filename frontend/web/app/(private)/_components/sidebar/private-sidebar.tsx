@@ -5,13 +5,9 @@ import PrivateSidebarHeader from "./header/private-sidebar-header"
 import PrivateSidebarFooter from "./footer/private-sidebar-footer"
 import PrivateSidebarContent from "./content/private-sidebar-content"
 
-type Props = ComponentProps<typeof Sidebar>
-
-// TODO mobile click to close sidebar
-
-export async function PrivateSidebar(props: Readonly<Props>) {
+export async function PrivateSidebar(props: Readonly<ComponentProps<typeof Sidebar>>) {
   return (
-    <Sidebar {...props}>
+    <Sidebar collapsible='icon' {...props}>
       <PrivateSidebarHeader />
       <Separator />
       <PrivateSidebarContent />

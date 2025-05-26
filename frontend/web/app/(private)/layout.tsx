@@ -7,10 +7,7 @@ export default function PrivateLayout({
 }: Readonly<ChildrenProps>) {
   return (
     <SidebarProvider>
-      <PrivateSidebar 
-        variant='inset'
-        collapsible='icon'
-      />
+      <PrivateSidebar variant='inset' />
       <SidebarInset>
         <main>
           <SidebarTrigger />

@@ -4,11 +4,11 @@ import {
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem,
 } from "@/external/shadcn/components/ui/sidebar"
 import { Path } from "@/libs/share/_general/enums/path"
 import { Calendar, Home, Settings } from "lucide-react"
 import Link from "next/link"
+import PrivateSidebarMenuItem from "../item/private-sidebar-menu-item"
 
 const mainMenuItems = [
   {
@@ -35,14 +35,14 @@ export default function PrivateSidebarContent() {
         <SidebarGroupContent>
           <SidebarMenu>
             {mainMenuItems.map(item => (
-              <SidebarMenuItem key={item.title}>
+              <PrivateSidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild>
                   <Link href={item.url}>
                     <item.icon />
                     <span>{item.title}</span>
                   </Link>
                 </SidebarMenuButton>
-              </SidebarMenuItem>
+              </PrivateSidebarMenuItem>
             ))}
           </SidebarMenu>
         </SidebarGroupContent>
