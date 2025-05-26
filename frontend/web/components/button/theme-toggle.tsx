@@ -1,6 +1,6 @@
 'use client'
 
-import { Moon, Sun } from 'lucide-react'
+import { Moon, Sun, UserCog } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Button } from '@/external/shadcn/components/ui/button'
 import {
@@ -24,13 +24,13 @@ export function ThemeToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
         <DropdownMenuItem onClick={() => setTheme('light')}>
-          Light
+          <Sun /> 淺色
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('dark')}>
-          Dark
+          <Moon />深色
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('system')}>
-          System
+          <UserCog /> 瀏覽器預設
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
