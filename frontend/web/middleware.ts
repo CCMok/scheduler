@@ -1,14 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Path } from './libs/share/_general/enums/path'
+import { Path, publicPathExcludeHomes, redirectPrivatePath, redirectPublicPath } from './libs/share/_general/enums/path'
 import { deleteSession, getSession } from './libs/server/_general/manager/session-manager';
 import { SessionPayload } from './libs/server/_general/models/session-payload';
-
-const publicPaths = [
-  Path.LOGIN,
-]
-
-const redirectPublicPath = Path.LOGIN;
-const redirectPrivatePath = Path.DASHBOARD;
 
 export default async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
@@ -30,7 +23,7 @@ export const config = {
 const checkIsPrivatePath = (path: string): boolean => {
   if (path === Path.HOME) return false;
 
-  return !publicPaths.some(publicPath => path.startsWith(publicPath));
+  return !publicPathExcludeHomes.some(publicPath => path.startsWith(publicPath));
 }
 
 const handlePrivatePath = async (request: NextRequest, sessionPayload: SessionPayload | undefined): Promise<NextResponse> => {
