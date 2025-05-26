@@ -17,8 +17,8 @@ export default async function DropdownMenuTriggerUser() {
     <DropdownMenuTrigger asChild>
       <SidebarMenuButton>
         <User />
-        <span>{userDispalyName}</span>
-        <ChevronDown className="ml-auto" />
+        <span className='truncate'>{userDispalyName}</span>
+        <ChevronDown className='ml-auto' />
       </SidebarMenuButton>
     </DropdownMenuTrigger>
   )
