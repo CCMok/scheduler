@@ -18,8 +18,7 @@ import { Building2, Calendar, ChevronDown, Home, LogOut, Moon, Settings, Sun, Us
 import Link from "next/link"
 import { ComponentProps } from "react"
 
-// TODO: Replace url Path
-const items = [
+const mainMenuItems = [
   {
     title: "主頁",
     url: Path.DASHBOARD,
@@ -27,12 +26,12 @@ const items = [
   },
   {
     title: "值勤表",
-    url: "#",
+    url: Path.ROSTER,
     icon: Calendar,
   },
   {
     title: "設定",
-    url: "#",
+    url: Path.SETTING,
     icon: Settings,
   },
 ]
@@ -118,7 +117,7 @@ export async function PrivateSidebar(props: Readonly<Props>) {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map(item => (
+              {mainMenuItems.map(item => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <Link href={item.url}>
