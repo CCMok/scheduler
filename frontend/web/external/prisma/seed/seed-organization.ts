@@ -1,6 +1,6 @@
 import { DefaultArgs } from "../../prisma-generated/runtime/library"
 import { Post, PostConstraintType, Prisma, PrismaClient, Worker, WorkerConstraintType } from "../../prisma-generated"
-import { postConstraints, postNames, postWorkers, tenantName, workerConstraints, workerNames } from "./data/seed-data-demo"
+import { postConstraints, postNames, postWorkers, organizationName, workerConstraints, workerNames, departmentName } from "./data/seed-data-demo"
 import { PostConstraintType as EPostConstraintType, WorkerConstraintType as EWorkerConstraintType } from "../../../libs/share/_general/enums/constraint-type";
 
 const prisma = new PrismaClient()
@@ -9,27 +9,30 @@ type Transaction = Omit<PrismaClient<Prisma.PrismaClientOptions, never, DefaultA
 
 async function main() {
   await prisma.$transaction(async tx => {
-    console.log(`Start seed tenant data : ${tenantName} ...`)
+    console.log(`Start seed organization data : ${organizationName} ...`)
 
     await removeExistingData(tx)
     console.log('Remove existing data OK')
 
-    const tenantId = await seedTenant(tx)
-    console.log('Tenant OK')
+    const organizationId = await seedOrganization(tx)
+    console.log('Organization OK')
 
-    const postMap = await seedPost(tx, tenantId)
+    const departmentId = await seedDepartment(tx, organizationId)
+    console.log('Department OK')
+
+    const postMap = await seedPost(tx, departmentId)
     console.log('Post OK');
 
-    const workerMap = await seedWorker(tx, tenantId)
+    const workerMap = await seedWorker(tx, departmentId)
     console.log('Worker OK')
 
     await seedPostWorker(tx, postMap, workerMap)
     console.log('Post worker OK')
 
-    await seedPostConstraintSetting(tx, tenantId, postMap)
+    await seedPostConstraintSetting(tx, departmentId, postMap)
     console.log('Post constraint setting OK')
 
-    await seedWorkerConstraintSetting(tx, tenantId, workerMap)
+    await seedWorkerConstraintSetting(tx, departmentId, workerMap)
     console.log('Worker constraint setting OK')
 
     console.log('Finish!')
@@ -37,23 +40,34 @@ async function main() {
 }
 
 const removeExistingData = async (tx: Transaction): Promise<void> => {
-  await tx.tenant.deleteMany({
-    where: { name: tenantName },
+  await tx.organization.deleteMany({
+    where: { name: organizationName },
   })
 }
 
-const seedTenant = async (tx: Transaction): Promise<number> => {
-  const tenant = await tx.tenant.create({
-    data: { name: tenantName },
+const seedOrganization = async (tx: Transaction): Promise<number> => {
+  const organization = await tx.organization.create({
+    data: { name: organizationName },
   })
 
-  return tenant.id;
+  return organization.id;
 }
 
-const seedPost = async (tx: Transaction, tenantId: number): Promise<Map<string, Post>> => {
+const seedDepartment = async (tx: Transaction, organizationId: number): Promise<number> => {
+  const department = await tx.department.create({
+    data: {
+      organizationId,
+      name: departmentName,
+    },
+  })
+
+  return department.id;
+}
+
+const seedPost = async (tx: Transaction, departmentId: number): Promise<Map<string, Post>> => {
   const posts = await tx.post.createManyAndReturn({
     data: postNames.map(name => ({
-      tenantId,
+      departmentId,
       name,
     })),
   })
@@ -64,10 +78,10 @@ const seedPost = async (tx: Transaction, tenantId: number): Promise<Map<string, 
   }, new Map<string, Post>())
 }
 
-const seedWorker = async (tx: Transaction, tenantId: number): Promise<Map<string, Worker>> => {
+const seedWorker = async (tx: Transaction, departmentId: number): Promise<Map<string, Worker>> => {
   const workers = await tx.worker.createManyAndReturn({
     data: workerNames.map(name => ({
-      tenantId,
+      departmentId,
       name,
     })),
   })
@@ -100,7 +114,7 @@ const seedPostWorker = async (tx: Transaction, postMap: Map<string, Post>, worke
   })
 }
 
-const seedPostConstraintSetting = async (tx: Transaction, tenantId: number, postMap: Map<string, Post>): Promise<void> => {
+const seedPostConstraintSetting = async (tx: Transaction, departmentId: number, postMap: Map<string, Post>): Promise<void> => {
   const postConstraintTypeMap = await getPostConstraintTypeMap(tx);
 
   for (const postConstraint of postConstraints) {
@@ -121,7 +135,7 @@ const seedPostConstraintSetting = async (tx: Transaction, tenantId: number, post
 
     await tx.postConstraint.create({
       data: {
-        tenantId,
+        departmentId,
         postConstraintTypeId: postConstraintType.id,
         weighting: postConstraint.weighting,
         postConstraintPosts: {
@@ -141,7 +155,7 @@ const getPostConstraintTypeMap = async (tx: Transaction): Promise<Map<EPostConst
   }, new Map<EPostConstraintType, PostConstraintType>())
 }
 
-const seedWorkerConstraintSetting = async (tx: Transaction, tenantId: number, workerMap: Map<string, Worker>): Promise<void> => {
+const seedWorkerConstraintSetting = async (tx: Transaction, departmentId: number, workerMap: Map<string, Worker>): Promise<void> => {
   const workerConstraintTypeMap = await getWorkerConstraintTypeMap(tx);
 
   for (const workerConstraint of workerConstraints) {
@@ -162,7 +176,7 @@ const seedWorkerConstraintSetting = async (tx: Transaction, tenantId: number, wo
 
     await tx.workerConstraint.create({
       data: {
-        tenantId,
+        departmentId,
         workerConstraintTypeId: workerConstraintType.id,
         weighting: workerConstraint.weighting,
         workerConstraintWorkers: {

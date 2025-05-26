@@ -1,6 +1,8 @@
 import { PostConstraintType, WorkerConstraintType } from "../../../../libs/share/_general/enums/constraint-type";
 
-export const tenantName = 'demo'
+export const organizationName = 'Demo Church'
+
+export const departmentName = 'Worship Team'
 
 export const postNames = [
   'Host',
