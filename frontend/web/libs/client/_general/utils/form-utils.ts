@@ -1,9 +1,9 @@
 import { ServerResponseStatus } from "@/libs/server/_general/enums/server-response-status"
 import { ServerResponse } from "@/libs/share/_general/model/server-response"
 import { ClientMessage, MessageTitle } from "../enums/client-message"
-import { MessageBoxMessage } from "../models/message-box-message"
+import { FormRootMessage } from "../models/form-root-message"
 
-export const getMessageBoxMessage = (response: ServerResponse): MessageBoxMessage => {
+export const getRootMessage = (response: ServerResponse): FormRootMessage => {
   if (response.status === ServerResponseStatus.BAD_REQUEST && response.message) {
     return {
       title: MessageTitle.INPUT_ERROR,

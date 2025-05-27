@@ -15,7 +15,7 @@ export default function FormItemCustom({
   return (
     <FormItem>
       {label && <FormLabel>{label}</FormLabel>}
-      <FormControl>{children}</FormControl>
+      {children}
       <FormMessage />
     </FormItem>
   )

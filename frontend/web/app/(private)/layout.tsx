@@ -11,7 +11,7 @@ export default function PrivateLayout({
       <PrivateSidebar variant='inset' />
       <SidebarInset>
         <PrivateHeader />
-        <main className='p-4 pt-0'>
+        <main className='p-4 h-full'>
           {children}
         </main>
       </SidebarInset>

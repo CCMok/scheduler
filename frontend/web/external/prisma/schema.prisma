@@ -55,7 +55,7 @@ model UserOrganization {
 model Department {
   id                Int                @id @default(autoincrement())
   organizationId    Int                @map("organization_id")
-  name              String             @unique
+  name              String
   posts             Post[]
   workers           Worker[]
   postConstraints   PostConstraint[]

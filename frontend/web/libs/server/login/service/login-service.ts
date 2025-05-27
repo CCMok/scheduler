@@ -2,7 +2,7 @@ import 'server-only'
 import { LoginRequest, loginRequestSchema } from '@/libs/share/login/model/login-request'
 import { ServerResponse } from '@/libs/share/_general/model/server-response'
 import { ServerResponseStatus } from '@/libs/server/_general/enums/server-response-status';
-import { findUserByEmail } from '../../user/repositories/user-repository';
+import { findByEmail } from '../../user/repositories/user-repository';
 import { ServerMessage } from '../../_general/enums/server-message';
 import { compare } from '../../_general/manager/bcrypt-manager';
 import { UserRole } from '../../user/models/user-models';
@@ -42,7 +42,7 @@ const checkRequest = (request: LoginRequest): boolean => {
 }
 
 const checkLoginInfo = async (request: LoginRequest): Promise<UserRole | undefined> => {
-  const userRole = await findUserByEmail(request.email, true)
+  const userRole = await findByEmail(request.email, true)
 
   if (!userRole) {
     return
