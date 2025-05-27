@@ -26,5 +26,5 @@ Seed data
 
 ```Nodejs
 yarn seed-system
-yarn seed-tenant
+yarn seed-organization
 ```

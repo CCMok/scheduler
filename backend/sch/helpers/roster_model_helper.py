@@ -140,7 +140,7 @@ class RosterModelHelper:
         rewards: list[cp_model.LinearExpr] = []
 
         post_constraints = RosterModelHelper.__find_post_constraints(
-            material.db_session, material.request.tenant_id
+            material.db_session, material.request.department_id
         )
 
         for post_constraint in post_constraints:
@@ -158,10 +158,10 @@ class RosterModelHelper:
         return sum(rewards)
 
     @staticmethod
-    def __find_post_constraints(db_session: DbSession, tenant_id: int):
+    def __find_post_constraints(db_session: DbSession, department_id: int):
         return db_session.exec(
             select(PostConstraint)
-            .where(PostConstraint.tenant_id == tenant_id)
+            .where(PostConstraint.department_id == department_id)
         ).all()
 
     @staticmethod
@@ -200,7 +200,7 @@ class RosterModelHelper:
         rewards: list[cp_model.LinearExpr] = []
 
         worker_constraints = RosterModelHelper.__find_worker_constraints(
-            material.db_session, material.request.tenant_id
+            material.db_session, material.request.department_id
         )
 
         for worker_constraint in worker_constraints:
@@ -218,10 +218,10 @@ class RosterModelHelper:
         return sum(rewards)
 
     @staticmethod
-    def __find_worker_constraints(db_session: DbSession, tenant_id: int):
+    def __find_worker_constraints(db_session: DbSession, department_id: int):
         return db_session.exec(
             select(WorkerConstraint)
-            .where(WorkerConstraint.tenant_id == tenant_id)
+            .where(WorkerConstraint.department_id == department_id)
         ).all()
 
     @staticmethod

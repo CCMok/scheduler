@@ -7,6 +7,6 @@ class OffRequest(BaseModel):
 
 
 class ArrangeRosterRequest(BaseModel):
-    tenant_id: int = Field(alias="tenantId")
+    department_id: int = Field(alias="departmentId")
     day_count: int = Field(alias="dayCount")
     offs: list[OffRequest]

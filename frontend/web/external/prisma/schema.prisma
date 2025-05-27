@@ -71,7 +71,7 @@ model Post {
   id                  Int                  @id @default(autoincrement())
   departmentId        Int                  @map("department_id")
   name                String
-  tenant              Department           @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  department          Department           @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   postWorkers         PostWorker[]
   postConstraintPosts PostConstraintPost[]
 
@@ -84,7 +84,7 @@ model Worker {
   id                      Int                      @id @default(autoincrement())
   departmentId            Int                      @map("department_id")
   name                    String
-  tenant                  Department               @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  department              Department               @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   postWorkers             PostWorker[]
   workerConstraintWorkers WorkerConstraintWorker[]
 
@@ -120,7 +120,7 @@ model PostConstraint {
   departmentId         Int                  @map("department_id")
   postConstraintTypeId Int                  @map("post_constraint_type_id")
   weighting            Int
-  tenant               Department           @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  department           Department           @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   postConstraintType   PostConstraintType   @relation(fields: [postConstraintTypeId], references: [id], onDelete: Cascade)
   postConstraintPosts  PostConstraintPost[]
 
@@ -156,7 +156,7 @@ model WorkerConstraint {
   departmentId            Int                      @map("department_id")
   workerConstraintTypeId  Int                      @map("worker_constraint_type_id")
   weighting               Int
-  tenant                  Department               @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  department              Department               @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   workerConstraintType    WorkerConstraintType     @relation(fields: [workerConstraintTypeId], references: [id], onDelete: Cascade)
   workerConstraintWorkers WorkerConstraintWorker[]
 

@@ -10,7 +10,7 @@ class PostWorker(SQLModel, table=True):
 
 class Post(SQLModel, table=True):
     id: int = Field(primary_key=True)
-    tenant_id: int = Field(foreign_key='tenant.id')
+    department_id: int = Field(foreign_key='department.id')
     name: str
 
     workers: list['Worker'] = Relationship(back_populates='posts', link_model=PostWorker)
@@ -19,7 +19,7 @@ class Post(SQLModel, table=True):
 
 class Worker(SQLModel, table=True):
     id: int = Field(primary_key=True)
-    tenant_id: int = Field(foreign_key="tenant.id")
+    department_id: int = Field(foreign_key="department.id")
     name: str
 
     posts: list['Post'] = Relationship(back_populates='workers', link_model=PostWorker)
@@ -38,7 +38,7 @@ class PostConstraintType(SQLModel, table=True):
 class PostConstraint(SQLModel, table=True):
     __tablename__ = 'post_constraint'
     id: int = Field(primary_key=True)
-    tenant_id: int = Field(foreign_key='tenant.id')
+    department_id: int = Field(foreign_key='department.id')
     post_constraint_type_id: int = Field(foreign_key='post_constraint_type.id')
     weighting: int
 
@@ -68,7 +68,7 @@ class WorkerConstraintType(SQLModel, table=True):
 class WorkerConstraint(SQLModel, table=True):
     __tablename__ = 'worker_constraint'
     id: int = Field(primary_key=True)
-    tenant_id: int = Field(foreign_key='tenant.id')
+    department_id: int = Field(foreign_key='department.id')
     worker_constraint_type_id: int = Field(foreign_key='worker_constraint_type.id')
     weighting: int
 

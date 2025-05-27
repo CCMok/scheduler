@@ -29,13 +29,13 @@ class RosterMaterial:
 
     def __find_posts(self) -> list[Post]:
         return self.db_session.exec(
-            select(Post).where(Post.tenant_id == self.request.tenant_id)
+            select(Post).where(Post.department_id == self.request.department_id)
         ).all()
 
     def __find_workers(self):
         return self.db_session.exec(
             select(Worker)
-            .where(Worker.tenant_id == self.request.tenant_id)
+            .where(Worker.department_id == self.request.department_id)
         ).all()
 
     def __create_shifts(self) -> dict[tuple[int, int, int], cp_model.IntVar]:
