@@ -3,7 +3,6 @@
 import { LoginFormInput, loginFormInputSchema } from '@/libs/client/login/models/login-form-input';
 import { ClassNameProps } from '@/libs/share/_general/props/class-name-props';
 import { Form, FormControl, FormField } from '@/external/shadcn/components/ui/form';
-import { Input } from '@/external/shadcn/components/ui/input';
 import { cn } from '@/external/shadcn/libs/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -15,6 +14,7 @@ import { ServerResponseStatus } from '@/libs/server/_general/enums/server-respon
 import { useRouter } from 'next/navigation';
 import { Path } from '@/libs/share/_general/enums/path';
 import FormSubmitButton from '@/components/form/form-submit-button';
+import InputCustom from '@/components/input/input-custom';
 
 export default function LoginForm({
   className,
@@ -53,7 +53,7 @@ export default function LoginForm({
           render={({ field }) => (
             <FormItemCustom label='電郵地址'>
               <FormControl>
-                <Input
+                <InputCustom
                   type='email'
                   autoComplete='email'
                   {...field}
@@ -69,7 +69,7 @@ export default function LoginForm({
           render={({ field }) => (
             <FormItemCustom label='密碼'>
               <FormControl>
-                <Input
+                <InputCustom
                   type='password'
                   autoComplete='current-password'
                   {...field}

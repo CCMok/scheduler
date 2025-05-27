@@ -1,5 +1,5 @@
 import 'server-only'
-import { LoginRequest, loginRequestSchema } from '@/libs/share/login/model/login-request'
+import { LoginRequest, loginRequestSchema } from '@/libs/server/login/model/login-request'
 import { ServerResponse } from '@/libs/share/_general/model/server-response'
 import { ServerResponseStatus } from '@/libs/server/_general/enums/server-response-status';
 import { findByEmail } from '../../user/repositories/user-repository';

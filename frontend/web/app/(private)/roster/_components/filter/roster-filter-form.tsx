@@ -8,6 +8,8 @@ import FormFieldDepartmentId from "./form-field-department-id"
 import FormFieldOrganizationId from "./form-field-organization-id"
 import { useRosterFilterForm } from "./roster-filter-form-hook"
 import FormSubmitButton from "@/components/form/form-submit-button"
+import { DEFAULT_DAY_COUNT } from "@/libs/share/roster/constants/roster-constant"
+import FormFieldDayCount from "./form-field-day-count"
 
 export default function RosterFilterForm() {
   const { defaultOrganizationId, defaultDepartmentId } = useRosterFilterForm();
@@ -17,6 +19,7 @@ export default function RosterFilterForm() {
     defaultValues: {
       organizationId: defaultOrganizationId,
       departmentId: defaultDepartmentId,
+      dayCount: DEFAULT_DAY_COUNT,
     },
   })
 
@@ -31,8 +34,10 @@ export default function RosterFilterForm() {
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <div className='flex space-x-4'>
+          {/* TODO: position if have error message */}
           <FormFieldOrganizationId />
           <FormFieldDepartmentId />
+          <FormFieldDayCount />
         </div>
 
         <FormSubmitButton>確認</FormSubmitButton>
