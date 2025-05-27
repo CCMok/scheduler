@@ -1,6 +1,5 @@
 'use client'
 
-import LoadingButton from "@/components/button/loading-button"
 import { Form } from "@/external/shadcn/components/ui/form"
 import { RosterFilterFormInput, rosterFilterFormInputSchema } from "@/libs/client/roster/models/roster-filter-form-input"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -8,6 +7,7 @@ import { useForm } from "react-hook-form"
 import FormFieldDepartmentId from "./form-field-department-id"
 import FormFieldOrganizationId from "./form-field-organization-id"
 import { useRosterFilterForm } from "./roster-filter-form-hook"
+import FormSubmitButton from "@/components/form/form-submit-button"
 
 export default function RosterFilterForm() {
   const { defaultOrganizationId, defaultDepartmentId } = useRosterFilterForm();
@@ -34,12 +34,8 @@ export default function RosterFilterForm() {
           <FormFieldOrganizationId />
           <FormFieldDepartmentId />
         </div>
-        <LoadingButton
-          type='submit'
-          isLoading={form.formState.isSubmitting}
-        >
-          提交
-        </LoadingButton>
+
+        <FormSubmitButton>確認</FormSubmitButton>
       </form>
     </Form>
   )

@@ -14,7 +14,7 @@ import { getRootMessage } from '@/libs/client/_general/utils/form-utils';
 import { ServerResponseStatus } from '@/libs/server/_general/enums/server-response-status';
 import { useRouter } from 'next/navigation';
 import { Path } from '@/libs/share/_general/enums/path';
-import LoadingButton from '@/components/button/loading-button';
+import FormSubmitButton from '@/components/form/form-submit-button';
 
 export default function LoginForm({
   className,
@@ -79,13 +79,7 @@ export default function LoginForm({
           )}
         />
 
-        <LoadingButton
-          type='submit'
-          className='w-full'
-          isLoading={form.formState.isSubmitting}
-        >
-          登入
-        </LoadingButton>
+        <FormSubmitButton className='w-full'>登入</FormSubmitButton>
 
         <FormRootMessage />
       </form>
