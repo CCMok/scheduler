@@ -1,6 +1,7 @@
 import { ClassNameProps } from "@/libs/share/_general/props/class-name-props";
 import RosterFilterForm from "./roster-filter-form";
 import { getOrganizationsBySession } from "@/libs/server/organization/utils/organization-utils";
+import { RosterFilterStoreProvider } from "@/components/store/roster-filter/roster-filter-store-provider";
 
 export default async function RosterSectionFilter({
   className,
@@ -9,7 +10,9 @@ export default async function RosterSectionFilter({
 
   return (
     <section className={className}>
-      <RosterFilterForm organizationDepartments={organizationDepartments} />
+      <RosterFilterStoreProvider initState={{ organizationDepartments }}>
+        <RosterFilterForm />
+      </RosterFilterStoreProvider>
     </section>
   )
 }
