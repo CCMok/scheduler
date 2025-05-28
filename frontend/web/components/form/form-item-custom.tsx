@@ -13,7 +13,7 @@ export default function FormItemCustom({
   children,
 }: Readonly<Props>) {
   return (
-    <FormItem>
+    <FormItem className='flex flex-col'>
       {label && <FormLabel>{label}</FormLabel>}
       {children}
       <FormMessage />

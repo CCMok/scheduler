@@ -1,4 +1,3 @@
-import { Separator } from "@/external/shadcn/components/ui/separator"
 import { Sidebar } from "@/external/shadcn/components/ui/sidebar"
 import { ComponentProps } from "react"
 import PrivateSidebarHeader from "./header/private-sidebar-header"
@@ -9,7 +8,6 @@ export async function PrivateSidebar(props: Readonly<ComponentProps<typeof Sideb
   return (
     <Sidebar collapsible='icon' {...props}>
       <PrivateSidebarHeader />
-      <Separator />
       <PrivateSidebarContent />
       <PrivateSidebarFooter />
     </Sidebar>

@@ -39,7 +39,7 @@ export default function ComboBox<T>({
             variant='outline'
             role='comobox'
             className={cn(
-              "w-[200px] justify-between",
+              "w-(--input-width) justify-between",
               !value && "text-muted-foreground"
             )}
           >
@@ -48,7 +48,7 @@ export default function ComboBox<T>({
           </Button>
         </FormControl>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-(--input-width) p-0">
         <Command>
           <CommandInput
             placeholder="搜尋..."

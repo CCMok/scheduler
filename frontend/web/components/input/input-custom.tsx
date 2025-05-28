@@ -5,6 +5,7 @@ export default function InputCustom(props: Readonly<ComponentProps<typeof Input>
   return (
     <Input
       autoComplete='off'
+      className='w-(--input-width)'
       {...props}
     />
   )

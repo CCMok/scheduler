@@ -9,6 +9,6 @@ export enum ClientMessage {
   REQUIRED = '必須填寫',
   FORMAT_NOT_VALID = '請輸入有效的{0}',
   INTEGER = '請輸入整數',
-  MIN = '請輸入多過 {0}',
-  MAX = '請輸入少過 {0}'
+  MIN = '請輸入大於 {0}',
+  MAX = '請輸入小於 {0}'
 }

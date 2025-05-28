@@ -16,6 +16,8 @@ import { Path } from '@/libs/share/_general/enums/path';
 import FormSubmitButton from '@/components/form/form-submit-button';
 import InputCustom from '@/components/input/input-custom';
 
+const inputClassName = 'w-full'
+
 export default function LoginForm({
   className,
 }: Readonly<ClassNameProps>) {
@@ -56,6 +58,7 @@ export default function LoginForm({
                 <InputCustom
                   type='email'
                   autoComplete='email'
+                  className={inputClassName}
                   {...field}
                 />
               </FormControl>
@@ -72,6 +75,7 @@ export default function LoginForm({
                 <InputCustom
                   type='password'
                   autoComplete='current-password'
+                  className={inputClassName}
                   {...field}
                 />
               </FormControl>
@@ -79,7 +83,7 @@ export default function LoginForm({
           )}
         />
 
-        <FormSubmitButton className='w-full'>登入</FormSubmitButton>
+        <FormSubmitButton className={inputClassName}>登入</FormSubmitButton>
 
         <FormRootMessage />
       </form>
