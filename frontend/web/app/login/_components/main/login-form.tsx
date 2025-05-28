@@ -6,7 +6,7 @@ import { Form, FormControl, FormField } from '@/external/shadcn/components/ui/fo
 import { cn } from '@/external/shadcn/libs/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import FormItemCustom from '@/components/form/form-item-custom';
+import CustomFormItem from '@/components/form/custom-form-item';
 import FormRootMessage from '@/components/form/form-root-message';
 import { loginAction } from '@/libs/server/login/action/login-action';
 import { getRootMessage } from '@/libs/client/_general/utils/form-utils';
@@ -14,7 +14,7 @@ import { ServerResponseStatus } from '@/libs/server/_general/enums/server-respon
 import { useRouter } from 'next/navigation';
 import { Path } from '@/libs/share/_general/enums/path';
 import FormSubmitButton from '@/components/form/form-submit-button';
-import InputCustom from '@/components/input/input-custom';
+import CustomInput from '@/components/input/custom-input';
 
 const inputClassName = 'w-full'
 
@@ -53,16 +53,16 @@ export default function LoginForm({
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItemCustom label='電郵地址'>
+            <CustomFormItem label='電郵地址'>
               <FormControl>
-                <InputCustom
+                <CustomInput
                   type='email'
                   autoComplete='email'
                   className={inputClassName}
                   {...field}
                 />
               </FormControl>
-            </FormItemCustom>
+            </CustomFormItem>
           )}
         />
 
@@ -70,16 +70,16 @@ export default function LoginForm({
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItemCustom label='密碼'>
+            <CustomFormItem label='密碼'>
               <FormControl>
-                <InputCustom
+                <CustomInput
                   type='password'
                   autoComplete='current-password'
                   className={inputClassName}
                   {...field}
                 />
               </FormControl>
-            </FormItemCustom>
+            </CustomFormItem>
           )}
         />
 

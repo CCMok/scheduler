@@ -8,7 +8,7 @@ import {
 import { Path } from "@/libs/share/_general/enums/path"
 import { Calendar, Home, Settings } from "lucide-react"
 import Link from "next/link"
-import PrivateSidebarMenuItem from "../item/private-sidebar-menu-item"
+import PrivateSidebarMenuItem from "../menu-item/private-sidebar-menu-item"
 
 const mainMenuItems = [
   {

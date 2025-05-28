@@ -4,13 +4,13 @@ import { Form } from "@/external/shadcn/components/ui/form"
 import { RosterFilterFormInput, rosterFilterFormInputSchema } from "@/libs/client/roster/models/roster-filter-form-input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import FormFieldDepartmentId from "./form-field-department-id"
-import FormFieldOrganizationId from "./form-field-organization-id"
+import DepartmentIdFormField from "./department-id-form-field"
+import OrganizationIdFormField from "./organization-id-form-field"
 import { useRosterFilterForm } from "./roster-filter-form-hook"
 import FormSubmitButton from "@/components/form/form-submit-button"
 import { DEFAULT_DAY_COUNT } from "@/libs/share/roster/constants/roster-constant"
-import FormFieldDayCount from "./form-field-day-count"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/external/shadcn/components/ui/card"
+import DayCountFormField from "./day-count-form-field"
+import { Card, CardHeader, CardTitle, CardContent } from "@/external/shadcn/components/ui/card"
 
 export default function RosterFilterForm() {
   const { defaultOrganizationId, defaultDepartmentId } = useRosterFilterForm();
@@ -39,9 +39,9 @@ export default function RosterFilterForm() {
             <CardTitle>基本資料</CardTitle>
           </CardHeader>
           <CardContent className='flex flex-wrap space-x-4 space-y-4'>
-            <FormFieldOrganizationId />
-            <FormFieldDepartmentId />
-            <FormFieldDayCount />
+            <OrganizationIdFormField />
+            <DepartmentIdFormField />
+            <DayCountFormField />
           </CardContent>
         </Card>
 

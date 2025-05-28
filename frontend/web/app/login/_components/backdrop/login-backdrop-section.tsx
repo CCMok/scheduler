@@ -3,7 +3,7 @@ import { ClassNameProps } from '@/libs/share/_general/props/class-name-props';
 import { AnimatedGridPattern } from '@/external/magicui/animated-grid-pattern';
 import { cn } from '@/external/shadcn/libs/utils';
 
-export default function LoginLeftSection({
+export default function LoginBackdropSection({
   className,
 }: Readonly<ClassNameProps>) {
   return (

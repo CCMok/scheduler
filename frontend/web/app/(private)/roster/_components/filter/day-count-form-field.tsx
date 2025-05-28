@@ -1,12 +1,12 @@
 'use client'
 
-import FormItemCustom from "@/components/form/form-item-custom"
-import InputCustom from "@/components/input/input-custom"
+import CustomFormItem from "@/components/form/custom-form-item"
+import CustomInput from "@/components/input/custom-input"
 import { FormControl, FormField } from "@/external/shadcn/components/ui/form"
 import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
 import { useFormContext } from "react-hook-form"
 
-export default function FormFieldDayCount() {
+export default function DayCountFormField() {
   const { control } = useFormContext<RosterFilterFormInput>();
 
   return (
@@ -14,14 +14,14 @@ export default function FormFieldDayCount() {
       control={control}
       name='dayCount'
       render={({ field }) => (
-        <FormItemCustom label='日期數量'>
+        <CustomFormItem label='日期數量'>
           <FormControl>
-            <InputCustom
+            <CustomInput
               type='number'
               {...field}
             />
           </FormControl>
-        </FormItemCustom>
+        </CustomFormItem>
       )}
     />
   )

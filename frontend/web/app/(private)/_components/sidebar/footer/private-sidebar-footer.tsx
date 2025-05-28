@@ -1,4 +1,4 @@
-import DropdownMenuItemCustom from "@/components/dropdown/dropdown-menu-item-custom"
+import CustomDropdownMenuItem from "@/components/dropdown/custom-dropdown-menu-item"
 import { DropdownMenu, DropdownMenuTrigger } from "@/external/shadcn/components/ui/dropdown-menu"
 import {
   SidebarFooter,
@@ -8,7 +8,7 @@ import {
 } from "@/external/shadcn/components/ui/sidebar"
 import { ChevronDown, Moon, Sun } from "lucide-react"
 import Link from "next/link"
-import DropdownMenuContentSidebar from "@/components/dropdown/dropdown-menu-content-sidebar"
+import SidebarDropdownMenuContent from "@/components/dropdown/sidebar-dropdown-menu-content"
 import { ThemeToggle } from "@/components/button/theme-toggle"
 
 export default function PrivateSidebarFooter() {

@@ -1,4 +1,4 @@
-export default function RosterSectionTable() {
+export default function RosterTableSection() {
   return (
     <section>
       Table

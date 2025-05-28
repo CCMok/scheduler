@@ -10,7 +10,7 @@ const getUserDisplayName = async (): Promise<string> => {
   return session.name ?? session.email;
 }
 
-export default async function DropdownMenuTriggerUser() {
+export default async function UserDropdownMenuTrigger() {
   const userDispalyName = await getUserDisplayName();
 
   return (

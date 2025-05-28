@@ -2,7 +2,7 @@ import { ClassNameProps } from '@/libs/share/_general/props/class-name-props';
 import { cn } from '@/external/shadcn/libs/utils';
 import LoginForm from './login-form';
 
-export default function LoginRightSection({
+export default function LoginMainSection({
   className,
 }: Readonly<ClassNameProps>) {
   return (

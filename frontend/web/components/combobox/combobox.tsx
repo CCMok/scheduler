@@ -7,7 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/external/shadcn/compo
 import { cn } from "@/external/shadcn/libs/utils"
 import { Check, ChevronDown } from "lucide-react"
 import { useMemo, useState } from "react"
-import CommandItemCustom from "../command/command-item-custom"
+import CustomCommandItem from "../command/custom-command-item"
 import { getSelectedItemDisplay } from "./combobox-utils"
 
 type Props<T> = {
@@ -62,7 +62,7 @@ export default function ComboBox<T>({
                 const displayName = getDisplayName(item)
 
                 return (
-                  <CommandItemCustom
+                  <CustomCommandItem
                     key={itemValue}
                     value={displayName}
                     onSelect={() => {
@@ -79,7 +79,7 @@ export default function ComboBox<T>({
                           : "opacity-0"
                       )}
                     />
-                  </CommandItemCustom>
+                  </CustomCommandItem>
                 )
               })}
             </CommandGroup>

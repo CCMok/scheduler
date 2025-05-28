@@ -1,13 +1,13 @@
 'use client'
 
 import ComboBox from "@/components/combobox/combobox"
-import FormItemCustom from "@/components/form/form-item-custom"
+import CustomFormItem from "@/components/form/custom-form-item"
 import { useRosterFilterStore } from "@/components/store/roster-filter/roster-filter-store-provider"
 import { FormField } from "@/external/shadcn/components/ui/form"
 import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
 import { useFormContext } from "react-hook-form"
 
-export default function FormFieldOrganizationId() {
+export default function OrganizationIdFormField() {
   const { control, setValue } = useFormContext<RosterFilterFormInput>();
   
   const { organizationDepartments } = useRosterFilterStore(state => state);
@@ -17,7 +17,7 @@ export default function FormFieldOrganizationId() {
       control={control}
       name='organizationId'
       render={({ field }) => (
-        <FormItemCustom label='機構'>
+        <CustomFormItem label='機構'>
           <ComboBox
             value={field.value}
             items={organizationDepartments}
@@ -25,7 +25,7 @@ export default function FormFieldOrganizationId() {
             getDisplayName={item => item.name}
             onSelect={value => setValue('organizationId', value)}
           />
-        </FormItemCustom>
+        </CustomFormItem>
       )}
     />
   )

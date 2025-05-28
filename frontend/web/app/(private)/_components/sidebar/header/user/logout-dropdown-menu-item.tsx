@@ -1,13 +1,13 @@
 'use client'
 
-import DropdownMenuItemCustom from "@/components/dropdown/dropdown-menu-item-custom"
+import CustomDropdownMenuItem from "@/components/dropdown/custom-dropdown-menu-item"
 import { ServerResponseStatus } from "@/libs/server/_general/enums/server-response-status"
 import { logoutAction } from "@/libs/server/logout/action/logout-action"
 import { redirectPublicPath } from "@/libs/share/_general/enums/path"
 import { LogOut } from "lucide-react"
 import { useRouter } from "next/navigation"
 
-export default function DropdownMenuItemLogout() {
+export default function LogoutDropdownMenuItem() {
   const router = useRouter();
 
   const onClick = async () => {
@@ -21,9 +21,9 @@ export default function DropdownMenuItemLogout() {
   }
 
   return (
-    <DropdownMenuItemCustom onClick={onClick}>
+    <CustomDropdownMenuItem onClick={onClick}>
       <LogOut />
       <span>登出</span>
-    </DropdownMenuItemCustom>
+    </CustomDropdownMenuItem>
   )
 }

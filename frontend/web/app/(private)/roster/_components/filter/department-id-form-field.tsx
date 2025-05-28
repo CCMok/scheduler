@@ -1,7 +1,7 @@
 'use client'
 
 import ComboBox from "@/components/combobox/combobox"
-import FormItemCustom from "@/components/form/form-item-custom"
+import CustomFormItem from "@/components/form/custom-form-item"
 import { FormField } from "@/external/shadcn/components/ui/form"
 import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
 import { useFormContext, useWatch } from "react-hook-form"
@@ -9,7 +9,7 @@ import { getDefaultOrganizationId, getDepartments } from "./roster-filter-form-u
 import { useEffect, useMemo } from "react"
 import { useRosterFilterStore } from "@/components/store/roster-filter/roster-filter-store-provider"
 
-export default function FormFieldDepartmentId() {
+export default function DepartmentIdFormField() {
   const { control, setValue } = useFormContext<RosterFilterFormInput>();
 
   const { organizationDepartments } = useRosterFilterStore(state => state);
@@ -37,7 +37,7 @@ export default function FormFieldDepartmentId() {
       control={control}
       name='departmentId'
       render={({ field }) => (
-        <FormItemCustom label='部門'>
+        <CustomFormItem label='部門'>
           <ComboBox
             value={field.value}
             items={departments}
@@ -45,7 +45,7 @@ export default function FormFieldDepartmentId() {
             getDisplayName={item => item.name}
             onSelect={value => setValue('departmentId', value)}
           />
-        </FormItemCustom>
+        </CustomFormItem>
       )}
     />
   )
