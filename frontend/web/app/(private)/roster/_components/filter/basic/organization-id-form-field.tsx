@@ -10,7 +10,7 @@ import { useFormContext } from "react-hook-form"
 export default function OrganizationIdFormField() {
   const { control, setValue } = useFormContext<RosterFilterFormInput>();
   
-  const { organizationDepartments } = useRosterFilterStore(state => state);
+  const { organizations } = useRosterFilterStore(state => state);
   
   return (
     <FormField
@@ -20,7 +20,7 @@ export default function OrganizationIdFormField() {
         <CustomFormItem label='機構'>
           <ComboBox
             value={field.value}
-            items={organizationDepartments}
+            items={organizations}
             getValue={item => item.id.toString()}
             getDisplayName={item => item.name}
             onSelect={value => setValue('organizationId', value)}

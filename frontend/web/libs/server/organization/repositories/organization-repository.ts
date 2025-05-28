@@ -1,19 +1,28 @@
-import 'server-only'
-import prisma from '../../_general/manager/database-manager'
+import 'server-only';
+import { getSession } from '../../_general/manager/session-manager';
+import { Role } from '@/libs/share/_general/enums/role';
+import prisma from '../../_general/manager/database-manager';
 
-export const findMany = async (incldueDepartments: boolean | undefined = false) => {
-  return await prisma.organization.findMany({
-    include: {
-      departments: incldueDepartments,
+const includeWorkersArgs = {
+  include: {
+    departments: {
+      include: {
+        workers: true,
+      }
     },
-  })
+  },
 }
 
-export const findManyByUserId = async (userId: number, incldueDepartments: boolean | undefined = false) => {
+export const getOrganizationsBySession = async () => {
+  const sessionPayload = await getSession();
+  if (!sessionPayload) return []
+
+  if (sessionPayload.roleEnum === Role.SYSTEM_ADMIN) {
+    return await prisma.organization.findMany(includeWorkersArgs);
+  }
+
   return await prisma.organization.findMany({
-    where: { userOrganizations: { some: { userId } } },
-    include: {
-      departments: incldueDepartments,
-    },
+    where: { userOrganizations: { some: { userId: sessionPayload.userId } } },
+    ...includeWorkersArgs,
   })
 }

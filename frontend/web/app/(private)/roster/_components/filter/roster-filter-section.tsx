@@ -1,16 +1,16 @@
 import { ClassNameProps } from "@/libs/share/_general/props/class-name-props";
 import RosterFilterForm from "./roster-filter-form";
-import { getOrganizationsBySession } from "@/libs/server/organization/utils/organization-utils";
+import { getOrganizationsBySession } from "@/libs/server/organization/repositories/organization-repository";
 import { RosterFilterStoreProvider } from "@/components/store/roster-filter/roster-filter-store-provider";
 
 export default async function RosterFilterSection({
   className,
 }: Readonly<ClassNameProps>) {
-  const organizationDepartments = await getOrganizationsBySession(true)
+  const organizations = await getOrganizationsBySession()
 
   return (
     <section className={className}>
-      <RosterFilterStoreProvider initState={{ organizationDepartments }}>
+      <RosterFilterStoreProvider initState={{ organizations }}>
         <RosterFilterForm />
       </RosterFilterStoreProvider>
     </section>

@@ -2,17 +2,17 @@ import { OrganizationDepartments } from '@/libs/server/organization/models/organ
 import { createStore } from 'zustand/vanilla'
 
 export type RosterFilterState = {
-  organizationDepartments: OrganizationDepartments[]
+  organizations: OrganizationDepartments[]
 }
 
 export type RosterFilterActions = {
-  setOrganizationDepartments: (organizationDepartments: OrganizationDepartments[]) => void,
+  setOrganizations: (organizations: OrganizationDepartments[]) => void,
 }
 
 export type RosterFilterStore = RosterFilterState & RosterFilterActions
 
 export const defaultInitState: RosterFilterState = {
-  organizationDepartments: [],
+  organizations: [],
 }
 
 export const createRosterFilterStore = (
@@ -20,6 +20,6 @@ export const createRosterFilterStore = (
 ) => {
   return createStore<RosterFilterStore>()(set => ({
     ...initState,
-    setOrganizationDepartments: organizationDepartments => set(() => ({ organizationDepartments })),
+    setOrganizations: organizations => set(() => ({ organizations })),
   }))
 }

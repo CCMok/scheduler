@@ -5,16 +5,16 @@ import CustomFormItem from "@/components/form/custom-form-item"
 import { FormField } from "@/external/shadcn/components/ui/form"
 import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
 import { useFormContext, useWatch } from "react-hook-form"
-import { getDefaultOrganizationId, getDepartments } from "./roster-filter-form-utils"
+import { getDefaultOrganizationId, getDepartments } from "../roster-filter-form-utils"
 import { useEffect, useMemo } from "react"
 import { useRosterFilterStore } from "@/components/store/roster-filter/roster-filter-store-provider"
 
 export default function DepartmentIdFormField() {
   const { control, setValue } = useFormContext<RosterFilterFormInput>();
 
-  const { organizationDepartments } = useRosterFilterStore(state => state);
+  const { organizations } = useRosterFilterStore(state => state);
 
-  const defaultOrganizationId = useMemo(() => getDefaultOrganizationId(organizationDepartments), [organizationDepartments])
+  const defaultOrganizationId = useMemo(() => getDefaultOrganizationId(organizations), [organizations])
 
   const organizationId = useWatch({
     control,
@@ -23,8 +23,8 @@ export default function DepartmentIdFormField() {
   })
 
   const departments = useMemo(
-    () => getDepartments(organizationDepartments, organizationId),
-    [organizationDepartments, organizationId]
+    () => getDepartments(organizations, organizationId),
+    [organizations, organizationId]
   )
 
   useEffect(() => {

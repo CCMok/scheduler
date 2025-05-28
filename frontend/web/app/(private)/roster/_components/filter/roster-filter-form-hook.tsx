@@ -5,16 +5,16 @@ import { useMemo } from "react";
 import { getDefaultDepartmentId, getDefaultOrganizationId } from "./roster-filter-form-utils";
 
 export const useRosterFilterForm = () => {
-  const { organizationDepartments } = useRosterFilterStore(state => state);
+  const { organizations } = useRosterFilterStore(state => state);
 
   const defaultOrganizationId = useMemo(
-    () => getDefaultOrganizationId(organizationDepartments),
-    [organizationDepartments]
+    () => getDefaultOrganizationId(organizations),
+    [organizations]
   )
 
   const defaultDepartmentId = useMemo(
-    () => getDefaultDepartmentId(organizationDepartments, defaultOrganizationId),
-    [organizationDepartments, defaultOrganizationId]
+    () => getDefaultDepartmentId(organizations, defaultOrganizationId),
+    [organizations, defaultOrganizationId]
   )
 
   return {
