@@ -12,7 +12,7 @@ import { useRosterFilterStore } from "@/components/store/roster-filter/roster-fi
 export default function DepartmentIdFormField() {
   const { control, setValue } = useFormContext<RosterFilterFormInput>();
 
-  const { organizations } = useRosterFilterStore(state => state);
+  const { organizations, setDepartments } = useRosterFilterStore(state => state);
 
   const defaultOrganizationId = useMemo(() => getDefaultOrganizationId(organizations), [organizations])
 
@@ -30,6 +30,7 @@ export default function DepartmentIdFormField() {
   useEffect(() => {
     const departmentId = departments.length ? departments[0].id.toString() : ''
     setValue('departmentId', departmentId)
+    setDepartments(departments)
   }, [departments, setValue])
 
   return (

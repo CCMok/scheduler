@@ -2,13 +2,15 @@
 
 import ComboBox from "@/components/combobox/combobox";
 import CustomFormItem from "@/components/form/custom-form-item";
+import { useRosterFilterStore } from "@/components/store/roster-filter/roster-filter-store-provider";
 import { Button } from "@/external/shadcn/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/external/shadcn/components/ui/card"
 import { FormField } from "@/external/shadcn/components/ui/form";
 import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
 import { Minus, Plus } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form"
+import { getWorkers } from "../roster-filter-form-utils";
 
 export default function OffFilter() {
   const { control, setValue } = useFormContext<RosterFilterFormInput>();
@@ -18,16 +20,25 @@ export default function OffFilter() {
     name: 'offs',
   })
 
+  const { departments } = useRosterFilterStore(state => state)
+
   const departmentId = useWatch({
     control,
     name: 'departmentId',
-    defaultValue: '', // TODO
+    defaultValue: departments.length ? departments[0].id.toString() : '',
   })
 
-  useMemo(() => { }, [])
+  const workers = useMemo(() => getWorkers(departments, departmentId), [departments, departmentId])
+
+  useEffect(() => {
+    const workerId = workers.length ? workers[0].id.toString() : ''
+    fields.forEach((_, index) => {
+      setValue(`offs.${index}.worker_id`, workerId)
+    })
+  }, [workers, setValue])
 
   const onClickAppend = () => append({
-    worker_id: '',
+    worker_id: workers.length ? workers[0].id.toString() : '',
     days: [],
   })
 
@@ -49,8 +60,7 @@ export default function OffFilter() {
                   <CustomFormItem label='人員'>
                     <ComboBox
                       value={field.value}
-                      // TODO: real data
-                      items={[{ id: 1, name: 'Worker 1' }, { id: 2, name: 'Worker 2' }]}
+                      items={workers}
                       getValue={item => item.id.toString()}
                       getDisplayName={item => item.name}
                       onSelect={value => setValue(`offs.${index}.worker_id`, value)}
