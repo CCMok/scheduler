@@ -42,7 +42,7 @@ export default function OffFilter() {
         remove(i)
       }
     }
-  }, [workers, getValues, remove])
+  }, [workers, setWorkers, getValues, remove])
 
   const onClickAppend = () => append({
     worker_id: workers.length ? workers[0].id.toString() : '',
@@ -75,7 +75,7 @@ export default function OffFilter() {
         <Button
           type='button'
           variant='outline'
-          size='icon'
+          className='w-full'
           onClick={onClickAppend}
         >
           <Plus />
