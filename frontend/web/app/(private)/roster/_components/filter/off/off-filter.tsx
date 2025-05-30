@@ -8,6 +8,7 @@ import { Minus, Plus } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form"
 import WorkerIdFormField from "./worker-id-form-field";
+import DaysFormField from "./days-form-field";
 
 export default function OffFilter() {
   const { control, getValues } = useFormContext<RosterFilterFormInput>();
@@ -61,6 +62,7 @@ export default function OffFilter() {
           <Card key={item.id} className='w-fit'>
             <CardContent className='flex gap-4 items-center'>
               <WorkerIdFormField index={index} />
+              <DaysFormField index={index} />
               <Button
                 type='button'
                 variant='secondary'
