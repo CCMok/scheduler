@@ -18,14 +18,13 @@ const frameworksList = [
   { value: "2", label: "2" },
   { value: "3", label: "3" },
   { value: "4", label: "4" },
-  { value: "5", label: "5" },
 ];
 
 export default function DaysFormField({
   index
 }: Readonly<Props>) {
   const { control } = useFormContext<RosterFilterFormInput>();
-  const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>(["1", "2"]);
+  const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([]);
 
   return (
     <FormField
@@ -34,7 +33,9 @@ export default function DaysFormField({
       render={({ field }) => (
         <CustomFormItem label='缺席日'>
           <MultiSelectCommand
-            options={frameworksList}
+            items={frameworksList}
+            getValue={item => item.value}
+            getDisplayName={item => item.label}
             onValueChange={setSelectedFrameworks}
             defaultValue={[]} // TODO from react hook form
             variant="inverted"
