@@ -35,11 +35,9 @@ export default function DaysFormField({
           <MultiSelectCommand
             options={frameworksList}
             onValueChange={setSelectedFrameworks}
-            defaultValue={selectedFrameworks}
-            placeholder="Select frameworks"
+            defaultValue={[]} // TODO from react hook form
             variant="inverted"
             animation={2}
-            maxCount={3}
           />
         </CustomFormItem>
       )}
