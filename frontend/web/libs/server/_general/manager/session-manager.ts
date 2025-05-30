@@ -5,7 +5,7 @@ import { SessionPayload } from "../models/session-payload";
 import { deleteCookie, getCookie, setCookie } from './cookie-manager';
 
 // config
-const sessionExpirationTime = '1h';
+const sessionExpirationTime = '1d';
 const cookieName = 'token';
 
 export const setSession = async (userRole: UserRole): Promise<void> => {

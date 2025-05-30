@@ -4,14 +4,26 @@ import { Form } from "@/external/shadcn/components/ui/form"
 import { RosterFilterFormInput, rosterFilterFormInputSchema } from "@/libs/client/roster/models/roster-filter-form-input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { useRosterFilterForm } from "./roster-filter-form-hook"
 import FormSubmitButton from "@/components/form/form-submit-button"
 import { DEFAULT_DAY_COUNT } from "@/libs/share/roster/constants/roster-constant"
 import BasicFilter from "./basic/basic-filter"
 import OffFilter from "./off/off-filter"
+import { useRosterFilterStore } from "@/components/store/roster-filter/roster-filter-store-provider"
+import { useMemo } from "react"
 
 export default function RosterFilterForm() {
-  const { defaultOrganizationId, defaultDepartmentId } = useRosterFilterForm();
+  const { organizations } = useRosterFilterStore(state => state);
+
+  const { defaultOrganizationId, defaultDepartmentId } = useMemo(() => {
+    const firstOrganization = organizations?.[0];
+    const orgId = firstOrganization?.id?.toString() ?? '';
+    const deptId = firstOrganization?.departments?.[0]?.id?.toString() ?? '';
+
+    return {
+      defaultOrganizationId: orgId,
+      defaultDepartmentId: deptId,
+    };
+  }, [organizations]);
 
   const form = useForm({
     resolver: zodResolver(rosterFilterFormInputSchema),

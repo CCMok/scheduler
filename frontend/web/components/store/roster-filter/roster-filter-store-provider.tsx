@@ -12,7 +12,7 @@ export const StoreContext = createContext<RosterFilterStoreApi | undefined>(
 )
 
 export type Props = ChildrenProps & {
-  initState?: RosterFilterState,
+  initState?: Partial<RosterFilterState>,
 }
 
 export const RosterFilterStoreProvider = ({
