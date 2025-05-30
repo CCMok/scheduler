@@ -60,17 +60,17 @@ export default function OffFilter() {
       <CardContent className='space-y-4'>
         {fields.map((item, index) => (
           <Card key={item.id} className='w-fit'>
-            <CardContent className='flex gap-4 items-center'>
+            <CardContent className='flex flex-col gap-4 sm:flex-row sm:items-center'>
               <WorkerIdFormField index={index} />
               <DaysFormField index={index} />
-              <Button
-                type='button'
-                variant='secondary'
-                size='icon'
-                onClick={() => onClickRemove(index)}
-              >
-                <Minus />
-              </Button>
+                <Button
+                  type='button'
+                  variant='secondary'
+                  size='icon'
+                  onClick={() => onClickRemove(index)}
+                >
+                  <Minus />
+                </Button>
             </CardContent>
           </Card>
         ))}

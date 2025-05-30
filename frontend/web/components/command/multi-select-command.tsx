@@ -107,6 +107,8 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> &
      * Optional, can be used to add custom styles.
      */
     className?: string;
+
+    isShowAnimationButton?: boolean;
   }
 
 export default function MultiSelectCommand({
@@ -120,6 +122,7 @@ export default function MultiSelectCommand({
   modalPopover = false,
   asChild = false,
   className,
+  isShowAnimationButton = false,
   ...props
 }: Readonly<Props>) {
   const [selectedValues, setSelectedValues] = useState<string[]>(defaultValue);
@@ -184,8 +187,9 @@ export default function MultiSelectCommand({
         <FormControl>
           <Button
             onClick={handleTogglePopover}
+            role='comobox'
             className={cn(
-              "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto",
+              "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto min-w-(--input-width)",
               className
             )}
             {...props}
@@ -207,13 +211,17 @@ export default function MultiSelectCommand({
                       >
                         {IconComponent && <IconComponent className="h-4 w-4 mr-2" />}
                         {option?.label}
-                        <XCircle
-                          className="ml-2 h-4 w-4 cursor-pointer"
+                        {/* Icon onClick do not have feedback */}
+                        {/* Wrap by Button will cause nested button erorr */}
+                        <span
+                          role='button'
                           onClick={event => {
                             event.stopPropagation();
                             toggleOption(value);
                           }}
-                        />
+                        >
+                          <XCircle className="ml-2 h-4 w-4 cursor-pointer" />
+                        </span>
                       </Badge>
                     );
                   })}
@@ -227,30 +235,28 @@ export default function MultiSelectCommand({
                       style={{ animationDuration: `${animation}s` }}
                     >
                       {`+ ${selectedValues.length - maxCount} more`}
-                      <Button
+                      <span
+                        role='button'
                         onClick={event => {
                           event.stopPropagation();
                           clearExtraOptions();
                         }}
-                        variant='ghost'
-                        size='icon'
-                        className='h-auto' // TODO: change to height inherit
                       >
-                        <XCircle
-                          className="ml-2 h-4 w-4 cursor-pointer"
-                        />
-                      </Button>
+                        <XCircle className="ml-2 h-4 w-4 cursor-pointer" />
+                      </span>
                     </Badge>
                   )}
                 </div>
                 <div className="flex items-center justify-between">
-                  <XIcon
-                    className="h-4 mx-2 cursor-pointer text-muted-foreground"
-                    onClick={(event) => {
+                  <span
+                    role='button'
+                    onClick={event => {
                       event.stopPropagation();
                       handleClear();
                     }}
-                  />
+                  >
+                    <XIcon className="h-4 mx-2 cursor-pointer text-muted-foreground" />
+                  </span>
                   <Separator
                     orientation="vertical"
                     className="flex min-h-6 h-full"
@@ -280,7 +286,7 @@ export default function MultiSelectCommand({
             onKeyDown={handleInputKeyDown}
           />
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandEmpty>沒有資料</CommandEmpty>
             <CommandGroup>
               <CommandItem
                 key="all"
@@ -297,9 +303,9 @@ export default function MultiSelectCommand({
                 >
                   <CheckIcon className="h-4 w-4" />
                 </div>
-                <span>(Select All)</span>
+                <span>(選擇全部)</span>
               </CommandItem>
-              {options.map((option) => {
+              {options.map(option => {
                 const isSelected = selectedValues.includes(option.value);
                 return (
                   <CommandItem
@@ -334,7 +340,7 @@ export default function MultiSelectCommand({
                       onSelect={handleClear}
                       className="flex-1 justify-center cursor-pointer"
                     >
-                      Clear
+                      清除
                     </CommandItem>
                     <Separator
                       orientation="vertical"
@@ -346,14 +352,14 @@ export default function MultiSelectCommand({
                   onSelect={() => setIsPopoverOpen(false)}
                   className="flex-1 justify-center cursor-pointer max-w-full"
                 >
-                  Close
+                  關閉
                 </CommandItem>
               </div>
             </CommandGroup>
           </CommandList>
         </Command>
       </PopoverContent>
-      {animation > 0 && selectedValues.length > 0 && (
+      {animation > 0 && selectedValues.length > 0 && isShowAnimationButton && (
         <WandSparkles
           className={cn(
             "cursor-pointer my-2 text-foreground bg-background w-3 h-3",
