@@ -45,8 +45,6 @@ interface SelectedBadgesDisplayProps<T> {
   getDisplayName: (option: T) => string;
   maxCount: number;
   variant: MultiSelectVariant;
-  animation: number;
-  isAnimating: boolean;
   onToggleOption: (value: string) => void;
   onClearExtraOptions: () => void;
 }
@@ -58,8 +56,6 @@ export function SelectedBadgesDisplay<T>({
   getDisplayName,
   maxCount,
   variant,
-  animation,
-  isAnimating,
   onToggleOption,
   onClearExtraOptions,
 }: Readonly<SelectedBadgesDisplayProps<T>>) {
@@ -71,10 +67,8 @@ export function SelectedBadgesDisplay<T>({
           <Badge
             key={value}
             className={cn(
-              isAnimating ? "animate-bounce" : "",
               multiSelectVariants({ variant })
             )}
-            style={{ animationDuration: `${animation}s` }}
           >
             {option && getDisplayName(option)}
             <span
@@ -95,12 +89,10 @@ export function SelectedBadgesDisplay<T>({
         <Badge
           className={cn(
             "bg-transparent text-foreground border-foreground/10 hover:bg-transparent",
-            isAnimating ? "animate-bounce" : "",
             multiSelectVariants({ variant }),
           )}
-          style={{ animationDuration: `${animation}s` }}
         >
-          {`+ ${selectedValues.length - maxCount} more`}
+          {`+ ${selectedValues.length - maxCount} 更多`}
           <span
             role='button'
             tabIndex={0}
@@ -130,8 +122,6 @@ export function TriggerButtonDisplay<T>({
   getDisplayName,
   maxCount,
   variant,
-  animation,
-  isAnimating,
   onToggleOption,
   onClearExtraOptions,
   onClearAll,
@@ -156,8 +146,6 @@ export function TriggerButtonDisplay<T>({
         getDisplayName={getDisplayName}
         maxCount={maxCount}
         variant={variant}
-        animation={animation}
-        isAnimating={isAnimating}
         onToggleOption={onToggleOption}
         onClearExtraOptions={onClearExtraOptions}
       />

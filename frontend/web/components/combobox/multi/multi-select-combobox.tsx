@@ -15,30 +15,27 @@ import {
 } from "./multi-select-combobox-parts";
 
 type Props<T> = ComponentProps<typeof Button> & {
-    values: string[];
-    onValueChange: (value: string[]) => void;
-    options: T[];
-    getValue: (option: T) => string;
-    getDisplayName: (option: T) => string;
-    animation?: number;
-    maxDisplayCount?: number;
-    selectedItemVariant?: VariantProps<typeof multiSelectVariants>['variant'];
-  }
+  values: string[];
+  onValueChange: (value: string[]) => void;
+  options: T[];
+  getValue: (option: T) => string;
+  getDisplayName: (option: T) => string;
+  maxDisplayCount?: number;
+  selectedItemVariant?: VariantProps<typeof multiSelectVariants>['variant'];
+}
 
 export default function MultiSelectCombobox<T>({
   className,
   values,
-  options,
   onValueChange,
-  selectedItemVariant,
-  animation = 0,
-  maxDisplayCount = 3,
+  options,
   getValue,
   getDisplayName,
+  maxDisplayCount = 3,
+  selectedItemVariant,
   ...props
 }: Readonly<Props<T>>) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
 
   const updateSelectedValues = (newValues: string[]) => {
     onValueChange(newValues);
@@ -108,8 +105,6 @@ export default function MultiSelectCombobox<T>({
               getDisplayName={getDisplayName}
               maxCount={maxDisplayCount}
               variant={selectedItemVariant}
-              animation={animation}
-              isAnimating={isAnimating}
               onToggleOption={toggleOption}
               onClearExtraOptions={clearExtraOptions}
               onClearAll={handleClearAll}

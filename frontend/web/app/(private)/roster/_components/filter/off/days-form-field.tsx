@@ -59,7 +59,6 @@ export default function DaysFormField({
             getDisplayName={option => option.name}
             onValueChange={value => setValue(`offs.${index}.days`, value)}
             selectedItemVariant="inverted"
-            animation={2}
             maxDisplayCount={DEFAULT_DAY_COUNT}
           />
         </CustomFormItem>
