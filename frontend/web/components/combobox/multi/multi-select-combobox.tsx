@@ -1,3 +1,5 @@
+'use client'
+
 import { type VariantProps } from "class-variance-authority";
 import { cn } from "@/external/shadcn/libs/utils";
 import { Button } from "@/external/shadcn/components/ui/button";
@@ -37,11 +39,7 @@ export default function MultiSelectCombobox<T>({
 }: Readonly<Props<T>>) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  const updateSelectedValues = (newValues: string[]) => {
-    onValueChange(newValues);
-  };
-
-  const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+  const onInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       return;
     }
@@ -49,37 +47,34 @@ export default function MultiSelectCombobox<T>({
     if (event.key === "Backspace" && !event.currentTarget.value) {
       const newSelectedValues = [...values];
       newSelectedValues.pop();
-      updateSelectedValues(newSelectedValues);
+      onValueChange(newSelectedValues);
     }
   };
 
-  const toggleOption = (optionValue: string) => {
+  const onToggleOption = (optionValue: string) => {
     const newSelectedValues = values.includes(optionValue)
       ? values.filter(value => value !== optionValue)
       : [...values, optionValue];
-    updateSelectedValues(newSelectedValues);
+    onValueChange(newSelectedValues);
   };
 
-  const handleClearAll = () => {
-    updateSelectedValues([]);
-  };
+  const onClearAll = () => onValueChange([]);
 
-  const handleTogglePopover = () => {
-    setIsPopoverOpen(prev => !prev);
-  };
+  const onClickPopoverButton = () => setIsPopoverOpen(prev => !prev);
 
-  const clearExtraOptions = () => {
+  const onClearExtraOptions = () => {
     const newSelectedValues = values.slice(0, maxDisplayCount);
-    updateSelectedValues(newSelectedValues);
+    onValueChange(newSelectedValues);
   };
 
-  const toggleAll = () => {
+  const onToggleAll = () => {
     if (values.length === options.length) {
-      handleClearAll();
-    } else {
-      const allValues = options.map(getValue);
-      updateSelectedValues(allValues);
+      onClearAll();
+      return
     }
+
+    const allValues = options.map(getValue);
+    onValueChange(allValues);
   };
 
   return (
@@ -90,7 +85,7 @@ export default function MultiSelectCombobox<T>({
       <PopoverTrigger asChild>
         <FormControl>
           <Button
-            onClick={handleTogglePopover}
+            onClick={onClickPopoverButton}
             role='combobox'
             className={cn(
               "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto min-w-(--input-width)",
@@ -105,9 +100,9 @@ export default function MultiSelectCombobox<T>({
               getDisplayName={getDisplayName}
               maxCount={maxDisplayCount}
               variant={selectedItemVariant}
-              onToggleOption={toggleOption}
-              onClearExtraOptions={clearExtraOptions}
-              onClearAll={handleClearAll}
+              onToggleOption={onToggleOption}
+              onClearExtraOptions={onClearExtraOptions}
+              onClearAll={onClearAll}
             />
           </Button>
         </FormControl>
@@ -122,11 +117,11 @@ export default function MultiSelectCombobox<T>({
           selectedValues={values}
           getValue={getValue}
           getDisplayName={getDisplayName}
-          onToggleOption={toggleOption}
-          onToggleAll={toggleAll}
-          onClearAll={handleClearAll}
+          onToggleOption={onToggleOption}
+          onToggleAll={onToggleAll}
+          onClearAll={onClearAll}
           onClosePopover={() => setIsPopoverOpen(false)}
-          onInputKeyDown={handleInputKeyDown}
+          onInputKeyDown={onInputKeyDown}
         />
       </PopoverContent>
     </Popover>
