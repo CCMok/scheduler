@@ -20,10 +20,10 @@ export default function OrganizationIdFormField() {
         <CustomFormItem label='機構'>
           <ComboBox
             value={field.value}
-            items={organizations}
-            getValue={item => item.id.toString()}
-            getDisplayName={item => item.name}
-            onSelect={value => setValue('organizationId', value)}
+            options={organizations}
+            getValue={option => option.id.toString()}
+            getDisplayName={option => option.name}
+            onValueChange={value => setValue('organizationId', value)}
           />
         </CustomFormItem>
       )}

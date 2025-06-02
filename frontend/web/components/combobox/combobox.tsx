@@ -8,28 +8,29 @@ import { cn } from "@/external/shadcn/libs/utils"
 import { Check, ChevronDown } from "lucide-react"
 import { useMemo, useState } from "react"
 import CustomCommandItem from "../command/custom-command-item"
-import { getSelectedItemDisplay } from "./combobox-utils"
 
 type Props<T> = {
   value: string,
-  items: T[],
-  getValue: (item: T) => string,
-  getDisplayName: (item: T) => string,
-  onSelect: (value: string) => void,
+  onValueChange: (value: string) => void,
+  options: T[],
+  getValue: (option: T) => string,
+  getDisplayName: (option: T) => string,
 }
 
 export default function ComboBox<T>({
   value,
-  items,
+  onValueChange,
+  options,
   getValue,
   getDisplayName,
-  onSelect,
 }: Readonly<Props<T>>) {
   const [isOpen, setIsOpen] = useState(false)
 
-  const selectedItemDisplay = useMemo(() => getSelectedItemDisplay(
-    value, items, getValue, getDisplayName
-  ), [value, items, getValue, getDisplayName])
+  const selectedItemDisplay = useMemo(() => {
+    if (!value) return '選擇';
+    const option = options.find(option => getValue(option) === value)
+    return option ? getDisplayName(option) : '';
+  }, [value, options, getValue, getDisplayName])
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -57,16 +58,16 @@ export default function ComboBox<T>({
           <CommandList>
             <CommandEmpty>沒有資料</CommandEmpty>
             <CommandGroup>
-              {items.map(item => {
-                const itemValue = getValue(item)
-                const displayName = getDisplayName(item)
+              {options.map(option => {
+                const itemValue = getValue(option)
+                const displayName = getDisplayName(option)
 
                 return (
                   <CustomCommandItem
                     key={itemValue}
                     value={displayName}
                     onSelect={() => {
-                      onSelect(itemValue)
+                      onValueChange(itemValue)
                       setIsOpen(false)
                     }}
                   >

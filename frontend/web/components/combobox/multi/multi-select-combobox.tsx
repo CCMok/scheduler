@@ -1,7 +1,4 @@
 import { type VariantProps } from "class-variance-authority";
-import {
-  WandSparkles,
-} from "lucide-react";
 import { cn } from "@/external/shadcn/libs/utils";
 import { Button } from "@/external/shadcn/components/ui/button";
 import {
@@ -10,84 +7,32 @@ import {
   PopoverTrigger,
 } from "@/external/shadcn/components/ui/popover";
 import { FormControl } from "@/external/shadcn/components/ui/form";
-import { ButtonHTMLAttributes, useState, KeyboardEvent } from "react";
+import { useState, KeyboardEvent, ComponentProps } from "react";
 import {
   multiSelectVariants,
   TriggerButtonDisplay,
   CommandListContent,
-} from "./multi-select-command-parts";
+} from "./multi-select-combobox-parts";
 
-type Props<T> = ButtonHTMLAttributes<HTMLButtonElement> &
-  VariantProps<typeof multiSelectVariants> & {
+type Props<T> = ComponentProps<typeof Button> & {
     values: string[];
-
-    /**
-     * An array of option objects to be displayed in the multi-select component.
-     * Each option object has a label, value, and an optional icon.
-     */
-    items: T[];
-
-    /**
-     * Callback function triggered when the selected values change.
-     * Receives an array of the new selected values.
-     */
     onValueChange: (value: string[]) => void;
-
-    /**
-     * Placeholder text to be displayed when no values are selected.
-     * Optional, defaults to "Select options".
-     */
-    placeholder?: string;
-
-    /**
-     * Animation duration in seconds for the visual effects (e.g., bouncing badges).
-     * Optional, defaults to 0 (no animation).
-     */
+    options: T[];
+    getValue: (option: T) => string;
+    getDisplayName: (option: T) => string;
     animation?: number;
-
-    /**
-     * Maximum number of items to display. Extra selected items will be summarized.
-     * Optional, defaults to 3.
-     */
-    maxCount?: number;
-
-    /**
-     * The modality of the popover. When set to true, interaction with outside elements
-     * will be disabled and only popover content will be visible to screen readers.
-     * Optional, defaults to false.
-     */
-    modalPopover?: boolean;
-
-    /**
-     * If true, renders the multi-select component as a child of another component.
-     * Optional, defaults to false.
-     */
-    asChild?: boolean;
-
-    /**
-     * Additional class names to apply custom styles to the multi-select component.
-     * Optional, can be used to add custom styles.
-     */
-    className?: string;
-
-    isShowAnimationButton?: boolean;
-
-    getValue: (item: T) => string;
-    
-    getDisplayName: (item: T) => string;
+    maxDisplayCount?: number;
+    selectedItemVariant?: VariantProps<typeof multiSelectVariants>['variant'];
   }
 
-export default function MultiSelectCommand<T>({
-  values,
-  items,
-  onValueChange,
-  variant,
-  placeholder = "選擇",
-  animation = 0,
-  maxCount = 3,
-  modalPopover = false,
+export default function MultiSelectCombobox<T>({
   className,
-  isShowAnimationButton = false,
+  values,
+  options,
+  onValueChange,
+  selectedItemVariant,
+  animation = 0,
+  maxDisplayCount = 3,
   getValue,
   getDisplayName,
   ...props
@@ -127,15 +72,15 @@ export default function MultiSelectCommand<T>({
   };
 
   const clearExtraOptions = () => {
-    const newSelectedValues = values.slice(0, maxCount);
+    const newSelectedValues = values.slice(0, maxDisplayCount);
     updateSelectedValues(newSelectedValues);
   };
 
   const toggleAll = () => {
-    if (values.length === items.length) {
+    if (values.length === options.length) {
       handleClearAll();
     } else {
-      const allValues = items.map(getValue);
+      const allValues = options.map(getValue);
       updateSelectedValues(allValues);
     }
   };
@@ -144,7 +89,6 @@ export default function MultiSelectCommand<T>({
     <Popover
       open={isPopoverOpen}
       onOpenChange={setIsPopoverOpen}
-      modal={modalPopover}
     >
       <PopoverTrigger asChild>
         <FormControl>
@@ -159,17 +103,16 @@ export default function MultiSelectCommand<T>({
           >
             <TriggerButtonDisplay
               selectedValues={values}
-              items={items}
+              options={options}
               getValue={getValue}
               getDisplayName={getDisplayName}
-              maxCount={maxCount}
-              variant={variant}
+              maxCount={maxDisplayCount}
+              variant={selectedItemVariant}
               animation={animation}
               isAnimating={isAnimating}
               onToggleOption={toggleOption}
               onClearExtraOptions={clearExtraOptions}
               onClearAll={handleClearAll}
-              placeholder={placeholder}
             />
           </Button>
         </FormControl>
@@ -180,7 +123,7 @@ export default function MultiSelectCommand<T>({
         onEscapeKeyDown={() => setIsPopoverOpen(false)}
       >
         <CommandListContent
-          items={items}
+          options={options}
           selectedValues={values}
           getValue={getValue}
           getDisplayName={getDisplayName}
@@ -191,15 +134,6 @@ export default function MultiSelectCommand<T>({
           onInputKeyDown={handleInputKeyDown}
         />
       </PopoverContent>
-      {animation > 0 && values.length > 0 && isShowAnimationButton && (
-        <WandSparkles
-          className={cn(
-            "cursor-pointer my-2 text-foreground bg-background w-3 h-3",
-            isAnimating ? "" : "text-muted-foreground"
-          )}
-          onClick={() => setIsAnimating(!isAnimating)}
-        />
-      )}
     </Popover>
   );
 };

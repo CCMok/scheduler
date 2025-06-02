@@ -4,7 +4,7 @@ import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter
 import CustomFormItem from "@/components/form/custom-form-item";
 import { FormField } from "@/external/shadcn/components/ui/form";
 import { useFormContext, useWatch } from "react-hook-form"
-import MultiSelectCommand from "@/components/command/multi-select-command";
+import MultiSelectCombobox from "@/components/combobox/multi/multi-select-combobox";
 import { DEFAULT_DAY_COUNT } from "@/libs/share/roster/constants/roster-constant";
 import { OffDay } from "@/libs/client/roster/models/off-day";
 import { useEffect, useMemo } from "react";
@@ -39,7 +39,7 @@ export default function DaysFormField({
   useEffect(() => {
     const selectedDays = getValues(`offs.${index}.days`)
 
-    const validSelectedDays = selectedDays.filter(selectedDay => 
+    const validSelectedDays = selectedDays.filter(selectedDay =>
       days.some(day => day.value === selectedDay)
     )
 
@@ -52,15 +52,15 @@ export default function DaysFormField({
       name={`offs.${index}.days`}
       render={({ field }) => (
         <CustomFormItem label='缺席日'>
-          <MultiSelectCommand
+          <MultiSelectCombobox
             values={field.value}
-            items={days}
-            getValue={item => item.value}
-            getDisplayName={item => item.name}
+            options={days}
+            getValue={option => option.value}
+            getDisplayName={option => option.name}
             onValueChange={value => setValue(`offs.${index}.days`, value)}
-            variant="inverted"
+            selectedItemVariant="inverted"
             animation={2}
-            maxCount={DEFAULT_DAY_COUNT}
+            maxDisplayCount={DEFAULT_DAY_COUNT}
           />
         </CustomFormItem>
       )}

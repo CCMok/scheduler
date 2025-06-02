@@ -39,10 +39,10 @@ export default function DepartmentIdFormField() {
         <CustomFormItem label='部門'>
           <ComboBox
             value={field.value}
-            items={departments}
-            getValue={item => item.id.toString()}
-            getDisplayName={item => item.name}
-            onSelect={value => setValue('departmentId', value)}
+            options={departments}
+            getValue={option => option.id.toString()}
+            getDisplayName={option => option.name}
+            onValueChange={value => setValue('departmentId', value)}
           />
         </CustomFormItem>
       )}

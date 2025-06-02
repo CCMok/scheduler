@@ -40,9 +40,9 @@ type MultiSelectVariant = VariantProps<typeof multiSelectVariants>["variant"];
 // --- Component 1: SelectedBadgesDisplay ---
 interface SelectedBadgesDisplayProps<T> {
   selectedValues: string[];
-  items: T[];
-  getValue: (item: T) => string;
-  getDisplayName: (item: T) => string;
+  options: T[];
+  getValue: (option: T) => string;
+  getDisplayName: (option: T) => string;
   maxCount: number;
   variant: MultiSelectVariant;
   animation: number;
@@ -53,7 +53,7 @@ interface SelectedBadgesDisplayProps<T> {
 
 export function SelectedBadgesDisplay<T>({
   selectedValues,
-  items,
+  options,
   getValue,
   getDisplayName,
   maxCount,
@@ -66,7 +66,7 @@ export function SelectedBadgesDisplay<T>({
   return (
     <div className="flex flex-wrap items-center">
       {selectedValues.slice(0, maxCount).map(value => {
-        const option = items.find(item => getValue(item) === value);
+        const option = options.find(option => getValue(option) === value);
         return (
           <Badge
             key={value}
@@ -80,7 +80,7 @@ export function SelectedBadgesDisplay<T>({
             <span
               role='button'
               tabIndex={0}
-              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); onToggleOption(value);}}}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); onToggleOption(value); } }}
               onClick={event => {
                 event.stopPropagation();
                 onToggleOption(value);
@@ -104,7 +104,7 @@ export function SelectedBadgesDisplay<T>({
           <span
             role='button'
             tabIndex={0}
-            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); onClearExtraOptions();}}}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); onClearExtraOptions(); } }}
             onClick={event => {
               event.stopPropagation();
               onClearExtraOptions();
@@ -121,12 +121,11 @@ export function SelectedBadgesDisplay<T>({
 // --- Component 2: TriggerButtonDisplay ---
 interface TriggerButtonDisplayProps<T> extends SelectedBadgesDisplayProps<T> {
   onClearAll: () => void;
-  placeholder: string;
 }
 
 export function TriggerButtonDisplay<T>({
   selectedValues,
-  items,
+  options: options,
   getValue,
   getDisplayName,
   maxCount,
@@ -136,13 +135,12 @@ export function TriggerButtonDisplay<T>({
   onToggleOption,
   onClearExtraOptions,
   onClearAll,
-  placeholder,
 }: Readonly<TriggerButtonDisplayProps<T>>) {
   if (!selectedValues.length) {
     return (
       <div className="flex items-center justify-between w-full mx-auto">
         <span className="text-sm text-muted-foreground mx-3">
-          {placeholder}
+          選擇
         </span>
         <ChevronDown className="h-4 cursor-pointer text-muted-foreground mx-2" />
       </div>
@@ -153,7 +151,7 @@ export function TriggerButtonDisplay<T>({
     <div className="flex justify-between items-center w-full">
       <SelectedBadgesDisplay
         selectedValues={selectedValues}
-        items={items}
+        options={options}
         getValue={getValue}
         getDisplayName={getDisplayName}
         maxCount={maxCount}
@@ -167,7 +165,7 @@ export function TriggerButtonDisplay<T>({
         <span
           role='button'
           tabIndex={0}
-          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); onClearAll();}}}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); onClearAll(); } }}
           onClick={event => {
             event.stopPropagation();
             onClearAll();
@@ -187,10 +185,10 @@ export function TriggerButtonDisplay<T>({
 
 // --- Component 3: CommandListContent ---
 interface CommandListContentProps<T> {
-  items: T[];
+  options: T[];
   selectedValues: string[];
-  getValue: (item: T) => string;
-  getDisplayName: (item: T) => string;
+  getValue: (option: T) => string;
+  getDisplayName: (option: T) => string;
   onToggleOption: (value: string) => void;
   onToggleAll: () => void;
   onClearAll: () => void;
@@ -199,7 +197,7 @@ interface CommandListContentProps<T> {
 }
 
 export function CommandListContent<T>({
-  items,
+  options,
   selectedValues,
   getValue,
   getDisplayName,
@@ -226,7 +224,7 @@ export function CommandListContent<T>({
             <div
               className={cn(
                 "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                selectedValues.length === items.length && items.length > 0
+                selectedValues.length === options.length && options.length > 0
                   ? "bg-primary text-primary-foreground"
                   : "opacity-50 [&_svg]:invisible"
               )}
@@ -235,7 +233,7 @@ export function CommandListContent<T>({
             </div>
             <span>(選擇全部)</span>
           </CommandItem>
-          {items.map(option => {
+          {options.map(option => {
             const isSelected = selectedValues.includes(getValue(option));
             return (
               <CommandItem

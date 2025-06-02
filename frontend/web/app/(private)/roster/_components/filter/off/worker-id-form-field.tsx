@@ -26,10 +26,10 @@ export default function WorkerIdFormField({
         <CustomFormItem label='人員'>
           <ComboBox
             value={field.value}
-            items={workers}
-            getValue={item => item.id.toString()}
-            getDisplayName={item => item.name}
-            onSelect={value => setValue(`offs.${index}.worker_id`, value)}
+            options={workers}
+            getValue={option => option.id.toString()}
+            getDisplayName={option => option.name}
+            onValueChange={value => setValue(`offs.${index}.worker_id`, value)}
           />
         </CustomFormItem>
       )}
