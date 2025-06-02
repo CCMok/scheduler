@@ -63,14 +63,14 @@ export default function OffFilter() {
             <CardContent className='flex flex-col gap-4 sm:flex-row sm:items-center'>
               <WorkerIdFormField index={index} />
               <DaysFormField index={index} />
-                <Button
-                  type='button'
-                  variant='secondary'
-                  size='icon'
-                  onClick={() => onClickRemove(index)}
-                >
-                  <Minus />
-                </Button>
+              <Button
+                type='button'
+                variant='secondary'
+                size='icon'
+                onClick={() => onClickRemove(index)}
+              >
+                <Minus />
+              </Button>
             </CardContent>
           </Card>
         ))}

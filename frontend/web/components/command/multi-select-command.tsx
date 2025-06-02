@@ -19,6 +19,8 @@ import {
 
 type Props<T> = ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof multiSelectVariants> & {
+    values: string[];
+
     /**
      * An array of option objects to be displayed in the multi-select component.
      * Each option object has a label, value, and an optional icon.
@@ -30,9 +32,6 @@ type Props<T> = ButtonHTMLAttributes<HTMLButtonElement> &
      * Receives an array of the new selected values.
      */
     onValueChange: (value: string[]) => void;
-
-    /** The default selected values when the component mounts. */
-    defaultValue?: string[];
 
     /**
      * Placeholder text to be displayed when no values are selected.
@@ -79,10 +78,10 @@ type Props<T> = ButtonHTMLAttributes<HTMLButtonElement> &
   }
 
 export default function MultiSelectCommand<T>({
+  values,
   items,
   onValueChange,
   variant,
-  defaultValue = [],
   placeholder = "選擇",
   animation = 0,
   maxCount = 3,
@@ -93,12 +92,10 @@ export default function MultiSelectCommand<T>({
   getDisplayName,
   ...props
 }: Readonly<Props<T>>) {
-  const [selectedValues, setSelectedValues] = useState<string[]>(defaultValue);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
   const updateSelectedValues = (newValues: string[]) => {
-    setSelectedValues(newValues);
     onValueChange(newValues);
   };
 
@@ -108,16 +105,16 @@ export default function MultiSelectCommand<T>({
     }
 
     if (event.key === "Backspace" && !event.currentTarget.value) {
-      const newSelectedValues = [...selectedValues];
+      const newSelectedValues = [...values];
       newSelectedValues.pop();
       updateSelectedValues(newSelectedValues);
     }
   };
 
   const toggleOption = (optionValue: string) => {
-    const newSelectedValues = selectedValues.includes(optionValue)
-      ? selectedValues.filter(value => value !== optionValue)
-      : [...selectedValues, optionValue];
+    const newSelectedValues = values.includes(optionValue)
+      ? values.filter(value => value !== optionValue)
+      : [...values, optionValue];
     updateSelectedValues(newSelectedValues);
   };
 
@@ -130,12 +127,12 @@ export default function MultiSelectCommand<T>({
   };
 
   const clearExtraOptions = () => {
-    const newSelectedValues = selectedValues.slice(0, maxCount);
+    const newSelectedValues = values.slice(0, maxCount);
     updateSelectedValues(newSelectedValues);
   };
 
   const toggleAll = () => {
-    if (selectedValues.length === items.length) {
+    if (values.length === items.length) {
       handleClearAll();
     } else {
       const allValues = items.map(getValue);
@@ -161,7 +158,7 @@ export default function MultiSelectCommand<T>({
             {...props}
           >
             <TriggerButtonDisplay
-              selectedValues={selectedValues}
+              selectedValues={values}
               items={items}
               getValue={getValue}
               getDisplayName={getDisplayName}
@@ -184,7 +181,7 @@ export default function MultiSelectCommand<T>({
       >
         <CommandListContent
           items={items}
-          selectedValues={selectedValues}
+          selectedValues={values}
           getValue={getValue}
           getDisplayName={getDisplayName}
           onToggleOption={toggleOption}
@@ -194,7 +191,7 @@ export default function MultiSelectCommand<T>({
           onInputKeyDown={handleInputKeyDown}
         />
       </PopoverContent>
-      {animation > 0 && selectedValues.length > 0 && isShowAnimationButton && (
+      {animation > 0 && values.length > 0 && isShowAnimationButton && (
         <WandSparkles
           className={cn(
             "cursor-pointer my-2 text-foreground bg-background w-3 h-3",

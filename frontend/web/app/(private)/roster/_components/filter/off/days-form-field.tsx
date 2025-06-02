@@ -3,28 +3,48 @@
 import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
 import CustomFormItem from "@/components/form/custom-form-item";
 import { FormField } from "@/external/shadcn/components/ui/form";
-import { useFormContext } from "react-hook-form"
+import { useFormContext, useWatch } from "react-hook-form"
 import MultiSelectCommand from "@/components/command/multi-select-command";
-import { useState } from "react";
 import { DEFAULT_DAY_COUNT } from "@/libs/share/roster/constants/roster-constant";
+import { OffDay } from "@/libs/client/roster/models/off-day";
+import { useEffect, useMemo } from "react";
 
 type Props = {
   index: number;
 }
 
-// TODO real data
-const frameworksList = [
-  { value: "1", label: "1" },
-  { value: "2", label: "2" },
-  { value: "3", label: "3" },
-  { value: "4", label: "4" },
-];
-
 export default function DaysFormField({
   index
 }: Readonly<Props>) {
-  const { control } = useFormContext<RosterFilterFormInput>();
-  const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([]);
+  const { control, getValues, setValue } = useFormContext<RosterFilterFormInput>();
+
+  const dayCount = useWatch({
+    control,
+    name: 'dayCount',
+    defaultValue: 0,
+  })
+
+  const days = useMemo(() => {
+    const dayCountNumber = typeof dayCount === 'string' ? Number(dayCount) : dayCount;
+    if (isNaN(dayCountNumber)) return [];
+
+    const days: OffDay[] = [];
+    for (let i = 0; i < dayCountNumber; i++) {
+      days.push({ value: i.toString(), name: i.toString() })
+    }
+
+    return days;
+  }, [dayCount])
+
+  useEffect(() => {
+    const selectedDays = getValues(`offs.${index}.days`)
+
+    const validSelectedDays = selectedDays.filter(selectedDay => 
+      days.some(day => day.value === selectedDay)
+    )
+
+    setValue(`offs.${index}.days`, validSelectedDays)
+  }, [days, index, getValues, setValue])
 
   return (
     <FormField
@@ -33,11 +53,11 @@ export default function DaysFormField({
       render={({ field }) => (
         <CustomFormItem label='缺席日'>
           <MultiSelectCommand
-            items={frameworksList}
+            values={field.value}
+            items={days}
             getValue={item => item.value}
-            getDisplayName={item => item.label}
-            onValueChange={setSelectedFrameworks}
-            defaultValue={[]} // TODO from react hook form
+            getDisplayName={item => item.name}
+            onValueChange={value => setValue(`offs.${index}.days`, value)}
             variant="inverted"
             animation={2}
             maxCount={DEFAULT_DAY_COUNT}
