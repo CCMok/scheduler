@@ -3,6 +3,8 @@ import { ClientMessage } from "../../_general/enums/client-message";
 import { MAX_DAY_COUNT } from "@/libs/share/roster/constants/roster-constant";
 
 // TODO: To test days superRefine
+// ctx.addIssue have problem
+// return error : [{message}], but shadcn form message should be error.message
 export const offFormInputSchema = z.object({
   workerId: z.string().min(1, ClientMessage.REQUIRED),
   days: z.string()
