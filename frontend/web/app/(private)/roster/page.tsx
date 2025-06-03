@@ -3,9 +3,9 @@ import RosterTableSection from "./_components/table/roster-table-section";
 
 export default function RosterPage() {
   return (
-    <>
+    <div className='h-full space-y-2'>
       <RosterFilterSection />
       <RosterTableSection />
-    </>
+    </div>
   )
 }

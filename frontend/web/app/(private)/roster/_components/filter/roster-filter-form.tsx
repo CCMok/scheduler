@@ -10,7 +10,11 @@ import BasicFilter from "./basic/basic-filter"
 import OffFilter from "./off/off-filter"
 import { useRosterFilterStore } from "@/components/store/roster-filter/roster-filter-store-provider"
 import { useMemo } from "react"
-import { getArrangeRosterRequestBody } from "@/libs/client/roster/models/arrange-roster-request-body"
+import { getArrangeRosterRequest } from "@/libs/server/roster/model/arrange-roster-request"
+import { arrangeRosterAction } from "@/libs/server/roster/action/arrange-roster-action"
+import { ServerResponseStatus } from "@/libs/server/_general/enums/server-response-status"
+import { getRootMessage } from "@/libs/client/_general/utils/form-utils"
+import FormRootMessage from "@/components/form/form-root-message"
 
 export default function RosterFilterForm() {
   const { organizations } = useRosterFilterStore(state => state);
@@ -37,8 +41,17 @@ export default function RosterFilterForm() {
   })
 
   const onSubmit = async (input: RosterFilterFormInput) => {
-    const requestBody = getArrangeRosterRequestBody(input);
-    console.log(requestBody);
+    const requestBody = getArrangeRosterRequest(input);
+
+    const response = await arrangeRosterAction(requestBody);
+
+    if (response.status !== ServerResponseStatus.OK) {
+      const rootMessage = getRootMessage(response)
+      form.setError('root', { type: rootMessage.title, message: rootMessage.content })
+      return
+    }
+
+    // TODO handle response
   }
 
   return (
@@ -53,6 +66,8 @@ export default function RosterFilterForm() {
         <div className='flex justify-end'>
           <FormSubmitButton>確認</FormSubmitButton>
         </div>
+
+        <FormRootMessage />
       </form>
     </Form>
   )
