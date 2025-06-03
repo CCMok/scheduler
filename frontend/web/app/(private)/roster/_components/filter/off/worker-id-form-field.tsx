@@ -21,7 +21,7 @@ export default function WorkerIdFormField({
   return (
     <FormField
       control={control}
-      name={`offs.${index}.worker_id`}
+      name={`offs.${index}.workerId`}
       render={({ field }) => (
         <CustomFormItem label='人員'>
           <ComboBox
@@ -29,7 +29,7 @@ export default function WorkerIdFormField({
             options={workers}
             getValue={option => option.id.toString()}
             getDisplayName={option => option.name}
-            onValueChange={value => setValue(`offs.${index}.worker_id`, value)}
+            onValueChange={value => setValue(`offs.${index}.workerId`, value)}
           />
         </CustomFormItem>
       )}

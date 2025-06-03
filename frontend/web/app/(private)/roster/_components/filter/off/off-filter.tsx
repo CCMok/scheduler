@@ -38,7 +38,7 @@ export default function OffFilter() {
 
     // Do not remove index items in forward iteration
     for (let i = offs.length - 1; i >= 0; i--) {
-      const isWorkerInWorkers = workers.some(worker => worker.id.toString() === offs[i].worker_id)
+      const isWorkerInWorkers = workers.some(worker => worker.id.toString() === offs[i].workerId)
       if (!isWorkerInWorkers) {
         remove(i)
       }
@@ -46,7 +46,7 @@ export default function OffFilter() {
   }, [workers, setWorkers, getValues, remove])
 
   const onClickAppend = () => append({
-    worker_id: workers.length ? workers[0].id.toString() : '',
+    workerId: workers.length ? workers[0].id.toString() : '',
     days: [],
   })
 

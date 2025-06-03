@@ -3,7 +3,7 @@ import { ClientMessage } from "../../_general/enums/client-message";
 import { MAX_DAY_COUNT } from "@/libs/share/roster/constants/roster-constant";
 
 export const offFormInputSchema = z.object({
-  worker_id: z.string().min(1, ClientMessage.REQUIRED),
+  workerId: z.string().min(1, ClientMessage.REQUIRED),
   days: z.string().array(),
 })
 

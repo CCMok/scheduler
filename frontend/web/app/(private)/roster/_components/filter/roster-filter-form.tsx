@@ -10,6 +10,7 @@ import BasicFilter from "./basic/basic-filter"
 import OffFilter from "./off/off-filter"
 import { useRosterFilterStore } from "@/components/store/roster-filter/roster-filter-store-provider"
 import { useMemo } from "react"
+import { getArrangeRosterRequestBody } from "@/libs/client/roster/models/arrange-roster-request-body"
 
 export default function RosterFilterForm() {
   const { organizations } = useRosterFilterStore(state => state);
@@ -36,7 +37,8 @@ export default function RosterFilterForm() {
   })
 
   const onSubmit = async (input: RosterFilterFormInput) => {
-    console.log(input)
+    const requestBody = getArrangeRosterRequestBody(input);
+    console.log(requestBody);
   }
 
   return (
