@@ -45,7 +45,7 @@ const sendArrangeRosterRequest = async (request: ArrangeRosterRequest) => {
 
     const responseJson = await response.json()
 
-    // TODO zod validate
+    // TODO zod validate, arrangeRosterResponseSchema
 
     return responseJson;
   } catch (error) {
