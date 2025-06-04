@@ -42,7 +42,6 @@ export default function RosterFilterForm() {
 
   const onSubmit = async (input: RosterFilterFormInput) => {
     const requestBody = getArrangeRosterRequest(input);
-    console.log(requestBody)
 
     const response = await arrangeRosterAction(requestBody);
 
