@@ -4,7 +4,36 @@ import { MAX_DAY_COUNT } from "@/libs/share/roster/constants/roster-constant";
 
 export const offFormInputSchema = z.object({
   workerId: z.string().min(1, ClientMessage.REQUIRED),
-  days: z.string().array(),
+  days: z.array(z.string())
+    .superRefine((dayStrings, ctx) => {
+      for (const dayStr of dayStrings) {
+        const num = Number(dayStr);
+
+        if (!Number.isInteger(num)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: ClientMessage.INTEGER,
+          });
+          return;
+        }
+
+        if (num < 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: ClientMessage.MIN.replaceAll("{0}", "0"),
+          });
+          return;
+        }
+
+        if (num > (MAX_DAY_COUNT - 1)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: ClientMessage.MAX.replaceAll("{0}", (MAX_DAY_COUNT - 1).toString()),
+          });
+          return;
+        }
+      }
+    }),
 })
 
 export type OffFormInput = z.infer<typeof offFormInputSchema>
