@@ -4,8 +4,8 @@ import { ServerResponseStatus } from "../enums/server-response-status";
 export const actionWrapper = async <T>(service: () => ServerResponse<T> | Promise<ServerResponse<T>>): Promise<ServerResponse<T>> => {
   try {
     return await service()
-  } catch (e) {
-    console.error(e)
+  } catch (error) {
+    console.error(error)
     return {
       status: ServerResponseStatus.INTERNAL_ERROR,
     }
