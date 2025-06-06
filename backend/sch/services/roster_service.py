@@ -1,3 +1,4 @@
+from models.arrange_roster_response import ArrangeRosterResponse
 from managers.db import DbSession
 from helpers.roster_model_helper import RosterModelHelper
 from models.arrange_roster_request import ArrangeRosterRequest
@@ -26,7 +27,7 @@ class RosterService:
     def __map_resposne(
         material: RosterMaterial,
         solver: cp_model.CpSolver,
-    ) -> list[Schedule]:
+    ) -> ArrangeRosterResponse:
         schedules: list[Schedule] = []
 
         for day in material.days:
@@ -46,7 +47,7 @@ class RosterService:
 
                     result_worker = worker.name
                     break
-                
+
                 schedule.arrangement[post.name] = result_worker
 
-        return schedules
+        return ArrangeRosterResponse(root=schedules)
