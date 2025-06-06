@@ -5,14 +5,23 @@ import { ServerResponseStatus } from "../../_general/enums/server-response-statu
 import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from "../model/sch-arrange-roster-response";
 import { Arrangement, ArrangeRosterResponse, Schedule } from '../model/arrange-roster-response';
 import { getDepartmentWorkersPosts } from '../../department/repositories/department-repositories';
+import { DepartmentWorkersPosts } from '../../department/models/department-model';
 
 export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<ArrangeRosterResponse>> => {
-  const isRequestValid = checkRequest(request);
-  if (!isRequestValid) return {
+  const canParseRequest = parseRequest(request);
+  if (!canParseRequest) return {
     status: ServerResponseStatus.BAD_REQUEST,
   }
 
-  // TODO: check request value
+  const department = await getDepartmentWorkersPosts(request.departmentId);
+  if (!department) return {
+    status: ServerResponseStatus.BAD_REQUEST,
+  }
+
+  const isRequestValid = checkRequest(request, department);
+  if (!isRequestValid) return {
+    status: ServerResponseStatus.BAD_REQUEST,
+  }
 
   const responseJson = await sendArrangeRosterRequest(request);
   if (!responseJson) return {
@@ -24,7 +33,7 @@ export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<Serv
     status: ServerResponseStatus.INTERNAL_ERROR
   }
 
-  const response = await mapResponse(schResponse, request.departmentId)
+  const response = await mapResponse(schResponse, department)
   if (!response) return {
     status: ServerResponseStatus.INTERNAL_ERROR
   }
@@ -35,13 +44,25 @@ export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<Serv
   }
 };
 
-const checkRequest = (request: ArrangeRosterRequest): boolean => {
+const parseRequest = (request: ArrangeRosterRequest): boolean => {
   const result = arrangeRosterRequestSchema.safeParse(request)
   if (!result.success) {
     console.warn('Invalid request', result.error.format())
   }
 
   return result.success;
+}
+
+const checkRequest = (request: ArrangeRosterRequest, department: DepartmentWorkersPosts): boolean => {
+  for (const off of request.offs) {
+    const isWorkerExist = department.workers.some(worker => worker.id === off.workerId)
+    if (!isWorkerExist) {
+      console.warn(`WorkerId not found in department. workerId=${off.workerId}, departmentId=${request.departmentId}`)
+      return false;
+    }
+  }
+
+  return true;
 }
 
 const sendArrangeRosterRequest = async (request: ArrangeRosterRequest): Promise<any> => {
@@ -76,13 +97,7 @@ const parseSchResponse = (responseJson: any): SchArrangeRosterResponse | undefin
   return parseResult.data;
 }
 
-const mapResponse = async (schResponse: SchArrangeRosterResponse, departmentId: number): Promise<ArrangeRosterResponse | undefined> => {
-  const department = await getDepartmentWorkersPosts(departmentId)
-  if (!department) {
-    console.error('Department not found', departmentId)
-    return;
-  }
-  
+const mapResponse = async (schResponse: SchArrangeRosterResponse, department: DepartmentWorkersPosts): Promise<ArrangeRosterResponse | undefined> => {
   const response: ArrangeRosterResponse = [];
 
   for (const day of schResponse) {
