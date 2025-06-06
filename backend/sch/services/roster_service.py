@@ -35,7 +35,7 @@ class RosterService:
             schedules.append(schedule)
 
             for post in material.posts:
-                result_worker = ''
+                result_worker = None
 
                 for worker in post.workers:
                     isOff = solver.value(
@@ -45,9 +45,9 @@ class RosterService:
                     if isOff:
                         continue
 
-                    result_worker = worker.name
+                    result_worker = worker.id
                     break
 
-                schedule.arrangement[post.name] = result_worker
+                schedule.arrangement[post.id] = result_worker
 
         return ArrangeRosterResponse(root=schedules)

@@ -4,4 +4,4 @@ from pydantic import BaseModel
 
 class Schedule(BaseModel):
     day: int
-    arrangement: Dict[str, str]
+    arrangement: Dict[int, int]
