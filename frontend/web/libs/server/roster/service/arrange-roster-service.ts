@@ -1,9 +1,9 @@
 import { ServerResponse } from "@/libs/share/_general/model/server-response";
 import { ArrangeRosterRequest, arrangeRosterRequestSchema } from "../model/arrange-roster-request";
 import { ServerResponseStatus } from "../../_general/enums/server-response-status";
-import { ArrangeRosterResponse, arrangeRosterResponseSchema } from "../model/arrange-roster-response";
+import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from "../model/sch-arrange-roster-response";
 
-export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<ArrangeRosterResponse>> => {
+export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<SchArrangeRosterResponse>> => {
   const isRequestValid = checkRequest(request);
   if (!isRequestValid) {
     return {
@@ -11,23 +11,19 @@ export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<Serv
     }
   }
 
-  const fetchResponse = await sendArrangeRosterRequest(request);
-
-  if (!fetchResponse) return {
+  const responseJson = await sendArrangeRosterRequest(request);
+  if (!responseJson) return {
     status: ServerResponseStatus.INTERNAL_ERROR
   }
 
-  const parseResult = arrangeRosterResponseSchema.safeParse(fetchResponse)
-  if (!parseResult.success) {
-    console.error('Invalid response', parseResult.error.format())
-    return {
-      status: ServerResponseStatus.INTERNAL_ERROR,
-    }
+  const schResponse = parseSchResponse(responseJson)
+  if (!schResponse) return {
+    status: ServerResponseStatus.INTERNAL_ERROR
   }
 
   return {
     status: ServerResponseStatus.OK,
-    data: parseResult.data,
+    data: schResponse,
   }
 };
 
@@ -60,4 +56,14 @@ const sendArrangeRosterRequest = async (request: ArrangeRosterRequest): Promise<
     console.error('Fail to send SCH arrange roster request', error);
     return;
   }
+}
+
+const parseSchResponse = (responseJson: any): SchArrangeRosterResponse | undefined => {
+  const parseResult = schArrangeRosterResponseSchema.safeParse(responseJson)
+  if (!parseResult.success) {
+    console.error('Invalid response', parseResult.error.format())
+    return;
+  }
+
+  return parseResult.data;
 }
