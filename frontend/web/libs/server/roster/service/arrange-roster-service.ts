@@ -1,15 +1,18 @@
+import 'server-only'
 import { ServerResponse } from "@/libs/share/_general/model/server-response";
 import { ArrangeRosterRequest, arrangeRosterRequestSchema } from "../model/arrange-roster-request";
 import { ServerResponseStatus } from "../../_general/enums/server-response-status";
 import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from "../model/sch-arrange-roster-response";
+import { Arrangement, ArrangeRosterResponse, Schedule } from '../model/arrange-roster-response';
+import { getDepartmentWorkersPosts } from '../../department/repositories/department-repositories';
 
-export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<SchArrangeRosterResponse>> => {
+export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<ArrangeRosterResponse>> => {
   const isRequestValid = checkRequest(request);
-  if (!isRequestValid) {
-    return {
-      status: ServerResponseStatus.BAD_REQUEST,
-    }
+  if (!isRequestValid) return {
+    status: ServerResponseStatus.BAD_REQUEST,
   }
+
+  // TODO: check request value
 
   const responseJson = await sendArrangeRosterRequest(request);
   if (!responseJson) return {
@@ -21,9 +24,14 @@ export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<Serv
     status: ServerResponseStatus.INTERNAL_ERROR
   }
 
+  const response = await mapResponse(schResponse, request.departmentId)
+  if (!response) return {
+    status: ServerResponseStatus.INTERNAL_ERROR
+  }
+
   return {
     status: ServerResponseStatus.OK,
-    data: schResponse,
+    data: response,
   }
 };
 
@@ -66,4 +74,49 @@ const parseSchResponse = (responseJson: any): SchArrangeRosterResponse | undefin
   }
 
   return parseResult.data;
+}
+
+const mapResponse = async (schResponse: SchArrangeRosterResponse, departmentId: number): Promise<ArrangeRosterResponse | undefined> => {
+  const department = await getDepartmentWorkersPosts(departmentId)
+  if (!department) {
+    console.error('Department not found', departmentId)
+    return;
+  }
+  
+  const response: ArrangeRosterResponse = [];
+
+  for (const day of schResponse) {
+    const arrangements: Arrangement[] = [];
+
+    for (const arrangement of day.arrangements) {
+      const post = department.posts.find(post => post.id === arrangement.post_id)
+      if (!post) {
+        console.error('Post not found. postId=', arrangement.post_id)
+        return
+      }
+
+      let worker;
+      if (arrangement.worker_id) {
+        worker = department.workers.find(worker => worker.id === arrangement.worker_id)
+        if (!worker) {
+          console.error('Worker not found. workerId=', arrangement.worker_id)
+          return
+        }
+      }
+
+      arrangements.push({
+        post,
+        worker,
+      })
+    }
+
+    const schedule: Schedule = {
+      day: day.day,
+      arrangements,
+    }
+
+    response.push(schedule);
+  }
+
+  return response;
 }

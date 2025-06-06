@@ -1,7 +1,11 @@
-from typing import Dict
 from pydantic import BaseModel
+
+
+class Arrangement(BaseModel):
+    post_id: int
+    worker_id: int | None
 
 
 class Schedule(BaseModel):
     day: int
-    arrangement: Dict[int, int]
+    arrangements: list[Arrangement]
