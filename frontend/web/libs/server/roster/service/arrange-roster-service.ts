@@ -69,7 +69,7 @@ const sendArrangeRosterRequest = async (request: ArrangeRosterRequest): Promise<
 const parseSchResponse = (responseJson: any): SchArrangeRosterResponse | undefined => {
   const parseResult = schArrangeRosterResponseSchema.safeParse(responseJson)
   if (!parseResult.success) {
-    console.error('Invalid response', parseResult.error.format())
+    console.error('Invalid response', JSON.stringify(parseResult.error.format()))
     return;
   }
 
@@ -89,17 +89,17 @@ const mapResponse = async (schResponse: SchArrangeRosterResponse, departmentId: 
     const arrangements: Arrangement[] = [];
 
     for (const arrangement of day.arrangements) {
-      const post = department.posts.find(post => post.id === arrangement.post_id)
+      const post = department.posts.find(post => post.id === arrangement.postId)
       if (!post) {
-        console.error('Post not found. postId=', arrangement.post_id)
+        console.error('Post not found. postId=', arrangement.postId)
         return
       }
 
       let worker;
-      if (arrangement.worker_id) {
-        worker = department.workers.find(worker => worker.id === arrangement.worker_id)
+      if (arrangement.workerId) {
+        worker = department.workers.find(worker => worker.id === arrangement.workerId)
         if (!worker) {
-          console.error('Worker not found. workerId=', arrangement.worker_id)
+          console.error('Worker not found. workerId=', arrangement.workerId)
           return
         }
       }

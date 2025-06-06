@@ -1,9 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class Arrangement(BaseModel):
-    post_id: int
-    worker_id: int | None
+    model_config = ConfigDict(populate_by_name=True)  # Allow nullable field with alias
+
+    post_id: int = Field(alias="postId")
+    worker_id: int | None = Field(alias="workerId")
 
 
 class Schedule(BaseModel):
