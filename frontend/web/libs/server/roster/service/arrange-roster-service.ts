@@ -1,8 +1,9 @@
 import { ServerResponse } from "@/libs/share/_general/model/server-response";
 import { ArrangeRosterRequest, arrangeRosterRequestSchema } from "../model/arrange-roster-request";
 import { ServerResponseStatus } from "../../_general/enums/server-response-status";
+import { ArrangeRosterResponse, arrangeRosterResponseSchema } from "../model/arrange-roster-response";
 
-export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse> => {
+export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<ArrangeRosterResponse>> => {
   const isRequestValid = checkRequest(request);
   if (!isRequestValid) {
     return {
@@ -12,11 +13,22 @@ export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<Serv
 
   const fetchResponse = await sendArrangeRosterRequest(request);
 
-  console.log('fetchResponse', fetchResponse)
+  if (!fetchResponse) return {
+    status: ServerResponseStatus.INTERNAL_ERROR
+  }
+
+  const parseResult = arrangeRosterResponseSchema.safeParse(fetchResponse)
+  if (!parseResult.success) {
+    console.error('Invalid response', parseResult.error.format())
+    return {
+      status: ServerResponseStatus.INTERNAL_ERROR,
+    }
+  }
 
   return {
-    status: ServerResponseStatus.INTERNAL_ERROR,
-  };
+    status: ServerResponseStatus.OK,
+    data: parseResult.data,
+  }
 };
 
 const checkRequest = (request: ArrangeRosterRequest): boolean => {
@@ -28,7 +40,7 @@ const checkRequest = (request: ArrangeRosterRequest): boolean => {
   return result.success;
 }
 
-const sendArrangeRosterRequest = async (request: ArrangeRosterRequest) => {
+const sendArrangeRosterRequest = async (request: ArrangeRosterRequest): Promise<any> => {
   try {
     const response = await fetch(`${process.env.SCH_HOST}/roster`, {
       method: 'POST',
@@ -39,17 +51,13 @@ const sendArrangeRosterRequest = async (request: ArrangeRosterRequest) => {
     });
 
     if (!response.ok) {
-      console.error('Fail to request SCH arrange roster', response.status, await response.text());
+      console.error('SCH response error', response.status, await response.text());
       return;
     }
 
-    const responseJson = await response.json()
-
-    // TODO zod validate, arrangeRosterResponseSchema
-
-    return responseJson;
+    return await response.json()
   } catch (error) {
-    console.error('Send Arrange Roster Request Error', error);
+    console.error('Fail to send SCH arrange roster request', error);
     return;
   }
 }

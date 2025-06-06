@@ -52,6 +52,7 @@ export default function RosterFilterForm() {
     }
 
     // TODO handle response
+    console.log(response.data)
   }
 
   return (
