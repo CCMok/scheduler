@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -17,34 +17,37 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useRosterStore } from '@/components/store/roster/roster-store-provider';
+import { ArrangeRosterResponse } from '@/libs/server/roster/model/arrange-roster-response';
 
 type RosterData = {
   post: string;
   days: Record<string, string | null>;
 };
 
-const initialRoster: RosterData[] = [
-  { 
-    post: 'Host', 
-    days: {
-      '0': 'Jane',
-      '1': null,
-      '2': 'Alice',
-      '3': null,
-      '4': 'Charlie'
+function mapResponseToRosterData(response: ArrangeRosterResponse | undefined): RosterData[] {
+  if (!response) return [];
+  
+  return response.schedules.map(schedule => {
+    const days: Record<string, string | null> = {};
+    
+    // Initialize all days with null
+    const maxDay = Math.max(...schedule.arrangements.map(arr => arr.day));
+    for (let i = 0; i <= maxDay; i++) {
+      days[i.toString()] = null;
     }
-  },
-  { 
-    post: 'Worship Leader', 
-    days: {
-      '0': 'Jason',
-      '1': 'Chow',
-      '2': null,
-      '3': 'Eve',
-      '4': null
-    }
-  },
-];
+    
+    // Fill in the worker names
+    schedule.arrangements.forEach(arrangement => {
+      days[arrangement.day.toString()] = arrangement.worker?.name ?? null;
+    });
+    
+    return {
+      post: schedule.post.name,
+      days
+    };
+  });
+}
 
 function SortableCell({ post, day, person }: Readonly<{ post: string; day: string; person: string | null }>) {
   const {
@@ -74,10 +77,18 @@ function SortableCell({ post, day, person }: Readonly<{ post: string; day: strin
 }
 
 export default function RosterTableSection() {
-  const [roster, setRoster] = useState(initialRoster);
+  const { response } = useRosterStore(state => state);
+  const [roster, setRoster] = useState<RosterData[]>([]);
   
+  useEffect(() => {
+    const mappedData = mapResponseToRosterData(response);
+    setRoster(mappedData);
+  }, [response]);
+
   // Get available days from the first roster entry
-  const days = Object.keys(roster[0]?.days || {}).sort((a, b) => Number(a) - Number(b));
+  const days = roster.length > 0 
+    ? Object.keys(roster[0].days).sort((a, b) => Number(a) - Number(b))
+    : [];
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -124,6 +135,10 @@ export default function RosterTableSection() {
     }
   }
 
+  if (days.length === 0) {
+    return <div>No roster data available</div>;
+  }
+
   return (
     <section>
       <DndContext
@@ -134,7 +149,7 @@ export default function RosterTableSection() {
         <table style={{ borderCollapse: 'collapse', width: '100%' }}>
           <thead className='bg-secondary'>
             <tr>
-              <th style={{ padding: '16px', border: '1px solid #ccc', textAlign: 'left' }}>Post</th>
+              <th style={{ padding: '16px', border: '1px solid #ccc', textAlign: 'left' }}>職位</th>
               {days.map((day) => (
                 <th key={day} style={{ padding: '16px', border: '1px solid #ccc', textAlign: 'center' }}>
                   Day {day}
@@ -162,5 +177,5 @@ export default function RosterTableSection() {
         </table>
       </DndContext>
     </section>
-  )
+  );
 }

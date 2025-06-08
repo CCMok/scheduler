@@ -21,9 +21,7 @@ export const RosterFilterStoreProvider = ({
 }: Readonly<Props>) => {
   const storeRef = useRef<RosterFilterStoreApi | null>(null)
 
-  if (storeRef.current === null) {
-    storeRef.current = createRosterFilterStore(initState)
-  }
+  storeRef.current ??= createRosterFilterStore(initState);
 
   return (
     <StoreContext.Provider value={storeRef.current}>

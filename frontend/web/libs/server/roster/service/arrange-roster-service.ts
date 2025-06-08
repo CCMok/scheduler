@@ -3,12 +3,12 @@ import { ServerResponse } from "@/libs/share/_general/model/server-response";
 import { ArrangeRosterRequest, arrangeRosterRequestSchema } from "../model/arrange-roster-request";
 import { ServerResponseStatus } from "../../_general/enums/server-response-status";
 import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from "../model/sch-arrange-roster-response";
-import { ArrangementNew, ArrangeRosterResponseNew } from '../model/arrange-roster-response';
+import { Arrangement, ArrangeRosterResponse } from '../model/arrange-roster-response';
 import { getDepartmentWorkersPosts } from '../../department/repositories/department-repositories';
 import { DepartmentWorkersPosts } from '../../department/models/department-model';
 import { isNil } from 'lodash';
 
-export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<ArrangeRosterResponseNew>> => {
+export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<ArrangeRosterResponse>> => {
   const canParseRequest = parseRequest(request);
   if (!canParseRequest) return {
     status: ServerResponseStatus.BAD_REQUEST,
@@ -98,8 +98,8 @@ const parseSchResponse = (responseJson: any): SchArrangeRosterResponse | undefin
   return parseResult.data;
 }
 
-export const mapResponse = async (schResponse: SchArrangeRosterResponse, department: DepartmentWorkersPosts): Promise<ArrangeRosterResponseNew | undefined> => {
-  const response: ArrangeRosterResponseNew = { schedules: [] }
+export const mapResponse = async (schResponse: SchArrangeRosterResponse, department: DepartmentWorkersPosts): Promise<ArrangeRosterResponse | undefined> => {
+  const response: ArrangeRosterResponse = { schedules: [] }
 
   for (const dayResponse of schResponse) {
     for (const arrangementResponse of dayResponse.arrangements) {
@@ -121,7 +121,7 @@ export const mapResponse = async (schResponse: SchArrangeRosterResponse, departm
       }
 
       if (isNil(arrangementResponse.workerId)) {
-        const arrangement: ArrangementNew = {
+        const arrangement: Arrangement = {
           day: dayResponse.day,
           worker: undefined,
         }
@@ -136,7 +136,7 @@ export const mapResponse = async (schResponse: SchArrangeRosterResponse, departm
         return;
       }
 
-      const arrangement: ArrangementNew = {
+      const arrangement: Arrangement = {
         day: dayResponse.day,
         worker,
       }

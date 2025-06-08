@@ -9,6 +9,7 @@ import { DEFAULT_DAY_COUNT } from "@/libs/share/roster/constants/roster-constant
 import BasicFilter from "./basic/basic-filter"
 import OffFilter from "./off/off-filter"
 import { useRosterFilterStore } from "@/components/store/roster-filter/roster-filter-store-provider"
+import { useRosterStore } from "@/components/store/roster/roster-store-provider"
 import { useMemo } from "react"
 import { getArrangeRosterRequest } from "@/libs/server/roster/model/arrange-roster-request"
 import { arrangeRosterAction } from "@/libs/server/roster/action/arrange-roster-action"
@@ -18,6 +19,7 @@ import FormRootMessage from "@/components/form/form-root-message"
 
 export default function RosterFilterForm() {
   const { organizations } = useRosterFilterStore(state => state);
+  const { setResponse } = useRosterStore(state => state);
 
   const { defaultOrganizationId, defaultDepartmentId } = useMemo(() => {
     const firstOrganization = organizations?.[0];
@@ -51,8 +53,7 @@ export default function RosterFilterForm() {
       return
     }
 
-    // TODO handle response
-    console.log(response.data)
+    setResponse(response.data)
   }
 
   return (
