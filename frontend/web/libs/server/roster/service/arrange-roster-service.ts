@@ -3,11 +3,12 @@ import { ServerResponse } from "@/libs/share/_general/model/server-response";
 import { ArrangeRosterRequest, arrangeRosterRequestSchema } from "../model/arrange-roster-request";
 import { ServerResponseStatus } from "../../_general/enums/server-response-status";
 import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from "../model/sch-arrange-roster-response";
-import { Arrangement, ArrangeRosterResponse, Schedule } from '../model/arrange-roster-response';
+import { ArrangementNew, ArrangeRosterResponseNew } from '../model/arrange-roster-response';
 import { getDepartmentWorkersPosts } from '../../department/repositories/department-repositories';
 import { DepartmentWorkersPosts } from '../../department/models/department-model';
+import { isNil } from 'lodash';
 
-export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<ArrangeRosterResponse>> => {
+export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<ArrangeRosterResponseNew>> => {
   const canParseRequest = parseRequest(request);
   if (!canParseRequest) return {
     status: ServerResponseStatus.BAD_REQUEST,
@@ -97,40 +98,51 @@ const parseSchResponse = (responseJson: any): SchArrangeRosterResponse | undefin
   return parseResult.data;
 }
 
-const mapResponse = async (schResponse: SchArrangeRosterResponse, department: DepartmentWorkersPosts): Promise<ArrangeRosterResponse | undefined> => {
-  const response: ArrangeRosterResponse = [];
+export const mapResponse = async (schResponse: SchArrangeRosterResponse, department: DepartmentWorkersPosts): Promise<ArrangeRosterResponseNew | undefined> => {
+  const response: ArrangeRosterResponseNew = { schedules: [] }
 
-  for (const day of schResponse) {
-    const arrangements: Arrangement[] = [];
+  for (const dayResponse of schResponse) {
+    for (const arrangementResponse of dayResponse.arrangements) {
+      let schedule = response.schedules.find(schedule => schedule.post.id === arrangementResponse.postId)
 
-    for (const arrangement of day.arrangements) {
-      const post = department.posts.find(post => post.id === arrangement.postId)
-      if (!post) {
-        console.error('Post not found. postId=', arrangement.postId)
-        return
-      }
-
-      let worker;
-      if (arrangement.workerId) {
-        worker = department.workers.find(worker => worker.id === arrangement.workerId)
-        if (!worker) {
-          console.error('Worker not found. workerId=', arrangement.workerId)
-          return
+      if (!schedule) {
+        const post = department.posts.find(post => post.id === arrangementResponse.postId);
+        if (!post) {
+          console.log('Post not found. postId=', arrangementResponse.postId)
+          return;
         }
+  
+        schedule = {
+          post,
+          arrangements: [],
+        };
+
+        response.schedules.push(schedule)
       }
 
-      arrangements.push({
-        post,
+      if (isNil(arrangementResponse.workerId)) {
+        const arrangement: ArrangementNew = {
+          day: dayResponse.day,
+          worker: undefined,
+        }
+  
+        schedule.arrangements.push(arrangement)
+        continue;
+      }
+
+      const worker = department.workers.find(worker => worker.id === arrangementResponse.workerId);
+      if (!worker) {
+        console.error('WorkerId not found. workerId=', arrangementResponse.workerId)
+        return;
+      }
+
+      const arrangement: ArrangementNew = {
+        day: dayResponse.day,
         worker,
-      })
-    }
+      }
 
-    const schedule: Schedule = {
-      day: day.day,
-      arrangements,
+      schedule.arrangements.push(arrangement)
     }
-
-    response.push(schedule);
   }
 
   return response;

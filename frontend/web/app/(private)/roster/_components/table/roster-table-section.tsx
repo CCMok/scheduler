@@ -20,16 +20,33 @@ import { CSS } from '@dnd-kit/utilities';
 
 type RosterData = {
   post: string;
-  day0: string;
-  day1: string;
+  days: Record<string, string | null>;
 };
 
 const initialRoster: RosterData[] = [
-  { post: 'Host', day0: 'Jane', day1: 'Foon' },
-  { post: 'Worship Leader', day0: 'Jason', day1: 'Chow' },
+  { 
+    post: 'Host', 
+    days: {
+      '0': 'Jane',
+      '1': null,
+      '2': 'Alice',
+      '3': null,
+      '4': 'Charlie'
+    }
+  },
+  { 
+    post: 'Worship Leader', 
+    days: {
+      '0': 'Jason',
+      '1': 'Chow',
+      '2': null,
+      '3': 'Eve',
+      '4': null
+    }
+  },
 ];
 
-function SortableCell({ post, day, person }: { post: string; day: 'day0' | 'day1'; person: string }) {
+function SortableCell({ post, day, person }: Readonly<{ post: string; day: string; person: string | null }>) {
   const {
     attributes,
     listeners,
@@ -51,13 +68,16 @@ function SortableCell({ post, day, person }: { post: string; day: 'day0' | 'day1
 
   return (
     <td ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      {person}
+      {person ?? ''}
     </td>
   );
 }
 
 export default function RosterTableSection() {
   const [roster, setRoster] = useState(initialRoster);
+  
+  // Get available days from the first roster entry
+  const days = Object.keys(roster[0]?.days || {}).sort((a, b) => Number(a) - Number(b));
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -66,7 +86,9 @@ export default function RosterTableSection() {
     })
   );
 
-  const sortableItems = roster.flatMap(row => [`${row.post}-day0`, `${row.post}-day1`]);
+  const sortableItems = roster.flatMap(row => 
+    days.map(day => `${row.post}-${day}`)
+  );
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -91,14 +113,11 @@ export default function RosterTableSection() {
           return currentRoster;
         }
 
-        const activeDayKey = activeDay as keyof Omit<RosterData, 'post'>;
-        const overDayKey = overDay as keyof Omit<RosterData, 'post'>;
+        const activeValue = newRoster[activeRowIndex].days[activeDay];
+        const overValue = newRoster[overRowIndex].days[overDay];
 
-        const activeValue = newRoster[activeRowIndex][activeDayKey];
-        const overValue = newRoster[overRowIndex][overDayKey];
-
-        newRoster[activeRowIndex][activeDayKey] = overValue;
-        newRoster[overRowIndex][overDayKey] = activeValue;
+        newRoster[activeRowIndex].days[activeDay] = overValue;
+        newRoster[overRowIndex].days[overDay] = activeValue;
         
         return newRoster;
       });
@@ -116,8 +135,11 @@ export default function RosterTableSection() {
           <thead className='bg-secondary'>
             <tr>
               <th style={{ padding: '16px', border: '1px solid #ccc', textAlign: 'left' }}>Post</th>
-              <th style={{ padding: '16px', border: '1px solid #ccc', textAlign: 'center' }}>Day 0</th>
-              <th style={{ padding: '16px', border: '1px solid #ccc', textAlign: 'center' }}>Day 1</th>
+              {days.map((day) => (
+                <th key={day} style={{ padding: '16px', border: '1px solid #ccc', textAlign: 'center' }}>
+                  Day {day}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -125,8 +147,14 @@ export default function RosterTableSection() {
               {roster.map((row) => (
                 <tr key={row.post}>
                   <td style={{ padding: '16px', border: '1px solid #ccc', fontWeight: 'bold' }}>{row.post}</td>
-                  <SortableCell post={row.post} day="day0" person={row.day0} />
-                  <SortableCell post={row.post} day="day1" person={row.day1} />
+                  {days.map((day) => (
+                    <SortableCell 
+                      key={`${row.post}-${day}`}
+                      post={row.post} 
+                      day={day} 
+                      person={row.days[day]} 
+                    />
+                  ))}
                 </tr>
               ))}
             </SortableContext>

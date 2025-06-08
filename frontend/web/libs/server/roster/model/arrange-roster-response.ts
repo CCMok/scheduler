@@ -1,13 +1,15 @@
 import { Post, Worker } from "@/external/prisma-generated";
 
-export type Arrangement = {
+export type ArrangeRosterResponseNew = {
+  schedules: ScheduleNew[];
+}
+
+export type ScheduleNew = {
   post: Post;
-  worker?: Worker;
+  arrangements: ArrangementNew[];
 }
 
-export type Schedule = {
+export type ArrangementNew = {
   day: number;
-  arrangements: Arrangement[];
+  worker: Worker | undefined;
 }
-
-export type ArrangeRosterResponse = Schedule[]
