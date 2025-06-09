@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, CSSProperties } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -19,6 +19,15 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { useRosterStore } from '@/components/store/roster/roster-store-provider';
 import { ArrangeRosterResponse } from '@/libs/server/roster/model/arrange-roster-response';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/external/shadcn/components/ui/table"
 
 type RosterData = {
   post: string;
@@ -27,21 +36,21 @@ type RosterData = {
 
 function mapResponseToRosterData(response: ArrangeRosterResponse | undefined): RosterData[] {
   if (!response) return [];
-  
+
   return response.schedules.map(schedule => {
     const days: Record<string, string | null> = {};
-    
+
     // Initialize all days with null
     const maxDay = Math.max(...schedule.arrangements.map(arr => arr.day));
     for (let i = 0; i <= maxDay; i++) {
       days[i.toString()] = null;
     }
-    
+
     // Fill in the worker names
     schedule.arrangements.forEach(arrangement => {
       days[arrangement.day.toString()] = arrangement.worker?.name ?? null;
     });
-    
+
     return {
       post: schedule.post.name,
       days
@@ -59,13 +68,11 @@ function SortableCell({ post, day, person }: Readonly<{ post: string; day: strin
     isDragging,
   } = useSortable({ id: `${post}-${day}` });
 
-  const style: React.CSSProperties = {
+  const style: CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
     cursor: 'grab',
-    border: '1px solid #ccc',
-    padding: '16px',
     textAlign: 'center',
   };
 
@@ -79,14 +86,14 @@ function SortableCell({ post, day, person }: Readonly<{ post: string; day: strin
 export default function RosterTableSection() {
   const { response } = useRosterStore(state => state);
   const [roster, setRoster] = useState<RosterData[]>([]);
-  
+
   useEffect(() => {
     const mappedData = mapResponseToRosterData(response);
     setRoster(mappedData);
   }, [response]);
 
   // Get available days from the first roster entry
-  const days = roster.length > 0 
+  const days = roster.length > 0
     ? Object.keys(roster[0].days).sort((a, b) => Number(a) - Number(b))
     : [];
 
@@ -97,7 +104,7 @@ export default function RosterTableSection() {
     })
   );
 
-  const sortableItems = roster.flatMap(row => 
+  const sortableItems = roster.flatMap(row =>
     days.map(day => `${row.post}-${day}`)
   );
 
@@ -129,7 +136,7 @@ export default function RosterTableSection() {
 
         newRoster[activeRowIndex].days[activeDay] = overValue;
         newRoster[overRowIndex].days[overDay] = activeValue;
-        
+
         return newRoster;
       });
     }
@@ -146,35 +153,34 @@ export default function RosterTableSection() {
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
-        <table style={{ borderCollapse: 'collapse', width: '100%' }}>
-          <thead className='bg-secondary'>
-            <tr>
-              <th style={{ padding: '16px', border: '1px solid #ccc', textAlign: 'left' }}>職位</th>
-              {days.map((day) => (
-                <th key={day} style={{ padding: '16px', border: '1px solid #ccc', textAlign: 'center' }}>
-                  Day {day}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
+        <Table className='table-fixed'>
+          <TableCaption>此值勤表由系統產生，可以拖放調整排班</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>職位</TableHead>
+              {days.map(day =>
+                <TableHead key={day} className='text-center'>Day {day}</TableHead>
+              )}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             <SortableContext items={sortableItems} strategy={rectSwappingStrategy}>
-              {roster.map((row) => (
-                <tr key={row.post}>
-                  <td style={{ padding: '16px', border: '1px solid #ccc', fontWeight: 'bold' }}>{row.post}</td>
-                  {days.map((day) => (
-                    <SortableCell 
+              {roster.map(row => (
+                <TableRow key={row.post}>
+                  <TableCell className='py-4'>{row.post}</TableCell>
+                  {days.map(day => (
+                    <SortableCell
                       key={`${row.post}-${day}`}
-                      post={row.post} 
-                      day={day} 
-                      person={row.days[day]} 
+                      post={row.post}
+                      day={day}
+                      person={row.days[day]}
                     />
                   ))}
-                </tr>
+                </TableRow>
               ))}
             </SortableContext>
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </DndContext>
     </section>
   );
