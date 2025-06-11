@@ -143,7 +143,7 @@ export default function RosterTableSection() {
   }
 
   if (days.length === 0) {
-    return <div>No roster data available</div>;
+    return <></>;
   }
 
   return (
