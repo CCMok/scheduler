@@ -66,7 +66,10 @@ function SortableCell({ post, day, person }: Readonly<{ post: string; day: strin
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: `${post}-${day}` });
+  } = useSortable({ 
+    id: `${post}-${day}`,
+    animateLayoutChanges: () => false,
+  });
 
   const style: CSSProperties = {
     transform: CSS.Transform.toString(transform),
