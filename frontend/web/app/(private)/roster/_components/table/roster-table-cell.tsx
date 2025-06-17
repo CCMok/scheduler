@@ -4,14 +4,13 @@ import { CSSProperties } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { TableCell } from "@/external/shadcn/components/ui/table"
+import { Arrangement } from '@/libs/server/roster/model/roster';
 
 type Props = {
-  post: string; 
-  day: string;
-  person?: string;
+  arrangement: Arrangement;
 }
 
-export default function RosterTableCell({ post, day, person }: Readonly<Props>) {
+export default function RosterTableCell({ arrangement }: Readonly<Props>) {
   const {
     attributes,
     listeners,
@@ -20,7 +19,7 @@ export default function RosterTableCell({ post, day, person }: Readonly<Props>) 
     transition,
     isDragging,
   } = useSortable({
-    id: `${post}-${day}`,
+    id: arrangement.id,
     animateLayoutChanges: () => false,
   });
 
@@ -34,7 +33,7 @@ export default function RosterTableCell({ post, day, person }: Readonly<Props>) 
 
   return (
     <TableCell ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      {person ?? ''}
+      {arrangement.worker?.name ?? ''}
     </TableCell>
   )
 }

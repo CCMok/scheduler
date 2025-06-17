@@ -1,18 +1,17 @@
 import { createStore } from 'zustand/vanilla'
-import { ArrangeRosterResponse } from '@/libs/server/roster/model/arrange-roster-response'
+import { Roster } from '@/libs/server/roster/model/roster'
 
 export type RosterState = {
-  response: ArrangeRosterResponse | undefined,
+  response?: Roster,
 }
 
 export type RosterActions = {
-  setResponse: (response: ArrangeRosterResponse |undefined) => void,
+  setResponse: (response?: Roster) => void,
 }
 
 export type RosterStore = RosterState & RosterActions
 
 export const defaultInitState: RosterState = {
-  response: undefined,
 }
 
 export const createRosterStore = (
