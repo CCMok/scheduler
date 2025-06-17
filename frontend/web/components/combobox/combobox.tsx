@@ -1,13 +1,13 @@
 'use client'
 
-import { Button } from "@/external/shadcn/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandList } from "@/external/shadcn/components/ui/command"
 import { FormControl } from "@/external/shadcn/components/ui/form"
 import { Popover, PopoverContent, PopoverTrigger } from "@/external/shadcn/components/ui/popover"
 import { cn } from "@/external/shadcn/libs/utils"
-import { Check, ChevronDown } from "lucide-react"
+import { Check } from "lucide-react"
 import { useMemo, useState } from "react"
 import CustomCommandItem from "../command/custom-command-item"
+import ComboBoxTriggerButton from "./combobox-trigger-button"
 
 type Props<T> = {
   value: string,
@@ -15,6 +15,7 @@ type Props<T> = {
   options: T[],
   getValue: (option: T) => string,
   getDisplayName: (option: T) => string,
+  isFormField?: boolean,
 }
 
 export default function ComboBox<T>({
@@ -23,6 +24,7 @@ export default function ComboBox<T>({
   options,
   getValue,
   getDisplayName,
+  isFormField = false,
 }: Readonly<Props<T>>) {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -35,19 +37,19 @@ export default function ComboBox<T>({
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <FormControl>
-          <Button
-            variant='outline'
-            role='comobox'
-            className={cn(
-              "w-(--input-width) justify-between",
-              !value && "text-muted-foreground"
-            )}
-          >
-            {selectedItemDisplay}
-            <ChevronDown className="opacity-50" />
-          </Button>
-        </FormControl>
+        {isFormField ?
+          <FormControl>
+            <ComboBoxTriggerButton
+              value={value}
+              display={selectedItemDisplay}
+            />
+          </FormControl>
+          :
+          <ComboBoxTriggerButton
+            value={value}
+            display={selectedItemDisplay}
+          />
+        }
       </PopoverTrigger>
       <PopoverContent className="w-(--input-width) p-0">
         <Command>
@@ -75,9 +77,7 @@ export default function ComboBox<T>({
                     <Check
                       className={cn(
                         "ml-auto",
-                        itemValue === value
-                          ? "opacity-100"
-                          : "opacity-0"
+                        itemValue !== value && "opacity-0",
                       )}
                     />
                   </CustomCommandItem>

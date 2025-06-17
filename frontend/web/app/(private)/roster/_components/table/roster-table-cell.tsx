@@ -1,46 +1,36 @@
-"use client";
+'use client'
 
-import { CSSProperties } from 'react';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { TableCell } from "@/external/shadcn/components/ui/table"
-import { Arrangement } from '@/libs/server/roster/model/roster';
-import { cn } from '@/external/shadcn/libs/utils';
+import { Arrangement } from "@/libs/server/roster/model/roster";
+import RosterTableSortableCell from "./roster-table-sortable-cell";
+import { useState } from "react";
+import RosterTableSelectionCell from "./roster-table-selection-cell";
 
 type Props = {
   arrangement: Arrangement;
 }
 
-export default function RosterTableCell({ arrangement }: Readonly<Props>) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
-    id: arrangement.id,
-    animateLayoutChanges: () => false,
-  });
+export default function RosterCell({
+  arrangement,
+}: Readonly<Props>) {
+  // TODO: turn off edit mode when click outside
+  
+  const [isEditing, setIsEditing] = useState(false)
 
-  const style: CSSProperties = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+  const onDoubleClick = () => setIsEditing(isEditing => !isEditing)
 
   return (
-    <TableCell
-      ref={setNodeRef}
-      style={style}
-      className={cn(
-        'text-center cursor-grab',
-        isDragging && 'opacity-50',
-      )}
-      {...attributes}
-      {...listeners}
-    >
-      {arrangement.worker?.name ?? ''}
-    </TableCell>
+    <>
+      {isEditing ?
+        <RosterTableSelectionCell
+          onDoubleClick={onDoubleClick}
+          arrangement={arrangement}
+        />
+        :
+        <RosterTableSortableCell
+          onDoubleClick={onDoubleClick}
+          arrangement={arrangement}
+        />
+      }
+    </>
   )
 }

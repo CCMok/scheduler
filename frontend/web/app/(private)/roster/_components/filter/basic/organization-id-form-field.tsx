@@ -24,6 +24,7 @@ export default function OrganizationIdFormField() {
             getValue={option => option.id.toString()}
             getDisplayName={option => option.name}
             onValueChange={value => setValue('organizationId', value)}
+            isFormField
           />
         </CustomFormItem>
       )}

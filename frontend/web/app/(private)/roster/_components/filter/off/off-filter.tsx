@@ -9,6 +9,7 @@ import { useEffect, useMemo } from "react";
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form"
 import WorkerIdFormField from "./worker-id-form-field";
 import DaysFormField from "./days-form-field";
+import { useRosterStore } from "@/components/store/roster/roster-store-provider";
 
 export default function OffFilter() {
   const { control, getValues } = useFormContext<RosterFilterFormInput>();
@@ -18,7 +19,8 @@ export default function OffFilter() {
     name: 'offs',
   })
 
-  const { departments, setWorkers } = useRosterFilterStore(state => state)
+  const { departments } = useRosterFilterStore(state => state)
+  const { setWorkers } = useRosterStore(state => state)
 
   const departmentId = useWatch({
     control,

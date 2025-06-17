@@ -43,6 +43,7 @@ export default function DepartmentIdFormField() {
             getValue={option => option.id.toString()}
             getDisplayName={option => option.name}
             onValueChange={value => setValue('departmentId', value)}
+            isFormField
           />
         </CustomFormItem>
       )}

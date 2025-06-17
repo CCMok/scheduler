@@ -3,9 +3,9 @@
 import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
 import ComboBox from "@/components/combobox/combobox";
 import CustomFormItem from "@/components/form/custom-form-item";
-import { useRosterFilterStore } from "@/components/store/roster-filter/roster-filter-store-provider";
 import { FormField } from "@/external/shadcn/components/ui/form";
 import { useFormContext } from "react-hook-form"
+import { useRosterStore } from "@/components/store/roster/roster-store-provider";
 
 type Props = {
   index: number;
@@ -16,7 +16,7 @@ export default function WorkerIdFormField({
 }: Readonly<Props>) {
   const { control, setValue } = useFormContext<RosterFilterFormInput>();
 
-  const { workers } = useRosterFilterStore(state => state)
+  const { workers } = useRosterStore(state => state)
 
   return (
     <FormField
@@ -30,6 +30,7 @@ export default function WorkerIdFormField({
             getValue={option => option.id.toString()}
             getDisplayName={option => option.name}
             onValueChange={value => setValue(`offs.${index}.workerId`, value)}
+            isFormField
           />
         </CustomFormItem>
       )}

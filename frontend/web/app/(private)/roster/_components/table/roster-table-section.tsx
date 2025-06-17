@@ -26,8 +26,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/external/shadcn/components/ui/table"
-import RosterTableCell from './roster-table-cell';
 import { swapSchedule } from './roster-table-utils';
+import RosterCell from './roster-table-cell';
 
 export default function RosterTableSection() {
   const sensors = useSensors(
@@ -87,7 +87,7 @@ export default function RosterTableSection() {
                 <TableRow key={schedule.post.id}>
                   <TableCell className='py-4'>{schedule.post.name}</TableCell>
                   {schedule.arrangements.map(arrangement => (
-                    <RosterTableCell
+                    <RosterCell
                       key={arrangement.id}
                       arrangement={arrangement}
                     />
