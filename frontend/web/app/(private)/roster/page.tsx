@@ -1,14 +1,17 @@
+import { getOrganizationsBySession } from "@/libs/server/organization/repositories/organization-repository";
 import RosterFilterSection from "./_components/filter/roster-filter-section";
-import RosterPageProvider from "./_components/provider/roster-page-provider";
 import RosterTableSection from "./_components/table/roster-table-section";
+import { RosterStoreProvider } from "@/components/store/roster/roster-store-provider";
 
-export default function RosterPage() {
+export default async function RosterPage() {
+  const organizations = await getOrganizationsBySession()
+
   return (
     <div className='h-full space-y-2'>
-      <RosterPageProvider>
+      <RosterStoreProvider initState={{ organizations }}>
         <RosterFilterSection />
         <RosterTableSection />
-      </RosterPageProvider>
+      </RosterStoreProvider>
     </div>
   )
 }

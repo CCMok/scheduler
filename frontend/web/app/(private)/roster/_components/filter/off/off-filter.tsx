@@ -1,6 +1,5 @@
 'use client'
 
-import { useRosterFilterStore } from "@/components/store/roster-filter/roster-filter-store-provider";
 import { Button } from "@/external/shadcn/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/external/shadcn/components/ui/card"
 import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
@@ -19,8 +18,7 @@ export default function OffFilter() {
     name: 'offs',
   })
 
-  const { departments } = useRosterFilterStore(state => state)
-  const { setWorkers } = useRosterStore(state => state)
+  const { departments, setWorkers } = useRosterStore(state => state)
 
   const departmentId = useWatch({
     control,

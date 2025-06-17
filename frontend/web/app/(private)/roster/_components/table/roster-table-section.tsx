@@ -37,12 +37,12 @@ export default function RosterTableSection() {
     })
   );
 
-  const { response } = useRosterStore(state => state);
-  const [schedules, setSchedules] = useState<Schedule[]>(response?.schedules ?? [])
+  const { roster } = useRosterStore(state => state);
+  const [schedules, setSchedules] = useState<Schedule[]>(roster?.schedules ?? [])
 
   useEffect(() => {
-    setSchedules(response ? response.schedules : [])
-  }, [response])
+    setSchedules(roster ? roster.schedules : [])
+  }, [roster])
 
   const days = useMemo(() => {
     return schedules.length ? schedules[0].arrangements.map(arrangement => arrangement.day.toString()) : []
@@ -62,7 +62,7 @@ export default function RosterTableSection() {
     setSchedules(swappedSchedules);
   }
 
-  if (!response) return <></>;
+  if (!roster) return <></>;
 
   return (
     <section>

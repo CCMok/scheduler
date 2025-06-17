@@ -2,7 +2,7 @@
 
 import ComboBox from "@/components/combobox/combobox"
 import CustomFormItem from "@/components/form/custom-form-item"
-import { useRosterFilterStore } from "@/components/store/roster-filter/roster-filter-store-provider"
+import { useRosterStore } from "@/components/store/roster/roster-store-provider"
 import { FormField } from "@/external/shadcn/components/ui/form"
 import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
 import { useFormContext } from "react-hook-form"
@@ -10,7 +10,7 @@ import { useFormContext } from "react-hook-form"
 export default function OrganizationIdFormField() {
   const { control, setValue } = useFormContext<RosterFilterFormInput>();
   
-  const { organizations } = useRosterFilterStore(state => state);
+  const { organizations } = useRosterStore(state => state);
   
   return (
     <FormField
