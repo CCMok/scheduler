@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, CSSProperties } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -14,9 +14,7 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   rectSwappingStrategy,
-  useSortable,
 } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import { useRosterStore } from '@/components/store/roster/roster-store-provider';
 import { ArrangeRosterResponse } from '@/libs/server/roster/model/arrange-roster-response';
 import {
@@ -28,62 +26,35 @@ import {
   TableHeader,
   TableRow,
 } from "@/external/shadcn/components/ui/table"
+import RosterTableCell from './roster-table-cell';
 
 type RosterData = {
   post: string;
-  days: Record<string, string | null>;
+  days: Record<string, string | undefined>;
 };
 
 function mapResponseToRosterData(response: ArrangeRosterResponse | undefined): RosterData[] {
   if (!response) return [];
 
   return response.schedules.map(schedule => {
-    const days: Record<string, string | null> = {};
+    const days: Record<string, string | undefined> = {};
 
     // Initialize all days with null
     const maxDay = Math.max(...schedule.arrangements.map(arr => arr.day));
     for (let i = 0; i <= maxDay; i++) {
-      days[i.toString()] = null;
+      days[i.toString()] = undefined;
     }
 
     // Fill in the worker names
     schedule.arrangements.forEach(arrangement => {
-      days[arrangement.day.toString()] = arrangement.worker?.name ?? null;
+      days[arrangement.day.toString()] = arrangement.worker?.name ?? undefined;
     });
 
     return {
       post: schedule.post.name,
-      days
+      days,
     };
   });
-}
-
-function SortableCell({ post, day, person }: Readonly<{ post: string; day: string; person: string | null }>) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ 
-    id: `${post}-${day}`,
-    animateLayoutChanges: () => false,
-  });
-
-  const style: CSSProperties = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    cursor: 'grab',
-    textAlign: 'center',
-  };
-
-  return (
-    <td ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      {person ?? ''}
-    </td>
-  );
 }
 
 export default function RosterTableSection() {
@@ -172,7 +143,7 @@ export default function RosterTableSection() {
                 <TableRow key={row.post}>
                   <TableCell className='py-4'>{row.post}</TableCell>
                   {days.map(day => (
-                    <SortableCell
+                    <RosterTableCell
                       key={`${row.post}-${day}`}
                       post={row.post}
                       day={day}
