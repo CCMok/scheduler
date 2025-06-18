@@ -17,7 +17,7 @@ import { getRootMessage } from "@/libs/client/_general/utils/form-utils"
 import FormRootMessage from "@/components/form/form-root-message"
 
 export default function RosterFilterForm() {
-  const { organizations, setSchedules, setIsGenerated } = useRosterStore(state => state);
+  const { organizations, isGenerated, setSchedules, setIsGenerated } = useRosterStore(state => state);
 
   const { defaultOrganizationId, defaultDepartmentId } = useMemo(() => {
     const firstOrganization = organizations?.[0];
@@ -41,6 +41,7 @@ export default function RosterFilterForm() {
   })
 
   const onSubmit = async (input: RosterFilterFormInput) => {
+    // TODO: if isGenerated, prompt user to confirm
     const request = getArrangeRosterRequest(input);
 
     const response = await arrangeRosterAction(request);
@@ -65,7 +66,9 @@ export default function RosterFilterForm() {
         <OffFilter />
 
         <div className='flex justify-end'>
-          <FormSubmitButton>確認</FormSubmitButton>
+          <FormSubmitButton>
+            {isGenerated ? '重新生成' : '確認'}
+          </FormSubmitButton>
         </div>
 
         <FormRootMessage />

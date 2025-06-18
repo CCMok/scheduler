@@ -7,7 +7,7 @@ export default async function RosterPage() {
   const organizations = await getOrganizationsBySession()
 
   return (
-    <div className='h-full space-y-2'>
+    <div className='h-full space-y-4'>
       <RosterStoreProvider initState={{ organizations }}>
         <RosterFilterSection />
         <RosterTableSection />

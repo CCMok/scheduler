@@ -27,6 +27,7 @@ import {
 } from "@/external/shadcn/components/ui/table"
 import { swapSchedule } from './roster-table-utils';
 import RosterCell from './cell/roster-table-cell';
+import { Button } from '@/external/shadcn/components/ui/button';
 
 export default function RosterTableSection() {
   const sensors = useSensors(
@@ -92,6 +93,9 @@ export default function RosterTableSection() {
           </TableBody>
         </Table>
       </DndContext>
+      <div className='flex justify-end mt-2'>
+        <Button>儲存</Button>
+      </div>
     </section>
   );
 }
