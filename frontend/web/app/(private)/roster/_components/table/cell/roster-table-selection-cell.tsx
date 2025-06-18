@@ -1,9 +1,10 @@
+'use client'
+
 import { TableCell } from "@/external/shadcn/components/ui/table";
 import { Arrangement } from "@/libs/server/roster/model/roster";
-import { ComponentProps, useState } from "react";
+import { ComponentProps } from "react";
 import ComboBox from "@/components/combobox/combobox";
 import { useRosterStore } from "@/components/store/roster/roster-store-provider";
-import { Worker } from "@/external/prisma-generated";
 
 type Props = ComponentProps<typeof TableCell> & {
   arrangement: Arrangement;
@@ -13,19 +14,33 @@ export default function RosterTableSelectionCell({
   arrangement,
   ...props
 }: Readonly<Props>) {
-  const { workers } = useRosterStore(state => state)
+  const { schedules, workers, setSchedules } = useRosterStore(state => state)
 
-  // TODO: temp
-  const [worker, setWorker] = useState<Worker | undefined>(arrangement.worker)
+  const onValueChange = (value: string) => {
+    const newWorker = workers.find(worker => worker.id.toString() === value)
+
+    const newSchedules = schedules.map(schedule => ({
+      ...schedule,
+      arrangements: schedule.arrangements.map(scheduleArrangement => ({
+        ...scheduleArrangement,
+        worker: (() => {
+          if (scheduleArrangement.id !== arrangement.id) return scheduleArrangement.worker;
+          return scheduleArrangement.worker?.id === newWorker?.id ? undefined : newWorker;
+        })(),
+      })),
+    }))
+
+    setSchedules(newSchedules);
+  }
 
   return (
     <TableCell {...props}>
       <ComboBox
-        value={worker?.id.toString() ?? ''}
+        value={arrangement.worker?.id.toString() ?? ''}
         options={workers}
         getValue={option => option.id.toString()}
         getDisplayName={option => option.name}
-        onValueChange={value => setWorker(workers.find(worker => worker.id.toString() === value))}
+        onValueChange={onValueChange}
       />
     </TableCell>
   )
