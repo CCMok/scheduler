@@ -15,6 +15,7 @@ import { arrangeRosterAction } from "@/libs/server/roster/action/arrange-roster-
 import { ServerResponseStatus } from "@/libs/server/_general/enums/server-response-status"
 import { getRootMessage } from "@/libs/client/_general/utils/form-utils"
 import FormRootMessage from "@/components/form/form-root-message"
+import { CalendarSync } from "lucide-react"
 
 export default function RosterFilterForm() {
   const { organizations, isGenerated, setSchedules, setIsGenerated } = useRosterStore(state => state);
@@ -66,7 +67,9 @@ export default function RosterFilterForm() {
         <OffFilter />
 
         <div className='flex justify-end'>
-          <FormSubmitButton>
+          <FormSubmitButton
+            icon={<CalendarSync />}
+          >
             {isGenerated ? '重新生成' : '確認'}
           </FormSubmitButton>
         </div>

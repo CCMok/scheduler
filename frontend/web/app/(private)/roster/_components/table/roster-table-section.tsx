@@ -28,6 +28,8 @@ import {
 import { swapSchedule } from './roster-table-utils';
 import RosterCell from './cell/roster-table-cell';
 import { Button } from '@/external/shadcn/components/ui/button';
+import LoadingButton from '@/components/button/loading-button';
+import { Save } from 'lucide-react';
 
 export default function RosterTableSection() {
   const sensors = useSensors(
@@ -94,7 +96,11 @@ export default function RosterTableSection() {
         </Table>
       </DndContext>
       <div className='flex justify-end mt-2'>
-        <Button>儲存</Button>
+        <LoadingButton
+          icon={<Save />}
+        >
+          儲存
+        </LoadingButton>
       </div>
     </section>
   );
