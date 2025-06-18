@@ -2,16 +2,18 @@
 
 import { TableCell } from "@/external/shadcn/components/ui/table";
 import { Arrangement } from "@/libs/server/roster/model/roster";
-import { ComponentProps } from "react";
+import { ComponentProps, Dispatch, SetStateAction } from "react";
 import ComboBox from "@/components/combobox/combobox";
 import { useRosterStore } from "@/components/store/roster/roster-store-provider";
 
 type Props = ComponentProps<typeof TableCell> & {
   arrangement: Arrangement;
+  setIsEditing: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function RosterTableSelectionCell({
   arrangement,
+  setIsEditing,
   ...props
 }: Readonly<Props>) {
   const { schedules, workers, setSchedules } = useRosterStore(state => state)
@@ -31,6 +33,7 @@ export default function RosterTableSelectionCell({
     }))
 
     setSchedules(newSchedules);
+    setIsEditing(false)
   }
 
   return (
@@ -41,6 +44,7 @@ export default function RosterTableSelectionCell({
         getValue={option => option.id.toString()}
         getDisplayName={option => option.name}
         onValueChange={onValueChange}
+        defaultIsOpen
       />
     </TableCell>
   )

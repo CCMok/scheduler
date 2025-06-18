@@ -22,7 +22,7 @@ export default function RosterCell({
     <>
       {isEditing ?
         <RosterTableSelectionCell
-          onDoubleClick={onDoubleClick}
+          setIsEditing={setIsEditing}
           arrangement={arrangement}
         />
         :

@@ -16,6 +16,7 @@ type Props<T> = {
   getValue: (option: T) => string,
   getDisplayName: (option: T) => string,
   isFormField?: boolean,
+  defaultIsOpen?: boolean,
 }
 
 export default function ComboBox<T>({
@@ -25,8 +26,9 @@ export default function ComboBox<T>({
   getValue,
   getDisplayName,
   isFormField = false,
+  defaultIsOpen = false,
 }: Readonly<Props<T>>) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(defaultIsOpen)
 
   const selectedItemDisplay = useMemo(() => {
     if (!value) return '選擇';
