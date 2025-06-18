@@ -17,7 +17,7 @@ import { getRootMessage } from "@/libs/client/_general/utils/form-utils"
 import FormRootMessage from "@/components/form/form-root-message"
 
 export default function RosterFilterForm() {
-  const { organizations, setRoster } = useRosterStore(state => state);
+  const { organizations, setSchedules, setIsGenerated } = useRosterStore(state => state);
 
   const { defaultOrganizationId, defaultDepartmentId } = useMemo(() => {
     const firstOrganization = organizations?.[0];
@@ -41,9 +41,9 @@ export default function RosterFilterForm() {
   })
 
   const onSubmit = async (input: RosterFilterFormInput) => {
-    const requestBody = getArrangeRosterRequest(input);
+    const request = getArrangeRosterRequest(input);
 
-    const response = await arrangeRosterAction(requestBody);
+    const response = await arrangeRosterAction(request);
 
     if (response.status !== ServerResponseStatus.OK) {
       const rootMessage = getRootMessage(response)
@@ -51,7 +51,8 @@ export default function RosterFilterForm() {
       return
     }
 
-    setRoster(response.data)
+    setSchedules(response.data)
+    setIsGenerated(true)
   }
 
   return (

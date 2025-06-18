@@ -3,12 +3,12 @@ import { ServerResponse } from "@/libs/share/_general/model/server-response";
 import { ArrangeRosterRequest, arrangeRosterRequestSchema } from "../model/arrange-roster-request";
 import { ServerResponseStatus } from "../../_general/enums/server-response-status";
 import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from "../model/sch-arrange-roster-response";
-import { Arrangement, Roster } from '../model/roster';
+import { Arrangement, Schedule } from '../model/roster';
 import { getDepartmentWorkersPosts } from '../../department/repositories/department-repositories';
 import { DepartmentWorkersPosts } from '../../department/models/department-model';
 import { isNil } from 'lodash';
 
-export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<Roster>> => {
+export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<Schedule[]>> => {
   const canParseRequest = parseRequest(request);
   if (!canParseRequest) return {
     status: ServerResponseStatus.BAD_REQUEST,
@@ -34,7 +34,7 @@ export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<Serv
     status: ServerResponseStatus.INTERNAL_ERROR
   }
 
-  const response = await mapResponse(schResponse, department)
+  const response = await mapSchedules(schResponse, department)
   if (!response) return {
     status: ServerResponseStatus.INTERNAL_ERROR
   }
@@ -98,14 +98,14 @@ const parseSchResponse = (responseJson: any): SchArrangeRosterResponse | undefin
   return parseResult.data;
 }
 
-export const mapResponse = async (schResponse: SchArrangeRosterResponse, department: DepartmentWorkersPosts): Promise<Roster | undefined> => {
-  const response: Roster = { schedules: [] }
+export const mapSchedules = async (schResponse: SchArrangeRosterResponse, department: DepartmentWorkersPosts): Promise<Schedule[] | undefined> => {
+  const schedules: Schedule[] = []
 
   let arrangementId = 0;
 
   for (const dayResponse of schResponse) {
     for (const arrangementResponse of dayResponse.arrangements) {
-      let schedule = response.schedules.find(schedule => schedule.post.id === arrangementResponse.postId)
+      let schedule = schedules.find(schedule => schedule.post.id === arrangementResponse.postId)
 
       if (!schedule) {
         const post = department.posts.find(post => post.id === arrangementResponse.postId);
@@ -119,7 +119,7 @@ export const mapResponse = async (schResponse: SchArrangeRosterResponse, departm
           arrangements: [],
         };
 
-        response.schedules.push(schedule)
+        schedules.push(schedule)
       }
 
       if (isNil(arrangementResponse.workerId)) {
@@ -149,5 +149,5 @@ export const mapResponse = async (schResponse: SchArrangeRosterResponse, departm
     }
   }
 
-  return response;
+  return schedules;
 }

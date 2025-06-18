@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -16,7 +16,6 @@ import {
   rectSwappingStrategy,
 } from '@dnd-kit/sortable';
 import { useRosterStore } from '@/components/store/roster/roster-store-provider';
-import { Schedule } from '@/libs/server/roster/model/roster';
 import {
   Table,
   TableBody,
@@ -27,7 +26,7 @@ import {
   TableRow,
 } from "@/external/shadcn/components/ui/table"
 import { swapSchedule } from './roster-table-utils';
-import RosterCell from './roster-table-cell';
+import RosterCell from './cell/roster-table-cell';
 
 export default function RosterTableSection() {
   const sensors = useSensors(
@@ -37,12 +36,7 @@ export default function RosterTableSection() {
     })
   );
 
-  const { roster } = useRosterStore(state => state);
-  const [schedules, setSchedules] = useState<Schedule[]>(roster?.schedules ?? [])
-
-  useEffect(() => {
-    setSchedules(roster ? roster.schedules : [])
-  }, [roster])
+  const { schedules, isGenerated, setSchedules } = useRosterStore(state => state);
 
   const days = useMemo(() => {
     return schedules.length ? schedules[0].arrangements.map(arrangement => arrangement.day.toString()) : []
@@ -61,8 +55,9 @@ export default function RosterTableSection() {
     const swappedSchedules = swapSchedule(schedules, over.id, active.id)
     setSchedules(swappedSchedules);
   }
+  console.log('render')
 
-  if (!roster) return <></>;
+  if (!isGenerated) return <></>;
 
   return (
     <section>
