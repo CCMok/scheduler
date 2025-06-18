@@ -55,7 +55,6 @@ export default function RosterTableSection() {
     const swappedSchedules = swapSchedule(schedules, over.id, active.id)
     setSchedules(swappedSchedules);
   }
-  console.log('render')
 
   if (!isGenerated) return <></>;
 

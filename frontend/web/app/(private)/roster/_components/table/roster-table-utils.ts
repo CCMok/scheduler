@@ -1,39 +1,44 @@
 import { Schedule } from "@/libs/server/roster/model/roster";
-import { cloneDeep } from "lodash";
 import { Worker } from "@/external/prisma-generated";
 import { UniqueIdentifier } from "@dnd-kit/core";
 
-export const swapSchedule = (schedules: Schedule[], overArrangementId: UniqueIdentifier, activeArrangementId: UniqueIdentifier) => {
+export const swapSchedule = (schedules: Schedule[], overArrangementId: UniqueIdentifier, activeArrangementId: UniqueIdentifier): Schedule[] => {
   let overWorker: Worker | undefined;
   let activeWorker: Worker | undefined;
 
-  const scheduleCopy = cloneDeep(schedules);
-
   // find over and active arrangement
-  for (const schedule of scheduleCopy) {
-    const overArrangement = schedule.arrangements.find(arrangement => arrangement.id === overArrangementId);
-    if (overArrangement) {
-      overWorker = overArrangement.worker
-    }
+  for (const schedule of schedules) {
+    for (const arrangement of schedule.arrangements) {
+      if (arrangement.id === overArrangementId) {
+        overWorker = arrangement.worker;
+      }
 
-    const activeArrangement = schedule.arrangements.find(arrangement => arrangement.id === activeArrangementId);
-    if (activeArrangement) {
-      activeWorker = activeArrangement.worker
+      if (arrangement.id === activeArrangementId) {
+        activeWorker = arrangement.worker;
+      }
+
+      if (overWorker && activeWorker) {
+        break;
+      }
     }
   }
 
   // swap arrangement
-  for (const schedule of scheduleCopy) {
-    const overArrangement = schedule.arrangements.find(arrangement => arrangement.id === overArrangementId);
-    if (overArrangement) {
-      overArrangement.worker = activeWorker;
-    }
+  return schedules.map(schedule => ({
+    ...schedule,
+    arrangements: schedule.arrangements.map(arrangement => ({
+      ...arrangement,
+      worker: (() => {
+        if (arrangement.id === overArrangementId) {
+          return activeWorker;
+        }
 
-    const activeArrangement = schedule.arrangements.find(arrangement => arrangement.id === activeArrangementId);
-    if (activeArrangement) {
-      activeArrangement.worker = overWorker;
-    }
-  }
+        if (arrangement.id === activeArrangementId) {
+          return overWorker;
+        }
 
-  return scheduleCopy;
+        return arrangement.worker;
+      })(),
+    })),
+  }))
 }
