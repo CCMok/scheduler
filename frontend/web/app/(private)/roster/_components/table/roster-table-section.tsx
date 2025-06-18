@@ -66,7 +66,7 @@ export default function RosterTableSection() {
         onDragEnd={onDragEnd}
       >
         <Table className='table-fixed'>
-          <TableCaption>此值勤表由系統產生，可以拖放調整排班</TableCaption>
+          <TableCaption>此值勤表由系統產生，可以拖放，或連按兩次編輯。</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead>職位</TableHead>

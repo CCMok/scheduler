@@ -105,37 +105,17 @@ export const mapSchedules = async (schResponse: SchArrangeRosterResponse, depart
 
   for (const dayResponse of schResponse) {
     for (const arrangementResponse of dayResponse.arrangements) {
-      let schedule = schedules.find(schedule => schedule.post.id === arrangementResponse.postId)
-
+      const schedule = findOrCreateSchedule(schedules, arrangementResponse.postId, department);
       if (!schedule) {
-        const post = department.posts.find(post => post.id === arrangementResponse.postId);
-        if (!post) {
-          console.log('Post not found. postId=', arrangementResponse.postId)
-          return;
-        }
-  
-        schedule = {
-          post,
-          arrangements: [],
-        };
-
-        schedules.push(schedule)
+        return;
       }
 
-      if (isNil(arrangementResponse.workerId)) {
-        const arrangement: Arrangement = {
-          id: arrangementId++,
-          day: dayResponse.day,
-          worker: undefined,
-        }
-  
-        schedule.arrangements.push(arrangement)
-        continue;
-      }
+      const worker = isNil(arrangementResponse.workerId)
+        ? undefined
+        : department.workers.find(worker => worker.id === arrangementResponse.workerId);
 
-      const worker = department.workers.find(worker => worker.id === arrangementResponse.workerId);
-      if (!worker) {
-        console.error('WorkerId not found. workerId=', arrangementResponse.workerId)
+      if (!isNil(arrangementResponse.workerId) && !worker) {
+        console.error('WorkerId not found. workerId=', arrangementResponse.workerId);
         return;
       }
 
@@ -145,9 +125,28 @@ export const mapSchedules = async (schResponse: SchArrangeRosterResponse, depart
         worker,
       }
 
-      schedule.arrangements.push(arrangement)
+      schedule.arrangements.push(arrangement);
     }
   }
 
   return schedules;
 }
+
+const findOrCreateSchedule = (
+  schedules: Schedule[],
+  postId: number,
+  department: DepartmentWorkersPosts,
+): Schedule | undefined => {
+  let schedule = schedules.find(s => s.post.id === postId);
+  if (schedule) return schedule;
+
+  const post = department.posts.find(p => p.id === postId);
+  if (!post) {
+    console.log('Post not found. postId=', postId);
+    return;
+  }
+
+  schedule = { post, arrangements: [] };
+  schedules.push(schedule);
+  return schedule;
+};
