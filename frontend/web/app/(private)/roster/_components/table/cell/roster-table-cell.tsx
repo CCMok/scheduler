@@ -12,8 +12,6 @@ type Props = {
 export default function RosterCell({
   arrangement,
 }: Readonly<Props>) {
-  // TODO: turn off edit mode when click outside
-  
   const [isEditing, setIsEditing] = useState(false)
 
   const onDoubleClick = () => setIsEditing(isEditing => !isEditing)

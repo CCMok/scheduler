@@ -53,7 +53,7 @@ export default function ComboBox<T>({
           />
         }
       </PopoverTrigger>
-      <PopoverContent className="w-(--input-width) p-0">
+      <PopoverContent className="w-(--input-width) p-0" data-popover-content>
         <Command>
           <CommandInput
             placeholder="搜尋..."

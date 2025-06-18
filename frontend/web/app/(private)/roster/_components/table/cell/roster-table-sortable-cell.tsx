@@ -44,7 +44,7 @@ export default function RosterTableSortableCell({
       {...listeners}
       {...props}
     >
-      {arrangement.worker?.name ?? ''}
+      {arrangement.worker?.name ?? '-'}
     </TableCell>
   )
 }
