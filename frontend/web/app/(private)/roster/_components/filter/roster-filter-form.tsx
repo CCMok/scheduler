@@ -9,16 +9,19 @@ import { DEFAULT_DAY_COUNT } from "@/libs/share/roster/constants/roster-constant
 import BasicFilter from "./basic/basic-filter"
 import OffFilter from "./off/off-filter"
 import { useRosterStore } from "@/components/store/roster/roster-store-provider"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { getArrangeRosterRequest } from "@/libs/server/roster/model/arrange-roster-request"
 import { arrangeRosterAction } from "@/libs/server/roster/action/arrange-roster-action"
 import { ServerResponseStatus } from "@/libs/server/_general/enums/server-response-status"
 import { getRootMessage } from "@/libs/client/_general/utils/form-utils"
 import FormRootMessage from "@/components/form/form-root-message"
 import { CalendarSync } from "lucide-react"
+import RosterFilterFormAlertDialog from "./roster-filter-form-alert-dialog"
 
 export default function RosterFilterForm() {
   const { organizations, isGenerated, setSchedules, setIsGenerated } = useRosterStore(state => state);
+
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
   const { defaultOrganizationId, defaultDepartmentId } = useMemo(() => {
     const firstOrganization = organizations?.[0];
@@ -41,8 +44,7 @@ export default function RosterFilterForm() {
     },
   })
 
-  const onSubmit = async (input: RosterFilterFormInput) => {
-    // TODO: if isGenerated, prompt user to confirm
+  const onSubmitInternal = async (input: RosterFilterFormInput) => {
     const request = getArrangeRosterRequest(input);
 
     const response = await arrangeRosterAction(request);
@@ -55,6 +57,15 @@ export default function RosterFilterForm() {
 
     setSchedules(response.data)
     setIsGenerated(true)
+  }
+
+  const onSubmit = async (input: RosterFilterFormInput) => {
+    if (isGenerated) {
+      setIsAlertDialogOpen(true);
+      return;
+    }
+
+    await onSubmitInternal(input);
   }
 
   return (
@@ -75,6 +86,8 @@ export default function RosterFilterForm() {
         </div>
 
         <FormRootMessage />
+
+        <RosterFilterFormAlertDialog isOpen={isAlertDialogOpen} setIsOpen={setIsAlertDialogOpen} />
       </form>
     </Form>
   )
