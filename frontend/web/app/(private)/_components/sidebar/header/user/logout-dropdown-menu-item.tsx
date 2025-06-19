@@ -17,6 +17,8 @@ export default function LogoutDropdownMenuItem() {
       return;
     }
 
+    // TODO: handle unauthorized
+
     router.push(redirectPublicPath);
   }
 

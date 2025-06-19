@@ -33,3 +33,35 @@ const findOrCreatePostBaseSchedule = (
   schedules.push(schedule);
   return schedule;
 };
+
+export const postBaseToDayBaseSchedule = (postBaseSchedules: PostBaseSchedule[]): DayBaseSchedule[] => {
+  const dayBaseSchedules: DayBaseSchedule[] = [];
+
+  for (const postBaseSchedule of postBaseSchedules) {
+    for (const postBaseArrangement of postBaseSchedule.arrangements) {
+      const dayBaseschedule = findOrCreateDayBaseSchedule(dayBaseSchedules, postBaseArrangement.day);
+
+      const dayBaseArrangement = {
+        id: postBaseArrangement.id,
+        post: postBaseSchedule.post,
+        worker: postBaseArrangement.worker,
+      }
+
+      dayBaseschedule.arrangements.push(dayBaseArrangement);
+    }
+  }
+
+  return dayBaseSchedules;
+}
+
+const findOrCreateDayBaseSchedule = (
+  schedules: DayBaseSchedule[],
+  day: number,
+): DayBaseSchedule => {
+  let schedule = schedules.find(schedule => schedule.day === day);
+  if (schedule) return schedule;
+
+  schedule = { day, arrangements: [] };
+  schedules.push(schedule);
+  return schedule;
+};

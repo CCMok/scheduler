@@ -4,17 +4,27 @@ import LoadingButton from "@/components/button/loading-button";
 import { useRosterStore } from "@/components/store/roster/roster-store-provider";
 import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
 import { saveRosterAction } from "@/libs/server/roster/action/save-roster-action";
-import { SaveRosterRequest } from "@/libs/server/roster/model/save-roster-request";
+import { SaveRosterRequest, SaveScheduleRequest } from "@/libs/server/roster/model/save-roster-request";
 import { Save } from "lucide-react";
 import { useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule";
+import { postBaseToDayBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils";
 
-const getRequest = (departmentId: string, schedules: PostBaseSchedule[]): SaveRosterRequest => {
-  // TODO: map schedules
+const getRequest = (departmentId: string, postBaseSchedules: PostBaseSchedule[]): SaveRosterRequest => {
+  const dayBaseSchedules = postBaseToDayBaseSchedule(postBaseSchedules)
+
+  const scheduleRequests: SaveScheduleRequest[] = dayBaseSchedules.map(schedule => ({
+    ...schedule,
+    arrangements: schedule.arrangements.map(arrangement => ({
+      postId: arrangement.post.id,
+      workerId: arrangement.worker?.id,
+    })),
+  }))  
+
   return {
     departmentId: Number(departmentId),
-    schedules: [],
+    schedules: scheduleRequests,
   }
 }
 
@@ -35,6 +45,7 @@ export default function RosterTableSaveButton() {
     const request = getRequest(departmentId, postBaseSchedules);
 
     const response = await saveRosterAction(request);
+    console.log(response)
 
     // TODO: handle response
   }

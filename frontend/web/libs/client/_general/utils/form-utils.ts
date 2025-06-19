@@ -11,6 +11,8 @@ export const getRootMessage = (response: ServerResponse): FormRootMessage => {
     }
   }
 
+  // TODO: handle unauthorized
+
   return {
     title: MessageTitle.SYSTEM_ERROR,
     content: ClientMessage.SYSTEM_ERROR,

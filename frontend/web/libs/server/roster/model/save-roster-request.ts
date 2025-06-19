@@ -3,20 +3,20 @@ import { idSchema } from "../../_general/models/id";
 
 export const saveArrangementRequestSchema = z.object({
   postId: idSchema,
-  workerId: idSchema,
+  workerId: idSchema.nullish(),
 })
 
 export type SaveArrangementRequest = z.infer<typeof saveArrangementRequestSchema>;
 
 export const saveScheduleRequestSchema = z.object({
-  day: z.string().min(1),
+  day: z.number(),
   arrangements: saveArrangementRequestSchema.array(),
 })
 
 export type SaveScheduleRequest = z.infer<typeof saveScheduleRequestSchema>;
 
 export const saveRosterRequestSchema = z.object({
-  departmentId: z.number(),
+  departmentId: idSchema,
   schedules: saveScheduleRequestSchema.array(),
 })
 

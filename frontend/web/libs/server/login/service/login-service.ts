@@ -7,10 +7,11 @@ import { ServerMessage } from '../../_general/enums/server-message';
 import { compare } from '../../_general/manager/bcrypt-manager';
 import { UserRole } from '../../user/models/user-models';
 import { setSession } from '../../_general/manager/session-manager';
+import { schemaCheck } from '../../_general/utils/schema-check-utils';
 
 export const login = async (request: LoginRequest): Promise<ServerResponse> => {
-  const isRequestValid = checkRequest(request);
-  if (!isRequestValid) {
+  const isSchemaCheckSuccess = schemaCheck(loginRequestSchema, request);
+  if (!isSchemaCheckSuccess) {
     return {
       status: ServerResponseStatus.BAD_REQUEST,
     }
@@ -30,15 +31,6 @@ export const login = async (request: LoginRequest): Promise<ServerResponse> => {
     status: ServerResponseStatus.OK,
     data: {},
   }
-}
-
-const checkRequest = (request: LoginRequest): boolean => {
-  const result = loginRequestSchema.safeParse(request)
-  if (!result.success) {
-    console.warn('Invalid request', result.error.format())
-  }
-
-  return result.success;
 }
 
 const checkLoginInfo = async (request: LoginRequest): Promise<UserRole | undefined> => {

@@ -31,6 +31,8 @@ export default function useArrangeRosterForm({
       return
     }
 
+    // TODO: handle unauthorized
+
     const schedules = dayBaseToPostBaseSchedule(response.data)
 
     setPostBaseSchedules(schedules)

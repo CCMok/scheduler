@@ -8,10 +8,11 @@ import { getDepartmentWorkersPosts } from '../../department/repositories/departm
 import { DepartmentWorkersPosts } from '../../department/models/department-model';
 import { isNil } from 'lodash';
 import { Worker } from '@/external/prisma-generated';
+import { schemaCheck } from '../../_general/utils/schema-check-utils';
 
 export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<DayBaseSchedule[]>> => {
-  const canParseRequest = parseRequest(request);
-  if (!canParseRequest) return {
+  const isSchemaCheckSuccess = schemaCheck(arrangeRosterRequestSchema, request);
+  if (!isSchemaCheckSuccess) return {
     status: ServerResponseStatus.BAD_REQUEST,
   }
 
@@ -45,15 +46,6 @@ export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<Serv
     data: response,
   }
 };
-
-const parseRequest = (request: ArrangeRosterRequest): boolean => {
-  const result = arrangeRosterRequestSchema.safeParse(request)
-  if (!result.success) {
-    console.warn('Invalid request', result.error.format())
-  }
-
-  return result.success;
-}
 
 const checkRequest = (request: ArrangeRosterRequest, department: DepartmentWorkersPosts): boolean => {
   for (const off of request.offs) {
