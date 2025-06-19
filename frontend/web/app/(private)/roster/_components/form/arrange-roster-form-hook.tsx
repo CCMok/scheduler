@@ -7,6 +7,7 @@ import { ServerResponseStatus } from "@/libs/server/_general/enums/server-respon
 import { getRootMessage } from "@/libs/client/_general/utils/form-utils"
 import { useRosterStore } from "@/components/store/roster/roster-store-provider"
 import { UseFormSetError } from "react-hook-form"
+import { dayBaseToPostBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils"
 
 type Props = {
   setError: UseFormSetError<ArrangeRosterFormInput>,
@@ -16,7 +17,7 @@ export default function useArrangeRosterForm({
   setError,
 }: Readonly<Props>) {
   // Cannot useFormContext, this hook directly used by form component
-  const { setSchedules, setIsGenerated } = useRosterStore(state => state);
+  const { setPostBaseSchedules, setIsGenerated } = useRosterStore(state => state);
   
   const submit = async (input: ArrangeRosterFormInput) => {
     setIsGenerated(false)
@@ -30,7 +31,9 @@ export default function useArrangeRosterForm({
       return
     }
 
-    setSchedules(response.data)
+    const schedules = dayBaseToPostBaseSchedule(response.data)
+
+    setPostBaseSchedules(schedules)
     setIsGenerated(true)
   }
 

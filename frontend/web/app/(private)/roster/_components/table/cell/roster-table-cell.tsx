@@ -1,6 +1,6 @@
 'use client'
 
-import { Arrangement } from "@/libs/server/roster/model/roster";
+import { Arrangement } from "@/libs/share/roster/models/post-base-schedule";
 import RosterTableSortableCell from "./roster-table-sortable-cell";
 import { useState } from "react";
 import RosterTableSelectionCell from "./roster-table-selection-cell";

@@ -1,8 +1,8 @@
-import { Schedule } from "@/libs/server/roster/model/roster";
 import { Worker } from "@/external/prisma-generated";
 import { UniqueIdentifier } from "@dnd-kit/core";
+import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule";
 
-export const swapSchedule = (schedules: Schedule[], overArrangementId: UniqueIdentifier, activeArrangementId: UniqueIdentifier): Schedule[] => {
+export const swapSchedule = (schedules: PostBaseSchedule[], overArrangementId: UniqueIdentifier, activeArrangementId: UniqueIdentifier): PostBaseSchedule[] => {
   let overWorker: Worker | undefined;
   let activeWorker: Worker | undefined;
 

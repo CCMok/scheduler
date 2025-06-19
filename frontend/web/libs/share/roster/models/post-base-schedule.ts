@@ -1,6 +1,6 @@
 import { Post, Worker } from "@/external/prisma-generated";
 
-export type Schedule = {
+export type PostBaseSchedule = {
   post: Post;
   arrangements: Arrangement[];
 }

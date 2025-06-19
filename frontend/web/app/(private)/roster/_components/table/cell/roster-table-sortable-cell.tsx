@@ -4,7 +4,7 @@ import { ComponentProps, CSSProperties } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { TableCell } from "@/external/shadcn/components/ui/table"
-import { Arrangement } from '@/libs/server/roster/model/roster';
+import { Arrangement } from '@/libs/share/roster/models/post-base-schedule';
 import { cn } from '@/external/shadcn/libs/utils';
 
 type Props = ComponentProps<typeof TableCell> & {

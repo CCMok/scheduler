@@ -36,24 +36,24 @@ export default function RosterTable() {
     })
   );
 
-  const { schedules, isGenerated, setSchedules } = useRosterStore(state => state);
+  const { postBaseSchedules, isGenerated, setPostBaseSchedules } = useRosterStore(state => state);
 
   const days = useMemo(() => {
-    return schedules.length ? schedules[0].arrangements.map(arrangement => arrangement.day.toString()) : []
-  }, [schedules])
+    return postBaseSchedules.length ? postBaseSchedules[0].arrangements.map(arrangement => arrangement.day.toString()) : []
+  }, [postBaseSchedules])
 
   const arrangementIds = useMemo(() => {
-    return schedules.flatMap(schedule =>
+    return postBaseSchedules.flatMap(schedule =>
       schedule.arrangements.map(arrangement => arrangement.id)
     )
-  }, [schedules])
+  }, [postBaseSchedules])
 
   const onDragEnd = (event: DragEndEvent) => {
     const { over, active } = event;
     if (!over || !active || active.id === over.id) return;
 
-    const swappedSchedules = swapSchedule(schedules, over.id, active.id)
-    setSchedules(swappedSchedules);
+    const swappedSchedules = swapSchedule(postBaseSchedules, over.id, active.id)
+    setPostBaseSchedules(swappedSchedules);
   }
 
   if (!isGenerated) return <></>;
@@ -77,7 +77,7 @@ export default function RosterTable() {
         </TableHeader>
         <TableBody>
           <SortableContext items={arrangementIds} strategy={rectSwappingStrategy}>
-            {schedules.map(schedule => (
+            {postBaseSchedules.map(schedule => (
               <TableRow key={schedule.post.id}>
                 <TableCell className='py-4'>{schedule.post.name}</TableCell>
                 {schedule.arrangements.map(arrangement => (

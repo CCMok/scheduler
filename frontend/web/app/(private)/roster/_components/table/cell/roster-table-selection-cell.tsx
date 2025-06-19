@@ -1,7 +1,7 @@
 'use client'
 
 import { TableCell } from "@/external/shadcn/components/ui/table";
-import { Arrangement } from "@/libs/server/roster/model/roster";
+import { Arrangement } from "@/libs/share/roster/models/post-base-schedule";
 import { ComponentProps, Dispatch, SetStateAction, useEffect, useRef } from "react";
 import ComboBox from "@/components/combobox/combobox";
 import { useRosterStore } from "@/components/store/roster/roster-store-provider";
@@ -23,7 +23,7 @@ export default function RosterTableSelectionCell({
   setIsEditing,
   ...props
 }: Readonly<Props>) {
-  const { schedules, workers, setSchedules } = useRosterStore(state => state)
+  const { postBaseSchedules, workers, setPostBaseSchedules: setSchedules } = useRosterStore(state => state)
 
   const ref = useRef<HTMLTableCellElement>(null);
 
@@ -45,7 +45,7 @@ export default function RosterTableSelectionCell({
   const onValueChange = (value: string) => {
     const newWorker = workers.find(worker => worker.id.toString() === value)
 
-    const newSchedules = schedules.map(schedule => ({
+    const newSchedules = postBaseSchedules.map(schedule => ({
       ...schedule,
       arrangements: schedule.arrangements.map(scheduleArrangement => ({
         ...scheduleArrangement,
