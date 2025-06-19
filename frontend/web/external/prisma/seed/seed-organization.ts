@@ -11,9 +11,6 @@ async function main() {
   await prisma.$transaction(async tx => {
     console.log(`Start seed organization data : ${organizationName} ...`)
 
-    await removeExistingData(tx)
-    console.log('Remove existing data OK')
-
     const organizationId = await seedOrganization(tx)
     console.log('Organization OK')
 
@@ -36,12 +33,6 @@ async function main() {
     console.log('Worker constraint setting OK')
 
     console.log('Finish!')
-  })
-}
-
-const removeExistingData = async (tx: Transaction): Promise<void> => {
-  await tx.organization.deleteMany({
-    where: { name: organizationName },
   })
 }
 
