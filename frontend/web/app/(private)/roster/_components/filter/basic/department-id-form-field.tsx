@@ -3,13 +3,13 @@
 import ComboBox from "@/components/combobox/combobox"
 import CustomFormItem from "@/components/form/custom-form-item"
 import { FormField } from "@/external/shadcn/components/ui/form"
-import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
+import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
 import { useFormContext, useWatch } from "react-hook-form"
 import { useEffect, useMemo } from "react"
 import { useRosterStore } from "@/components/store/roster/roster-store-provider"
 
 export default function DepartmentIdFormField() {
-  const { control, setValue } = useFormContext<RosterFilterFormInput>();
+  const { control, setValue } = useFormContext<ArrangeRosterFormInput>();
 
   const { organizations, setDepartments } = useRosterStore(state => state)
 

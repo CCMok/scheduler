@@ -2,7 +2,7 @@
 
 import LoadingButton from "@/components/button/loading-button";
 import { useRosterStore } from "@/components/store/roster/roster-store-provider";
-import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
+import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
 import { saveRosterAction } from "@/libs/server/roster/action/save-roster-action";
 import { Schedule } from "@/libs/server/roster/model/roster";
 import { SaveRosterRequest } from "@/libs/server/roster/model/save-roster-request";
@@ -19,7 +19,7 @@ const getRequest = (departmentId: string, schedules: Schedule[]): SaveRosterRequ
 }
 
 export default function RosterTableSaveButton() {
-  const { control } = useFormContext<RosterFilterFormInput>();
+  const { control } = useFormContext<ArrangeRosterFormInput>();
 
   const departmentId = useWatch({
     control,

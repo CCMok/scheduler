@@ -38,7 +38,7 @@ export const offFormInputSchema = z.object({
 
 export type OffFormInput = z.infer<typeof offFormInputSchema>
 
-export const rosterFilterFormInputSchema = z.object({
+export const arrangeRosterFormInputSchema = z.object({
   organizationId: z.string().min(1, ClientMessage.REQUIRED),
   departmentId: z.string().min(1, ClientMessage.REQUIRED),
   dayCount: z.coerce.number()
@@ -48,4 +48,4 @@ export const rosterFilterFormInputSchema = z.object({
   offs: offFormInputSchema.array(),
 })
 
-export type RosterFilterFormInput = z.infer<typeof rosterFilterFormInputSchema>
+export type ArrangeRosterFormInput = z.infer<typeof arrangeRosterFormInputSchema>

@@ -3,11 +3,11 @@
 import CustomFormItem from "@/components/form/custom-form-item"
 import CustomInput from "@/components/input/custom-input"
 import { FormControl, FormField } from "@/external/shadcn/components/ui/form"
-import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
+import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
 import { useFormContext } from "react-hook-form"
 
 export default function DayCountFormField() {
-  const { control } = useFormContext<RosterFilterFormInput>();
+  const { control } = useFormContext<ArrangeRosterFormInput>();
 
   return (
     <FormField

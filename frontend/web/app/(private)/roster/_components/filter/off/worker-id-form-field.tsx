@@ -1,6 +1,6 @@
 'use client'
 
-import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
+import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
 import ComboBox from "@/components/combobox/combobox";
 import CustomFormItem from "@/components/form/custom-form-item";
 import { FormField } from "@/external/shadcn/components/ui/form";
@@ -14,7 +14,7 @@ type Props = {
 export default function WorkerIdFormField({
   index
 }: Readonly<Props>) {
-  const { control, setValue } = useFormContext<RosterFilterFormInput>();
+  const { control, setValue } = useFormContext<ArrangeRosterFormInput>();
 
   const { workers } = useRosterStore(state => state)
 

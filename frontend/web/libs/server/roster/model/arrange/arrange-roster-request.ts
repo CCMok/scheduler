@@ -1,4 +1,4 @@
-import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
+import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
 import { z } from "zod";
 import { idSchema } from "../../../_general/models/id";
 import { MAX_DAY_COUNT } from "@/libs/share/roster/constants/roster-constant";
@@ -18,7 +18,7 @@ export const arrangeRosterRequestSchema = z.object({
 
 export type ArrangeRosterRequest = z.infer<typeof arrangeRosterRequestSchema>;
 
-export const getArrangeRosterRequest = (formInput: RosterFilterFormInput): ArrangeRosterRequest => {
+export const getArrangeRosterRequest = (formInput: ArrangeRosterFormInput): ArrangeRosterRequest => {
   return {
     departmentId: Number(formInput.departmentId),
     dayCount: formInput.dayCount,

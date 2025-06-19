@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/external/shadcn/components/ui/card"
-import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
+import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
 import { Minus, Plus } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form"
@@ -11,7 +11,7 @@ import { useRosterStore } from "@/components/store/roster/roster-store-provider"
 import CustomButton from "@/components/button/custom-button";
 
 export default function OffFilter() {
-  const { control, getValues } = useFormContext<RosterFilterFormInput>();
+  const { control, getValues } = useFormContext<ArrangeRosterFormInput>();
 
   const { fields, append, remove } = useFieldArray({
     control,

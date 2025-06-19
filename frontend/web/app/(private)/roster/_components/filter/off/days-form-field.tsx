@@ -1,6 +1,6 @@
 'use client'
 
-import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
+import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
 import CustomFormItem from "@/components/form/custom-form-item";
 import { FormField } from "@/external/shadcn/components/ui/form";
 import { useFormContext, useWatch } from "react-hook-form"
@@ -16,7 +16,7 @@ type Props = {
 export default function DaysFormField({
   index
 }: Readonly<Props>) {
-  const { control, getValues, setValue } = useFormContext<RosterFilterFormInput>();
+  const { control, getValues, setValue } = useFormContext<ArrangeRosterFormInput>();
 
   const dayCount = useWatch({
     control,
