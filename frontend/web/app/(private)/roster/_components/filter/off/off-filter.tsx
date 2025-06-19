@@ -1,6 +1,5 @@
 'use client'
 
-import { Button } from "@/external/shadcn/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/external/shadcn/components/ui/card"
 import { RosterFilterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
 import { Minus, Plus } from "lucide-react";
@@ -9,6 +8,7 @@ import { useFieldArray, useFormContext, useWatch } from "react-hook-form"
 import WorkerIdFormField from "./worker-id-form-field";
 import DaysFormField from "./days-form-field";
 import { useRosterStore } from "@/components/store/roster/roster-store-provider";
+import CustomButton from "@/components/button/custom-button";
 
 export default function OffFilter() {
   const { control, getValues } = useFormContext<RosterFilterFormInput>();
@@ -63,25 +63,23 @@ export default function OffFilter() {
             <CardContent className='flex flex-col gap-4 sm:flex-row sm:items-center'>
               <WorkerIdFormField index={index} />
               <DaysFormField index={index} />
-              <Button
-                type='button'
+              <CustomButton
                 variant='secondary'
                 size='icon'
                 onClick={() => onClickRemove(index)}
               >
                 <Minus />
-              </Button>
+              </CustomButton>
             </CardContent>
           </Card>
         ))}
-        <Button
-          type='button'
+        <CustomButton
           variant='outline'
           className='w-full'
           onClick={onClickAppend}
         >
           <Plus />
-        </Button>
+        </CustomButton>
       </CardContent>
     </Card>
   )

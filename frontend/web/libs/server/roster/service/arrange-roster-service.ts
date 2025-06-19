@@ -1,8 +1,8 @@
 import 'server-only'
 import { ServerResponse } from "@/libs/share/_general/model/server-response";
-import { ArrangeRosterRequest, arrangeRosterRequestSchema } from "../model/arrange-roster-request";
+import { ArrangeRosterRequest, arrangeRosterRequestSchema } from "../model/arrange/arrange-roster-request";
 import { ServerResponseStatus } from "../../_general/enums/server-response-status";
-import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from "../model/sch-arrange-roster-response";
+import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from "../model/arrange/sch-arrange-roster-response";
 import { Arrangement, Schedule } from '../model/roster';
 import { getDepartmentWorkersPosts } from '../../department/repositories/department-repositories';
 import { DepartmentWorkersPosts } from '../../department/models/department-model';

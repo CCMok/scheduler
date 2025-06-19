@@ -1,7 +1,7 @@
 import { ThemeToggle } from '@/components/button/theme-toggle';
 import { Path } from '@/libs/share/_general/enums/path';
-import { Button } from '@/external/shadcn/components/ui/button';
 import Link from 'next/link';
+import CustomButton from '@/components/button/custom-button';
 
 export default function Home() {
   return (
@@ -14,11 +14,11 @@ export default function Home() {
         <p className='text-lg text-secondary-foreground mt-4'>
           簡化您的日程安排並有效率地管理您的團隊。
         </p>
-        <Button className='mt-6' asChild>
+        <CustomButton className='mt-6' asChild>
           <Link href={Path.LOGIN}>
             開始使用
           </Link>
-        </Button>
+        </CustomButton>
       </div>
     </div>
   );

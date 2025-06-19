@@ -1,8 +1,8 @@
-import { Button } from "@/external/shadcn/components/ui/button"
 import { Loader2 } from "lucide-react"
 import { ComponentProps, ReactNode } from "react"
+import CustomButton from "./custom-button"
 
-type Props = ComponentProps<typeof Button> & {
+type Props = ComponentProps<typeof CustomButton> & {
   isLoading?: boolean
   icon?: ReactNode,
 }
@@ -14,12 +14,12 @@ export default function LoadingButton({
   ...props
 }: Readonly<Props>) {
   return (
-    <Button
+    <CustomButton
       disabled={isLoading}
       {...props}
     >
       {isLoading ? <Loader2 className='animate-spin' /> : icon}
       {children}
-    </Button>
+    </CustomButton>
   )
 }
