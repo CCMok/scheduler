@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ChildrenProps } from "@/libs/share/_general/props/children-props";
 import { Noto_Sans_HK } from "next/font/google";
-import RootProvider from "@/app/_components/root-provider";
 import { cn } from "@/external/shadcn/libs/utils";
+import { Toaster } from "sonner";
+import { ThemeProvider } from "./_components/theme-provider";
 
 export const metadata: Metadata = {
   title: "Scheduler",
@@ -20,9 +21,10 @@ export default function RootLayout({
       <body
         className={cn('antialiased', noto.className)}
       >
-        <RootProvider>
+        <ThemeProvider>
           {children}
-        </RootProvider>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

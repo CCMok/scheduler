@@ -17,7 +17,7 @@ const mainMenuItems = [
     icon: Home,
   },
   {
-    title: "值勤表",
+    title: "值班表",
     url: Path.ROSTER,
     icon: Calendar,
   },

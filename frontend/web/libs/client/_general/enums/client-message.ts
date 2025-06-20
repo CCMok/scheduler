@@ -2,6 +2,7 @@ export enum MessageTitle {
   CAUTION = '注意',
   INPUT_ERROR = '輸入錯誤',
   SYSTEM_ERROR = '系統錯誤',
+  SUCCESS = '成功',
 }
 
 export enum ClientMessage {

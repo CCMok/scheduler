@@ -19,6 +19,8 @@ export const saveRoster = async (request: SaveRosterRequest): Promise<ServerResp
 
   await saveRosterHistory(request, session.userId)
 
+  // TODO: only keep 5 latest histories
+
   return {
     status: ServerResponseStatus.OK,
     data: {},
