@@ -15,7 +15,7 @@ import {
   sortableKeyboardCoordinates,
   rectSwappingStrategy,
 } from '@dnd-kit/sortable';
-import { useRosterStore } from '@/components/store/roster/roster-store-provider';
+import { useArrangeRosterStore } from '@/components/store/roster/arrange/arrange-roster-store-provider';
 import {
   Table,
   TableBody,
@@ -36,7 +36,7 @@ export default function RosterTable() {
     })
   );
 
-  const { postBaseSchedules, isGenerated, setPostBaseSchedules } = useRosterStore(state => state);
+  const { postBaseSchedules, isGenerated, setPostBaseSchedules } = useArrangeRosterStore(state => state);
 
   const days = useMemo(() => {
     return postBaseSchedules.length ? postBaseSchedules[0].arrangements.map(arrangement => arrangement.day.toString()) : []
@@ -57,6 +57,8 @@ export default function RosterTable() {
   }
 
   if (!isGenerated) return <></>;
+
+  // TODO: reset to just generated
 
   return (
     // DndContext generate div for drag and drop function, and tbody only accept tr children. So DndContext place outside of table

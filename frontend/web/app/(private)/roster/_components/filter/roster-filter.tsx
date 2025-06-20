@@ -3,12 +3,12 @@
 import FormSubmitButton from "@/components/form/form-submit-button"
 import BasicFilter from "./basic/basic-filter"
 import OffFilter from "./off/off-filter"
-import { useRosterStore } from "@/components/store/roster/roster-store-provider"
+import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider"
 import FormRootMessage from "@/components/form/form-root-message"
 import { CalendarSync } from "lucide-react"
 
 export default function RosterFilter() {
-  const { isGenerated } = useRosterStore(state => state);
+  const { isGenerated } = useArrangeRosterStore(state => state);
 
   return (
     <div className='space-y-4'>

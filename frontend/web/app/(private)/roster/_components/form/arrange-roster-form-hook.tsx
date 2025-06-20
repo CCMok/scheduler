@@ -5,19 +5,23 @@ import { getArrangeRosterRequest } from "@/libs/server/roster/model/arrange/arra
 import { arrangeRosterAction } from "@/libs/server/roster/action/arrange-roster-action"
 import { ServerResponseStatus } from "@/libs/server/_general/enums/server-response-status"
 import { getRootMessage } from "@/libs/client/_general/utils/form-utils"
-import { useRosterStore } from "@/components/store/roster/roster-store-provider"
-import { UseFormSetError } from "react-hook-form"
+import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider"
+import { UseFormGetValues, UseFormSetError } from "react-hook-form"
 import { dayBaseToPostBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils"
+import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider"
 
 type Props = {
   setError: UseFormSetError<ArrangeRosterFormInput>,
+  getValues: UseFormGetValues<ArrangeRosterFormInput>,
 }
 
 export default function useArrangeRosterForm({ 
   setError,
+  getValues,
 }: Readonly<Props>) {
   // Cannot useFormContext, this hook directly used by form component
-  const { setPostBaseSchedules, setIsGenerated } = useRosterStore(state => state);
+  const { setDepartmentId, setWorkers, setPostBaseSchedules, setIsGenerated } = useArrangeRosterStore(state => state);
+  const { workers } = useArrangeRosterFilterStore(state => state);
   
   const submit = async (input: ArrangeRosterFormInput) => {
     setIsGenerated(false)
@@ -33,9 +37,14 @@ export default function useArrangeRosterForm({
 
     // TODO: handle unauthorized
 
-    const schedules = dayBaseToPostBaseSchedule(response.data)
+    const departmentId = getValues('departmentId')
+    setDepartmentId(Number(departmentId))
 
+    setWorkers(workers)
+
+    const schedules = dayBaseToPostBaseSchedule(response.data)
     setPostBaseSchedules(schedules)
+
     setIsGenerated(true)
   }
 

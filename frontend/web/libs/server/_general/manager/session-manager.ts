@@ -23,6 +23,8 @@ export const getSession = async (): Promise<SessionPayload | undefined> => {
   const tokenPayload = await verifyToken(token)
   if (!tokenPayload) return;
 
+  // TODO: refresh token
+
   return getSessionPayloadFromTokenPayload(tokenPayload);
 }
 

@@ -1,17 +1,16 @@
 'use client';
 
 import LoadingButton from "@/components/button/loading-button";
-import { useRosterStore } from "@/components/store/roster/roster-store-provider";
-import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
+import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider";
 import { saveRosterAction } from "@/libs/server/roster/action/save-roster-action";
 import { SaveRosterRequest, SaveScheduleRequest } from "@/libs/server/roster/model/save-roster-request";
 import { Save } from "lucide-react";
 import { useState } from "react";
-import { useFormContext, useWatch } from "react-hook-form";
 import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule";
 import { postBaseToDayBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils";
+import { isNil } from "lodash";
 
-const getRequest = (departmentId: string, postBaseSchedules: PostBaseSchedule[]): SaveRosterRequest => {
+const getRequest = (departmentId: number, postBaseSchedules: PostBaseSchedule[]): SaveRosterRequest => {
   const dayBaseSchedules = postBaseToDayBaseSchedule(postBaseSchedules)
 
   const scheduleRequests: SaveScheduleRequest[] = dayBaseSchedules.map(schedule => ({
@@ -23,25 +22,23 @@ const getRequest = (departmentId: string, postBaseSchedules: PostBaseSchedule[])
   }))  
 
   return {
-    departmentId: Number(departmentId),
+    departmentId,
     schedules: scheduleRequests,
   }
 }
 
 export default function RosterTableSaveButton() {
-  const { control } = useFormContext<ArrangeRosterFormInput>();
-
-  const departmentId = useWatch({
-    control,
-    name: 'departmentId',
-    defaultValue: '',
-  })
-
-  const { postBaseSchedules } = useRosterStore(state => state);
+  const { departmentId, postBaseSchedules } = useArrangeRosterStore(state => state);
 
   const [isLoading, setIsLoading] = useState(false);
 
   const save = async () => {
+    if (isNil(departmentId)) {
+      console.error('departmentId is not set')
+      // TODO: show internal error
+      return;
+    }
+
     const request = getRequest(departmentId, postBaseSchedules);
 
     const response = await saveRosterAction(request);

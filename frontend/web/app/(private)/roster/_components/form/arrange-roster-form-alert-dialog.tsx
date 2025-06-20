@@ -16,7 +16,7 @@ export default function ArrangeRosterFormAlertDialog({
 }: Readonly<Props>) {
   const { setError, getValues } = useFormContext<ArrangeRosterFormInput>()
 
-  const { submit } = useArrangeRosterForm({ setError });
+  const { submit } = useArrangeRosterForm({ setError, getValues });
 
   const [isLoading, setIsLoading] = useState(false)
 

@@ -6,12 +6,12 @@ import { FormField } from "@/external/shadcn/components/ui/form"
 import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
 import { useFormContext, useWatch } from "react-hook-form"
 import { useEffect, useMemo } from "react"
-import { useRosterStore } from "@/components/store/roster/roster-store-provider"
+import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider"
 
 export default function DepartmentIdFormField() {
   const { control, setValue } = useFormContext<ArrangeRosterFormInput>();
 
-  const { organizations, setDepartments } = useRosterStore(state => state)
+  const { organizations, setDepartments } = useArrangeRosterFilterStore(state => state)
 
   const organizationId = useWatch({
     control,

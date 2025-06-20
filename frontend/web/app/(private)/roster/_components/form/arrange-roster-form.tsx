@@ -5,14 +5,16 @@ import { ArrangeRosterFormInput, arrangeRosterFormInputSchema } from "@/libs/cli
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { DEFAULT_DAY_COUNT } from "@/libs/share/roster/constants/roster-constant"
-import { useRosterStore } from "@/components/store/roster/roster-store-provider"
+import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider"
 import { useMemo, useState } from "react"
 import ArrangeRosterFormAlertDialog from "./arrange-roster-form-alert-dialog"
 import { ChildrenProps } from "@/libs/share/_general/props/children-props"
 import useArrangeRosterForm from "./arrange-roster-form-hook"
+import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider"
 
 export default function ArrangeRosterForm({ children }: Readonly<ChildrenProps>) {
-  const { organizations, isGenerated } = useRosterStore(state => state);
+  const { isGenerated } = useArrangeRosterStore(state => state);
+  const { organizations } = useArrangeRosterFilterStore(state => state);
 
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
@@ -37,7 +39,7 @@ export default function ArrangeRosterForm({ children }: Readonly<ChildrenProps>)
     },
   })
 
-  const { submit } = useArrangeRosterForm({ setError: form.setError });
+  const { submit } = useArrangeRosterForm({ setError: form.setError, getValues: form.getValues });
 
   const onSubmit = async (input: ArrangeRosterFormInput) => {
     if (isGenerated) {

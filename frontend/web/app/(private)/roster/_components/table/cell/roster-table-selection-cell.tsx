@@ -4,7 +4,7 @@ import { TableCell } from "@/external/shadcn/components/ui/table";
 import { Arrangement } from "@/libs/share/roster/models/post-base-schedule";
 import { ComponentProps, Dispatch, SetStateAction, useEffect, useRef } from "react";
 import ComboBox from "@/components/combobox/combobox";
-import { useRosterStore } from "@/components/store/roster/roster-store-provider";
+import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { Worker } from "@/external/prisma-generated";
 
@@ -23,11 +23,12 @@ export default function RosterTableSelectionCell({
   setIsEditing,
   ...props
 }: Readonly<Props>) {
-  const { postBaseSchedules, workers, setPostBaseSchedules: setSchedules } = useRosterStore(state => state)
+  const { postBaseSchedules, workers, setPostBaseSchedules } = useArrangeRosterStore(state => state)
 
   const ref = useRef<HTMLTableCellElement>(null);
 
-  const onClickOutside = (event: MouseEvent) => {
+  const onClickDocument = (event: MouseEvent) => {
+    // Click outside of the cell and popover
     if (
       ref.current
       && !ref.current.contains(event.target as Node)
@@ -38,8 +39,8 @@ export default function RosterTableSelectionCell({
   }
 
   useEffect(() => {
-    document.addEventListener('mousedown', onClickOutside);
-    return () => document.removeEventListener('mousedown', onClickOutside);
+    document.addEventListener('mousedown', onClickDocument);
+    return () => document.removeEventListener('mousedown', onClickDocument);
   }, [])
 
   const onValueChange = (value: string) => {
@@ -53,7 +54,7 @@ export default function RosterTableSelectionCell({
       })),
     }))
 
-    setSchedules(newSchedules);
+    setPostBaseSchedules(newSchedules);
     setIsEditing(false)
   }
 
