@@ -3,7 +3,7 @@
 import { useFormContext } from "react-hook-form";
 import { Alert, AlertDescription, AlertTitle } from "@/external/shadcn/components/ui/alert"
 import { CircleAlert } from 'lucide-react';
-import { MessageTitle } from "@/libs/client/_general/enums/client-message";
+import { ClientMessageTitle } from "@/libs/client/_general/enums/client-message-enum";
 
 export default function FormRootMessage() {
   const { formState: { errors } } = useFormContext();
@@ -13,7 +13,7 @@ export default function FormRootMessage() {
   return (
     <Alert>
       <CircleAlert className="h-4 w-4" />
-      <AlertTitle>{errors.root.type ?? MessageTitle.CAUTION}</AlertTitle>
+      <AlertTitle>{errors.root.type ?? ClientMessageTitle.CAUTION}</AlertTitle>
       <AlertDescription>
         {errors.root.message}
       </AlertDescription>

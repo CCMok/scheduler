@@ -9,11 +9,12 @@ import { useState } from "react";
 import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule";
 import { postBaseToDayBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils";
 import { isNil } from "lodash";
-import { ServerResponseStatus } from "@/libs/server/_general/enums/server-response-status";
-import { getRootMessage } from "@/libs/client/_general/utils/form-utils";
 import { toast } from "sonner";
-import { MessageTitle } from "@/libs/client/_general/enums/client-message";
+import { ClientMessageTitle } from "@/libs/client/_general/enums/client-message-enum";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
+import { ClientMessage } from "@/libs/client/_general/models/client-message-model";
+import { ServerResponse } from "@/libs/share/_general/model/server-response";
+import useClientMessage from "@/libs/client/_general/hooks/client-message-hook";
 
 const getRequest = (departmentId: number, postBaseSchedules: PostBaseSchedule[]): SaveRosterRequest => {
   const dayBaseSchedules = postBaseToDayBaseSchedule(postBaseSchedules)
@@ -34,15 +35,30 @@ const getRequest = (departmentId: number, postBaseSchedules: PostBaseSchedule[])
 
 export default function RosterTableSaveButton() {
   const { departmentId, postBaseSchedules } = useArrangeRosterStore(state => state);
+  const { handleServerResponse } = useClientMessage();
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const onSaveSuccess = (_: ServerResponse) => {
+    toast.success(ClientMessageTitle.SUCCESS, {
+      ...SONNER_DEFAULT_OPTIONS,
+      description: '已儲存值班表',
+    })
+  }
+
+  const onSaveError = (_: ServerResponse, clientMessage: ClientMessage) => {
+    toast.error(clientMessage.title, {
+      ...SONNER_DEFAULT_OPTIONS,
+      description: clientMessage.content,
+    })
+  }
 
   const save = async () => {
     if (isNil(departmentId)) {
       console.error('departmentId is not set')
-      toast.error(MessageTitle.SYSTEM_ERROR, {
+      toast.error(ClientMessageTitle.SYSTEM_ERROR, {
         ...SONNER_DEFAULT_OPTIONS,
-        description: MessageTitle.SYSTEM_ERROR,
+        description: ClientMessageTitle.SYSTEM_ERROR,
       })
       return;
     }
@@ -51,19 +67,7 @@ export default function RosterTableSaveButton() {
 
     const response = await saveRosterAction(request);
 
-    if (response.status !== ServerResponseStatus.OK) {
-      const rootMessage = getRootMessage(response)
-      toast.error(rootMessage.title, {
-        ...SONNER_DEFAULT_OPTIONS,
-        description: rootMessage.content,
-      })
-      return;
-    }
-
-    toast.success(MessageTitle.SUCCESS, {
-      ...SONNER_DEFAULT_OPTIONS,
-      description: '已儲存值班表',
-    })
+    await handleServerResponse(response, onSaveSuccess, onSaveError)
   }
 
   const onClick = async () => {

@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form';
 import CustomFormItem from '@/components/form/custom-form-item';
 import FormRootMessage from '@/components/form/form-root-message';
 import { loginAction } from '@/libs/server/login/action/login-action';
-import { getRootMessage } from '@/libs/client/_general/utils/form-utils';
+import { getClientMessage } from '@/libs/client/_general/utils/client-message-utils';
 import { ServerResponseStatus } from '@/libs/server/_general/enums/server-response-status';
 import { useRouter } from 'next/navigation';
 import { Path } from '@/libs/share/_general/enums/path';
@@ -35,8 +35,8 @@ export default function LoginForm({
     const response = await loginAction(input)
 
     if (response.status !== ServerResponseStatus.OK) {
-      const rootMessage = getRootMessage(response)
-      form.setError('root', { type: rootMessage.title, message: rootMessage.content })
+      const message = getClientMessage(response)
+      form.setError('root', { type: message.title, message: message.content })
       return
     }
 
