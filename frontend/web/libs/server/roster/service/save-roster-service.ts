@@ -5,6 +5,8 @@ import { ServerResponseStatus } from '../../_general/enums/server-response-statu
 import { schemaCheck } from '../../_general/utils/schema-check-utils'
 import prisma from '../../_general/manager/database-manager'
 import { getSession } from '../../_general/manager/session-manager'
+import { Transaction } from '../../_general/models/prisma-transaction'
+import { MAX_HISTORY_COUNT } from '@/libs/share/roster/constants/roster-constant'
 
 export const saveRoster = async (request: SaveRosterRequest): Promise<ServerResponse> => {
   const isSchemaCheckSuccess = schemaCheck(saveRosterRequestSchema, request);
@@ -17,9 +19,7 @@ export const saveRoster = async (request: SaveRosterRequest): Promise<ServerResp
     status: ServerResponseStatus.UNAUTHORIZED,
   }
 
-  await saveRosterHistory(request, session.userId)
-
-  // TODO: only keep 5 latest histories
+  await updateRecord(request, session.userId)
 
   return {
     status: ServerResponseStatus.OK,
@@ -27,8 +27,15 @@ export const saveRoster = async (request: SaveRosterRequest): Promise<ServerResp
   }
 }
 
-const saveRosterHistory = async (request: SaveRosterRequest, userId: number): Promise<void> => {
-  await prisma.rosterHistory.create({
+const updateRecord = async (request: SaveRosterRequest, userId: number): Promise<void> => {
+  await prisma.$transaction(async tx => {
+    await saveHisotry(tx, request, userId)
+    await deleteExcessHistory(tx, request.departmentId)
+  })
+}
+
+const saveHisotry = async (tx: Transaction, request: SaveRosterRequest, userId: number): Promise<void> => {
+  await tx.rosterHistory.create({
     data: {
       departmentId: request.departmentId,
       createdByUserId: userId,
@@ -45,4 +52,29 @@ const saveRosterHistory = async (request: SaveRosterRequest, userId: number): Pr
       },
     },
   })
+}
+
+const deleteExcessHistory = async (tx: Transaction, departmentId: number): Promise<void> => {
+  const historiesId = await tx.rosterHistory.findMany({
+    where: {
+      departmentId,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (historiesId.length > MAX_HISTORY_COUNT) {
+    const idsToDelete = historiesId.slice(MAX_HISTORY_COUNT).map(h => h.id);
+    await tx.rosterHistory.deleteMany({
+      where: {
+        id: {
+          in: idsToDelete,
+        },
+      },
+    });
+  }
 }
