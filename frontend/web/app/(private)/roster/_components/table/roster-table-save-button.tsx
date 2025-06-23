@@ -15,6 +15,9 @@ import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-
 import { ClientMessage } from "@/libs/client/_general/models/client-message-model";
 import { ServerResponse } from "@/libs/share/_general/model/server-response";
 import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook";
+import { AlertDialogHeader, AlertDialogTrigger, AlertDialogFooter, AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel } from "@/external/shadcn/components/ui/alert-dialog";
+import CustomButton from "@/components/button/custom-button";
+import { MAX_HISTORY_COUNT } from "@/libs/share/roster/constants/roster-constant";
 
 const getRequest = (departmentId: number, postBaseSchedules: PostBaseSchedule[]): SaveRosterRequest => {
   const dayBaseSchedules = postBaseToDayBaseSchedule(postBaseSchedules)
@@ -45,12 +48,13 @@ export default function RosterTableSaveButton() {
   const { handleServerResponse } = useServerResponseHandler();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
-  const onClick = async () => {
-    // TODO: prompt confirm to only keep 5 latest histories
+  const onClickContinue = async () => {
     setIsLoading(true);
     await save();
     setIsLoading(false)
+    setIsAlertDialogOpen(false)
   }
 
   const save = async () => {
@@ -80,12 +84,25 @@ export default function RosterTableSaveButton() {
   }
 
   return (
-    <LoadingButton
-      icon={<Save />}
-      onClick={onClick}
-      isLoading={isLoading}
-    >
-      儲存
-    </LoadingButton>
+    <AlertDialog open={isAlertDialogOpen} onOpenChange={setIsAlertDialogOpen}>
+      <AlertDialogTrigger asChild>
+        <CustomButton>
+          <Save />
+          儲存
+        </CustomButton>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>確定要儲存值班表嗎?</AlertDialogTitle>
+          <AlertDialogDescription>
+            只能儲存最多 {MAX_HISTORY_COUNT} 個值班表，請確認是否繼續。
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>取消</AlertDialogCancel>
+          <LoadingButton isLoading={isLoading} onClick={onClickContinue}>繼續</LoadingButton>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

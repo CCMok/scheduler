@@ -2,10 +2,10 @@
 
 import LoadingButton from "@/components/button/loading-button";
 import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider";
-import { Button } from "@/external/shadcn/components/ui/button";
 import { RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { AlertDialogHeader, AlertDialogTrigger, AlertDialogFooter, AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel, AlertDialogAction } from "@/external/shadcn/components/ui/alert-dialog";
+import CustomButton from "@/components/button/custom-button";
 
 export default function RosterTableResetButton() {
   const { initialSchedules, setModifiedSchedules } = useArrangeRosterStore(state => state);
@@ -25,10 +25,10 @@ export default function RosterTableResetButton() {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant='secondary'>
+        <CustomButton variant='secondary'>
           <RotateCcw />
           重置
-        </Button>
+        </CustomButton>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

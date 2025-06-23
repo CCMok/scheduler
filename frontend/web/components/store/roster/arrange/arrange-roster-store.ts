@@ -6,16 +6,16 @@ export type ArrangeRosterState = {
   departmentId?: number,
   workers: Worker[],
   initialSchedules: PostBaseSchedule[],
-  isGenerated: boolean,
   modifiedSchedules: PostBaseSchedule[],
+  isGenerated: boolean,
 }
 
 export type ArrangeRosterActions = {
   setDepartmentId: (departmentId: number) => void,
   setWorkers: (workers: Worker[]) => void,
   setInitialSchedules: (initialSchedules: PostBaseSchedule[]) => void,
-  setIsGenerated: (isGenerated: boolean) => void,
   setModifiedSchedules: (modifiedSchedules: PostBaseSchedule[]) => void,
+  setIsGenerated: (isGenerated: boolean) => void,
 }
 
 export type ArrangeRosterStore = ArrangeRosterState & ArrangeRosterActions
@@ -23,8 +23,8 @@ export type ArrangeRosterStore = ArrangeRosterState & ArrangeRosterActions
 export const defaultInitState: ArrangeRosterState = { 
   workers: [],
   initialSchedules: [],
-  isGenerated: false,
   modifiedSchedules: [],
+  isGenerated: false,
 }
 
 export const createArrangeRosterStore = (
@@ -36,7 +36,7 @@ export const createArrangeRosterStore = (
     setDepartmentId: departmentId => set(() => ({ departmentId })),
     setWorkers: workers => set(() => ({ workers })),
     setInitialSchedules: initialSchedules => set(() => ({ initialSchedules })),
-    setIsGenerated: isGenerated => set(() => ({ isGenerated })),
     setModifiedSchedules: modifiedSchedules => set(() => ({ modifiedSchedules })),
+    setIsGenerated: isGenerated => set(() => ({ isGenerated })),
   }))
 }
