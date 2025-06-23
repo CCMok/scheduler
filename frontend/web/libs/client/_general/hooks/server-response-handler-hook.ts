@@ -7,7 +7,7 @@ import { ClientMessageContent, ClientMessageTitle } from "../enums/client-messag
 import { useRouter } from "next/navigation";
 import { Path } from "@/libs/share/_general/enums/path";
 
-export default function useClientMessage() {
+export default function useServerResponseHandler() {
   const router = useRouter();
 
   const handleServerResponse = async <T>(

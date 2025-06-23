@@ -24,8 +24,8 @@ export default function ArrangeRosterFormAlertDialog({
     setIsLoading(true)
 
     await submit(getValues())
-    setIsOpen(false)
 
+    setIsOpen(false)
     setIsLoading(false)
   }
 

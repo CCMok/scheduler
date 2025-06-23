@@ -7,7 +7,7 @@ import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange
 import { UseFormGetValues, UseFormSetError } from "react-hook-form"
 import { dayBaseToPostBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils"
 import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider"
-import useClientMessage from "@/libs/client/_general/hooks/client-message-hook"
+import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook"
 import { DayBaseSchedule } from "@/libs/share/roster/models/day-base-schedule"
 import { ServerResponse, SuccessResponse } from "@/libs/share/_general/model/server-response"
 import { ClientMessage } from "@/libs/client/_general/models/client-message-model"
@@ -24,9 +24,19 @@ export default function useArrangeRosterForm({
   // Cannot useFormContext, this hook directly used by form component
   const { setDepartmentId, setWorkers, setPostBaseSchedules, setIsGenerated } = useArrangeRosterStore(state => state);
   const { workers } = useArrangeRosterFilterStore(state => state);
-  const { handleServerResponse } = useClientMessage();
+  const { handleServerResponse } = useServerResponseHandler();
+  
+  const submit = async (input: ArrangeRosterFormInput) => {
+    setIsGenerated(false)
 
-  const onSubmitSuccess = (response: SuccessResponse<DayBaseSchedule[]>) => {
+    const request = getArrangeRosterRequest(input);
+
+    const response = await arrangeRosterAction(request);
+
+    await handleServerResponse(response, onSuccess, onError)
+  }
+
+  const onSuccess = (response: SuccessResponse<DayBaseSchedule[]>) => {
     const departmentId = getValues('departmentId')
     setDepartmentId(Number(departmentId))
 
@@ -38,18 +48,8 @@ export default function useArrangeRosterForm({
     setIsGenerated(true)
   }
 
-  const onSubmitError = (_: ServerResponse<DayBaseSchedule[]>, clientMessage: ClientMessage) => {
+  const onError = (_: ServerResponse<DayBaseSchedule[]>, clientMessage: ClientMessage) => {
     setError('root', { type: clientMessage.title, message: clientMessage.content })
-  }
-  
-  const submit = async (input: ArrangeRosterFormInput) => {
-    setIsGenerated(false)
-
-    const request = getArrangeRosterRequest(input);
-
-    const response = await arrangeRosterAction(request);
-
-    await handleServerResponse(response, onSubmitSuccess, onSubmitError)
   }
 
   return { submit }

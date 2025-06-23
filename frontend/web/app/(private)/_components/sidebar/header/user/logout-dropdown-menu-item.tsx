@@ -1,25 +1,30 @@
 'use client'
 
 import CustomDropdownMenuItem from "@/components/dropdown/custom-dropdown-menu-item"
-import { ServerResponseStatus } from "@/libs/server/_general/enums/server-response-status"
+import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook"
+import { ClientMessage } from "@/libs/client/_general/models/client-message-model"
 import { logoutAction } from "@/libs/server/logout/action/logout-action"
 import { redirectPublicPath } from "@/libs/share/_general/enums/path"
+import { ServerResponse } from "@/libs/share/_general/model/server-response"
 import { LogOut } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 export default function LogoutDropdownMenuItem() {
   const router = useRouter();
 
+  const { handleServerResponse } = useServerResponseHandler();
+
   const onClick = async () => {
     const response = await logoutAction()
-    if (response.status !== ServerResponseStatus.OK) {
-      console.error('Invalid logout status:', response.status)
-      return;
-    }
+    await handleServerResponse(response, onSuccess, onError);
+  }
 
-    // TODO: handle unauthorized
-
+  const onSuccess = () => {
     router.push(redirectPublicPath);
+  }
+
+  const onError = (serverResponse: ServerResponse, clientMessage: ClientMessage) => {
+    // TODO: toast if not unauthorized
   }
 
   return (

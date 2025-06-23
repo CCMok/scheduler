@@ -14,7 +14,7 @@ import { ClientMessageTitle } from "@/libs/client/_general/enums/client-message-
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { ClientMessage } from "@/libs/client/_general/models/client-message-model";
 import { ServerResponse } from "@/libs/share/_general/model/server-response";
-import useClientMessage from "@/libs/client/_general/hooks/client-message-hook";
+import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook";
 
 const getRequest = (departmentId: number, postBaseSchedules: PostBaseSchedule[]): SaveRosterRequest => {
   const dayBaseSchedules = postBaseToDayBaseSchedule(postBaseSchedules)
@@ -33,24 +33,31 @@ const getRequest = (departmentId: number, postBaseSchedules: PostBaseSchedule[])
   }
 }
 
+const onSuccess = () => {
+  toast.success(ClientMessageTitle.SUCCESS, {
+    ...SONNER_DEFAULT_OPTIONS,
+    description: '已儲存值班表',
+  })
+}
+
+const onError = (_: ServerResponse, clientMessage: ClientMessage) => {
+  toast.error(clientMessage.title, {
+    ...SONNER_DEFAULT_OPTIONS,
+    description: clientMessage.content,
+  })
+}
+
 export default function RosterTableSaveButton() {
   const { departmentId, postBaseSchedules } = useArrangeRosterStore(state => state);
-  const { handleServerResponse } = useClientMessage();
+  const { handleServerResponse } = useServerResponseHandler();
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const onSaveSuccess = (_: ServerResponse) => {
-    toast.success(ClientMessageTitle.SUCCESS, {
-      ...SONNER_DEFAULT_OPTIONS,
-      description: '已儲存值班表',
-    })
-  }
-
-  const onSaveError = (_: ServerResponse, clientMessage: ClientMessage) => {
-    toast.error(clientMessage.title, {
-      ...SONNER_DEFAULT_OPTIONS,
-      description: clientMessage.content,
-    })
+  const onClick = async () => {
+    // TODO: prompt confirm to only keep 5 latest histories
+    setIsLoading(true);
+    await save();
+    setIsLoading(false)
   }
 
   const save = async () => {
@@ -67,14 +74,7 @@ export default function RosterTableSaveButton() {
 
     const response = await saveRosterAction(request);
 
-    await handleServerResponse(response, onSaveSuccess, onSaveError)
-  }
-
-  const onClick = async () => {
-    // TODO: prompt confirm to only keep 5 latest histories
-    setIsLoading(true);
-    await save();
-    setIsLoading(false)
+    await handleServerResponse(response, onSuccess, onError)
   }
 
   return (
