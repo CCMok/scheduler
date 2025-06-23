@@ -5,23 +5,26 @@ import { PostBaseSchedule } from '@/libs/share/roster/models/post-base-schedule'
 export type ArrangeRosterState = {
   departmentId?: number,
   workers: Worker[],
-  postBaseSchedules: PostBaseSchedule[],
+  initialSchedules: PostBaseSchedule[],
   isGenerated: boolean,
+  modifiedSchedules: PostBaseSchedule[],
 }
 
 export type ArrangeRosterActions = {
   setDepartmentId: (departmentId: number) => void,
   setWorkers: (workers: Worker[]) => void,
-  setPostBaseSchedules: (postBaseSchedules: PostBaseSchedule[]) => void,
+  setInitialSchedules: (initialSchedules: PostBaseSchedule[]) => void,
   setIsGenerated: (isGenerated: boolean) => void,
+  setModifiedSchedules: (modifiedSchedules: PostBaseSchedule[]) => void,
 }
 
 export type ArrangeRosterStore = ArrangeRosterState & ArrangeRosterActions
 
 export const defaultInitState: ArrangeRosterState = { 
   workers: [],
-  postBaseSchedules: [],
+  initialSchedules: [],
   isGenerated: false,
+  modifiedSchedules: [],
 }
 
 export const createArrangeRosterStore = (
@@ -32,7 +35,8 @@ export const createArrangeRosterStore = (
     ...partialInitState,
     setDepartmentId: departmentId => set(() => ({ departmentId })),
     setWorkers: workers => set(() => ({ workers })),
-    setPostBaseSchedules: postBaseSchedules => set(() => ({ postBaseSchedules })),
+    setInitialSchedules: initialSchedules => set(() => ({ initialSchedules })),
     setIsGenerated: isGenerated => set(() => ({ isGenerated })),
+    setModifiedSchedules: modifiedSchedules => set(() => ({ modifiedSchedules })),
   }))
 }

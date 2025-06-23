@@ -36,29 +36,27 @@ export default function RosterTable() {
     })
   );
 
-  const { postBaseSchedules, isGenerated, setPostBaseSchedules } = useArrangeRosterStore(state => state);
+  const { modifiedSchedules, isGenerated, setModifiedSchedules } = useArrangeRosterStore(state => state);
 
   const days = useMemo(() => {
-    return postBaseSchedules.length ? postBaseSchedules[0].arrangements.map(arrangement => arrangement.day.toString()) : []
-  }, [postBaseSchedules])
+    return modifiedSchedules.length ? modifiedSchedules[0].arrangements.map(arrangement => arrangement.day.toString()) : []
+  }, [modifiedSchedules])
 
   const arrangementIds = useMemo(() => {
-    return postBaseSchedules.flatMap(schedule =>
+    return modifiedSchedules.flatMap(schedule =>
       schedule.arrangements.map(arrangement => arrangement.id)
     )
-  }, [postBaseSchedules])
+  }, [modifiedSchedules])
 
   const onDragEnd = (event: DragEndEvent) => {
     const { over, active } = event;
     if (!over || !active || active.id === over.id) return;
 
-    const swappedSchedules = swapSchedule(postBaseSchedules, over.id, active.id)
-    setPostBaseSchedules(swappedSchedules);
+    const swappedSchedules = swapSchedule(modifiedSchedules, over.id, active.id)
+    setModifiedSchedules(swappedSchedules);
   }
 
   if (!isGenerated) return <></>;
-
-  // TODO: reset to just generated
 
   return (
     // DndContext generate div for drag and drop function, and tbody only accept tr children. So DndContext place outside of table
@@ -79,7 +77,7 @@ export default function RosterTable() {
         </TableHeader>
         <TableBody>
           <SortableContext items={arrangementIds} strategy={rectSwappingStrategy}>
-            {postBaseSchedules.map(schedule => (
+            {modifiedSchedules.map(schedule => (
               <TableRow key={schedule.post.id}>
                 <TableCell className='py-4'>{schedule.post.name}</TableCell>
                 {schedule.arrangements.map(arrangement => (

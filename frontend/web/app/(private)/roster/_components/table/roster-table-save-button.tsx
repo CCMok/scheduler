@@ -33,13 +33,6 @@ const getRequest = (departmentId: number, postBaseSchedules: PostBaseSchedule[])
   }
 }
 
-const onSuccess = () => {
-  toast.success(ClientMessageTitle.SUCCESS, {
-    ...SONNER_DEFAULT_OPTIONS,
-    description: '已儲存值班表',
-  })
-}
-
 const onError = (_: ServerResponse, clientMessage: ClientMessage) => {
   toast.error(clientMessage.title, {
     ...SONNER_DEFAULT_OPTIONS,
@@ -48,7 +41,7 @@ const onError = (_: ServerResponse, clientMessage: ClientMessage) => {
 }
 
 export default function RosterTableSaveButton() {
-  const { departmentId, postBaseSchedules } = useArrangeRosterStore(state => state);
+  const { departmentId, modifiedSchedules, setInitialSchedules } = useArrangeRosterStore(state => state);
   const { handleServerResponse } = useServerResponseHandler();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -70,11 +63,20 @@ export default function RosterTableSaveButton() {
       return;
     }
 
-    const request = getRequest(departmentId, postBaseSchedules);
+    const request = getRequest(departmentId, modifiedSchedules);
 
     const response = await saveRosterAction(request);
 
     await handleServerResponse(response, onSuccess, onError)
+  }
+
+  const onSuccess = () => {
+    toast.success(ClientMessageTitle.SUCCESS, {
+      ...SONNER_DEFAULT_OPTIONS,
+      description: '已儲存值班表',
+    })
+
+    setInitialSchedules(modifiedSchedules)
   }
 
   return (

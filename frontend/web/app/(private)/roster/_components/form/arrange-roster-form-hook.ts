@@ -22,7 +22,7 @@ export default function useArrangeRosterForm({
   getValues,
 }: Readonly<Props>) {
   // Cannot useFormContext, this hook directly used by form component
-  const { setDepartmentId, setWorkers, setPostBaseSchedules, setIsGenerated } = useArrangeRosterStore(state => state);
+  const { setDepartmentId, setWorkers, setInitialSchedules, setIsGenerated, setModifiedSchedules } = useArrangeRosterStore(state => state);
   const { workers } = useArrangeRosterFilterStore(state => state);
   const { handleServerResponse } = useServerResponseHandler();
   
@@ -43,7 +43,8 @@ export default function useArrangeRosterForm({
     setWorkers(workers)
 
     const schedules = dayBaseToPostBaseSchedule(response.data)
-    setPostBaseSchedules(schedules)
+    setInitialSchedules(schedules)
+    setModifiedSchedules(schedules)
 
     setIsGenerated(true)
   }

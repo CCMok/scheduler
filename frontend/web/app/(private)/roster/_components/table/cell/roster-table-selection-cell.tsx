@@ -23,7 +23,7 @@ export default function RosterTableSelectionCell({
   setIsEditing,
   ...props
 }: Readonly<Props>) {
-  const { postBaseSchedules, workers, setPostBaseSchedules } = useArrangeRosterStore(state => state)
+  const { modifiedSchedules, workers, setModifiedSchedules } = useArrangeRosterStore(state => state)
 
   const ref = useRef<HTMLTableCellElement>(null);
 
@@ -46,7 +46,7 @@ export default function RosterTableSelectionCell({
   const onValueChange = (value: string) => {
     const newWorker = workers.find(worker => worker.id.toString() === value)
 
-    const newSchedules = postBaseSchedules.map(schedule => ({
+    const newSchedules = modifiedSchedules.map(schedule => ({
       ...schedule,
       arrangements: schedule.arrangements.map(scheduleArrangement => ({
         ...scheduleArrangement,
@@ -54,7 +54,7 @@ export default function RosterTableSelectionCell({
       })),
     }))
 
-    setPostBaseSchedules(newSchedules);
+    setModifiedSchedules(newSchedules);
     setIsEditing(false)
   }
 
