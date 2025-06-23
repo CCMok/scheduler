@@ -6,7 +6,7 @@ import { schemaCheck } from '../../_general/utils/schema-check-utils'
 import prisma from '../../_general/manager/database-manager'
 import { getSession } from '../../_general/manager/session-manager'
 import { Transaction } from '../../_general/models/prisma-transaction'
-import { MAX_HISTORY_COUNT } from '@/libs/share/roster/constants/roster-constant'
+import { isNil } from 'lodash'
 
 export const saveRoster = async (request: SaveRosterRequest): Promise<ServerResponse> => {
   const isSchemaCheckSuccess = schemaCheck(saveRosterRequestSchema, request);
@@ -30,7 +30,11 @@ export const saveRoster = async (request: SaveRosterRequest): Promise<ServerResp
 const updateRecord = async (request: SaveRosterRequest, userId: number): Promise<void> => {
   await prisma.$transaction(async tx => {
     await saveHisotry(tx, request, userId)
-    await deleteExcessHistory(tx, request.departmentId)
+
+    const maxHistoryCount = await getMaxHistoryCount(tx, request.departmentId)
+    if (isNil(maxHistoryCount)) return;
+
+    await deleteExcessHistory(tx, request.departmentId, maxHistoryCount)
   })
 }
 
@@ -54,7 +58,21 @@ const saveHisotry = async (tx: Transaction, request: SaveRosterRequest, userId: 
   })
 }
 
-const deleteExcessHistory = async (tx: Transaction, departmentId: number): Promise<void> => {
+const getMaxHistoryCount = async (tx: Transaction, departmentId: number): Promise<number | undefined> => {
+  const organization = await tx.organization.findFirstOrThrow({
+    where: {
+      departments: {
+        some: {
+          id: departmentId,
+        },
+      },
+    },
+  })
+
+  return organization.maxHistoryCount ?? undefined;
+}
+
+const deleteExcessHistory = async (tx: Transaction, departmentId: number, maxHistoryCount: number): Promise<void> => {
   const historiesId = await tx.rosterHistory.findMany({
     where: {
       departmentId,
@@ -67,8 +85,8 @@ const deleteExcessHistory = async (tx: Transaction, departmentId: number): Promi
     },
   });
 
-  if (historiesId.length > MAX_HISTORY_COUNT) {
-    const idsToDelete = historiesId.slice(MAX_HISTORY_COUNT).map(h => h.id);
+  if (historiesId.length > maxHistoryCount) {
+    const idsToDelete = historiesId.slice(maxHistoryCount).map(h => h.id);
     await tx.rosterHistory.deleteMany({
       where: {
         id: {

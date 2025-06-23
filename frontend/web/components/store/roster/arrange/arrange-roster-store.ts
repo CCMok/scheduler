@@ -8,6 +8,7 @@ export type ArrangeRosterState = {
   initialSchedules: PostBaseSchedule[],
   modifiedSchedules: PostBaseSchedule[],
   isGenerated: boolean,
+  maxHistoryCount?: number,
 }
 
 export type ArrangeRosterActions = {
@@ -16,6 +17,7 @@ export type ArrangeRosterActions = {
   setInitialSchedules: (initialSchedules: PostBaseSchedule[]) => void,
   setModifiedSchedules: (modifiedSchedules: PostBaseSchedule[]) => void,
   setIsGenerated: (isGenerated: boolean) => void,
+  setMaxHistoryCount: (maxHistoryCount: number) => void,
 }
 
 export type ArrangeRosterStore = ArrangeRosterState & ArrangeRosterActions
@@ -38,5 +40,6 @@ export const createArrangeRosterStore = (
     setInitialSchedules: initialSchedules => set(() => ({ initialSchedules })),
     setModifiedSchedules: modifiedSchedules => set(() => ({ modifiedSchedules })),
     setIsGenerated: isGenerated => set(() => ({ isGenerated })),
+    setMaxHistoryCount: maxHistoryCount => set(() => ({ maxHistoryCount })),
   }))
 }

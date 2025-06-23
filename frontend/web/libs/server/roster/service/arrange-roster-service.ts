@@ -36,14 +36,14 @@ export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<Serv
     status: ServerResponseStatus.INTERNAL_ERROR
   }
 
-  const response = await mapSchedules(schResponse, department)
-  if (!response) return {
+  const schedules = await mapSchedules(schResponse, department)
+  if (!schedules) return {
     status: ServerResponseStatus.INTERNAL_ERROR
   }
 
   return {
     status: ServerResponseStatus.OK,
-    data: response,
+    data: schedules,
   }
 };
 
@@ -91,7 +91,7 @@ const parseSchResponse = (responseJson: any): SchArrangeRosterResponse | undefin
   return parseResult.data;
 }
 
-export const mapSchedules = async (schResponse: SchArrangeRosterResponse, department: DepartmentWorkersPosts): Promise<DayBaseSchedule[] | undefined> => {
+const mapSchedules = async (schResponse: SchArrangeRosterResponse, department: DepartmentWorkersPosts): Promise<DayBaseSchedule[] | undefined> => {
   const schedules: DayBaseSchedule[] = [];
 
   let arrangementId = 0;
