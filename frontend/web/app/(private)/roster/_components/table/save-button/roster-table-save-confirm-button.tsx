@@ -14,7 +14,7 @@ import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-
 import { ClientMessage } from "@/libs/client/_general/models/client-message-model";
 import { ServerResponse } from "@/libs/share/_general/model/server-response";
 import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook";
-import useMaxHistoryCount from "./max-history-count-hook";
+import { useMaxHistoryCountStore } from "@/components/store/roster/save/max-history-count-store-provider";
 
 const getSaveRosterRequest = (departmentId: number, postBaseSchedules: PostBaseSchedule[]): SaveRosterRequest => {
   const dayBaseSchedules = postBaseToDayBaseSchedule(postBaseSchedules)
@@ -49,7 +49,7 @@ export default function RosterTableSaveConfirmButton({
 }: Readonly<Props>) {
   const { generatedScheduleDepartmentId, modifiedSchedules, setInitialSchedules } = useArrangeRosterStore(state => state);
   const { handleServerResponse } = useServerResponseHandler();
-  const { isFetchingMaxHistoryCount } = useMaxHistoryCount();
+  const { isFetchingMaxHistoryCount } = useMaxHistoryCountStore(state => state);
 
   const [isLoading, setIsLoading] = useState(false);
 

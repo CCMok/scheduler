@@ -7,6 +7,7 @@ import { schemaCheck } from "../../_general/utils/schema-check-utils";
 import { findMaxHistoryCount } from '../repositories/organization-repository';
 
 export const getMaxHistoryCount = async (request: GetMaxHistoryCountRequest): Promise<ServerResponse<GetMaxHistoryCountResponse>> => {
+  console.log('called')
   const isSchemaCheckSuccess = schemaCheck(getMaxHistoryCountRequestSchema, request);
   if (!isSchemaCheckSuccess) return {
     status: ServerResponseStatus.BAD_REQUEST,
