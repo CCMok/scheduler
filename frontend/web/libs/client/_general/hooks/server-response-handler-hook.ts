@@ -6,11 +6,12 @@ import { ClientMessage } from "../models/client-message-model";
 import { ClientMessageContent, ClientMessageTitle } from "../enums/client-message-enum";
 import { useRouter } from "next/navigation";
 import { Path } from "@/libs/share/_general/enums/path";
+import { useCallback } from "react";
 
 export default function useServerResponseHandler() {
   const router = useRouter();
 
-  const handleServerResponse = async <T>(
+  const handleServerResponse = useCallback(async <T>(
     response: ServerResponse<T>,
     onSuccess: (response: SuccessResponse<T>) => void | Promise<void>,
     onError: (response: ServerResponse<T>, clientMessage: ClientMessage) => void | Promise<void>
@@ -56,7 +57,7 @@ export default function useServerResponseHandler() {
         break;
       }
     }
-  }
+  }, [router])
 
   return { handleServerResponse }
 }

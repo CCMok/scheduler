@@ -7,6 +7,7 @@ import prisma from '../../_general/manager/database-manager'
 import { getSession } from '../../_general/manager/session-manager'
 import { Transaction } from '../../_general/models/prisma-transaction'
 import { isNil } from 'lodash'
+import { findMaxHistoryCount } from '../../organization/repositories/organization-repository'
 
 export const saveRoster = async (request: SaveRosterRequest): Promise<ServerResponse> => {
   const isSchemaCheckSuccess = schemaCheck(saveRosterRequestSchema, request);
@@ -31,7 +32,7 @@ const updateRecord = async (request: SaveRosterRequest, userId: number): Promise
   await prisma.$transaction(async tx => {
     await saveHisotry(tx, request, userId)
 
-    const maxHistoryCount = await getMaxHistoryCount(tx, request.departmentId)
+    const maxHistoryCount = await findMaxHistoryCount(request.departmentId)
     if (isNil(maxHistoryCount)) return;
 
     await deleteExcessHistory(tx, request.departmentId, maxHistoryCount)
@@ -67,9 +68,12 @@ const getMaxHistoryCount = async (tx: Transaction, departmentId: number): Promis
         },
       },
     },
+    select: {
+      maxHistoryCount: true,
+    }
   })
 
-  return organization.maxHistoryCount ?? undefined;
+  return isNil(organization.maxHistoryCount) ? undefined : organization.maxHistoryCount;
 }
 
 const deleteExcessHistory = async (tx: Transaction, departmentId: number, maxHistoryCount: number): Promise<void> => {

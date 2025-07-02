@@ -1,3 +1,3 @@
 export type GetMaxHistoryCountResponse = {
-  maxHistoryCount: number,
+  maxHistoryCount?: number,
 }

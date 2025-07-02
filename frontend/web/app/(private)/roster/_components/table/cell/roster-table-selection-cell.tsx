@@ -23,7 +23,7 @@ export default function RosterTableSelectionCell({
   setIsEditing,
   ...props
 }: Readonly<Props>) {
-  const { modifiedSchedules, workers, setModifiedSchedules } = useArrangeRosterStore(state => state)
+  const { modifiedSchedules, generatedScheduleWorkers, setModifiedSchedules } = useArrangeRosterStore(state => state)
 
   const ref = useRef<HTMLTableCellElement>(null);
 
@@ -44,7 +44,7 @@ export default function RosterTableSelectionCell({
   }, [])
 
   const onValueChange = (value: string) => {
-    const newWorker = workers.find(worker => worker.id.toString() === value)
+    const newWorker = generatedScheduleWorkers.find(worker => worker.id.toString() === value)
 
     const newSchedules = modifiedSchedules.map(schedule => ({
       ...schedule,
@@ -62,7 +62,7 @@ export default function RosterTableSelectionCell({
     <TableCell ref={ref} {...props}>
       <ComboBox
         value={arrangement.worker?.id.toString() ?? ''}
-        options={workers}
+        options={generatedScheduleWorkers}
         getValue={option => option.id.toString()}
         getDisplayName={option => option.name}
         onValueChange={onValueChange}

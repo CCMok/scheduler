@@ -3,27 +3,25 @@ import { Worker } from '@/external/prisma-generated'
 import { PostBaseSchedule } from '@/libs/share/roster/models/post-base-schedule'
 
 export type ArrangeRosterState = {
-  departmentId?: number,
-  workers: Worker[],
+  generatedScheduleDepartmentId?: number,
+  generatedScheduleWorkers: Worker[],
   initialSchedules: PostBaseSchedule[],
   modifiedSchedules: PostBaseSchedule[],
   isGenerated: boolean,
-  maxHistoryCount?: number,
 }
 
 export type ArrangeRosterActions = {
-  setDepartmentId: (departmentId: number) => void,
-  setWorkers: (workers: Worker[]) => void,
+  setGeneratedScheduleDepartmentId: (generatedScheduleDepartmentId: number) => void,
+  setGeneratedScheduleWorkers: (generatedScheduleWorkers: Worker[]) => void,
   setInitialSchedules: (initialSchedules: PostBaseSchedule[]) => void,
   setModifiedSchedules: (modifiedSchedules: PostBaseSchedule[]) => void,
   setIsGenerated: (isGenerated: boolean) => void,
-  setMaxHistoryCount: (maxHistoryCount: number) => void,
 }
 
 export type ArrangeRosterStore = ArrangeRosterState & ArrangeRosterActions
 
 export const defaultInitState: ArrangeRosterState = { 
-  workers: [],
+  generatedScheduleWorkers: [],
   initialSchedules: [],
   modifiedSchedules: [],
   isGenerated: false,
@@ -35,11 +33,10 @@ export const createArrangeRosterStore = (
   return createStore<ArrangeRosterStore>()(set => ({
     ...defaultInitState,
     ...partialInitState,
-    setDepartmentId: departmentId => set(() => ({ departmentId })),
-    setWorkers: workers => set(() => ({ workers })),
+    setGeneratedScheduleDepartmentId: generatedScheduleDepartmentId => set(() => ({ generatedScheduleDepartmentId })),
+    setGeneratedScheduleWorkers: generatedScheduleWorkers => set(() => ({ generatedScheduleWorkers })),
     setInitialSchedules: initialSchedules => set(() => ({ initialSchedules })),
     setModifiedSchedules: modifiedSchedules => set(() => ({ modifiedSchedules })),
     setIsGenerated: isGenerated => set(() => ({ isGenerated })),
-    setMaxHistoryCount: maxHistoryCount => set(() => ({ maxHistoryCount })),
   }))
 }
