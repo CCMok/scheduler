@@ -8,7 +8,8 @@ import { AlertDialogHeader, AlertDialogTrigger, AlertDialogFooter, AlertDialog, 
 import CustomButton from "@/components/button/custom-button";
 
 export default function RosterTableResetButton() {
-  const { initialSchedules, setModifiedSchedules } = useArrangeRosterStore(state => state);
+  const initialSchedules = useArrangeRosterStore(state => state.initialSchedules);
+  const setModifiedSchedules = useArrangeRosterStore(state => state.setModifiedSchedules);
 
   const [isLoading, setIsLoading] = useState(false);
 

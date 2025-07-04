@@ -12,13 +12,13 @@ import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/f
 
 export default function OffFilter() {
   const { control, getValues } = useFormContext<ArrangeRosterFormInput>();
+  const departments = useArrangeRosterFilterStore(state => state.departments);
+  const setWorkers = useArrangeRosterFilterStore(state => state.setWorkers);
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'offs',
   })
-
-  const { departments, setWorkers } = useArrangeRosterFilterStore(state => state)
 
   const departmentId = useWatch({
     control,

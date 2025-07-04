@@ -22,8 +22,12 @@ export default function useArrangeRosterForm({
   getValues,
 }: Readonly<Props>) {
   // Cannot useFormContext, this hook directly used by form component
-  const { setGeneratedScheduleDepartmentId, setGeneratedScheduleWorkers, setInitialSchedules, setIsGenerated, setModifiedSchedules } = useArrangeRosterStore(state => state);
-  const { workers } = useArrangeRosterFilterStore(state => state);
+  const setGeneratedScheduleDepartmentId = useArrangeRosterStore(state => state.setGeneratedScheduleDepartmentId);
+  const setGeneratedScheduleWorkers = useArrangeRosterStore(state => state.setGeneratedScheduleWorkers);
+  const setInitialSchedules = useArrangeRosterStore(state => state.setInitialSchedules);
+  const setIsGenerated = useArrangeRosterStore(state => state.setIsGenerated);
+  const setModifiedSchedules = useArrangeRosterStore(state => state.setModifiedSchedules);
+  const workers = useArrangeRosterFilterStore(state => state.workers);
   const { handleServerResponse } = useServerResponseHandler();
   
   const submit = async (input: ArrangeRosterFormInput) => {

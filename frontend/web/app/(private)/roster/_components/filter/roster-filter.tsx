@@ -8,7 +8,7 @@ import FormRootMessage from "@/components/form/form-root-message"
 import { CalendarSync } from "lucide-react"
 
 export default function RosterFilter() {
-  const { isGenerated } = useArrangeRosterStore(state => state);
+  const isGenerated = useArrangeRosterStore(state => state.isGenerated);
 
   return (
     <div className='space-y-4'>

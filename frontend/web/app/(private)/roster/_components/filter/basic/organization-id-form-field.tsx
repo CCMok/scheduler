@@ -10,7 +10,7 @@ import { useFormContext } from "react-hook-form"
 export default function OrganizationIdFormField() {
   const { control, setValue } = useFormContext<ArrangeRosterFormInput>();
   
-  const { organizations } = useArrangeRosterFilterStore(state => state);
+  const organizations = useArrangeRosterFilterStore(state => state.organizations);
   
   return (
     <FormField

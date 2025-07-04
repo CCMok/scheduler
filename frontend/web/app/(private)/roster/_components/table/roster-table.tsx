@@ -29,14 +29,16 @@ import { swapSchedule } from './roster-table-utils';
 import RosterCell from './cell/roster-table-cell';
 
 export default function RosterTable() {
+  const modifiedSchedules = useArrangeRosterStore(state => state.modifiedSchedules);
+  const isGenerated = useArrangeRosterStore(state => state.isGenerated);
+  const setModifiedSchedules = useArrangeRosterStore(state => state.setModifiedSchedules);
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
-
-  const { modifiedSchedules, isGenerated, setModifiedSchedules } = useArrangeRosterStore(state => state);
 
   const days = useMemo(() => {
     return modifiedSchedules.length ? modifiedSchedules[0].arrangements.map(arrangement => arrangement.day.toString()) : []

@@ -11,7 +11,8 @@ import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/f
 export default function DepartmentIdFormField() {
   const { control, setValue } = useFormContext<ArrangeRosterFormInput>();
 
-  const { organizations, setDepartments } = useArrangeRosterFilterStore(state => state)
+  const organizations = useArrangeRosterFilterStore(state => state.organizations);
+  const setDepartments = useArrangeRosterFilterStore(state => state.setDepartments);
 
   const organizationId = useWatch({
     control,

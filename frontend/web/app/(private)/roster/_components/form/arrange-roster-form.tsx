@@ -13,8 +13,8 @@ import useArrangeRosterForm from "./arrange-roster-form-hook"
 import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider"
 
 export default function ArrangeRosterForm({ children }: Readonly<ChildrenProps>) {
-  const { isGenerated } = useArrangeRosterStore(state => state);
-  const { organizations } = useArrangeRosterFilterStore(state => state);
+  const isGenerated = useArrangeRosterStore(state => state.isGenerated);
+  const organizations = useArrangeRosterFilterStore(state => state.organizations);
 
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 

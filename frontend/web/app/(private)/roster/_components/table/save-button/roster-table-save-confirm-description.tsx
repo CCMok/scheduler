@@ -4,7 +4,8 @@ import { Loader2 } from "lucide-react";
 import { useMaxHistoryCountStore } from "@/components/store/roster/save/max-history-count-store-provider";
 
 export default function RosterTableSaveConfirmDescription() {
-  const { maxHistoryCount, isFetchingMaxHistoryCount } = useMaxHistoryCountStore(state => state);
+  const maxHistoryCount = useMaxHistoryCountStore(state => state.maxHistoryCount);
+  const isFetchingMaxHistoryCount = useMaxHistoryCountStore(state => state.isFetchingMaxHistoryCount);
 
   if (isFetchingMaxHistoryCount) return <Loader2 className='animate-spin' />
 

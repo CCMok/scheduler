@@ -47,9 +47,11 @@ type Props = {
 export default function RosterTableSaveConfirmButton({
   setIsAlertDialogOpen,
 }: Readonly<Props>) {
-  const { generatedScheduleDepartmentId, modifiedSchedules, setInitialSchedules } = useArrangeRosterStore(state => state);
+  const generatedScheduleDepartmentId = useArrangeRosterStore(state => state.generatedScheduleDepartmentId);
+  const modifiedSchedules = useArrangeRosterStore(state => state.modifiedSchedules);
+  const setInitialSchedules = useArrangeRosterStore(state => state.setInitialSchedules);
   const { handleServerResponse } = useServerResponseHandler();
-  const { isFetchingMaxHistoryCount } = useMaxHistoryCountStore(state => state);
+  const isFetchingMaxHistoryCount = useMaxHistoryCountStore(state => state.isFetchingMaxHistoryCount);
 
   const [isLoading, setIsLoading] = useState(false);
 

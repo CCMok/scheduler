@@ -23,7 +23,9 @@ export default function RosterTableSelectionCell({
   setIsEditing,
   ...props
 }: Readonly<Props>) {
-  const { modifiedSchedules, generatedScheduleWorkers, setModifiedSchedules } = useArrangeRosterStore(state => state)
+  const modifiedSchedules = useArrangeRosterStore(state => state.modifiedSchedules);
+  const generatedScheduleWorkers = useArrangeRosterStore(state => state.generatedScheduleWorkers);
+  const setModifiedSchedules = useArrangeRosterStore(state => state.setModifiedSchedules);
 
   const ref = useRef<HTMLTableCellElement>(null);
 

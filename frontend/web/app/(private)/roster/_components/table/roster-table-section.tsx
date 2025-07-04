@@ -6,7 +6,7 @@ import RosterTableSaveButton from './save-button/roster-table-save-button';
 import RosterTableResetButton from './roster-table-reset-button';
 
 export default function RosterTableSection() {
-  const { isGenerated } = useArrangeRosterStore(state => state);
+  const isGenerated = useArrangeRosterStore(state => state.isGenerated);
 
   if (!isGenerated) return <></>;
 

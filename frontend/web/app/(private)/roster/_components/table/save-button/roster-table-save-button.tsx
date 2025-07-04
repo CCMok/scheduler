@@ -14,7 +14,7 @@ function RosterTableSaveAlertDialog() {
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
   const fetchMaxHistoryCount = useMaxHistoryCountStore(state => state.fetchMaxHistoryCount);
-  const { generatedScheduleDepartmentId } = useArrangeRosterStore(state => state);
+  const generatedScheduleDepartmentId = useArrangeRosterStore(state => state.generatedScheduleDepartmentId);
 
   useEffect(() => {
     if (isAlertDialogOpen && !isNil(generatedScheduleDepartmentId)) {

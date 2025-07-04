@@ -14,9 +14,8 @@ type Props = {
 export default function WorkerIdFormField({
   index
 }: Readonly<Props>) {
-  const { control, setValue } = useFormContext<ArrangeRosterFormInput>();
-
-  const { workers } = useArrangeRosterFilterStore(state => state)
+  const { control } = useFormContext<ArrangeRosterFormInput>();
+  const workers = useArrangeRosterFilterStore(state => state.workers);
 
   return (
     <FormField
@@ -29,7 +28,7 @@ export default function WorkerIdFormField({
             options={workers}
             getValue={option => option.id.toString()}
             getDisplayName={option => option.name}
-            onValueChange={value => setValue(`offs.${index}.workerId`, value)}
+            onValueChange={value => field.onChange(value)}
             isFormField
           />
         </CustomFormItem>
