@@ -87,7 +87,7 @@ export default function RosterTableSaveConfirmButton({
 
   return (
     <LoadingButton
-      disabled={isFetchingMaxHistoryCount || undefined}
+      disabled={isFetchingMaxHistoryCount || isLoading}
       isLoading={isLoading}
       onClick={onClickContinue}
     >
