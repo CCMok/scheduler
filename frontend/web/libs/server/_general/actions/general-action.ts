@@ -1,4 +1,4 @@
-import { ServerResponse } from "@/libs/share/_general/model/server-response";
+import { ServerResponse } from "@/libs/share/_general/models/server-response";
 import { ServerResponseStatus } from "../enums/server-response-status";
 
 export const actionWrapper = async <T>(service: () => ServerResponse<T> | Promise<ServerResponse<T>>): Promise<ServerResponse<T>> => {

@@ -1,5 +1,5 @@
 import 'server-only'
-import { ServerResponse } from "@/libs/share/_general/model/server-response";
+import { ServerResponse } from "@/libs/share/_general/models/server-response";
 import { GetMaxHistoryCountRequest, getMaxHistoryCountRequestSchema } from "../models/get-max-history-count-request";
 import { GetMaxHistoryCountResponse } from "../models/get-max-history-count-response";
 import { ServerResponseStatus } from "../../_general/enums/server-response-status";

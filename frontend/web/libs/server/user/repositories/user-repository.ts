@@ -1,5 +1,5 @@
 import 'server-only'
-import prisma from '../../_general/manager/database-manager'
+import prisma from '../../_general/managers/database-manager'
 
 export const findByEmail = async (email: string, incldueRole: boolean | undefined = false) => {
   return await prisma.user.findUnique({

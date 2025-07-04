@@ -8,13 +8,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import CustomFormItem from '@/components/form/custom-form-item';
 import FormRootMessage from '@/components/form/form-root-message';
-import { loginAction } from '@/libs/server/login/action/login-action';
+import { loginAction } from '@/libs/server/login/actions/login-action';
 import { useRouter } from 'next/navigation';
 import { Path } from '@/libs/share/_general/enums/path';
 import FormSubmitButton from '@/components/form/form-submit-button';
 import CustomInput from '@/components/input/custom-input';
 import useServerResponseHandler from '@/libs/client/_general/hooks/server-response-handler-hook';
-import { ServerResponse } from '@/libs/share/_general/model/server-response';
+import { ServerResponse } from '@/libs/share/_general/models/server-response';
 import { ClientMessage } from '@/libs/client/_general/models/client-message-model';
 
 const inputClassName = 'w-full'

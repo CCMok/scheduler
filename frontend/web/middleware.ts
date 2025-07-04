@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Path, publicPathExcludeHomes, redirectPrivatePath, redirectPublicPath } from './libs/share/_general/enums/path'
-import { deleteSession, getSession } from './libs/server/_general/manager/session-manager';
+import { deleteSession, getSession } from './libs/server/_general/managers/session-manager';
 import { SessionPayload } from './libs/server/_general/models/session-payload';
 
 export default async function middleware(request: NextRequest) {

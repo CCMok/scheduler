@@ -1,7 +1,7 @@
 import { createStore } from 'zustand/vanilla';
 import { GetMaxHistoryCountRequest } from '@/libs/server/organization/models/get-max-history-count-request';
 import { getMaxHistoryCountAction } from '@/libs/server/organization/actions/get-max-history-count-action';
-import { ServerResponse, SuccessResponse } from '@/libs/share/_general/model/server-response';
+import { ServerResponse, SuccessResponse } from '@/libs/share/_general/models/server-response';
 import { GetMaxHistoryCountResponse } from '@/libs/server/organization/models/get-max-history-count-response';
 import { isNil } from 'lodash';
 import { handleServerResponse } from '@/libs/client/_general/utils/server-response-handler';

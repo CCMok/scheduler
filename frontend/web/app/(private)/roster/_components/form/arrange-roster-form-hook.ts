@@ -1,15 +1,15 @@
 'use client'
 
 import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
-import { getArrangeRosterRequest } from "@/libs/server/roster/model/arrange/arrange-roster-request"
-import { arrangeRosterAction } from "@/libs/server/roster/action/arrange-roster-action"
+import { getArrangeRosterRequest } from "@/libs/server/roster/models/arrange/arrange-roster-request"
+import { arrangeRosterAction } from "@/libs/server/roster/actions/arrange-roster-action"
 import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider"
 import { UseFormGetValues, UseFormSetError } from "react-hook-form"
 import { dayBaseToPostBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils"
 import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider"
 import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook"
 import { DayBaseSchedule } from "@/libs/share/roster/models/day-base-schedule"
-import { ServerResponse, SuccessResponse } from "@/libs/share/_general/model/server-response"
+import { ServerResponse, SuccessResponse } from "@/libs/share/_general/models/server-response"
 import { ClientMessage } from "@/libs/client/_general/models/client-message-model"
 
 type Props = {

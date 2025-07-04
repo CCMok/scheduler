@@ -1,7 +1,7 @@
 import 'server-only';
-import { getSession } from '../../_general/manager/session-manager';
+import { getSession } from '../../_general/managers/session-manager';
 import { Role } from '@/libs/share/_general/enums/role';
-import prisma from '../../_general/manager/database-manager';
+import prisma from '../../_general/managers/database-manager';
 import { isNil } from 'lodash';
 
 const includeWorkersArgs = {

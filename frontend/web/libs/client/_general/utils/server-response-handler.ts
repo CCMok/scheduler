@@ -1,5 +1,5 @@
 import { ServerResponseStatus } from "@/libs/server/_general/enums/server-response-status";
-import { ServerResponse, SuccessResponse } from "@/libs/share/_general/model/server-response"
+import { ServerResponse, SuccessResponse } from "@/libs/share/_general/models/server-response"
 import { ClientMessage } from "../models/client-message-model";
 import { ClientMessageContent, ClientMessageTitle } from "../enums/client-message-enum";
 import { Path } from "@/libs/share/_general/enums/path";
