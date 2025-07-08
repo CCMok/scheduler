@@ -11,5 +11,5 @@ export const workerConstraintTypes = [
 
 export const roles = [
   { name: 'System Admin', enum: Role.SYSTEM_ADMIN },
-  { name: 'Admin', enum: Role.ADMIN },
+  { name: 'Organization Admin', enum: Role.ORGANIZATION_ADMIN },
 ]
