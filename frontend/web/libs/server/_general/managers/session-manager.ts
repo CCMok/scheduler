@@ -10,10 +10,7 @@ const cookieName = 'token';
 
 export const setSession = async (userRole: UserRole): Promise<void> => {
   const sessionPayload = getSessionPayloadFromUserRole(userRole);
-
-  const token = await issueToken(sessionPayload, sessionExpirationTime);
-
-  await setCookie(cookieName, token);
+  await issueTokenSetCookie(sessionPayload)
 }
 
 export const getSession = async (): Promise<SessionPayload | undefined> => {
@@ -23,13 +20,20 @@ export const getSession = async (): Promise<SessionPayload | undefined> => {
   const tokenPayload = await verifyToken(token)
   if (!tokenPayload) return;
 
-  // TODO: refresh token
-
   return getSessionPayloadFromTokenPayload(tokenPayload);
 }
 
 export const deleteSession = async (): Promise<void> => {
   await deleteCookie(cookieName);
+}
+
+export const refreshSession = async (sessionPayload: SessionPayload): Promise<void> => {
+  await issueTokenSetCookie(sessionPayload)
+}
+
+const issueTokenSetCookie = async (tokenPayload: TokenPayload): Promise<void> => {
+  const token = await issueToken(tokenPayload, sessionExpirationTime);
+  await setCookie(cookieName, token);
 }
 
 const getSessionPayloadFromUserRole = (userRole: UserRole): SessionPayload => {
@@ -41,7 +45,7 @@ const getSessionPayloadFromUserRole = (userRole: UserRole): SessionPayload => {
   }
 }
 
-const getSessionPayloadFromTokenPayload = (tokenPayload: TokenPayload): SessionPayload | undefined => {
+const getSessionPayloadFromTokenPayload = (tokenPayload: TokenPayload): SessionPayload => {
   return {
     userId: tokenPayload.userId,
     email: tokenPayload.email,

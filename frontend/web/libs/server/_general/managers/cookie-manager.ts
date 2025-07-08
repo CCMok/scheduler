@@ -1,6 +1,8 @@
 import 'server-only'
 import { cookies } from 'next/headers'
 
+// Caution: Only server action & middleware can update cookie
+
 export const setCookie = async (key: string, value: string): Promise<void> => {
   const cookieStore = await cookies();
 
