@@ -11,5 +11,6 @@ export enum ClientMessageContent {
   FORMAT_NOT_VALID = '請輸入有效的{0}',
   INTEGER = '請輸入整數',
   MIN = '請輸入不小於 {0}',
-  MAX = '請輸入不大於 {0}'
+  MAX = '請輸入不大於 {0}',
+  MATCH = '必須與{0}相同',
 }

@@ -1,6 +1,7 @@
 export enum Path {
   HOME = '/',
   LOGIN = '/login',
+  REGISTER = '/register',
   DASHBOARD = '/dashboard',
   ROSTER = '/roster',
 
@@ -11,4 +12,4 @@ export enum Path {
 export const redirectPublicPath = Path.LOGIN;
 export const redirectPrivatePath = Path.DASHBOARD;
 
-export const publicPathExcludeHomes = [Path.LOGIN]
+export const publicPathExcludeHomes = [Path.LOGIN, Path.REGISTER]
