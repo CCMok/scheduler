@@ -13,7 +13,7 @@ import { ServerResponse } from '@/libs/share/_general/models/server-response';
 import { ClientMessage } from '@/libs/client/_general/models/client-message-model';
 import { RegisterFormInput, registerFormInputSchema } from '@/libs/client/register/models/register-form-input';
 import { registerAction } from '@/libs/server/register/actions/register-action';
-import { redirectPrivatePath } from '@/libs/share/_general/enums/path';
+import { REDIRECT_PRIVATE_PATH } from '@/libs/share/_general/enums/path';
 import { toast } from "sonner";
 import { ClientMessageTitle } from '@/libs/client/_general/enums/client-message-enum';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
@@ -47,7 +47,7 @@ export default function RegisterForm() {
       description: '編排您第一個Schedule吧！',
     })
 
-    router.push(redirectPrivatePath)
+    router.push(REDIRECT_PRIVATE_PATH)
   }
 
   const onError = (_: ServerResponse, clientMessage: ClientMessage) => {

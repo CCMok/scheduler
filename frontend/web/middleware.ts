@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Path, publicPathExcludeHomes, redirectPrivatePath, redirectPublicPath } from './libs/share/_general/enums/path'
+import { Path, EXCLUDE_HOME_PUBLIC_PATHS, REDIRECT_PRIVATE_PATH, REDIRECT_PUBLIC_PATH } from './libs/share/_general/enums/path'
 import { deleteSession, getSession, refreshSession } from './libs/server/_general/managers/session-manager';
 import { SessionPayload } from './libs/server/_general/models/session-payload';
 
@@ -23,7 +23,7 @@ export const config = {
 const checkIsPrivatePath = (path: string): boolean => {
   if (path === Path.HOME) return false;
 
-  return !publicPathExcludeHomes.some(publicPath => path.startsWith(publicPath));
+  return !EXCLUDE_HOME_PUBLIC_PATHS.some(publicPath => path.startsWith(publicPath));
 }
 
 const handlePrivatePath = async (request: NextRequest, sessionPayload: SessionPayload | undefined): Promise<NextResponse> => {
@@ -33,12 +33,12 @@ const handlePrivatePath = async (request: NextRequest, sessionPayload: SessionPa
   }
 
   await deleteSession();
-  return NextResponse.redirect(new URL(redirectPublicPath, request.url))
+  return NextResponse.redirect(new URL(REDIRECT_PUBLIC_PATH, request.url))
 }
 
 const handlePublicPath = (request: NextRequest, sessionPayload: SessionPayload | undefined): NextResponse => {
   if (sessionPayload) {
-    return NextResponse.redirect(new URL(redirectPrivatePath, request.url))
+    return NextResponse.redirect(new URL(REDIRECT_PRIVATE_PATH, request.url))
   }
 
   return NextResponse.next()

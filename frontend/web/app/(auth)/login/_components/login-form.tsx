@@ -8,7 +8,7 @@ import CustomFormItem from '@/components/form/custom-form-item';
 import FormRootMessage from '@/components/form/form-root-message';
 import { loginAction } from '@/libs/server/login/actions/login-action';
 import { useRouter } from 'next/navigation';
-import { redirectPrivatePath } from '@/libs/share/_general/enums/path';
+import { REDIRECT_PRIVATE_PATH } from '@/libs/share/_general/enums/path';
 import FormSubmitButton from '@/components/form/form-submit-button';
 import CustomInput from '@/components/input/custom-input';
 import useServerResponseHandler from '@/libs/client/_general/hooks/server-response-handler-hook';
@@ -36,7 +36,7 @@ export default function LoginForm() {
   }
 
   const onSuccess = () => {
-    router.push(redirectPrivatePath)
+    router.push(REDIRECT_PRIVATE_PATH)
   }
 
   const onError = (_: ServerResponse, clientMessage: ClientMessage) => {

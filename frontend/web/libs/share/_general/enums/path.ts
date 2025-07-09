@@ -9,7 +9,7 @@ export enum Path {
   SETTING_USER = '/setting/user',
 }
 
-export const redirectPublicPath = Path.LOGIN;
-export const redirectPrivatePath = Path.DASHBOARD;
+export const REDIRECT_PUBLIC_PATH = Path.LOGIN;
+export const REDIRECT_PRIVATE_PATH = Path.DASHBOARD;
 
-export const publicPathExcludeHomes = [Path.LOGIN, Path.REGISTER]
+export const EXCLUDE_HOME_PUBLIC_PATHS = [Path.LOGIN, Path.REGISTER]
