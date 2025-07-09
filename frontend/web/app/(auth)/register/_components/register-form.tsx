@@ -44,7 +44,7 @@ export default function RegisterForm() {
   const onSuccess = () => {
     toast.success('註冊' + ClientMessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
-      description: '編排您第一個Schedule吧！',
+      description: '編排您第一個值班表吧！',
     })
 
     router.push(REDIRECT_PRIVATE_PATH)
