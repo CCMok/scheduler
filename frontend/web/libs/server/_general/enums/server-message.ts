@@ -1,4 +1,4 @@
 export enum ServerMessage {
   INCORRECT = '{0}錯誤',
-  ALREADY_EXISTS = '{0}已存在',
+  ALREADY_USED = '{0}已被使用',
 }

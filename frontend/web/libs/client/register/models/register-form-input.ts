@@ -1,11 +1,15 @@
 import { ClientMessageContent } from "@/libs/client/_general/enums/client-message-enum";
 import { z } from "zod";
+import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH, PASSWORD_VERIFY_REGEX } from "../../password/constants/password-constant";
 
 export const registerFormInputSchema = z.object({
   email: z.string().min(1, ClientMessageContent.REQUIRED).email(
     ClientMessageContent.FORMAT_NOT_VALID.replaceAll("{0}", "電郵地址")
   ),
-  password: z.string().min(1, ClientMessageContent.REQUIRED),
+  password: z.string()
+    .min(PASSWORD_MIN_LENGTH, ClientMessageContent.PASSWORD_STRENGTH_NOT_ENOUGH)
+    .max(PASSWORD_MAX_LENGTH, ClientMessageContent.MAX_LENGTH.replaceAll("{0}", PASSWORD_MAX_LENGTH.toString()))
+    .regex(PASSWORD_VERIFY_REGEX, ClientMessageContent.PASSWORD_STRENGTH_NOT_ENOUGH),
   confirmPassword: z.string().min(1, ClientMessageContent.REQUIRED),
   name: z.string().min(0, ClientMessageContent.REQUIRED),
 }).refine(value => value.password === value.confirmPassword, {

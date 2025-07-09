@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { ClientMessageTitle } from '@/libs/client/_general/enums/client-message-enum';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
 import { getRegisterRequest } from '@/libs/server/register/models/register-request';
+import PasswordField from './password-field';
 
 const inputClassName = 'w-full'
 
@@ -78,22 +79,7 @@ export default function RegisterForm() {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <CustomFormItem label='密碼' isLabelStar>
-              <FormControl>
-                <CustomInput
-                  type='password'
-                  autoComplete='new-password'
-                  className={inputClassName}
-                  {...field}
-                />
-              </FormControl>
-            </CustomFormItem>
-          )}
-        />
+        <PasswordField className={inputClassName} />
 
         <FormField
           control={form.control}

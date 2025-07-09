@@ -16,7 +16,7 @@ export const register = async (request: RegisterRequest): Promise<ServerResponse
   const user = await findUser(parsedRequest.email)
   if (user) return {
     status: ServerResponseStatus.BAD_REQUEST,
-    message: ServerMessage.ALREADY_EXISTS.replaceAll('{0}', '電郵地址'),
+    message: ServerMessage.ALREADY_USED.replaceAll('{0}', '電郵地址'),
   }
 
   const encryptedPassword = await encrypt(parsedRequest.password)
