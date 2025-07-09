@@ -4,11 +4,11 @@ import { ArrangeRosterRequest, arrangeRosterRequestSchema } from "../models/arra
 import { ServerResponseStatus } from "../../_general/enums/server-response-status";
 import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from "../models/arrange/sch-arrange-roster-response";
 import { Arrangement, DayBaseSchedule } from '../../../share/roster/models/day-base-schedule';
-import { getDepartmentWorkersPosts } from '../../department/repositories/department-repositories';
 import { DepartmentWorkersPosts } from '../../department/models/department-model';
 import { isNil } from 'lodash';
 import { Worker } from '@/external/prisma-generated';
 import { schemaCheck } from '../../_general/utils/schema-check-utils';
+import prisma from '../../_general/managers/database-manager';
 
 export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<DayBaseSchedule[]>> => {
   const isSchemaCheckSuccess = schemaCheck(arrangeRosterRequestSchema, request);
@@ -46,6 +46,13 @@ export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<Serv
     data: schedules,
   }
 };
+
+export const getDepartmentWorkersPosts = async (id: number) => {
+  return await prisma.department.findUnique({
+    where: { id },
+    include: { workers: true, posts: true },
+  })
+}
 
 const checkRequest = (request: ArrangeRosterRequest, department: DepartmentWorkersPosts): boolean => {
   for (const off of request.offs) {
