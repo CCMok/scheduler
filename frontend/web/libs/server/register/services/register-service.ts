@@ -7,7 +7,7 @@ export const register = async (request: RegisterRequest): Promise<ServerResponse
   // TODO
   console.log('call register service')
   return {
-    status: ServerResponseStatus.OK,
+    status: ServerResponseStatus.INTERNAL_ERROR,
     data: {},
   }
 }

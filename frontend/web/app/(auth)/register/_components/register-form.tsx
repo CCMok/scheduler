@@ -17,6 +17,7 @@ import { redirectPrivatePath } from '@/libs/share/_general/enums/path';
 import { toast } from "sonner";
 import { ClientMessageTitle } from '@/libs/client/_general/enums/client-message-enum';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
+import { getRegisterRequest } from '@/libs/server/register/models/register-request';
 
 const inputClassName = 'w-full'
 
@@ -35,7 +36,8 @@ export default function RegisterForm() {
   const { handleServerResponse } = useServerResponseHandler();
 
   const onSubmit = async (input: RegisterFormInput) => {
-    const response = await registerAction(input)
+    const request = getRegisterRequest(input);
+    const response = await registerAction(request)
     await handleServerResponse(response, onSuccess, onError);
   }
 
