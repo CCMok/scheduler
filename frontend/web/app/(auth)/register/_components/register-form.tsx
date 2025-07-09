@@ -28,6 +28,7 @@ export default function RegisterForm() {
       email: '',
       password: '',
       confirmPassword: '',
+      name: '',
     },
   })
 
@@ -64,7 +65,7 @@ export default function RegisterForm() {
           control={form.control}
           name="email"
           render={({ field }) => (
-            <CustomFormItem label='電郵地址'>
+            <CustomFormItem label='電郵地址' isLabelStar>
               <FormControl>
                 <CustomInput
                   type='email'
@@ -81,7 +82,7 @@ export default function RegisterForm() {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <CustomFormItem label='密碼'>
+            <CustomFormItem label='密碼' isLabelStar>
               <FormControl>
                 <CustomInput
                   type='password'
@@ -98,11 +99,27 @@ export default function RegisterForm() {
           control={form.control}
           name="confirmPassword"
           render={({ field }) => (
-            <CustomFormItem label='確認密碼'>
+            <CustomFormItem label='確認密碼' isLabelStar>
               <FormControl>
                 <CustomInput
                   type='password'
                   autoComplete='new-password'
+                  className={inputClassName}
+                  {...field}
+                />
+              </FormControl>
+            </CustomFormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <CustomFormItem label='名稱'>
+              <FormControl>
+                <CustomInput
+                  autoComplete='nickname'
                   className={inputClassName}
                   {...field}
                 />

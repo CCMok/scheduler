@@ -2,7 +2,6 @@ import 'server-only'
 import { ServerResponse } from '@/libs/share/_general/models/server-response'
 import { ServerResponseStatus } from '@/libs/server/_general/enums/server-response-status';
 import { RegisterRequest, registerRequestSchema } from '../models/register-request';
-import { schemaCheck } from '../../_general/utils/schema-check-utils';
 import prisma from '../../_general/managers/database-manager';
 import { ServerMessage } from '../../_general/enums/server-message';
 import { encrypt } from '../../_general/managers/bcrypt-manager';
@@ -12,18 +11,15 @@ import { setSession } from '../../_general/managers/session-manager';
 import { Role } from '@/libs/share/_general/enums/role';
 
 export const register = async (request: RegisterRequest): Promise<ServerResponse> => {
-  const isSchemaCheckSuccess = schemaCheck(registerRequestSchema, request);
-  if (!isSchemaCheckSuccess) return {
-    status: ServerResponseStatus.BAD_REQUEST,
-  }
+  const parsedRequest = registerRequestSchema.parse(request);
 
-  const user = await findUser(request.email)
+  const user = await findUser(parsedRequest.email)
   if (user) return {
     status: ServerResponseStatus.BAD_REQUEST,
     message: ServerMessage.ALREADY_EXISTS.replaceAll('{0}', '電郵地址'),
   }
 
-  const encryptedPassword = await encrypt(request.password)
+  const encryptedPassword = await encrypt(parsedRequest.password)
 
   const roleId = await findRoleId(DEFAULT_ROLE)
   if (isNil(roleId)) {
@@ -33,7 +29,7 @@ export const register = async (request: RegisterRequest): Promise<ServerResponse
     }
   }
 
-  const userRole = await createUser(request.email, encryptedPassword, roleId)
+  const userRole = await createUser(parsedRequest, encryptedPassword, roleId)
 
   await setSession(userRole)
 
@@ -62,11 +58,12 @@ const findRoleId = async (roleEnum: Role): Promise<number | undefined> => {
   return role?.id;
 }
 
-const createUser = async (email: string, encryptedPassword: string, roleId: number) => (
+const createUser = async (request: RegisterRequest, encryptedPassword: string, roleId: number) => (
   await prisma.user.create({
     data: {
-      email,
+      email: request.email,
       password: encryptedPassword,
+      name: request.name,
       roleId,
     },
     include: {

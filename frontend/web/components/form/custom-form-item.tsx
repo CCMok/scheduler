@@ -6,15 +6,22 @@ import { ReactNode } from 'react';
 
 type Props = ChildrenProps & {
   label?: ReactNode,
+  isLabelStar?: boolean,
 }
 
 export default function CustomFormItem({
   label,
   children,
+  isLabelStar,
 }: Readonly<Props>) {
   return (
     <FormItem className='flex flex-col'>
-      {label && <FormLabel>{label}</FormLabel>}
+      {label && (
+        <FormLabel>
+          {label}
+          {isLabelStar && <span className='text-destructive'>*</span>}
+        </FormLabel>
+      )}
       {children}
       <FormMessage />
     </FormItem>

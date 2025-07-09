@@ -7,26 +7,22 @@ import { Arrangement, DayBaseSchedule } from '../../../share/roster/models/day-b
 import { DepartmentWorkersPosts } from '../../department/models/department-model';
 import { isNil } from 'lodash';
 import { Worker } from '@/external/prisma-generated';
-import { schemaCheck } from '../../_general/utils/schema-check-utils';
 import prisma from '../../_general/managers/database-manager';
 
 export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<DayBaseSchedule[]>> => {
-  const isSchemaCheckSuccess = schemaCheck(arrangeRosterRequestSchema, request);
-  if (!isSchemaCheckSuccess) return {
-    status: ServerResponseStatus.BAD_REQUEST,
-  }
+  const parsedRequest = arrangeRosterRequestSchema.parse(request);
 
-  const department = await getDepartmentWorkersPosts(request.departmentId);
+  const department = await getDepartmentWorkersPosts(parsedRequest.departmentId);
   if (!department) return {
     status: ServerResponseStatus.BAD_REQUEST,
   }
 
-  const isRequestValid = checkRequest(request, department);
+  const isRequestValid = checkRequest(parsedRequest, department);
   if (!isRequestValid) return {
     status: ServerResponseStatus.BAD_REQUEST,
   }
 
-  const responseJson = await sendArrangeRosterRequest(request);
+  const responseJson = await sendArrangeRosterRequest(parsedRequest);
   if (!responseJson) return {
     status: ServerResponseStatus.INTERNAL_ERROR
   }

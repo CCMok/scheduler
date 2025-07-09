@@ -2,7 +2,6 @@ import 'server-only'
 import { SaveRosterRequest, saveRosterRequestSchema } from '../models/save-roster-request'
 import { ServerResponse } from '@/libs/share/_general/models/server-response'
 import { ServerResponseStatus } from '../../_general/enums/server-response-status'
-import { schemaCheck } from '../../_general/utils/schema-check-utils'
 import prisma from '../../_general/managers/database-manager'
 import { getSession } from '../../_general/managers/session-manager'
 import { Transaction } from '../../_general/models/prisma-transaction'
@@ -10,17 +9,14 @@ import { isNil } from 'lodash'
 import { findMaxHistoryCount } from '../../organization/repositories/organization-repository'
 
 export const saveRoster = async (request: SaveRosterRequest): Promise<ServerResponse> => {
-  const isSchemaCheckSuccess = schemaCheck(saveRosterRequestSchema, request);
-  if (!isSchemaCheckSuccess) return {
-    status: ServerResponseStatus.BAD_REQUEST,
-  }
+  const parsedRequest = saveRosterRequestSchema.parse(request);
 
   const session = await getSession();
   if (!session) return {
     status: ServerResponseStatus.UNAUTHORIZED,
   }
 
-  await updateRecord(request, session.userId)
+  await updateRecord(parsedRequest, session.userId)
 
   return {
     status: ServerResponseStatus.OK,
@@ -57,23 +53,6 @@ const saveHisotry = async (tx: Transaction, request: SaveRosterRequest, userId: 
       },
     },
   })
-}
-
-const getMaxHistoryCount = async (tx: Transaction, departmentId: number): Promise<number | undefined> => {
-  const organization = await tx.organization.findFirstOrThrow({
-    where: {
-      departments: {
-        some: {
-          id: departmentId,
-        },
-      },
-    },
-    select: {
-      maxHistoryCount: true,
-    }
-  })
-
-  return isNil(organization.maxHistoryCount) ? undefined : organization.maxHistoryCount;
 }
 
 const deleteExcessHistory = async (tx: Transaction, departmentId: number, maxHistoryCount: number): Promise<void> => {

@@ -7,6 +7,7 @@ export const registerFormInputSchema = z.object({
   ),
   password: z.string().min(1, ClientMessageContent.REQUIRED),
   confirmPassword: z.string().min(1, ClientMessageContent.REQUIRED),
+  name: z.string().min(0, ClientMessageContent.REQUIRED),
 }).refine(value => value.password === value.confirmPassword, {
   message: ClientMessageContent.MATCH.replaceAll("{0}", "密碼"),
   path: ["confirmPassword"],
