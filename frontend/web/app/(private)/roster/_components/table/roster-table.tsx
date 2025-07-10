@@ -27,6 +27,7 @@ import {
 } from "@/external/shadcn/components/ui/table"
 import { swapSchedule } from './roster-table-utils';
 import RosterCell from './cell/roster-table-cell';
+import { format } from 'date-fns';
 
 export default function RosterTable() {
   const modifiedSchedules = useArrangeRosterStore(state => state.modifiedSchedules);
@@ -73,7 +74,7 @@ export default function RosterTable() {
           <TableRow>
             <TableHead>職位</TableHead>
             {days.map(day =>
-              <TableHead key={day} className='text-center'>Day {day}</TableHead>
+              <TableHead key={day} className='text-center'>{format(day, 'yyyy-MM-dd')}</TableHead>
             )}
           </TableRow>
         </TableHeader>

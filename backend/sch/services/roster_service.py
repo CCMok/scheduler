@@ -30,7 +30,7 @@ class RosterService:
     ) -> ArrangeRosterResponse:
         schedules: list[Schedule] = []
 
-        for day in material.days:
+        for day in material.request.days:
             schedule = Schedule(day=day, arrangements=[])
             schedules.append(schedule)
 
@@ -38,11 +38,11 @@ class RosterService:
                 result_worker_id = None
 
                 for worker in post.workers:
-                    isOff = solver.value(
+                    is_off = solver.value(
                         material.shifts[(day, post.id, worker.id)]
                     ) == 0
 
-                    if isOff:
+                    if is_off:
                         continue
 
                     result_worker_id = worker.id

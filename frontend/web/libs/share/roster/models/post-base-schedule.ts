@@ -7,6 +7,6 @@ export type PostBaseSchedule = {
 
 export type Arrangement = {
   id: number;
-  day: number;
+  day: Date;
   worker: Worker | undefined;
 }

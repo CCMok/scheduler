@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -9,5 +10,5 @@ class Arrangement(BaseModel):
 
 
 class Schedule(BaseModel):
-    day: int
+    day: datetime
     arrangements: list[Arrangement]

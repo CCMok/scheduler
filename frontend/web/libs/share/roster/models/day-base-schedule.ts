@@ -1,7 +1,7 @@
 import { Post, Worker } from "@/external/prisma-generated";
 
 export type DayBaseSchedule = {
-  day: number;
+  day: Date;
   arrangements: Arrangement[];
 }
 

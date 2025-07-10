@@ -200,7 +200,7 @@ model RosterHistory {
 model RosterHistorySchedule {
   id                                Int                                @id @default(autoincrement())
   rosterHistoryId                   Int                                @map("roster_history_id")
-  day                               String
+  day                               String // TODO: change to datetime
   rosterHistory                     RosterHistory                      @relation(fields: [rosterHistoryId], references: [id], onDelete: Cascade)
   rosterHistoryScheduleArrangements RosterHistoryScheduleArrangement[]
 

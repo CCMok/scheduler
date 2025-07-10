@@ -16,7 +16,7 @@ class RosterModelHelper:
 
     @staticmethod
     def __define_each_post_max_worker(material: RosterMaterial) -> None:
-        for day in material.days:
+        for day in material.request.days:
             for post in material.posts:
                 material.model.add_at_most_one(
                     material.shifts[(day, post.id, worker.id)]
@@ -25,7 +25,7 @@ class RosterModelHelper:
 
     @staticmethod
     def __define_each_worker_max_post_per_day(material: RosterMaterial) -> None:
-        for day in material.days:
+        for day in material.request.days:
             for worker in material.workers:
                 material.model.add_at_most_one(
                     material.shifts[(day, post.id, worker.id)]
@@ -38,7 +38,7 @@ class RosterModelHelper:
             material.model.add(
                 sum(
                     material.shifts[(day, post.id, worker.id)]
-                    for day in material.days
+                    for day in material.request.days
                     for post in worker.posts
                 ) <= 2
             )
@@ -56,7 +56,7 @@ class RosterModelHelper:
                 continue
 
             for day in off.days:
-                if day not in material.days:
+                if day not in material.request.days:
                     continue
 
                 for post in worker.posts:
@@ -90,7 +90,7 @@ class RosterModelHelper:
     def __create_total_assignment_reward(material: RosterMaterial) -> cp_model.LinearExpr:
         return sum(
             material.shifts[(day, post.id, worker.id)]
-            for day in material.days
+            for day in material.request.days
             for post in material.posts
             for worker in post.workers
         )
@@ -101,7 +101,7 @@ class RosterModelHelper:
             post.id: {
                 worker.id: sum(
                     material.shifts[(day, post.id, worker.id)]
-                    for day in material.days
+                    for day in material.request.days
                 )
                 for worker in post.workers
             }
@@ -110,14 +110,14 @@ class RosterModelHelper:
 
         post_min_assignment = {
             post.id: material.model.new_int_var(
-                0, len(material.days), f'min_assignment_{post.id}'
+                0, len(material.request.days), f'min_assignment_{post.id}'
             )
             for post in material.posts
         }
 
         post_max_assignment = {
             post.id: material.model.new_int_var(
-                0, len(material.days), f'max_assignment_{post.id}'
+                0, len(material.request.days), f'max_assignment_{post.id}'
             )
             for post in material.posts
         }
@@ -171,7 +171,7 @@ class RosterModelHelper:
     ) -> cp_model.LinearExpr:
         rewards: list[cp_model.LinearExpr] = []
 
-        for day in material.days:
+        for day in material.request.days:
             reward = material.model.new_bool_var(
                 f'reward_posts_at_least_1_worker_per_day_{post_constraint.id}_{day}'
             )
@@ -230,7 +230,7 @@ class RosterModelHelper:
     ) -> cp_model.LinearExpr:
         rewards: list[cp_model.LinearExpr] = []
 
-        for day in material.days:
+        for day in material.request.days:
             reward = material.model.new_bool_var(f'reward_workers_correlate_{worker_constraint.id}_{day}')
             rewards.append(reward)
 

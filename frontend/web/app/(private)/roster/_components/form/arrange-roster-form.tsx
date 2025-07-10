@@ -4,7 +4,6 @@ import { Form } from "@/external/shadcn/components/ui/form"
 import { ArrangeRosterFormInput, arrangeRosterFormInputSchema } from "@/libs/client/roster/models/roster-filter-form-input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { DEFAULT_DAY_COUNT } from "@/libs/share/roster/constants/roster-constant"
 import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider"
 import { useMemo, useState } from "react"
 import ArrangeRosterFormAlertDialog from "./arrange-roster-form-alert-dialog"
@@ -34,7 +33,7 @@ export default function ArrangeRosterForm() {
     defaultValues: {
       organizationId: defaultOrganizationId,
       departmentId: defaultDepartmentId,
-      dayCount: DEFAULT_DAY_COUNT,
+      days: [],
       offs: [],
     },
   })

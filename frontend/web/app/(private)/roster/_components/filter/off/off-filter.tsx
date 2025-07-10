@@ -6,7 +6,7 @@ import { Minus, Plus } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form"
 import WorkerIdFormField from "./worker-id-form-field";
-import DaysFormField from "./days-form-field";
+import OffDaysFormField from "./off-days-form-field";
 import CustomButton from "@/components/button/custom-button";
 import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider";
 
@@ -62,7 +62,7 @@ export default function OffFilter() {
           <Card key={item.id} className='w-fit'>
             <CardContent className='flex flex-col gap-4 sm:flex-row sm:items-center'>
               <WorkerIdFormField index={index} />
-              <DaysFormField index={index} />
+              <OffDaysFormField index={index} />
               <CustomButton
                 variant='secondary'
                 size='icon'

@@ -8,6 +8,7 @@ export const saveArrangementRequestSchema = z.object({
 
 export type SaveArrangementRequest = z.infer<typeof saveArrangementRequestSchema>;
 
+// TODO: change to date
 export const saveScheduleRequestSchema = z.object({
   day: z.number(),
   arrangements: saveArrangementRequestSchema.array(),

@@ -56,7 +56,7 @@ export const postBaseToDayBaseSchedule = (postBaseSchedules: PostBaseSchedule[])
 
 const findOrCreateDayBaseSchedule = (
   schedules: DayBaseSchedule[],
-  day: number,
+  day: Date,
 ): DayBaseSchedule => {
   let schedule = schedules.find(schedule => schedule.day === day);
   if (schedule) return schedule;

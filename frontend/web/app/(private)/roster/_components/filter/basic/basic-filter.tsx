@@ -1,7 +1,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/external/shadcn/components/ui/card"
-import DayCountFormField from "./day-count-form-field"
 import DepartmentIdFormField from "./department-id-form-field"
 import OrganizationIdFormField from "./organization-id-form-field"
+import DaysFormField from "./days-form-field"
 
 export default function BasicFilter() {
   return (
@@ -12,7 +12,7 @@ export default function BasicFilter() {
       <CardContent className='flex flex-wrap space-x-4 space-y-4'>
         <OrganizationIdFormField />
         <DepartmentIdFormField />
-        <DayCountFormField />
+        <DaysFormField />
       </CardContent>
     </Card>
   )
