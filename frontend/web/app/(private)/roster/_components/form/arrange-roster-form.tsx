@@ -8,11 +8,11 @@ import { DEFAULT_DAY_COUNT } from "@/libs/share/roster/constants/roster-constant
 import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider"
 import { useMemo, useState } from "react"
 import ArrangeRosterFormAlertDialog from "./arrange-roster-form-alert-dialog"
-import { ChildrenProps } from "@/libs/share/_general/props/children-props"
 import useArrangeRosterForm from "./arrange-roster-form-hook"
 import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider"
+import RosterFilter from "../filter/roster-filter"
 
-export default function ArrangeRosterForm({ children }: Readonly<ChildrenProps>) {
+export default function ArrangeRosterForm() {
   const isGenerated = useArrangeRosterStore(state => state.isGenerated);
   const organizations = useArrangeRosterFilterStore(state => state.organizations);
 
@@ -56,7 +56,7 @@ export default function ArrangeRosterForm({ children }: Readonly<ChildrenProps>)
         className='space-y-4'
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        {children}
+        <RosterFilter />
         <ArrangeRosterFormAlertDialog isOpen={isAlertDialogOpen} setIsOpen={setIsAlertDialogOpen} />
       </form>
     </Form>
