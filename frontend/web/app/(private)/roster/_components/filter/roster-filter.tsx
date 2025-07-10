@@ -19,7 +19,7 @@ export default function RosterFilter() {
         <FormSubmitButton
           icon={<CalendarSync />}
         >
-          {isGenerated ? '重新生成' : '確認'}
+          {isGenerated ? '重新編排' : '確認'}
         </FormSubmitButton>
       </div>
 
