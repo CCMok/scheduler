@@ -42,7 +42,7 @@ const saveHisotry = async (tx: Transaction, request: SaveRosterRequest, userId: 
       createdByUserId: userId,
       rosterHistorySchedules: {
         create: request.schedules.map(schedule => ({
-          day: schedule.day.toString(),
+          day: schedule.day,
           rosterHistoryScheduleArrangements: {
             create: schedule.arrangements.map(arrangement => ({
               postId: arrangement.postId,

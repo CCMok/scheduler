@@ -186,7 +186,7 @@ model WorkerConstraintWorker {
 model RosterHistory {
   id                     Int                     @id @default(autoincrement())
   departmentId           Int                     @map("department_id")
-  createdAt              DateTime                @default(dbgenerated("CURRENT_TIMESTAMP")) @map("created_at")
+  createdAt              DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)
   createdByUserId        Int                     @map("created_by_user_id")
   department             Department              @relation(fields: [departmentId], references: [id])
   createdByUser          User                    @relation(fields: [createdByUserId], references: [id])
@@ -200,7 +200,7 @@ model RosterHistory {
 model RosterHistorySchedule {
   id                                Int                                @id @default(autoincrement())
   rosterHistoryId                   Int                                @map("roster_history_id")
-  day                               String // TODO: change to datetime
+  day                               DateTime                           @db.Timestamptz(3)
   rosterHistory                     RosterHistory                      @relation(fields: [rosterHistoryId], references: [id], onDelete: Cascade)
   rosterHistoryScheduleArrangements RosterHistoryScheduleArrangement[]
 
