@@ -5,8 +5,7 @@ export enum Path {
   DASHBOARD = '/dashboard',
   ROSTER = '/roster',
 
-  SETTING = '/setting',
-  SETTING_USER = '/setting/user',
+  SETTING_ORGANIZATION = '/setting/organization',
 }
 
 export const REDIRECT_PUBLIC_PATH = Path.LOGIN;

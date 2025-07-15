@@ -19,6 +19,19 @@ export const getOrganizationsBySession = async () => {
   if (!sessionPayload) return []
 
   if (sessionPayload.roleEnum === Role.SYSTEM_ADMIN) {
+    return await prisma.organization.findMany();
+  }
+
+  return await prisma.organization.findMany({
+    where: { userOrganizations: { some: { userId: sessionPayload.userId } } },
+  })
+}
+
+export const getOrganizationsBySessionIncludeWorkers = async () => {
+  const sessionPayload = await getSession();
+  if (!sessionPayload) return []
+
+  if (sessionPayload.roleEnum === Role.SYSTEM_ADMIN) {
     return await prisma.organization.findMany(includeWorkersArgs);
   }
 
