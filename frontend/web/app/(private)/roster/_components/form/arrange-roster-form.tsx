@@ -10,6 +10,8 @@ import ArrangeRosterFormAlertDialog from "./arrange-roster-form-alert-dialog"
 import useArrangeRosterForm from "./arrange-roster-form-hook"
 import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider"
 import RosterFilter from "../filter/roster-filter"
+import { getDefaultDepartmentIdInOrganizations, getDefaultOrganizationId } from "./arrange-roster-form-utils"
+import { DEFAULT_DAYS } from "@/libs/share/roster/constants/roster-constant"
 
 export default function ArrangeRosterForm() {
   const isGenerated = useArrangeRosterStore(state => state.isGenerated);
@@ -18,13 +20,12 @@ export default function ArrangeRosterForm() {
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
   const { defaultOrganizationId, defaultDepartmentId } = useMemo(() => {
-    const firstOrganization = organizations?.[0];
-    const orgId = firstOrganization?.id?.toString() ?? '';
-    const deptId = firstOrganization?.departments?.[0]?.id?.toString() ?? '';
+    const defaultOrganizationId = getDefaultOrganizationId(organizations);
+    const defaultDepartmentId = getDefaultDepartmentIdInOrganizations(organizations);
 
     return {
-      defaultOrganizationId: orgId,
-      defaultDepartmentId: deptId,
+      defaultOrganizationId,
+      defaultDepartmentId,
     };
   }, [organizations]);
 
@@ -33,7 +34,7 @@ export default function ArrangeRosterForm() {
     defaultValues: {
       organizationId: defaultOrganizationId,
       departmentId: defaultDepartmentId,
-      days: [],
+      days: DEFAULT_DAYS,
       offs: [],
     },
   })

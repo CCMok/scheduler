@@ -9,6 +9,7 @@ import WorkerIdFormField from "./worker-id-form-field";
 import OffDaysFormField from "./off-days-form-field";
 import CustomButton from "@/components/button/custom-button";
 import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider";
+import { getDefaultDepartmentIdInDepartments } from "../../form/arrange-roster-form-utils";
 
 export default function OffFilter() {
   const { control, getValues } = useFormContext<ArrangeRosterFormInput>();
@@ -23,7 +24,7 @@ export default function OffFilter() {
   const departmentId = useWatch({
     control,
     name: 'departmentId',
-    defaultValue: '',
+    defaultValue: getDefaultDepartmentIdInDepartments(departments),
   })
 
   const workers = useMemo(() => {

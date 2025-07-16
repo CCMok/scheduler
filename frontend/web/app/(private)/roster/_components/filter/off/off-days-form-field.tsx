@@ -7,6 +7,7 @@ import { useFormContext, useWatch } from "react-hook-form"
 import MultiSelectCombobox from "@/components/combobox/multi/multi-select-combobox";
 import { useEffect, useMemo } from "react";
 import { format } from "date-fns";
+import { DEFAULT_DAYS } from "@/libs/share/roster/constants/roster-constant";
 
 type Props = {
   index: number;
@@ -20,7 +21,7 @@ export default function OffDaysFormField({
   const days = useWatch({
     control,
     name: 'days',
-    defaultValue: [],
+    defaultValue: DEFAULT_DAYS,
   })
 
   const options = useMemo(() => days

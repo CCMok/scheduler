@@ -11,6 +11,7 @@ import { Save } from "lucide-react"
 import { Organization } from "@/external/prisma-generated"
 import ComboBox from "@/components/combobox/combobox"
 import OrganizationNameField from "./organization-name-field"
+import { getDefaultOrganizationId } from "@/app/(private)/roster/_components/form/arrange-roster-form-utils"
 
 type Props = {
   organizations: Organization[];
@@ -19,7 +20,7 @@ type Props = {
 export default function OrganizationSettingNameForm({
   organizations,
 }: Readonly<Props>) {
-  const defaultOrganizationId = organizations[0]?.id?.toString() ?? '';
+  const defaultOrganizationId = getDefaultOrganizationId(organizations);
 
   const form = useForm({
     resolver: zodResolver(organizationSettingNameFormInputSchema),
@@ -66,7 +67,9 @@ export default function OrganizationSettingNameForm({
           <CardFooter className='flex justify-end'>
             <FormSubmitButton
               icon={<Save />}
-            >儲存</FormSubmitButton>
+            >
+              儲存
+            </FormSubmitButton>
           </CardFooter>
         </Card>
       </form>
