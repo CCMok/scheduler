@@ -88,6 +88,7 @@ export default function OrganizationSettingNameForm({
     if (serverResponse.status === ServerResponseStatus.BAD_REQUEST
       && serverResponse.message === ServerMessage.NOT_FOUND.replaceAll('{0}', '組織')
     ) {
+      console.error('Organization not found');
       form.setError('root', {
         type: SYSTEM_ERROR_CLIENT_MESSAGE.title,
         message: SYSTEM_ERROR_CLIENT_MESSAGE.content,

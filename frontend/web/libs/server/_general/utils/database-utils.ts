@@ -18,3 +18,9 @@ export const tryCatchQuery = async <T>(
     throw error
   }
 }
+
+export const getPrismaErrorTarget = (error: PrismaClientKnownRequestError): string[] | undefined => 
+  error.meta?.target as string[] | undefined;
+
+export const getPrismaErrorModelName = (error: PrismaClientKnownRequestError): string | undefined =>
+  error.meta?.modelName as string | undefined;

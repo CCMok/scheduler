@@ -7,7 +7,7 @@ import { ServerMessage } from '../../_general/enums/server-message';
 import { encrypt } from '../../_general/managers/bcrypt-manager';
 import { DEFAULT_ROLE } from '../../role/constants/role-constant';
 import { setSession } from '../../_general/managers/session-manager';
-import { tryCatchQuery } from '../../_general/utils/database-utils';
+import { getPrismaErrorTarget, tryCatchQuery } from '../../_general/utils/database-utils';
 import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runtime/library';
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 
@@ -48,7 +48,7 @@ const createUser = async (request: RegisterRequest, encryptedPassword: string) =
 
 const handleQueryError = (error: PrismaClientKnownRequestError): ServerResponse => {
   if (error.code === PrismaErrorCode.UNIQUE_CONSTRAINT_VIOLATION) {
-    const target = error.meta?.target as string[] | undefined;
+    const target = getPrismaErrorTarget(error)
 
     if (target?.includes('email')) {
       return {

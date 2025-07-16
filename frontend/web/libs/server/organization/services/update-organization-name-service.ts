@@ -5,12 +5,12 @@ import prisma from "../../_general/managers/database-manager";
 import { ServerMessage } from "../../_general/enums/server-message";
 import { DataBaseQueryResponse } from "../../_general/models/database-query-response";
 import { PrismaErrorCode } from "../../_general/enums/prisma-error-code";
-import { tryCatchQuery } from "../../_general/utils/database-utils";
+import { getPrismaErrorModelName, getPrismaErrorTarget, tryCatchQuery } from "../../_general/utils/database-utils";
 import { PrismaClientKnownRequestError } from "@/external/prisma-generated/runtime/library";
 
 export const updateOrganizationName = async (request: UpdateOrganizationNameRequest): Promise<ServerResponse> => {
   const parsedRequest = updateOrganizationNameRequestSchema.parse(request)
-
+parsedRequest.id = 100;
   const updateResult = await updateName(parsedRequest)
   if (!updateResult.isSuccess) {
     return handleQueryError(updateResult.error)
@@ -33,16 +33,24 @@ const updateName = async (request: UpdateOrganizationNameRequest): Promise<DataB
 const handleQueryError = (error: PrismaClientKnownRequestError): ServerResponse => {
   switch (error.code) {
     case PrismaErrorCode.UNIQUE_CONSTRAINT_VIOLATION: {
-      return {
+      const target = getPrismaErrorTarget(error)
+
+      if (target?.includes('name')) return {
         status: ServerResponseStatus.BAD_REQUEST,
         message: ServerMessage.ALREADY_USED.replaceAll('{0}', '名稱'),
       }
+
+      throw error;
     }
     case PrismaErrorCode.NOT_FOUND: {
-      return {
+      const modelName = getPrismaErrorModelName(error)
+
+      if (modelName === 'Organization') return {
         status: ServerResponseStatus.BAD_REQUEST,
         message: ServerMessage.NOT_FOUND.replaceAll('{0}', '組織'),
       }
+
+      throw error;
     }
     default: {
       throw error;
