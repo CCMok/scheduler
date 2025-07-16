@@ -7,7 +7,7 @@ import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filte
 import { useFormContext, useWatch } from "react-hook-form"
 import { useEffect, useMemo } from "react"
 import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider"
-import { getDefaultOrganizationId } from "../../form/arrange-roster-form-utils"
+import { getDefaultDepartmentIdInDepartments, getDefaultOrganizationId } from "../../form/arrange-roster-form-utils"
 
 export default function DepartmentIdFormField() {
   const { control, setValue } = useFormContext<ArrangeRosterFormInput>();
@@ -28,10 +28,8 @@ export default function DepartmentIdFormField() {
 
   useEffect(() => {
     setDepartments(departments)
-    
-    const departmentId = departments.length ? departments[0].id.toString() : ''
-    setValue('departmentId', departmentId)
-  }, [departments, setValue])
+    setValue('departmentId', getDefaultDepartmentIdInDepartments(departments))
+  }, [departments, setDepartments, setValue])
 
   return (
     <FormField

@@ -2,7 +2,14 @@
 
 import { TableCell } from "@/external/shadcn/components/ui/table";
 import { Arrangement } from "@/libs/share/roster/models/post-base-schedule";
-import { ComponentProps, Dispatch, SetStateAction, useEffect, useRef } from "react";
+import {
+  ComponentProps,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef
+} from "react";
 import ComboBox from "@/components/combobox/combobox";
 import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider";
 import { UniqueIdentifier } from "@dnd-kit/core";
@@ -29,7 +36,7 @@ export default function RosterTableSelectionCell({
 
   const ref = useRef<HTMLTableCellElement>(null);
 
-  const onClickDocument = (event: MouseEvent) => {
+  const onClickDocument = useCallback((event: MouseEvent) => {
     // Click outside of the cell and popover
     if (
       ref.current
@@ -38,12 +45,12 @@ export default function RosterTableSelectionCell({
     ) {
       setIsEditing(false)
     }
-  }
+  }, [setIsEditing])
 
   useEffect(() => {
     document.addEventListener('mousedown', onClickDocument);
     return () => document.removeEventListener('mousedown', onClickDocument);
-  }, [])
+  }, [onClickDocument])
 
   const onValueChange = (value: string) => {
     const newWorker = generatedScheduleWorkers.find(worker => worker.id.toString() === value)
