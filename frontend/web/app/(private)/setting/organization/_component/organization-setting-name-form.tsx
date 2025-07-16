@@ -22,6 +22,9 @@ import { ClientMessage } from "@/libs/client/_general/models/client-message-mode
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant"
+import { ServerResponseStatus } from "@/libs/server/_general/enums/server-response-status"
+import { ServerMessage } from "@/libs/server/_general/enums/server-message"
+import { SYSTEM_ERROR_CLIENT_MESSAGE } from "@/libs/client/_general/utils/server-response-handler"
 
 type Props = {
   organizations: Organization[];
@@ -81,8 +84,17 @@ export default function OrganizationSettingNameForm({
     form.reset();
   }
 
-  const onError = (_: ServerResponse, clientMessage: ClientMessage) => {
-    // todo: check if error = organization not found, prompt internal server error
+  const onError = (serverResponse: ServerResponse, clientMessage: ClientMessage) => {
+    if (serverResponse.status === ServerResponseStatus.BAD_REQUEST
+      && serverResponse.message === ServerMessage.NOT_FOUND.replaceAll('{0}', '組織')
+    ) {
+      form.setError('root', {
+        type: SYSTEM_ERROR_CLIENT_MESSAGE.title,
+        message: SYSTEM_ERROR_CLIENT_MESSAGE.content,
+      })
+      return;
+    }
+
     form.setError('root', { type: clientMessage.title, message: clientMessage.content })
   }
 

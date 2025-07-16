@@ -31,10 +31,7 @@ export const handleServerResponse = async <T>(
       let clientMessage: ClientMessage;
       if (!response.message) {
         console.error("No Message for bad request")
-        clientMessage = {
-          title: ClientMessageTitle.SYSTEM_ERROR,
-          content: ClientMessageContent.SYSTEM_ERROR,
-        }
+        clientMessage = SYSTEM_ERROR_CLIENT_MESSAGE
       } else {
         clientMessage = {
           title: ClientMessageTitle.INPUT_ERROR,
@@ -47,13 +44,15 @@ export const handleServerResponse = async <T>(
     }
 
     default: {
-      const clientMessage: ClientMessage = {
-        title: ClientMessageTitle.SYSTEM_ERROR,
-        content: ClientMessageContent.SYSTEM_ERROR,
-      };
+      const clientMessage = SYSTEM_ERROR_CLIENT_MESSAGE;
 
       await onError(response, clientMessage);
       break;
     }
   }
-} 
+}
+
+export const SYSTEM_ERROR_CLIENT_MESSAGE: ClientMessage = {
+  title: ClientMessageTitle.SYSTEM_ERROR,
+  content: ClientMessageContent.SYSTEM_ERROR,
+}
