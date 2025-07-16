@@ -82,6 +82,7 @@ export default function OrganizationSettingNameForm({
   }
 
   const onError = (_: ServerResponse, clientMessage: ClientMessage) => {
+    // todo: check if error = organization not found, prompt internal server error
     form.setError('root', { type: clientMessage.title, message: clientMessage.content })
   }
 

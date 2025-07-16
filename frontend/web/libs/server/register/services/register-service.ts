@@ -6,32 +6,22 @@ import prisma from '../../_general/managers/database-manager';
 import { ServerMessage } from '../../_general/enums/server-message';
 import { encrypt } from '../../_general/managers/bcrypt-manager';
 import { DEFAULT_ROLE } from '../../role/constants/role-constant';
-import { isNil } from 'lodash';
 import { setSession } from '../../_general/managers/session-manager';
-import { Role } from '@/libs/share/_general/enums/role';
+import { tryCatchQuery } from '../../_general/utils/database-utils';
+import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runtime/library';
+import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 
 export const register = async (request: RegisterRequest): Promise<ServerResponse> => {
   const parsedRequest = registerRequestSchema.parse(request);
 
-  const user = await findUser(parsedRequest.email)
-  if (user) return {
-    status: ServerResponseStatus.BAD_REQUEST,
-    message: ServerMessage.ALREADY_USED.replaceAll('{0}', '電郵地址'),
-  }
-
   const encryptedPassword = await encrypt(parsedRequest.password)
 
-  const roleId = await findRoleId(DEFAULT_ROLE)
-  if (isNil(roleId)) {
-    console.error('Role not found. DEFAULT_ROLE_ENUM=', DEFAULT_ROLE)
-    return {
-      status: ServerResponseStatus.INTERNAL_ERROR,
-    }
+  const createResult = await createUser(parsedRequest, encryptedPassword)
+  if (!createResult.isSuccess) {
+    return handleQueryError(createResult.error)
   }
 
-  const userRole = await createUser(parsedRequest, encryptedPassword, roleId)
-
-  await setSession(userRole)
+  await setSession(createResult.data)
 
   return {
     status: ServerResponseStatus.OK,
@@ -39,35 +29,34 @@ export const register = async (request: RegisterRequest): Promise<ServerResponse
   }
 }
 
-const findUser = async (email: string) => (
-  await prisma.user.findUnique({
-    where: { email },
-  })
-)
+const createUser = async (request: RegisterRequest, encryptedPassword: string) =>
+  await tryCatchQuery(async () =>
+    await prisma.user.create({
+      data: {
+        email: request.email,
+        password: encryptedPassword,
+        name: request.name,
+        role: {
+          connect: { enum: DEFAULT_ROLE },
+        },
+      },
+      include: {
+        role: true,
+      }
+    })
+  )
 
-const findRoleId = async (roleEnum: Role): Promise<number | undefined> => {
-  const role = await prisma.role.findUnique({
-    where: {
-      enum: roleEnum,
-    },
-    select: {
-      id: true,
-    },
-  })
+const handleQueryError = (error: PrismaClientKnownRequestError): ServerResponse => {
+  if (error.code === PrismaErrorCode.UNIQUE_CONSTRAINT_VIOLATION) {
+    const target = error.meta?.target as string[] | undefined;
 
-  return role?.id;
-}
-
-const createUser = async (request: RegisterRequest, encryptedPassword: string, roleId: number) => (
-  await prisma.user.create({
-    data: {
-      email: request.email,
-      password: encryptedPassword,
-      name: request.name,
-      roleId,
-    },
-    include: {
-      role: true,
+    if (target?.includes('email')) {
+      return {
+        status: ServerResponseStatus.BAD_REQUEST,
+        message: ServerMessage.ALREADY_USED.replaceAll('{0}', '電郵地址'),
+      }
     }
-  })
-)
+  }
+
+  throw error;
+}
