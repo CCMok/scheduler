@@ -14,6 +14,14 @@ import OrganizationNameField from "./organization-name-field"
 import { getDefaultOrganizationId } from "@/app/(private)/roster/_components/form/arrange-roster-form-utils"
 import { ClientMessageContent, ClientMessageTitle } from "@/libs/client/_general/enums/client-message-enum"
 import FormRootMessage from "@/components/form/form-root-message"
+import { updateOrganizationNameAction } from "@/libs/server/organization/actions/update-organization-name-action"
+import { getUpdateOrganizationNameRequest } from "@/libs/server/organization/models/update-organization-name-request"
+import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook"
+import { ServerResponse } from "@/libs/share/_general/models/server-response"
+import { ClientMessage } from "@/libs/client/_general/models/client-message-model"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant"
 
 type Props = {
   organizations: Organization[];
@@ -30,7 +38,21 @@ export default function OrganizationSettingNameForm({
     }
   })
 
+  const { handleServerResponse } = useServerResponseHandler();
+
+  const router = useRouter();
+
   const onSubmit = async (input: OrganizationSettingNameFormInput) => {
+    const isValidInput = inputCheck(input)
+    if (!isValidInput) return;
+
+    const request = getUpdateOrganizationNameRequest(input)
+    const response = await updateOrganizationNameAction(request)
+
+    await handleServerResponse(response, onSuccess, onError)
+  }
+
+  const inputCheck = (input: OrganizationSettingNameFormInput): boolean => {
     const organizationId = form.getValues('organizationId')
     const isSameName = organizations.some(organization =>
       organization.id.toString() === organizationId
@@ -38,18 +60,29 @@ export default function OrganizationSettingNameForm({
     )
 
     if (isSameName) {
-      form.setError('root', { 
+      form.setError('root', {
         type: ClientMessageTitle.INPUT_ERROR,
         message: ClientMessageContent.NOT_MATCH.replaceAll('{0}', '原本名稱')
       });
 
-      return;
+      return false;
     }
 
-    // TODO
-    // request server action
+    return true;
+  }
 
-    // handle success / error
+  const onSuccess = () => {
+    toast.success(ClientMessageTitle.SUCCESS, {
+      ...SONNER_DEFAULT_OPTIONS,
+      description: '已更新組織名稱',
+    })
+
+    router.refresh()
+    form.reset();
+  }
+
+  const onError = (_: ServerResponse, clientMessage: ClientMessage) => {
+    form.setError('root', { type: clientMessage.title, message: clientMessage.content })
   }
 
   return (
