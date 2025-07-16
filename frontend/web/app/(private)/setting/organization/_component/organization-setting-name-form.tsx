@@ -12,6 +12,8 @@ import { Organization } from "@/external/prisma-generated"
 import ComboBox from "@/components/combobox/combobox"
 import OrganizationNameField from "./organization-name-field"
 import { getDefaultOrganizationId } from "@/app/(private)/roster/_components/form/arrange-roster-form-utils"
+import { ClientMessageContent, ClientMessageTitle } from "@/libs/client/_general/enums/client-message-enum"
+import FormRootMessage from "@/components/form/form-root-message"
 
 type Props = {
   organizations: Organization[];
@@ -20,18 +22,34 @@ type Props = {
 export default function OrganizationSettingNameForm({
   organizations,
 }: Readonly<Props>) {
-  const defaultOrganizationId = getDefaultOrganizationId(organizations);
-
   const form = useForm({
     resolver: zodResolver(organizationSettingNameFormInputSchema),
     defaultValues: {
-      organizationId: defaultOrganizationId,
+      organizationId: getDefaultOrganizationId(organizations),
       name: '',
     }
   })
 
   const onSubmit = async (input: OrganizationSettingNameFormInput) => {
-    console.log(input)
+    const organizationId = form.getValues('organizationId')
+    const isSameName = organizations.some(organization =>
+      organization.id.toString() === organizationId
+      && organization.name === input.name
+    )
+
+    if (isSameName) {
+      form.setError('root', { 
+        type: ClientMessageTitle.INPUT_ERROR,
+        message: ClientMessageContent.NOT_MATCH.replaceAll('{0}', '原本名稱')
+      });
+
+      return;
+    }
+
+    // TODO
+    // request server action
+
+    // handle success / error
   }
 
   return (
@@ -44,7 +62,7 @@ export default function OrganizationSettingNameForm({
               這是您的組織在 Scheduler 中的可見名稱。例如: 您公司的名稱。
             </CardDescription>
           </CardHeader>
-          <CardContent className='flex flex-wrap space-x-4'>
+          <CardContent className='flex flex-wrap space-x-4 space-y-4'>
             <FormField
               control={form.control}
               name='organizationId'
@@ -62,11 +80,13 @@ export default function OrganizationSettingNameForm({
               )}
             />
 
-            <OrganizationNameField organizations={organizations} defaultOrganizationId={defaultOrganizationId} />
+            <OrganizationNameField organizations={organizations} />
           </CardContent>
-          <CardFooter className='flex justify-end'>
+          <CardFooter className='flex space-x-4'>
+            <FormRootMessage />
             <FormSubmitButton
               icon={<Save />}
+              className='ml-auto'
             >
               儲存
             </FormSubmitButton>

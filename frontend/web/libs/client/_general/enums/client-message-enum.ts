@@ -15,5 +15,6 @@ export enum ClientMessageContent {
   MIN_LENGTH = '請輸入長度不小於 {0}',
   MAX_LENGTH = '請輸入長度不大於 {0}',
   MATCH = '必須與{0}相同',
+  NOT_MATCH = '必須與{0}不同',
   PASSWORD_STRENGTH_NOT_ENOUGH = '密碼強度不足'
 }
