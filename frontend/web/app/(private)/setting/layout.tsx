@@ -2,21 +2,16 @@ import { Separator } from "@/external/shadcn/components/ui/separator";
 import {
   SidebarMenu,
 } from "@/external/shadcn/components/ui/sidebar";
-import { Path } from "@/libs/share/_general/enums/path";
 import { ChildrenProps } from "@/libs/share/_general/props/children-props";
 import SettingSidebarItem from "./_component/setting-sidebar-item";
+import { getSession } from "@/libs/server/_general/managers/session-manager";
+import { getMenuItems } from "./_component/setting-menu-utils";
 
-// TODO: organization admin / system user role
-const menuItems = [
-  {
-    title: "組織",
-    href: Path.SETTING_ORGANIZATION,
-  },
-];
-
-export default function SettingLayout({
+export default async function SettingLayout({
   children,
 }: Readonly<ChildrenProps>) {
+  const sessionPayload = await getSession();
+  const menuItems = sessionPayload ? getMenuItems(sessionPayload.roleEnum) : [];
 
   return (
     <div className="flex h-full">
