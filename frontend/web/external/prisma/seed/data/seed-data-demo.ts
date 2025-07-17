@@ -2,6 +2,8 @@ import { PostConstraintType, WorkerConstraintType } from "../../../../libs/share
 
 export const organizationName = 'Demo Church 2'
 
+export const organizationMaxHistoryCount = 5
+
 export const departmentName = 'Worship Team'
 
 export const postNames = [
