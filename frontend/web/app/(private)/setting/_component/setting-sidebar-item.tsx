@@ -9,22 +9,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 type Props = {
-  href: Path,
+  url: Path,
   title: string,
 }
 
 export default function SettingSidebarItem({
-  href,
+  url,
   title,
 }: Readonly<Props>) {
   const pathname = usePathname()
 
-  const isActive = pathname.startsWith(href)
+  const isActive = pathname.startsWith(url)
 
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild isActive={isActive}>
-        <Link href={href}>{title}</Link>
+        <Link href={url}>{title}</Link>
       </SidebarMenuButton>
     </SidebarMenuItem>
   )

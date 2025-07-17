@@ -23,7 +23,7 @@ const mainMenuItems = [
   },
   {
     title: "設定",
-    url: Path.SETTING_ORGANIZATION,
+    url: Path.SETTING_USER,
     icon: Settings,
   },
 ]

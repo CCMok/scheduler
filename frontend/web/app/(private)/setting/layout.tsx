@@ -19,8 +19,8 @@ export default async function SettingLayout({
         <SidebarMenu>
           {menuItems.map(menuItem => (
             <SettingSidebarItem
-              key={menuItem.href}
-              href={menuItem.href}
+              key={menuItem.url}
+              url={menuItem.url}
               title={menuItem.title}
             />
           ))}

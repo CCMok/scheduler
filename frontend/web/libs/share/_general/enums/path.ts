@@ -5,6 +5,7 @@ export enum Path {
   DASHBOARD = '/dashboard',
   ROSTER = '/roster',
 
+  SETTING_USER = '/setting/user',
   SETTING_ORGANIZATION = '/setting/organization',
 }
 

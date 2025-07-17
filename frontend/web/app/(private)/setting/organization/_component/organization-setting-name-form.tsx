@@ -1,7 +1,7 @@
 'use client'
 
 import { Form, FormField } from "@/external/shadcn/components/ui/form"
-import { OrganizationSettingNameFormInput, organizationSettingNameFormInputSchema } from "@/libs/client/organization/models/organization-setting-name-form-input"
+import { OrganizationNameSettingFormInput, organizationNameSettingFormInputSchema } from "@/libs/client/organization/models/organization-setting-name-form-input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from "@/external/shadcn/components/ui/card"
@@ -36,7 +36,7 @@ export default function OrganizationSettingNameForm({
   organizations,
 }: Readonly<Props>) {
   const form = useForm({
-    resolver: zodResolver(organizationSettingNameFormInputSchema),
+    resolver: zodResolver(organizationNameSettingFormInputSchema),
     defaultValues: {
       organizationId: getDefaultOrganizationId(organizations),
       name: '',
@@ -49,7 +49,7 @@ export default function OrganizationSettingNameForm({
 
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
-  const onSubmit = async (input: OrganizationSettingNameFormInput) => {
+  const onSubmit = async (input: OrganizationNameSettingFormInput) => {
     const isValidInput = inputCheck(input)
     if (!isValidInput) return;
 
@@ -64,7 +64,7 @@ export default function OrganizationSettingNameForm({
     await handleServerResponse(response, onSuccess, onError)
   }
 
-  const inputCheck = (input: OrganizationSettingNameFormInput): boolean => {
+  const inputCheck = (input: OrganizationNameSettingFormInput): boolean => {
     const organizationId = form.getValues('organizationId')
     const isSameName = organizations.some(organization =>
       organization.id.toString() === organizationId
