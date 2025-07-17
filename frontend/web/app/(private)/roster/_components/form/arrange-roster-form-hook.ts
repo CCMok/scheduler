@@ -4,7 +4,7 @@ import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filte
 import { getArrangeRosterRequest } from "@/libs/server/roster/models/arrange/arrange-roster-request"
 import { arrangeRosterAction } from "@/libs/server/roster/actions/arrange-roster-action"
 import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider"
-import { UseFormGetValues, UseFormSetError } from "react-hook-form"
+import { UseFormSetError } from "react-hook-form"
 import { dayBaseToPostBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils"
 import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider"
 import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook"
@@ -14,12 +14,10 @@ import { ClientMessage } from "@/libs/client/_general/models/client-message-mode
 
 type Props = {
   setError: UseFormSetError<ArrangeRosterFormInput>,
-  getValues: UseFormGetValues<ArrangeRosterFormInput>,
 }
 
 export default function useArrangeRosterForm({ 
   setError,
-  getValues,
 }: Readonly<Props>) {
   // Cannot useFormContext, this hook directly used by form component
   const setGeneratedScheduleDepartmentId = useArrangeRosterStore(state => state.setGeneratedScheduleDepartmentId);
@@ -37,12 +35,11 @@ export default function useArrangeRosterForm({
 
     const response = await arrangeRosterAction(request);
 
-    await handleServerResponse(response, onSuccess, onError)
+    await handleServerResponse(response, onSuccess(input), onError)
   }
 
-  const onSuccess = (response: SuccessResponse<DayBaseSchedule[]>) => {
-    const departmentId = getValues('departmentId')
-    setGeneratedScheduleDepartmentId(Number(departmentId))
+  const onSuccess = (input: ArrangeRosterFormInput) => (response: SuccessResponse<DayBaseSchedule[]>) => {
+    setGeneratedScheduleDepartmentId(Number(input.departmentId))
     setGeneratedScheduleWorkers(workers)
 
     const schedules = dayBaseToPostBaseSchedule(response.data)

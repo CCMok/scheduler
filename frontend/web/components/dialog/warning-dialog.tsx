@@ -1,29 +1,30 @@
+'use client'
+
 import { AlertDialogHeader, AlertDialogFooter, AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel } from "@/external/shadcn/components/ui/alert-dialog";
-import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
-import { Dispatch, SetStateAction, useState } from "react";
-import { useFormContext } from "react-hook-form";
-import useArrangeRosterForm from "./arrange-roster-form-hook";
 import LoadingButton from "@/components/button/loading-button";
+import { Dispatch, SetStateAction, useState } from "react";
 
 type Props = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
+  title?: string;
+  description?: string;
+  onContinue: () => Promise<void> | void;
 }
 
-export default function ArrangeRosterFormAlertDialog({
+export default function WarningDialog({
   isOpen,
   setIsOpen,
+  title,
+  description,
+  onContinue,
 }: Readonly<Props>) {
-  const { setError, getValues } = useFormContext<ArrangeRosterFormInput>()
-
-  const { submit } = useArrangeRosterForm({ setError, getValues });
-
   const [isLoading, setIsLoading] = useState(false)
 
   const onClickContinue = async () => {
     setIsLoading(true)
 
-    await submit(getValues())
+    await onContinue();
 
     setIsOpen(false)
     setIsLoading(false)
@@ -33,14 +34,21 @@ export default function ArrangeRosterFormAlertDialog({
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>確定要重新編排值班表嗎?</AlertDialogTitle>
-          <AlertDialogDescription>
-            重新編排將會覆蓋現有的值班表，沒有儲存的資料將會遺失，請確認是否繼續。
-          </AlertDialogDescription>
+          {title && <AlertDialogTitle>{title}</AlertDialogTitle>}
+          {description && (
+            <AlertDialogDescription>
+              {description}
+            </AlertDialogDescription>
+          )}
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>取消</AlertDialogCancel>
-          <LoadingButton isLoading={isLoading} onClick={onClickContinue}>繼續</LoadingButton>
+          <LoadingButton
+            isLoading={isLoading}
+            onClick={onClickContinue}
+          >
+            繼續
+          </LoadingButton>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

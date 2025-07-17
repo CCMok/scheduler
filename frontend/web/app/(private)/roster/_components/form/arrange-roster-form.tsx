@@ -6,12 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider"
 import { useMemo, useState } from "react"
-import ArrangeRosterFormAlertDialog from "./arrange-roster-form-alert-dialog"
 import useArrangeRosterForm from "./arrange-roster-form-hook"
 import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider"
 import RosterFilter from "../filter/roster-filter"
 import { getDefaultDepartmentIdInOrganizations, getDefaultOrganizationId } from "./arrange-roster-form-utils"
 import { DEFAULT_DAYS } from "@/libs/share/roster/constants/roster-constant"
+import WarningDialog from "@/components/dialog/warning-dialog"
 
 export default function ArrangeRosterForm() {
   const isGenerated = useArrangeRosterStore(state => state.isGenerated);
@@ -39,7 +39,7 @@ export default function ArrangeRosterForm() {
     },
   })
 
-  const { submit } = useArrangeRosterForm({ setError: form.setError, getValues: form.getValues });
+  const { submit } = useArrangeRosterForm({ setError: form.setError });
 
   const onSubmit = async (input: ArrangeRosterFormInput) => {
     if (isGenerated) {
@@ -50,6 +50,8 @@ export default function ArrangeRosterForm() {
     await submit(input);
   }
 
+  const onAlertDialogContinue = async () => await submit(form.getValues())
+
   return (
     <Form {...form}>
       <form
@@ -57,7 +59,13 @@ export default function ArrangeRosterForm() {
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <RosterFilter />
-        <ArrangeRosterFormAlertDialog isOpen={isAlertDialogOpen} setIsOpen={setIsAlertDialogOpen} />
+        <WarningDialog
+          isOpen={isAlertDialogOpen}
+          setIsOpen={setIsAlertDialogOpen}
+          title='確定要重新編排值班表嗎?'
+          description='重新編排將會覆蓋現有的值班表，沒有儲存的資料將會遺失，請確認是否繼續。'
+          onContinue={onAlertDialogContinue}
+        />
       </form>
     </Form>
   )
