@@ -11,14 +11,21 @@ const organizationMenuItems: SettingMenuItem = {
   url: Path.SETTING_ORGANIZATION,
 }
 
+const departmentMenuItems: SettingMenuItem = {
+  title: "部門",
+  url: Path.SETTING_DEPARTMENT,
+}
+
 export const ACCESS_MENU_ITEM_MAP = new Map<Role, SettingMenuItem[]>([
   [Role.SYSTEM_ADMIN, [
     userMenuItems,
     organizationMenuItems,
+    departmentMenuItems,
   ]],
   [Role.ORGANIZATION_ADMIN, [
     userMenuItems,
     organizationMenuItems,
+    departmentMenuItems,
   ]],
 ])
 

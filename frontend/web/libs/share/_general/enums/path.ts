@@ -7,6 +7,7 @@ export enum Path {
 
   SETTING_USER = '/setting/user',
   SETTING_ORGANIZATION = '/setting/organization',
+  SETTING_DEPARTMENT = '/setting/department',
 }
 
 export const REDIRECT_PUBLIC_PATH = Path.LOGIN;
