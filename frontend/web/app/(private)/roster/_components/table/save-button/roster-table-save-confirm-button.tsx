@@ -11,7 +11,7 @@ import { isNil } from "lodash";
 import { toast } from "sonner";
 import { ClientMessageTitle } from "@/libs/client/_general/enums/client-message-enum";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
-import { ClientMessage } from "@/libs/client/_general/models/client-message-model";
+import { ClientMessage } from "@/libs/client/_general/models/client-message";
 import { ServerResponse } from "@/libs/share/_general/models/server-response";
 import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook";
 import { useMaxHistoryCountStore } from "@/components/store/roster/save/max-history-count-store-provider";

@@ -13,7 +13,7 @@ import FormSubmitButton from '@/components/form/form-submit-button';
 import CustomInput from '@/components/input/custom-input';
 import useServerResponseHandler from '@/libs/client/_general/hooks/server-response-handler-hook';
 import { ServerResponse } from '@/libs/share/_general/models/server-response';
-import { ClientMessage } from '@/libs/client/_general/models/client-message-model';
+import { ClientMessage } from '@/libs/client/_general/models/client-message';
 
 const inputClassName = 'w-full'
 

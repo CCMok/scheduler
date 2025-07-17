@@ -1,7 +1,7 @@
 'use client'
 
 import { Form, FormField } from "@/external/shadcn/components/ui/form"
-import { OrganizationNameSettingFormInput, organizationNameSettingFormInputSchema } from "@/libs/client/organization/models/organization-setting-name-form-input"
+import { UpdateOrganizationNameFormInput, updateOrganizationNameFormInputSchema } from "@/libs/client/organization/models/organization-name-change-form-input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from "@/external/shadcn/components/ui/card"
@@ -18,7 +18,7 @@ import { updateOrganizationNameAction } from "@/libs/server/organization/actions
 import { getUpdateOrganizationNameRequest } from "@/libs/server/organization/models/update-organization-name-request"
 import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook"
 import { ServerResponse } from "@/libs/share/_general/models/server-response"
-import { ClientMessage } from "@/libs/client/_general/models/client-message-model"
+import { ClientMessage } from "@/libs/client/_general/models/client-message"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant"
@@ -32,11 +32,11 @@ type Props = {
   organizations: Organization[];
 }
 
-export default function OrganizationSettingNameForm({
+export default function UpdateOrganizationNameForm({
   organizations,
 }: Readonly<Props>) {
   const form = useForm({
-    resolver: zodResolver(organizationNameSettingFormInputSchema),
+    resolver: zodResolver(updateOrganizationNameFormInputSchema),
     defaultValues: {
       organizationId: getDefaultOrganizationId(organizations),
       name: '',
@@ -49,7 +49,7 @@ export default function OrganizationSettingNameForm({
 
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
-  const onSubmit = async (input: OrganizationNameSettingFormInput) => {
+  const onSubmit = async (input: UpdateOrganizationNameFormInput) => {
     const isValidInput = inputCheck(input)
     if (!isValidInput) return;
 
@@ -64,7 +64,7 @@ export default function OrganizationSettingNameForm({
     await handleServerResponse(response, onSuccess, onError)
   }
 
-  const inputCheck = (input: OrganizationNameSettingFormInput): boolean => {
+  const inputCheck = (input: UpdateOrganizationNameFormInput): boolean => {
     const organizationId = form.getValues('organizationId')
     const isSameName = organizations.some(organization =>
       organization.id.toString() === organizationId
@@ -86,7 +86,7 @@ export default function OrganizationSettingNameForm({
   const onSuccess = () => {
     toast.success(ClientMessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
-      description: '已更新組織名稱',
+      description: '已更改組織名稱',
     })
 
     router.refresh()

@@ -3,7 +3,7 @@
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { ServerResponse, SuccessResponse } from "@/libs/share/_general/models/server-response";
-import { ClientMessage } from "../models/client-message-model";
+import { ClientMessage } from "../models/client-message";
 import { handleServerResponse as handleServerResponseUtil } from "../utils/server-response-handler";
 
 export default function useServerResponseHandler() {

@@ -10,7 +10,7 @@ import FormSubmitButton from '@/components/form/form-submit-button';
 import CustomInput from '@/components/input/custom-input';
 import useServerResponseHandler from '@/libs/client/_general/hooks/server-response-handler-hook';
 import { ServerResponse } from '@/libs/share/_general/models/server-response';
-import { ClientMessage } from '@/libs/client/_general/models/client-message-model';
+import { ClientMessage } from '@/libs/client/_general/models/client-message';
 import { RegisterFormInput, registerFormInputSchema } from '@/libs/client/register/models/register-form-input';
 import { registerAction } from '@/libs/server/register/actions/register-action';
 import { REDIRECT_PRIVATE_PATH } from '@/libs/share/_general/enums/path';
@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { ClientMessageTitle } from '@/libs/client/_general/enums/client-message-enum';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
 import { getRegisterRequest } from '@/libs/server/register/models/register-request';
-import PasswordField from './password-field';
+import NewPasswordFormField from '../../../../components/form/new-password-form-field';
 
 const inputClassName = 'w-full'
 
@@ -79,7 +79,11 @@ export default function RegisterForm() {
           )}
         />
 
-        <PasswordField className={inputClassName} />
+        <NewPasswordFormField<RegisterFormInput>
+          className={inputClassName}
+          name='password'
+          formItemProps={{ label: '密碼', isLabelStar: true }}
+        />
 
         <FormField
           control={form.control}

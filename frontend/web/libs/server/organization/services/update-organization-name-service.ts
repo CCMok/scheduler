@@ -1,3 +1,4 @@
+import 'server-only'
 import { ServerResponse } from "@/libs/share/_general/models/server-response";
 import { UpdateOrganizationNameRequest, updateOrganizationNameRequestSchema } from "../models/update-organization-name-request";
 import { ServerResponseStatus } from "../../_general/enums/server-response-status";

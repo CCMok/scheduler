@@ -3,7 +3,7 @@
 import CustomDropdownMenuItem from "@/components/dropdown/custom-dropdown-menu-item"
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant"
 import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook"
-import { ClientMessage } from "@/libs/client/_general/models/client-message-model"
+import { ClientMessage } from "@/libs/client/_general/models/client-message"
 import { ServerResponseStatus } from "@/libs/server/_general/enums/server-response-status"
 import { logoutAction } from "@/libs/server/logout/actions/logout-action"
 import { REDIRECT_PUBLIC_PATH } from "@/libs/share/_general/enums/path"

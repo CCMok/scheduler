@@ -4,17 +4,18 @@ import { ServerResponseStatus } from '@/libs/server/_general/enums/server-respon
 import { RegisterRequest, registerRequestSchema } from '../models/register-request';
 import prisma from '../../_general/managers/database-manager';
 import { ServerMessage } from '../../_general/enums/server-message';
-import { encrypt } from '../../_general/managers/bcrypt-manager';
 import { DEFAULT_ROLE } from '../../role/constants/role-constant';
 import { setSession } from '../../_general/managers/session-manager';
 import { getPrismaErrorTarget, tryCatchQuery } from '../../_general/utils/database-utils';
 import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runtime/library';
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
+import { hash } from 'bcryptjs';
+import { SALT_ROUNDS } from '../../_general/constants/bcrypt-constant';
 
 export const register = async (request: RegisterRequest): Promise<ServerResponse> => {
   const parsedRequest = registerRequestSchema.parse(request);
 
-  const encryptedPassword = await encrypt(parsedRequest.password)
+  const encryptedPassword = await hash(parsedRequest.password, SALT_ROUNDS)
 
   const createResult = await createUser(parsedRequest, encryptedPassword)
   if (!createResult.isSuccess) {
@@ -29,20 +30,18 @@ export const register = async (request: RegisterRequest): Promise<ServerResponse
   }
 }
 
-const createUser = async (request: RegisterRequest, encryptedPassword: string) =>
+const createUser = async (request: RegisterRequest, password: string) =>
   await tryCatchQuery(async () =>
     await prisma.user.create({
       data: {
         email: request.email,
-        password: encryptedPassword,
+        password,
         name: request.name,
         role: {
           connect: { enum: DEFAULT_ROLE },
         },
       },
-      include: {
-        role: true,
-      }
+      include: { role: true },
     })
   )
 

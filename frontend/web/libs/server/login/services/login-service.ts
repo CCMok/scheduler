@@ -3,10 +3,10 @@ import { LoginRequest, loginRequestSchema } from '@/libs/server/login/models/log
 import { ServerResponse } from '@/libs/share/_general/models/server-response'
 import { ServerResponseStatus } from '@/libs/server/_general/enums/server-response-status';
 import { ServerMessage } from '../../_general/enums/server-message';
-import { compare } from '../../_general/managers/bcrypt-manager';
 import { UserRole } from '../../user/models/user-models';
 import { setSession } from '../../_general/managers/session-manager';
 import prisma from '../../_general/managers/database-manager';
+import { compare } from 'bcryptjs';
 
 export const login = async (request: LoginRequest): Promise<ServerResponse> => {
   const parsedRequest = loginRequestSchema.parse(request);

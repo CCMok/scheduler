@@ -10,7 +10,7 @@ import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/f
 import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook"
 import { DayBaseSchedule } from "@/libs/share/roster/models/day-base-schedule"
 import { ServerResponse, SuccessResponse } from "@/libs/share/_general/models/server-response"
-import { ClientMessage } from "@/libs/client/_general/models/client-message-model"
+import { ClientMessage } from "@/libs/client/_general/models/client-message"
 
 type Props = {
   setError: UseFormSetError<ArrangeRosterFormInput>,

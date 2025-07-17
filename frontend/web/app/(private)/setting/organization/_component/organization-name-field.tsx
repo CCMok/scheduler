@@ -5,7 +5,7 @@ import CustomFormItem from "@/components/form/custom-form-item";
 import CustomInput from "@/components/input/custom-input";
 import { Organization } from "@/external/prisma-generated";
 import { FormControl, FormField } from "@/external/shadcn/components/ui/form";
-import { OrganizationNameSettingFormInput } from "@/libs/client/organization/models/organization-setting-name-form-input";
+import { UpdateOrganizationNameFormInput } from "@/libs/client/organization/models/organization-name-change-form-input";
 import { useFormContext, useWatch } from "react-hook-form";
 import { useEffect, useRef } from "react";
 
@@ -16,7 +16,7 @@ type Props = {
 export default function OrganizationNameField({
   organizations,
 }: Readonly<Props>) {
-  const { control, resetField } = useFormContext<OrganizationNameSettingFormInput>();
+  const { control, resetField } = useFormContext<UpdateOrganizationNameFormInput>();
 
   const organizationId = useWatch({
     control,
