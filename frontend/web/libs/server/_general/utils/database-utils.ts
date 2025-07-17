@@ -8,10 +8,11 @@ export const tryCatchQuery = async <T>(
     const data = await callback()
     return { isSuccess: true, data }
   } catch (error) {
-    if (error instanceof PrismaClientKnownRequestError) {
+    if (isPrismaClientKnownRequestError(error)) {
+      const prismaError = error as PrismaClientKnownRequestError
       return {
         isSuccess: false,
-        error,
+        error: prismaError,
       }
     }
 
@@ -19,7 +20,22 @@ export const tryCatchQuery = async <T>(
   }
 }
 
-export const getPrismaErrorTarget = (error: PrismaClientKnownRequestError): string[] | undefined => 
+export const isPrismaClientKnownRequestError = (error: unknown): boolean => {
+  if (process.env.NODE_ENV === 'production') {
+    return error instanceof PrismaClientKnownRequestError
+  }
+
+  // In dev mode, constructor reference changes during hot reload. Cause PrismaClientKnownRequestError check fail.
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    'name' in error &&
+    error.name === 'PrismaClientKnownRequestError'
+  )
+}
+
+export const getPrismaErrorTarget = (error: PrismaClientKnownRequestError): string[] | undefined =>
   error.meta?.target as string[] | undefined;
 
 export const getPrismaErrorModelName = (error: PrismaClientKnownRequestError): string | undefined =>

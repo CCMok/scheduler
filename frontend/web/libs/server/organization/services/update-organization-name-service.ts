@@ -10,7 +10,7 @@ import { PrismaClientKnownRequestError } from "@/external/prisma-generated/runti
 
 export const updateOrganizationName = async (request: UpdateOrganizationNameRequest): Promise<ServerResponse> => {
   const parsedRequest = updateOrganizationNameRequestSchema.parse(request)
-parsedRequest.id = 100;
+
   const updateResult = await updateName(parsedRequest)
   if (!updateResult.isSuccess) {
     return handleQueryError(updateResult.error)
