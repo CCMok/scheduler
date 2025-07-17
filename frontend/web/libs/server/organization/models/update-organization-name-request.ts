@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { idSchema } from "../../_general/models/id";
-import { UpdateOrganizationNameFormInput } from "@/libs/client/organization/models/organization-name-change-form-input";
+import { UpdateOrganizationNameFormInput } from "@/libs/client/organization/models/update-organization-name-form-input";
 
 export const updateOrganizationNameRequestSchema = z.object({
   id: idSchema,

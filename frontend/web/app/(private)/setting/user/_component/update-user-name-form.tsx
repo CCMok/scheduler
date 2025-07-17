@@ -11,49 +11,70 @@ import CustomInput from '@/components/input/custom-input';
 import useServerResponseHandler from '@/libs/client/_general/hooks/server-response-handler-hook';
 import { ServerResponse } from '@/libs/share/_general/models/server-response';
 import { ClientMessage } from '@/libs/client/_general/models/client-message';
-import { UpdatePasswordFormInput, updatePasswordFormInputSchema } from '@/libs/client/user/models/update-pasword-form-input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/external/shadcn/components/ui/card';
-import NewPasswordFormField from '@/components/form/new-password-form-field';
 import { Save } from 'lucide-react';
 import { useState } from 'react';
 import WarningDialog from '@/components/dialog/warning-dialog';
 import { toast } from 'sonner';
-import { ClientMessageTitle } from '@/libs/client/_general/enums/client-message-enum';
+import { ClientMessageContent, ClientMessageTitle } from '@/libs/client/_general/enums/client-message-enum';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
-import { getUpdatePasswordRequest } from '@/libs/server/user/models/update-password-request';
-import { updatePasswordAction } from '@/libs/server/user/actions/update-password-action';
+import { UpdateUserNameFormInput, updateUserNameFormInputSchema } from '@/libs/client/user/models/update-user-name-form-input';
+import { getUpdateUserNameRequest } from '@/libs/server/user/models/update-user-name-request';
+import { updateUserNameAction } from '@/libs/server/user/actions/update-user-name-action';
 
-export default function UpdatePasswordForm() {
+type Props = {
+  userName: string;
+}
+
+export default function UpdateUserNameForm({
+  userName,
+}: Readonly<Props>) {
   const form = useForm({
-    resolver: zodResolver(updatePasswordFormInputSchema),
+    resolver: zodResolver(updateUserNameFormInputSchema),
     defaultValues: {
-      password: '',
-      confirmPassword: '',
+      name: '',
     },
   })
 
   const router = useRouter()
 
   const { handleServerResponse } = useServerResponseHandler();
-  
+
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
-  const onSubmit = async (_: UpdatePasswordFormInput) => {
+  const onSubmit = async (input: UpdateUserNameFormInput) => {
+    const isValidInput = inputCheck(input)
+    if (!isValidInput) return;
+
     setIsAlertDialogOpen(true)
+  }
+
+  const inputCheck = (input: UpdateUserNameFormInput): boolean => {
+    const isSameName = input.name !== userName;
+    if (!isSameName) {
+      form.setError('root', {
+        type: ClientMessageTitle.INPUT_ERROR,
+        message: ClientMessageContent.NOT_MATCH.replaceAll('{0}', '原本名稱')
+      });
+
+      return false;
+    }
+
+    return true;
   }
 
   const onAlertDialogContinue = async () => {
     const input = form.getValues()
-    const request = getUpdatePasswordRequest(input)
+    const request = getUpdateUserNameRequest(input)
 
-    const response = await updatePasswordAction(request)
+    const response = await updateUserNameAction(request)
     await handleServerResponse(response, onSuccess, onError)
   }
 
   const onSuccess = () => {
     toast.success(ClientMessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
-      description: '已更改密碼',
+      description: '已更改用戶名稱',
     })
 
     router.refresh()
@@ -69,27 +90,21 @@ export default function UpdatePasswordForm() {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <Card>
           <CardHeader>
-            <CardTitle>密碼</CardTitle>
+            <CardTitle>用戶名稱</CardTitle>
             <CardDescription>
-              更改你在Scheduler的密碼。
+              更改你在Scheduler的用戶名稱。
             </CardDescription>
           </CardHeader>
           <CardContent className='flex flex-wrap space-x-4 space-y-4'>
-            <NewPasswordFormField<UpdatePasswordFormInput>
-              name='password'
-              inputProps={{ placeholder: '新密碼' }}
-            />
-
             <FormField
               control={form.control}
-              name="confirmPassword"
+              name="name"
               render={({ field }) => (
                 <CustomFormItem>
                   <FormControl>
                     <CustomInput
-                      type='password'
-                      autoComplete='new-password'
-                      placeholder='確認密碼'
+                      autoComplete='nickname'
+                      placeholder={userName}
                       {...field}
                     />
                   </FormControl>
@@ -111,7 +126,7 @@ export default function UpdatePasswordForm() {
           isOpen={isAlertDialogOpen}
           setIsOpen={setIsAlertDialogOpen}
           title='確定要儲存嗎?'
-          description='儲存後將更改密碼，請確認是否繼續。'
+          description='儲存後將更改用戶名稱，請確認是否繼續。'
           onContinue={onAlertDialogContinue}
         />
       </form>

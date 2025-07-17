@@ -1,7 +1,7 @@
 'use client'
 
 import { Form, FormField } from "@/external/shadcn/components/ui/form"
-import { UpdateOrganizationNameFormInput, updateOrganizationNameFormInputSchema } from "@/libs/client/organization/models/organization-name-change-form-input"
+import { UpdateOrganizationNameFormInput, updateOrganizationNameFormInputSchema } from "@/libs/client/organization/models/update-organization-name-form-input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from "@/external/shadcn/components/ui/card"
@@ -56,14 +56,6 @@ export default function UpdateOrganizationNameForm({
     setIsAlertDialogOpen(true)
   }
 
-  const onAlertDialogContinue = async () => {
-    const input = form.getValues()
-    const request = getUpdateOrganizationNameRequest(input)
-
-    const response = await updateOrganizationNameAction(request)
-    await handleServerResponse(response, onSuccess, onError)
-  }
-
   const inputCheck = (input: UpdateOrganizationNameFormInput): boolean => {
     const organizationId = form.getValues('organizationId')
     const isSameName = organizations.some(organization =>
@@ -81,6 +73,14 @@ export default function UpdateOrganizationNameForm({
     }
 
     return true;
+  }
+
+  const onAlertDialogContinue = async () => {
+    const input = form.getValues()
+    const request = getUpdateOrganizationNameRequest(input)
+
+    const response = await updateOrganizationNameAction(request)
+    await handleServerResponse(response, onSuccess, onError)
   }
 
   const onSuccess = () => {

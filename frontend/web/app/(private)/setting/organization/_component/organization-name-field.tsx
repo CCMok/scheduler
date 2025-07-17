@@ -5,7 +5,7 @@ import CustomFormItem from "@/components/form/custom-form-item";
 import CustomInput from "@/components/input/custom-input";
 import { Organization } from "@/external/prisma-generated";
 import { FormControl, FormField } from "@/external/shadcn/components/ui/form";
-import { UpdateOrganizationNameFormInput } from "@/libs/client/organization/models/organization-name-change-form-input";
+import { UpdateOrganizationNameFormInput } from "@/libs/client/organization/models/update-organization-name-form-input";
 import { useFormContext, useWatch } from "react-hook-form";
 import { useEffect, useRef } from "react";
 

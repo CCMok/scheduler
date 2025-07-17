@@ -1,4 +1,4 @@
-import UpdateOrganizationNameForm from "./_component/organization-name-change-form";
+import UpdateOrganizationNameForm from "./_component/update-organization-name-form";
 import { getOrganizationsBySession } from "@/libs/server/organization/repositories/organization-repository";
 
 export default async function OrganizationSettingPage() {

@@ -49,8 +49,8 @@ const checkSameWithPreviousPassword = async (userId: number, password: string): 
   return await compare(password, user.password)
 }
 
-const update = async (userId: number, password: string) =>
+const update = async (id: number, password: string) =>
   await prisma.user.update({
-    where: { id: userId },
+    where: { id },
     data: { password },
   })

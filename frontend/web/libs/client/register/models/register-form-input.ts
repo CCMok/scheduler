@@ -1,6 +1,6 @@
 import { ClientMessageContent } from "@/libs/client/_general/enums/client-message-enum";
 import { z } from "zod";
-import { newPasswordInputSchema } from "../../_general/models/new-password";
+import { newPasswordInputSchema } from "../../user/models/new-password";
 
 export const registerFormInputSchema = z.object({
   email: z.string().min(1, ClientMessageContent.REQUIRED).email(

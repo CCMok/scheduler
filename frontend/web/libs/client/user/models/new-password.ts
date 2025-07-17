@@ -1,6 +1,6 @@
 import { ClientMessageContent } from "@/libs/client/_general/enums/client-message-enum";
 import { z } from "zod";
-import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH, PASSWORD_VERIFY_REGEX } from "../../password/constants/password-constant";
+import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH, PASSWORD_VERIFY_REGEX } from "../../user/constants/password-constant";
 
 export const newPasswordInputSchema = z.string()
   .min(PASSWORD_MIN_LENGTH, ClientMessageContent.PASSWORD_STRENGTH_NOT_ENOUGH)

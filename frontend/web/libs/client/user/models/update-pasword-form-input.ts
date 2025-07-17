@@ -1,6 +1,6 @@
 import { ClientMessageContent } from "@/libs/client/_general/enums/client-message-enum";
 import { z } from "zod";
-import { newPasswordInputSchema } from "../../_general/models/new-password";
+import { newPasswordInputSchema } from "./new-password";
 
 export const updatePasswordFormInputSchema = z.object({
   password: newPasswordInputSchema,
