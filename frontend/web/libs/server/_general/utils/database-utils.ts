@@ -9,10 +9,9 @@ export const tryCatchQuery = async <T>(
     return { isSuccess: true, data }
   } catch (error) {
     if (isPrismaClientKnownRequestError(error)) {
-      const prismaError = error as PrismaClientKnownRequestError
       return {
         isSuccess: false,
-        error: prismaError,
+        error,
       }
     }
 
@@ -20,12 +19,12 @@ export const tryCatchQuery = async <T>(
   }
 }
 
-export const isPrismaClientKnownRequestError = (error: unknown): boolean => {
+export const isPrismaClientKnownRequestError = (error: unknown): error is PrismaClientKnownRequestError => {
+  // In dev mode, constructor reference changes during hot reload. Cause PrismaClientKnownRequestError check fail.
   if (process.env.NODE_ENV === 'production') {
     return error instanceof PrismaClientKnownRequestError
   }
 
-  // In dev mode, constructor reference changes during hot reload. Cause PrismaClientKnownRequestError check fail.
   return (
     typeof error === 'object' &&
     error !== null &&

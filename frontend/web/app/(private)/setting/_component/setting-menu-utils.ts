@@ -1,5 +1,24 @@
 import { Path } from "@/libs/share/_general/enums/path";
 import { Role } from "@/libs/share/_general/enums/role";
+import { z } from "zod";
+
+export const settingMenuItemSchema = z.object({
+  title: z.string(),
+  url: z.nativeEnum(Path),
+})
+
+export type SettingMenuItem = z.infer<typeof settingMenuItemSchema>
+
+export const settingMenuCategorySchema = z.object({
+  title: z.string(),
+  parentUrl: z.nativeEnum(Path),
+  items: settingMenuItemSchema.array(),
+})
+
+export type SettingMenuCategory = z.infer<typeof settingMenuCategorySchema>
+
+export const checkIsSettingMenuCategory = (item: SettingMenuCategory | SettingMenuItem): item is SettingMenuCategory =>
+  settingMenuCategorySchema.safeParse(item).success
 
 const userMenuItems: SettingMenuItem = {
   title: "用戶",
@@ -11,12 +30,20 @@ const organizationMenuItems: SettingMenuItem = {
   url: Path.SETTING_ORGANIZATION,
 }
 
-const departmentMenuItems: SettingMenuItem = {
+const departmentMenuItems: SettingMenuCategory = {
   title: "部門",
-  url: Path.SETTING_DEPARTMENT,
+  parentUrl: Path.SETTING_DEPARTMENT,
+  items: [
+    {
+      title: "職位",
+      url: Path.SETTING_DEPARTMENT_POST,
+    }
+  ]
 }
 
-export const ACCESS_MENU_ITEM_MAP = new Map<Role, SettingMenuItem[]>([
+export const DEPARTMENT_SETTING_DEFAULT_PATH = Path.SETTING_DEPARTMENT_POST
+
+export const ACCESS_MENU_ITEM_MAP = new Map<Role, (SettingMenuCategory | SettingMenuItem)[]>([
   [Role.SYSTEM_ADMIN, [
     userMenuItems,
     organizationMenuItems,
@@ -29,10 +56,5 @@ export const ACCESS_MENU_ITEM_MAP = new Map<Role, SettingMenuItem[]>([
   ]],
 ])
 
-export type SettingMenuItem = {
-  title: string,
-  url: Path,
-}
-
-export const getMenuItems = (role: Role): SettingMenuItem[] =>
+export const getMenus = (role: Role): (SettingMenuItem | SettingMenuCategory)[] =>
   ACCESS_MENU_ITEM_MAP.get(role) ?? []
