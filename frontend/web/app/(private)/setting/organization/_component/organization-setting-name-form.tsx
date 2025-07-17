@@ -25,6 +25,8 @@ import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-
 import { ServerResponseStatus } from "@/libs/server/_general/enums/server-response-status"
 import { ServerMessage } from "@/libs/server/_general/enums/server-message"
 import { SYSTEM_ERROR_CLIENT_MESSAGE } from "@/libs/client/_general/utils/server-response-handler"
+import WarningDialog from "@/components/dialog/warning-dialog"
+import { useState } from "react"
 
 type Props = {
   organizations: Organization[];
@@ -45,13 +47,20 @@ export default function OrganizationSettingNameForm({
 
   const router = useRouter();
 
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
+
   const onSubmit = async (input: OrganizationSettingNameFormInput) => {
     const isValidInput = inputCheck(input)
     if (!isValidInput) return;
 
-    const request = getUpdateOrganizationNameRequest(input)
-    const response = await updateOrganizationNameAction(request)
+    setIsAlertDialogOpen(true)
+  }
 
+  const onAlertDialogContinue = async () => {
+    const input = form.getValues()
+    const request = getUpdateOrganizationNameRequest(input)
+
+    const response = await updateOrganizationNameAction(request)
     await handleServerResponse(response, onSuccess, onError)
   }
 
@@ -139,6 +148,13 @@ export default function OrganizationSettingNameForm({
             </FormSubmitButton>
           </CardFooter>
         </Card>
+        <WarningDialog
+          isOpen={isAlertDialogOpen}
+          setIsOpen={setIsAlertDialogOpen}
+          title='確定要儲存嗎?'
+          description='儲存後將更改組織名稱，請確認是否繼續。'
+          onContinue={onAlertDialogContinue}
+        />
       </form>
     </Form>
   )
