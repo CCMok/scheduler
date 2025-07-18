@@ -3,9 +3,9 @@ import {
   SidebarMenu,
 } from "@/external/shadcn/components/ui/sidebar";
 import { ChildrenProps } from "@/libs/share/_general/props/children-props";
-import SettingSidebarItem from "./_component/setting-sidebar-item";
+import SettingSidebarItem from "./_components/setting-sidebar-item";
 import { getSession } from "@/libs/server/_general/managers/session-manager";
-import { getMenus } from "./_component/setting-menu-utils";
+import { getMenus } from "./_components/setting-menu-utils";
 
 export default async function SettingLayout({
   children,

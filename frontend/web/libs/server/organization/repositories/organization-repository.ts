@@ -14,6 +14,12 @@ const includeWorkersArgs = {
   },
 }
 
+const includeDepartmentsArgs = {
+  include: {
+    departments: true,
+  },
+}
+
 export const getOrganizationsBySession = async () => {
   const sessionPayload = await getSession();
   if (!sessionPayload) return []
@@ -24,6 +30,20 @@ export const getOrganizationsBySession = async () => {
 
   return await prisma.organization.findMany({
     where: { userOrganizations: { some: { userId: sessionPayload.userId } } },
+  })
+}
+
+export const getOrganizationsBySessionIncludeDepartments = async () => {
+  const sessionPayload = await getSession();
+  if (!sessionPayload) return []
+
+  if (sessionPayload.roleEnum === Role.SYSTEM_ADMIN) {
+    return await prisma.organization.findMany(includeDepartmentsArgs);
+  }
+
+  return await prisma.organization.findMany({
+    where: { userOrganizations: { some: { userId: sessionPayload.userId } } },
+    ...includeDepartmentsArgs,
   })
 }
 
