@@ -19,17 +19,15 @@ export const getPosts = async (request: GetPostsRequest): Promise<ServerResponse
 
   const whereClause: any = {};
 
-  // Filter by name if provided
-  if (parsedRequest.name) {
-    whereClause.name = {
-      contains: parsedRequest.name,
-      mode: 'insensitive',
-    };
-  }
-
-  // Filter by department if provided
+  // Filter by department if provided (required)
   if (parsedRequest.departmentId) {
     whereClause.departmentId = parsedRequest.departmentId;
+  } else {
+    // No department selected, return empty array
+    return {
+      status: ServerResponseStatus.OK,
+      data: [],
+    };
   }
 
   // Filter by organization through department relationship
