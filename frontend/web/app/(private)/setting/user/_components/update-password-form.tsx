@@ -38,7 +38,7 @@ export default function UpdatePasswordForm() {
   
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
-  const onSubmit = async (_: UpdatePasswordFormInput) => {
+  const onSubmit = async () => {
     setIsAlertDialogOpen(true)
   }
 
