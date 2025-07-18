@@ -3,23 +3,12 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { PostFilterFormInput } from '@/libs/client/post/models/post-filter-form-input';
 import { getPostsAction } from '@/libs/server/post/actions/get-posts-action';
-import { OrganizationDepartments } from '@/libs/server/organization/models/organization-model';
+import { OrganizationDepartments } from '@/libs/server/organization/models/organization-dao';
 import PostFilterForm from './filter/post-filter-form';
 import PostsTable from './table/posts-table';
 import AddPostButton from './add-post-button';
-import { Post } from '@/external/prisma-generated';
 import { ServerResponseStatus } from '@/libs/server/_general/enums/server-response-status';
-
-type PostWithDepartment = Post & {
-  department: {
-    organization: {
-      id: number;
-      name: string;
-    };
-    id: number;
-    name: string;
-  };
-};
+import { PostOrganization } from '@/libs/server/post/models/post-dao';
 
 type Props = {
   organizations: OrganizationDepartments[];
@@ -28,11 +17,10 @@ type Props = {
 export default function PageSettingSection({
   organizations,
 }: Readonly<Props>) {
-  // Calculate default values based on first available options
-  const defaultValues = useMemo(() => {
-    const firstOrg = organizations.length > 0 ? organizations[0] : null;
+  const defaultFilter = useMemo(() => {
+    const firstOrg = organizations.length ? organizations[0] : null;
     const firstDept = firstOrg?.departments.length ? firstOrg.departments[0] : null;
-    
+
     return {
       organizationId: firstOrg ? firstOrg.id.toString() : '',
       departmentId: firstDept ? firstDept.id.toString() : '',
@@ -40,8 +28,8 @@ export default function PageSettingSection({
     };
   }, [organizations]);
 
-  const [allPosts, setAllPosts] = useState<PostWithDepartment[]>([]); // All posts for current department
-  const [filters, setFilters] = useState<PostFilterFormInput>(defaultValues);
+  const [allPosts, setAllPosts] = useState<PostOrganization[]>([]);
+  const [filters, setFilters] = useState<PostFilterFormInput>(defaultFilter);
   const [isLoading, setIsLoading] = useState(false);
 
   // Client-side filtering by name
@@ -49,8 +37,8 @@ export default function PageSettingSection({
     if (!filters.name) {
       return allPosts;
     }
-    
-    return allPosts.filter(post => 
+
+    return allPosts.filter(post =>
       post.name.toLowerCase().includes(filters.name!.toLowerCase())
     );
   }, [allPosts, filters.name]);
@@ -69,9 +57,9 @@ export default function PageSettingSection({
       };
 
       const response = await getPostsAction(request);
-      
+
       if (response.status === ServerResponseStatus.OK && response.data) {
-        setAllPosts(response.data as PostWithDepartment[]);
+        setAllPosts(response.data);
       } else {
         setAllPosts([]);
         console.error('Failed to fetch posts:', response);
@@ -97,9 +85,9 @@ export default function PageSettingSection({
 
   return (
     <div className="space-y-6">
-      <PostFilterForm 
+      <PostFilterForm
         organizations={organizations}
-        defaultValues={defaultValues}
+        defaultValues={defaultFilter}
         onFilterChange={handleFilterChange}
       />
 
@@ -108,7 +96,7 @@ export default function PageSettingSection({
         <AddPostButton />
       </div>
 
-      <PostsTable 
+      <PostsTable
         posts={filteredPosts}
         isLoading={isLoading}
       />

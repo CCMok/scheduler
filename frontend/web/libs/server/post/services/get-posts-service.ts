@@ -5,9 +5,9 @@ import { ServerResponseStatus } from "../../_general/enums/server-response-statu
 import prisma from "../../_general/managers/database-manager";
 import { getSession } from "../../_general/managers/session-manager";
 import { Role } from "@/libs/share/_general/enums/role";
-import { Post } from "@/external/prisma-generated";
+import { PostOrganization } from '../models/post-dao';
 
-export const getPosts = async (request: GetPostsRequest): Promise<ServerResponse<Post[]>> => {
+export const getPosts = async (request: GetPostsRequest): Promise<ServerResponse<PostOrganization[]>> => {
   const parsedRequest = getPostsRequestSchema.parse(request);
   
   const sessionPayload = await getSession();

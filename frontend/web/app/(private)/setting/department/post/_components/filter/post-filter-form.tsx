@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { PostFilterFormInput } from '@/libs/client/post/models/post-filter-form-input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/external/shadcn/components/ui/card';
-import { OrganizationDepartments } from '@/libs/server/organization/models/organization-model';
+import { OrganizationDepartments } from '@/libs/server/organization/models/organization-dao';
 import OrganizationIdFormField from './organization-id-form-field';
 import DepartmentIdFormField from './department-id-form-field';
 import PostNameFormField from './post-name-form-field';

@@ -1,7 +1,7 @@
 'use client';
 
 import ComboBox from "@/components/combobox/combobox";
-import { OrganizationDepartments } from "@/libs/server/organization/models/organization-model";
+import { OrganizationDepartments } from "@/libs/server/organization/models/organization-dao";
 import { useMemo } from "react";
 
 type Props = {

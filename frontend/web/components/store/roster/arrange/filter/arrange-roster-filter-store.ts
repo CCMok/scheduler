@@ -1,7 +1,7 @@
 import { createStore } from 'zustand/vanilla'
 import { Worker } from '@/external/prisma-generated'
 import { DepartmentWorkers } from '@/libs/server/department/models/department-model'
-import { OrganizationDepartmentsWorkers } from '@/libs/server/organization/models/organization-model'
+import { OrganizationDepartmentsWorkers } from '@/libs/server/organization/models/organization-dao'
 
 export type ArrangeRosterFilterState = {
   organizations: OrganizationDepartmentsWorkers[],
