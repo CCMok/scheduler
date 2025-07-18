@@ -32,7 +32,7 @@ export default function PageSettingSection({
   const defaultValues = useMemo(() => {
     const firstOrg = organizations.length > 0 ? organizations[0] : null;
     const firstDept = firstOrg?.departments.length ? firstOrg.departments[0] : null;
-    
+
     return {
       organizationId: firstOrg ? firstOrg.id.toString() : '',
       departmentId: firstDept ? firstDept.id.toString() : '',
@@ -54,7 +54,7 @@ export default function PageSettingSection({
       };
 
       const response = await getPostsAction(request);
-      
+
       if (response.status === ServerResponseStatus.OK && response.data) {
         setPosts(response.data as PostWithDepartment[]);
       } else {
@@ -70,22 +70,20 @@ export default function PageSettingSection({
   }, []);
 
   return (
-    <div className="space-y-6">
-      {/* Filter Section */}
-      <PostFilterForm 
-        organizations={organizations}
-        defaultValues={defaultValues}
-        onFilterChange={fetchPosts}
-      />
+    <div className="space-y-2">
 
-      {/* Header with Add Button */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">職位管理</h2>
-        <AddPostButton />
+      <div className="flex">
+        <PostFilterForm
+          organizations={organizations}
+          defaultValues={defaultValues}
+          onFilterChange={fetchPosts}
+        />
+        <div className='flex items-end ml-auto'>
+          <AddPostButton />
+        </div>
       </div>
 
-      {/* Table Section */}
-      <PostsTable 
+      <PostsTable
         posts={posts}
         isLoading={isLoading}
       />
