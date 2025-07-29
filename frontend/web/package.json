@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "postinstall": "prisma generate",
     "migrate": "prisma migrate dev",
     "seed-organization": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" external/prisma/seed/seed-organization.ts",
     "seed-system": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" external/prisma/seed/seed-system.ts"
