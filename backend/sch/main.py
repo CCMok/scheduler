@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import roster_router
+from routers import roster_router, health_router
 from config.global_config import get_setting
 
 app = FastAPI(
@@ -23,3 +23,11 @@ app.add_middleware(
 
 
 app.include_router(roster_router.router)
+app.include_router(health_router.router)
+
+# For Render deployment
+if __name__ == "__main__":
+    import uvicorn
+    import os
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
