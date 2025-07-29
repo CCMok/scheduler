@@ -15,11 +15,17 @@ openssl rand -base64 32
 ```
 
 ### Database operation
+Update `.env` DATABASE_URL.
 
 Migrate schema
 
+[dev]
 ```Nodejs
-yarn migrate
+yarn prisma migrate dev
+```
+[other]
+```Nodejs
+yarn prisma migrate deploy
 ```
 
 Seed data
