@@ -6,10 +6,6 @@ import prisma from "../../_general/managers/database-manager";
 import { Post } from '@/external/prisma-generated';
 
 export const getPosts = async (request: GetPostsRequest): Promise<ServerResponse<Post[]>> => {
-  return {
-    status: ServerResponseStatus.INTERNAL_ERROR
-  };
-
   const parsedRequest = getPostsRequestSchema.parse(request);
 
   const posts = await prisma.post.findMany({
