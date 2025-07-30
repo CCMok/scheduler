@@ -3,48 +3,20 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/external/shadcn/components/ui/card"
 import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
 import { Minus, Plus } from "lucide-react";
-import { useEffect, useMemo } from "react";
-import { useFieldArray, useFormContext, useWatch } from "react-hook-form"
+import { useFieldArray, useFormContext } from "react-hook-form"
 import WorkerIdFormField from "./worker-id-form-field";
 import OffDaysFormField from "./off-days-form-field";
 import CustomButton from "@/components/button/custom-button";
 import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider";
-import { getDefaultDepartmentIdInDepartments } from "../../form/arrange-roster-form-utils";
 
 export default function OffFilter() {
-  const { control, getValues } = useFormContext<ArrangeRosterFormInput>();
-  const departments = useArrangeRosterFilterStore(state => state.departments);
-  const setWorkers = useArrangeRosterFilterStore(state => state.setWorkers);
+  const { control } = useFormContext<ArrangeRosterFormInput>();
+  const workers = useArrangeRosterFilterStore(state => state.workers);
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'offs',
   })
-
-  const departmentId = useWatch({
-    control,
-    name: 'departmentId',
-    defaultValue: getDefaultDepartmentIdInDepartments(departments),
-  })
-
-  const workers = useMemo(() => {
-    const department = departments.find(department => department.id.toString() === departmentId)
-    return department ? department.workers : [];
-  }, [departments, departmentId])
-
-  useEffect(() => {
-    setWorkers(workers)
-
-    const offs = getValues('offs')
-
-    // Do not remove index items in forward iteration
-    for (let i = offs.length - 1; i >= 0; i--) {
-      const isWorkerInWorkers = workers.some(worker => worker.id.toString() === offs[i].workerId)
-      if (!isWorkerInWorkers) {
-        remove(i)
-      }
-    }
-  }, [workers, setWorkers, getValues, remove])
 
   const onClickAppend = () => append({
     workerId: workers.length ? workers[0].id.toString() : '',

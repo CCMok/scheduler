@@ -12,6 +12,7 @@ import RosterFilter from "../filter/roster-filter"
 import { getDefaultDepartmentIdInOrganizations, getDefaultOrganizationId } from "./arrange-roster-form-utils"
 import { DEFAULT_DAYS } from "@/libs/share/roster/constants/roster-constant"
 import WarningDialog from "@/components/dialog/warning-dialog"
+import ArrangeRosterFormDependencyHandler from "./arrange-roster-form-dependency-handler"
 
 export default function ArrangeRosterForm() {
   const isGenerated = useArrangeRosterStore(state => state.isGenerated);
@@ -58,6 +59,7 @@ export default function ArrangeRosterForm() {
         className='space-y-4'
         onSubmit={form.handleSubmit(onSubmit)}
       >
+        <ArrangeRosterFormDependencyHandler />
         <RosterFilter />
         <WarningDialog
           isOpen={isAlertDialogOpen}

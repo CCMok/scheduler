@@ -3,11 +3,10 @@
 import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
 import CustomFormItem from "@/components/form/custom-form-item";
 import { FormField } from "@/external/shadcn/components/ui/form";
-import { useFormContext, useWatch } from "react-hook-form"
+import { useFormContext } from "react-hook-form"
 import MultiSelectCombobox from "@/components/combobox/multi/multi-select-combobox";
-import { useEffect, useMemo } from "react";
-import { format } from "date-fns";
-import { DEFAULT_DAYS } from "@/libs/share/roster/constants/roster-constant";
+import { useEffect } from "react";
+import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider";
 
 type Props = {
   index: number;
@@ -18,28 +17,17 @@ export default function OffDaysFormField({
 }: Readonly<Props>) {
   const { control, getValues, setValue } = useFormContext<ArrangeRosterFormInput>();
 
-  const days = useWatch({
-    control,
-    name: 'days',
-    defaultValue: DEFAULT_DAYS,
-  })
-
-  const options = useMemo(() => days
-    .toSorted((a, b) => a.getTime() - b.getTime())
-    .map(day => ({
-      value: day.toISOString(),
-      displayName: format(day, 'yyyy-MM-dd'),
-    })), [days])
+  const offDays = useArrangeRosterFilterStore(state => state.offDays);
 
   useEffect(() => {
     const selectedDays = getValues(`offs.${index}.days`)
 
     const validSelectedDays = selectedDays.filter(selectedDay =>
-      options.some(option => option.value === selectedDay)
+      offDays.some(offDay => offDay.value === selectedDay)
     )
 
     setValue(`offs.${index}.days`, validSelectedDays)
-  }, [options, index, getValues, setValue])
+  }, [offDays, index, getValues, setValue])
 
   return (
     <FormField
@@ -49,9 +37,9 @@ export default function OffDaysFormField({
         <CustomFormItem label='缺席日'>
           <MultiSelectCombobox
             values={field.value}
-            options={options}
+            options={offDays}
             getValue={option => option.value}
-            getDisplayName={option => option.displayName}
+            getDisplayName={option => option.name}
             onValueChange={value => setValue(`offs.${index}.days`, value)}
             badgeVariant="inverted"
             maxDisplayCount={4}
