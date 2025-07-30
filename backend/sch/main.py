@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from dependencies.auth_dependency import verify_api_key
 from routers import roster_router, health_router
 from config.global_config import get_setting
 
@@ -22,8 +23,12 @@ app.add_middleware(
 )
 
 
-app.include_router(roster_router.router)
+# Public routes (no authentication)
 app.include_router(health_router.router)
+
+# Protected routes (require API key)
+app.include_router(roster_router.router, dependencies=[
+                   Depends(verify_api_key)])
 
 # For Render deployment
 if __name__ == "__main__":

@@ -8,6 +8,8 @@ import { DepartmentWorkersPosts } from '../../department/models/department-model
 import { isNil } from 'lodash';
 import { Worker } from '@/external/prisma-generated';
 import prisma from '../../_general/managers/database-manager';
+import { ApiHeaderKey, ContentType } from '../../_general/enums/api-header';
+import { SCH_API_KEY } from '../../_general/constants/sch-constant';
 
 export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<DayBaseSchedule[]>> => {
   const parsedRequest = arrangeRosterRequestSchema.parse(request);
@@ -67,7 +69,8 @@ const sendArrangeRosterRequest = async (request: ArrangeRosterRequest): Promise<
     const response = await fetch(`${process.env.SCH_HOST}/roster`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        [ApiHeaderKey.CONTENT_TYPE]: ContentType.APPLICATION_JSON,
+        [ApiHeaderKey.X_API_KEY]: SCH_API_KEY,
       },
       body: JSON.stringify(request),
     });
