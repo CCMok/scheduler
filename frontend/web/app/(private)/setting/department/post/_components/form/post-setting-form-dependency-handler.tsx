@@ -9,7 +9,9 @@ import useServerResponseHandler from "@/libs/client/_general/hooks/server-respon
 import { getGetPostsRequest } from "@/libs/server/post/models/get-posts-request";
 import { getPostsAction } from "@/libs/server/post/actions/get-posts-action";
 import { ClientMessage } from "@/libs/client/_general/models/client-message";
-import { ServerResponse } from "@/libs/share/_general/models/server-response";
+import { ServerResponse, SuccessResponse } from "@/libs/share/_general/models/server-response";
+import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider";
+import { Post } from "@/external/prisma-generated";
 
 const useHandleOrganizationId = () => {
   const { control, resetField } = useFormContext<PostSettingFormInput>();
@@ -39,6 +41,8 @@ const useHandleDepartmentId = () => {
 
   const departments = usePostSettingFilterStore(state => state.departments);
 
+  const setPosts = usePostSettingStore(state => state.setPosts);
+
   const { handleServerResponse } = useServerResponseHandler();
 
   const departmentId = useWatch({
@@ -47,9 +51,9 @@ const useHandleDepartmentId = () => {
     defaultValue: getDefaultDepartmentIdInDepartments(departments),
   })
 
-  const onSuccess = useCallback(() => {
-    // TODO: set posts
-  }, [])
+  const onSuccess = useCallback((response: SuccessResponse<Post[]>) => {
+    setPosts(response.data)
+  }, [setPosts])
 
   const onError = useCallback((_: ServerResponse, clientMessage: ClientMessage) => {
     setError('root', { type: clientMessage.title, message: clientMessage.content })
