@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider"
 import { useMemo, useState } from "react"
-import useArrangeRosterForm from "./arrange-roster-form-hook"
+import useArrangeRosterFormSubmit from "./arrange-roster-form-submit"
 import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider"
 import RosterFilter from "../filter/roster-filter"
 import { getDefaultDepartmentIdInOrganizations, getDefaultOrganizationId } from "./arrange-roster-form-utils"
@@ -40,7 +40,7 @@ export default function ArrangeRosterForm() {
     },
   })
 
-  const { submit } = useArrangeRosterForm({ setError: form.setError });
+  const { submit } = useArrangeRosterFormSubmit({ setError: form.setError });
 
   const onSubmit = async (input: ArrangeRosterFormInput) => {
     if (isGenerated) {

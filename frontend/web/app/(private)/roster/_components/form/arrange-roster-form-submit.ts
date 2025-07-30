@@ -16,7 +16,7 @@ type Props = {
   setError: UseFormSetError<ArrangeRosterFormInput>,
 }
 
-export default function useArrangeRosterForm({ 
+export default function useArrangeRosterFormSubmit({ 
   setError,
 }: Readonly<Props>) {
   // Cannot useFormContext, this hook directly used by form component
