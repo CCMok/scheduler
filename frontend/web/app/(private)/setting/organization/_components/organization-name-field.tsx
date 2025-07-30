@@ -1,6 +1,6 @@
 'use client'
 
-import { getDefaultOrganizationId } from "@/app/(private)/roster/_components/form/arrange-roster-form-utils";
+import { getDefaultOrganizationId } from "@/libs/client/organization/utils/organization-utils";
 import CustomFormItem from "@/components/form/custom-form-item";
 import CustomInput from "@/components/input/custom-input";
 import { Organization } from "@/external/prisma-generated";

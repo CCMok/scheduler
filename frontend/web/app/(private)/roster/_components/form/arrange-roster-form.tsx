@@ -5,11 +5,11 @@ import { ArrangeRosterFormInput, arrangeRosterFormInputSchema } from "@/libs/cli
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import useArrangeRosterFormSubmit from "./arrange-roster-form-submit"
 import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider"
 import RosterFilter from "../filter/roster-filter"
-import { getDefaultDepartmentIdInOrganizations, getDefaultOrganizationId } from "./arrange-roster-form-utils"
+import { getDefaultDepartmentIdInOrganizations, getDefaultOrganizationId } from "../../../../../libs/client/organization/utils/organization-utils"
 import { DEFAULT_DAYS } from "@/libs/share/roster/constants/roster-constant"
 import WarningDialog from "@/components/dialog/warning-dialog"
 import ArrangeRosterFormDependencyHandler from "./arrange-roster-form-dependency-handler"
@@ -20,21 +20,11 @@ export default function ArrangeRosterForm() {
 
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
-  const { defaultOrganizationId, defaultDepartmentId } = useMemo(() => {
-    const defaultOrganizationId = getDefaultOrganizationId(organizations);
-    const defaultDepartmentId = getDefaultDepartmentIdInOrganizations(organizations);
-
-    return {
-      defaultOrganizationId,
-      defaultDepartmentId,
-    };
-  }, [organizations]);
-
   const form = useForm({
     resolver: zodResolver(arrangeRosterFormInputSchema),
     defaultValues: {
-      organizationId: defaultOrganizationId,
-      departmentId: defaultDepartmentId,
+      organizationId: getDefaultOrganizationId(organizations),
+      departmentId: getDefaultDepartmentIdInOrganizations(organizations),
       days: DEFAULT_DAYS,
       offs: [],
     },

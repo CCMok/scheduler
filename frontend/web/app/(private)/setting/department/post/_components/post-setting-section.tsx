@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { PostFilterFormInput } from '@/libs/client/post/models/post-filter-form-input';
+import { PostFilterFormInput } from '@/libs/client/post/models/post-setting-form-input';
 import { getPostsAction } from '@/libs/server/post/actions/get-posts-action';
 import { OrganizationDepartments } from '@/libs/server/organization/models/organization-dao';
 import PostFilterForm from './filter/post-filter-form';
@@ -14,7 +14,7 @@ type Props = {
   organizations: OrganizationDepartments[];
 };
 
-export default function PageSettingSection({
+export default function PostSettingSection({
   organizations,
 }: Readonly<Props>) {
   const defaultFilter = useMemo(() => {

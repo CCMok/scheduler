@@ -1,45 +1,33 @@
-'use client';
+'use client'
 
-import ComboBox from "@/components/combobox/combobox";
-import { OrganizationDepartments } from "@/libs/server/organization/models/organization-dao";
-import { useMemo } from "react";
+import ComboBox from "@/components/combobox/combobox"
+import CustomFormItem from "@/components/form/custom-form-item"
+import { FormField } from "@/external/shadcn/components/ui/form"
+import { PostSettingFormInput } from "@/libs/client/post/models/post-setting-form-input"
+import { useFormContext } from "react-hook-form"
+import { usePostSettingFilterStore } from "@/components/store/setting/post/post-setting-filter-store-provider"
 
-type Props = {
-  value: string;
-  organizationId: string;
-  organizations: OrganizationDepartments[];
-  onValueChange: (value: string) => void;
-};
+export default function DepartmentIdFormField() {
+  const { control, setValue } = useFormContext<PostSettingFormInput>();
 
-export default function DepartmentIdFormField({
-  value,
-  organizationId,
-  organizations,
-  onValueChange,
-}: Readonly<Props>) {
-  const departments = useMemo(() => {
-    if (!organizationId) {
-      // If no organization selected, show all departments from all organizations
-      return organizations.flatMap(org => org.departments.map(dept => ({
-        ...dept,
-        displayName: `${org.name} - ${dept.name}`,
-      })));
-    }
-    
-    const selectedOrg = organizations.find(org => org.id.toString() === organizationId);
-    return selectedOrg ? selectedOrg.departments.map(dept => ({
-      ...dept,
-      displayName: dept.name,
-    })) : [];
-  }, [organizations, organizationId]);
+  const departments = usePostSettingFilterStore(state => state.departments);
 
   return (
-    <ComboBox
-      value={value}
-      options={departments}
-      getValue={(option) => option.id.toString()}
-      getDisplayName={(option) => option.displayName}
-      onValueChange={onValueChange}
+    <FormField
+      control={control}
+      name='departmentId'
+      render={({ field }) => (
+        <CustomFormItem label='部門'>
+          <ComboBox
+            value={field.value}
+            options={departments}
+            getValue={option => option.id.toString()}
+            getDisplayName={option => option.name}
+            onValueChange={value => setValue('departmentId', value)}
+            isFormField
+          />
+        </CustomFormItem>
+      )}
     />
-  );
-} 
+  )
+}

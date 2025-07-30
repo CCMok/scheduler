@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { PostFilterFormInput } from '@/libs/client/post/models/post-filter-form-input';
+import { PostFilterFormInput } from '@/libs/client/post/models/post-setting-form-input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/external/shadcn/components/ui/card';
 import { OrganizationDepartments } from '@/libs/server/organization/models/organization-dao';
-import OrganizationIdFormField from './organization-id-form-field';
-import DepartmentIdFormField from './department-id-form-field';
+import OrganizationIdFormField from './organization-id-form-field-old';
+import DepartmentIdFormField from './department-id-form-field-old';
 import PostNameFormField from './post-name-form-field';
 
 type Props = {

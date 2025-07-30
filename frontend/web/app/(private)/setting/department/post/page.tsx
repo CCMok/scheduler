@@ -1,8 +1,10 @@
-import { getOrganizationsBySessionIncludeDepartments } from '@/libs/server/organization/repositories/organization-repository';
-import PageSettingSection from './_components/page-setting-section';
+import PostSettingFilterSection from './_components/filter/post-setting-filter-section';
 
-export default async function PostSettingPage() {
-  const organizations = await getOrganizationsBySessionIncludeDepartments();
-
-  return <PageSettingSection organizations={organizations} />;
+export default function PostSettingPage() {
+  return (
+    <div className='space-y-4'>
+      <PostSettingFilterSection />
+      {/* TODO: Add table section */}
+    </div>
+  )
 }

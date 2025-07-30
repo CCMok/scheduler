@@ -1,21 +1,28 @@
 'use client';
 
+import CustomFormItem from "@/components/form/custom-form-item";
 import CustomInput from "@/components/input/custom-input";
+import { FormControl, FormField } from "@/external/shadcn/components/ui/form";
+import { PostSettingFormInput } from "@/libs/client/post/models/post-setting-form-input";
+import { useFormContext } from "react-hook-form";
 
-type Props = {
-  value: string;
-  onValueChange: (value: string) => void;
-};
+export default function PostNameFormField() {
+  const { control } = useFormContext<PostSettingFormInput>();
 
-export default function PostNameFormField({
-  value,
-  onValueChange,
-}: Readonly<Props>) {
   return (
-    <CustomInput
-      placeholder="搜尋職位名稱..."
-      value={value}
-      onChange={(e) => onValueChange(e.target.value)}
+    <FormField
+      control={control}
+      name="postName"
+      render={({ field }) => (
+        <CustomFormItem label='職位名稱'>
+          <FormControl>
+            <CustomInput
+              placeholder="搜尋..."
+              {...field}
+            />
+          </FormControl>
+        </CustomFormItem>
+      )}
     />
   );
 } 

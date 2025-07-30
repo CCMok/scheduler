@@ -1,0 +1,79 @@
+'use client'
+
+import { useFormContext, useWatch } from "react-hook-form";
+import { getDefaultDepartmentIdInDepartments, getDefaultOrganizationId } from "@/libs/client/organization/utils/organization-utils";
+import { useCallback, useEffect, useRef } from "react";
+import { PostSettingFormInput } from "@/libs/client/post/models/post-setting-form-input";
+import { usePostSettingFilterStore } from "@/components/store/setting/post/post-setting-filter-store-provider";
+import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook";
+import { getGetPostsRequest } from "@/libs/server/post/models/get-posts-request";
+import { getPostsAction } from "@/libs/server/post/actions/get-posts-action";
+import { ClientMessage } from "@/libs/client/_general/models/client-message";
+import { ServerResponse } from "@/libs/share/_general/models/server-response";
+
+const useHandleOrganizationId = () => {
+  const { control, resetField } = useFormContext<PostSettingFormInput>();
+
+  const organizations = usePostSettingFilterStore(state => state.organizations);
+  const setDepartments = usePostSettingFilterStore(state => state.setDepartments);
+
+  const organizationId = useWatch({
+    control,
+    name: 'organizationId',
+    defaultValue: getDefaultOrganizationId(organizations),
+  })
+
+  useEffect(() => {
+    const organization = organizations.find(organization => organization.id.toString() === organizationId)
+    const departments = organization ? organization.departments : [];
+
+    setDepartments(departments)
+
+    const defaultDeparmtentId = getDefaultDepartmentIdInDepartments(departments)
+    resetField('departmentId', { defaultValue: defaultDeparmtentId })
+  }, [organizations, organizationId, setDepartments, resetField])
+}
+
+const useHandleDepartmentId = () => {
+  const { control, handleSubmit, setError } = useFormContext<PostSettingFormInput>();
+
+  const departments = usePostSettingFilterStore(state => state.departments);
+
+  const { handleServerResponse } = useServerResponseHandler();
+
+  const departmentId = useWatch({
+    control,
+    name: 'departmentId',
+    defaultValue: getDefaultDepartmentIdInDepartments(departments),
+  })
+
+  const onSuccess = useCallback(() => {
+    // TODO: set posts
+  }, [])
+
+  const onError = useCallback((_: ServerResponse, clientMessage: ClientMessage) => {
+    setError('root', { type: clientMessage.title, message: clientMessage.content })
+  }, [setError])
+
+  const onSubmit = useCallback(async (input: PostSettingFormInput) => {
+    const request = getGetPostsRequest(input)
+    const response = await getPostsAction(request)
+    await handleServerResponse(response, onSuccess, onError)
+  }, [handleServerResponse, onSuccess, onError])
+
+  const previousDepartmentId = useRef<string>('');
+
+  useEffect(() => {
+    if (departmentId !== previousDepartmentId.current) {
+      handleSubmit(onSubmit)()
+    }
+
+    previousDepartmentId.current = departmentId;
+  }, [departmentId, previousDepartmentId, handleSubmit, onSubmit])
+}
+
+export default function PostSettingFormDependencyHandler() {
+  useHandleOrganizationId();
+  useHandleDepartmentId();
+  return <></>
+}
