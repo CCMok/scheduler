@@ -4,7 +4,7 @@ import { Form } from "@/external/shadcn/components/ui/form"
 import { postSettingFormInputSchema } from "@/libs/client/post/models/post-setting-form-input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import PostSettingFilter from "../filter/post-setting-filter"
+import PostSettingFilter from "../post-setting-filter"
 import PostSettingFormDependencyHandler from "./post-setting-form-dependency-handler"
 import { getDefaultDepartmentIdInOrganizations, getDefaultOrganizationId } from "@/libs/client/organization/utils/organization-utils"
 import { usePostSettingFilterStore } from "@/components/store/setting/post/post-setting-filter-store-provider"
@@ -18,7 +18,6 @@ export default function PostSettingForm() {
     defaultValues: {
       organizationId: getDefaultOrganizationId(organizations),
       departmentId: getDefaultDepartmentIdInOrganizations(organizations),
-      postName: '',
     },
   })
 

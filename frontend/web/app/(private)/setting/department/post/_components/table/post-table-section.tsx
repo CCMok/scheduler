@@ -1,7 +1,9 @@
+import PostTable from "./post-table";
+
 export default function PostTableSection() {
   return (
     <section>
-      {/* TODO: Table */}
+      <PostTable />
     </section>
   )
 }

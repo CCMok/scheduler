@@ -10,9 +10,6 @@ export const getPosts = async (request: GetPostsRequest): Promise<ServerResponse
 
   const posts = await prisma.post.findMany({
     where: { departmentId: parsedRequest.departmentId },
-    orderBy: {
-      name: 'asc',
-    },
   });
 
   return {

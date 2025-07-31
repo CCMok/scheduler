@@ -10,7 +10,7 @@ export default function AddPostButton() {
   };
 
   return (
-    <CustomButton onClick={handleAddPost}>
+    <CustomButton onClick={handleAddPost} size='sm'>
       <Plus />
       新增
     </CustomButton>

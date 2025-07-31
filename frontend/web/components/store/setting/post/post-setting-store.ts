@@ -1,19 +1,21 @@
 import { createStore } from 'zustand/vanilla'
-import { Post, Worker } from '@/external/prisma-generated'
-import { PostBaseSchedule } from '@/libs/share/roster/models/post-base-schedule'
+import { Post } from '@/external/prisma-generated'
 
 export type PostSettingState = {
   posts: Post[],
+  postNameFilter: string,
 }
 
 export type PostSettingActions = {
   setPosts: (posts: Post[]) => void,
+  setPostNameFilter: (postNameFilter: string) => void,
 }
 
 export type PostSettingStore = PostSettingState & PostSettingActions
 
 export const defaultInitState: PostSettingState = { 
   posts: [],
+  postNameFilter: '',
 }
 
 export const createPostSettingStore = (
@@ -23,5 +25,6 @@ export const createPostSettingStore = (
     ...defaultInitState,
     ...partialInitState,
     setPosts: posts => set(() => ({ posts })),
+    setPostNameFilter: postNameFilter => set(() => ({ postNameFilter })),
   }))
 }

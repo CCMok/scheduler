@@ -73,7 +73,7 @@ const useHandleDepartmentId = () => {
     }
 
     previousDepartmentId.current = departmentId;
-  }, [departmentId, previousDepartmentId, handleSubmit, onSubmit])
+  }, [departmentId, handleSubmit, onSubmit])
 }
 
 export default function PostSettingFormDependencyHandler() {
