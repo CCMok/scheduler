@@ -1,19 +1,18 @@
 import { createStore } from 'zustand/vanilla'
-import { Worker } from '@/external/prisma-generated'
-import { DepartmentWorkers } from '@/libs/server/department/models/department-model'
-import { OrganizationDepartmentsWorkers } from '@/libs/server/organization/models/organization-dao'
+import { Department, Worker } from '@/external/prisma-generated'
+import { OrganizationDepartments } from '@/libs/server/organization/models/organization-dao'
 import { OffDay } from '@/libs/client/roster/models/off-day'
 
 export type ArrangeRosterFilterState = {
-  organizations: OrganizationDepartmentsWorkers[],
-  departments: DepartmentWorkers[],
+  organizations: OrganizationDepartments[],
+  departments: Department[],
   workers: Worker[],
   offDays: OffDay[],
 }
 
 export type ArrangeRosterFilterActions = {
-  setOrganizations: (organizations: OrganizationDepartmentsWorkers[]) => void,
-  setDepartments: (departments: DepartmentWorkers[]) => void,
+  setOrganizations: (organizations: OrganizationDepartments[]) => void,
+  setDepartments: (departments: Department[]) => void,
   setWorkers: (workers: Worker[]) => void,
   setOffDays: (offDays: OffDay[]) => void,
 }

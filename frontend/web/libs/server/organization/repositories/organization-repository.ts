@@ -4,16 +4,6 @@ import { Role } from '@/libs/share/_general/enums/role';
 import prisma from '../../_general/managers/database-manager';
 import { isNil } from 'lodash';
 
-const includeWorkersArgs = {
-  include: {
-    departments: {
-      include: {
-        workers: true,
-      }
-    },
-  },
-}
-
 const includeDepartmentsArgs = {
   include: {
     departments: true,
@@ -44,20 +34,6 @@ export const getOrganizationsBySessionIncludeDepartments = async () => {
   return await prisma.organization.findMany({
     where: { userOrganizations: { some: { userId: sessionPayload.userId } } },
     ...includeDepartmentsArgs,
-  })
-}
-
-export const getOrganizationsBySessionIncludeWorkers = async () => {
-  const sessionPayload = await getSession();
-  if (!sessionPayload) return []
-
-  if (sessionPayload.roleEnum === Role.SYSTEM_ADMIN) {
-    return await prisma.organization.findMany(includeWorkersArgs);
-  }
-
-  return await prisma.organization.findMany({
-    where: { userOrganizations: { some: { userId: sessionPayload.userId } } },
-    ...includeWorkersArgs,
   })
 }
 
