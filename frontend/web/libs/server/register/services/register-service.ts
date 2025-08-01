@@ -11,24 +11,26 @@ import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runti
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { hash } from 'bcryptjs';
 import { SALT_ROUNDS } from '../../_general/constants/bcrypt-constant';
+import { serviceWrapper } from '../../_general/services/general-service';
 
-export const register = async (request: RegisterRequest): Promise<ServerResponse> => {
-  const parsedRequest = registerRequestSchema.parse(request);
+export const register = async (request: RegisterRequest): Promise<ServerResponse> =>
+  await serviceWrapper(async () => {
+    const parsedRequest = registerRequestSchema.parse(request);
 
-  const encryptedPassword = await hash(parsedRequest.password, SALT_ROUNDS)
+    const encryptedPassword = await hash(parsedRequest.password, SALT_ROUNDS)
 
-  const createResult = await createUser(parsedRequest, encryptedPassword)
-  if (!createResult.isSuccess) {
-    return handleQueryError(createResult.error)
-  }
+    const createResult = await createUser(parsedRequest, encryptedPassword)
+    if (!createResult.isSuccess) {
+      return handleQueryError(createResult.error)
+    }
 
-  await setSession(createResult.data)
+    await setSession(createResult.data)
 
-  return {
-    status: ServerResponseStatus.OK,
-    data: {},
-  }
-}
+    return {
+      status: ServerResponseStatus.OK,
+      data: {},
+    }
+  })
 
 const createUser = async (request: RegisterRequest, password: string) =>
   await tryCatchQuery(async () =>

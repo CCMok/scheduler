@@ -7,22 +7,24 @@ import { getSession } from '../../_general/managers/session-manager'
 import { Transaction } from '../../_general/models/prisma-transaction'
 import { isNil } from 'lodash'
 import { findMaxHistoryCount } from '../../organization/repositories/organization-repository'
+import { serviceWrapper } from '../../_general/services/general-service'
 
-export const saveRoster = async (request: SaveRosterRequest): Promise<ServerResponse> => {
-  const parsedRequest = saveRosterRequestSchema.parse(request);
+export const saveRoster = async (request: SaveRosterRequest): Promise<ServerResponse> =>
+  await serviceWrapper<{}>(async () => {
+    const parsedRequest = saveRosterRequestSchema.parse(request);
 
-  const session = await getSession();
-  if (!session) return {
-    status: ServerResponseStatus.UNAUTHORIZED,
-  }
+    const session = await getSession();
+    if (!session) return {
+      status: ServerResponseStatus.UNAUTHORIZED,
+    }
 
-  await updateRecord(parsedRequest, session.userId)
+    await updateRecord(parsedRequest, session.userId)
 
-  return {
-    status: ServerResponseStatus.OK,
-    data: {},
-  }
-}
+    return {
+      status: ServerResponseStatus.OK,
+      data: {},
+    }
+  })
 
 const updateRecord = async (request: SaveRosterRequest, userId: number): Promise<void> => {
   await prisma.$transaction(async tx => {

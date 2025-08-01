@@ -4,16 +4,18 @@ import { GetMaxHistoryCountRequest, getMaxHistoryCountRequestSchema } from "../m
 import { GetMaxHistoryCountResponse } from "../models/get-max-history-count-response";
 import { ServerResponseStatus } from "../../_general/enums/server-response-status";
 import { findMaxHistoryCount } from '../repositories/organization-repository';
+import { serviceWrapper } from '../../_general/services/general-service';
 
-export const getMaxHistoryCount = async (request: GetMaxHistoryCountRequest): Promise<ServerResponse<GetMaxHistoryCountResponse>> => {
-  const parsedRequest = getMaxHistoryCountRequestSchema.parse(request);
+export const getMaxHistoryCount = async (request: GetMaxHistoryCountRequest): Promise<ServerResponse<GetMaxHistoryCountResponse>> =>
+  await serviceWrapper<GetMaxHistoryCountResponse>(async () => {
+    const parsedRequest = getMaxHistoryCountRequestSchema.parse(request);
 
-  const maxHistoryCount = await findMaxHistoryCount(parsedRequest.departmentId)
+    const maxHistoryCount = await findMaxHistoryCount(parsedRequest.departmentId)
 
-  return {
-    status: ServerResponseStatus.OK,
-    data: {
-      maxHistoryCount,
-    },
-  }
-}
+    return {
+      status: ServerResponseStatus.OK,
+      data: {
+        maxHistoryCount,
+      },
+    }
+  })

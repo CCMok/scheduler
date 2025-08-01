@@ -10,40 +10,42 @@ import { Worker } from '@/external/prisma-generated';
 import prisma from '../../_general/managers/database-manager';
 import { ApiHeaderKey, ContentType } from '../../_general/enums/api-header';
 import { SCH_API_KEY } from '../../_general/constants/sch-constant';
+import { serviceWrapper } from '../../_general/services/general-service';
 
-export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<DayBaseSchedule[]>> => {
-  const parsedRequest = arrangeRosterRequestSchema.parse(request);
+export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<DayBaseSchedule[]>> =>
+  await serviceWrapper<DayBaseSchedule[]>(async () => {
+    const parsedRequest = arrangeRosterRequestSchema.parse(request);
 
-  const department = await getDepartmentWorkersPosts(parsedRequest.departmentId);
-  if (!department) return {
-    status: ServerResponseStatus.BAD_REQUEST,
-  }
+    const department = await getDepartmentWorkersPosts(parsedRequest.departmentId);
+    if (!department) return {
+      status: ServerResponseStatus.BAD_REQUEST,
+    }
 
-  const isRequestValid = checkRequest(parsedRequest, department);
-  if (!isRequestValid) return {
-    status: ServerResponseStatus.BAD_REQUEST,
-  }
+    const isRequestValid = checkRequest(parsedRequest, department);
+    if (!isRequestValid) return {
+      status: ServerResponseStatus.BAD_REQUEST,
+    }
 
-  const responseJson = await sendArrangeRosterRequest(parsedRequest);
-  if (!responseJson) return {
-    status: ServerResponseStatus.INTERNAL_ERROR
-  }
+    const responseJson = await sendArrangeRosterRequest(parsedRequest);
+    if (!responseJson) return {
+      status: ServerResponseStatus.INTERNAL_ERROR
+    }
 
-  const schResponse = parseSchResponse(responseJson)
-  if (!schResponse) return {
-    status: ServerResponseStatus.INTERNAL_ERROR
-  }
+    const schResponse = parseSchResponse(responseJson)
+    if (!schResponse) return {
+      status: ServerResponseStatus.INTERNAL_ERROR
+    }
 
-  const schedules = await mapSchedules(schResponse, department)
-  if (!schedules) return {
-    status: ServerResponseStatus.INTERNAL_ERROR
-  }
+    const schedules = await mapSchedules(schResponse, department)
+    if (!schedules) return {
+      status: ServerResponseStatus.INTERNAL_ERROR
+    }
 
-  return {
-    status: ServerResponseStatus.OK,
-    data: schedules,
-  }
-};
+    return {
+      status: ServerResponseStatus.OK,
+      data: schedules,
+    }
+  })
 
 export const getDepartmentWorkersPosts = async (id: number) => {
   return await prisma.department.findUnique({
