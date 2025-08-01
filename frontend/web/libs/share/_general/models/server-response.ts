@@ -2,9 +2,8 @@ import { ServerResponseStatus } from "../../../server/_general/enums/server-resp
 
 export type ServerResponse<T = {}> = SuccessResponse<T> | FailResponse
 
-// TODO: status should be ServerResponseStatus.OK?
 export type SuccessResponse<T = {}> = {
-  status: ServerResponseStatus,
+  status: ServerResponseStatus.OK,
   message?: string,
   data: T,
 }
