@@ -1,4 +1,3 @@
-import { RegisterFormInput } from "@/libs/client/register/models/register-form-input";
 import { z } from "zod";
 import { emptyToUndefinedString } from "../../_general/models/optional-string";
 
@@ -9,13 +8,3 @@ export const registerRequestSchema = z.object({
 })
 
 export type RegisterRequest = z.infer<typeof registerRequestSchema>
-
-export const getRegisterRequest = ({
-  email,
-  password,
-  name,
-}: RegisterFormInput): RegisterRequest => ({
-  email,
-  password,
-  name,
-})

@@ -15,7 +15,7 @@ import { getDefaultOrganizationId } from "@/libs/client/organization/utils/organ
 import { ClientMessageContent, ClientMessageTitle } from "@/libs/client/_general/enums/client-message-enum"
 import FormRootMessage from "@/components/form/form-root-message"
 import { updateOrganizationNameAction } from "@/libs/server/organization/actions/update-organization-name-action"
-import { getUpdateOrganizationNameRequest } from "@/libs/server/organization/models/update-organization-name-request"
+import { UpdateOrganizationNameRequest } from "@/libs/server/organization/models/update-organization-name-request"
 import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook"
 import { ServerResponse } from "@/libs/share/_general/models/server-response"
 import { ClientMessage } from "@/libs/client/_general/models/client-message"
@@ -77,7 +77,10 @@ export default function UpdateOrganizationNameForm({
 
   const onAlertDialogContinue = async () => {
     const input = form.getValues()
-    const request = getUpdateOrganizationNameRequest(input)
+    const request: UpdateOrganizationNameRequest = {
+      id: Number(input.organizationId),
+      name: input.name,
+    }
 
     const response = await updateOrganizationNameAction(request)
     await handleServerResponse(response, onSuccess, onError)

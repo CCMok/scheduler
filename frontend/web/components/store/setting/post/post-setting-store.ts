@@ -7,8 +7,6 @@ export type PostSettingState = {
   departmentId?: number,
 }
 
-// TODO: add isLoading
-
 export type PostSettingActions = {
   setPosts: (posts: Post[]) => void,
   setPostNameFilter: (postNameFilter: string) => void,

@@ -17,7 +17,7 @@ import { REDIRECT_PRIVATE_PATH } from '@/libs/share/_general/enums/path';
 import { toast } from "sonner";
 import { ClientMessageTitle } from '@/libs/client/_general/enums/client-message-enum';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
-import { getRegisterRequest } from '@/libs/server/register/models/register-request';
+import { RegisterRequest } from '@/libs/server/register/models/register-request';
 import NewPasswordFormField from '../../../../components/form/new-password-form-field';
 
 const inputClassName = 'w-full'
@@ -38,7 +38,12 @@ export default function RegisterForm() {
   const { handleServerResponse } = useServerResponseHandler();
 
   const onSubmit = async (input: RegisterFormInput) => {
-    const request = getRegisterRequest(input);
+    const request: RegisterRequest = {
+      email: input.email,
+      password: input.password,
+      name: input.name,
+    }
+
     const response = await registerAction(request)
     await handleServerResponse(response, onSuccess, onError);
   }

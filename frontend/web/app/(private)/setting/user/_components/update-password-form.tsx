@@ -20,7 +20,7 @@ import WarningDialog from '@/components/dialog/warning-dialog';
 import { toast } from 'sonner';
 import { ClientMessageTitle } from '@/libs/client/_general/enums/client-message-enum';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
-import { getUpdatePasswordRequest } from '@/libs/server/user/models/update-password-request';
+import { UpdatePasswordRequest } from '@/libs/server/user/models/update-password-request';
 import { updatePasswordAction } from '@/libs/server/user/actions/update-password-action';
 
 export default function UpdatePasswordForm() {
@@ -44,7 +44,9 @@ export default function UpdatePasswordForm() {
 
   const onAlertDialogContinue = async () => {
     const input = form.getValues()
-    const request = getUpdatePasswordRequest(input)
+    const request: UpdatePasswordRequest = {
+      password: input.password,
+    }
 
     const response = await updatePasswordAction(request)
     await handleServerResponse(response, onSuccess, onError)

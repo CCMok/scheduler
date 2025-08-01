@@ -19,7 +19,7 @@ import { toast } from 'sonner';
 import { ClientMessageContent, ClientMessageTitle } from '@/libs/client/_general/enums/client-message-enum';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
 import { UpdateUserNameFormInput, updateUserNameFormInputSchema } from '@/libs/client/user/models/update-user-name-form-input';
-import { getUpdateUserNameRequest } from '@/libs/server/user/models/update-user-name-request';
+import { UpdateUserNameRequest } from '@/libs/server/user/models/update-user-name-request';
 import { updateUserNameAction } from '@/libs/server/user/actions/update-user-name-action';
 
 type Props = {
@@ -65,7 +65,9 @@ export default function UpdateUserNameForm({
 
   const onAlertDialogContinue = async () => {
     const input = form.getValues()
-    const request = getUpdateUserNameRequest(input)
+    const request: UpdateUserNameRequest = {
+      name: input.name,
+    }
 
     const response = await updateUserNameAction(request)
     await handleServerResponse(response, onSuccess, onError)

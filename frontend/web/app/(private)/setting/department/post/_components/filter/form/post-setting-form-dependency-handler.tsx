@@ -5,7 +5,7 @@ import { getDefaultDepartmentIdInDepartments, getDefaultOrganizationId } from "@
 import { useCallback, useEffect, useRef } from "react";
 import { PostSettingFormInput } from "@/libs/client/post/models/post-setting-form-input";
 import { usePostSettingFilterStore } from "@/components/store/setting/post/post-setting-filter-store-provider";
-import { getGetPostsRequest } from "@/libs/server/post/models/get-posts-request";
+import { GetPostsRequest } from "@/libs/server/post/models/get-posts-request";
 import { ClientMessage } from "@/libs/client/_general/models/client-message";
 import { ServerResponse, SuccessResponse } from "@/libs/share/_general/models/server-response";
 import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider";
@@ -54,7 +54,10 @@ const useHandleDepartmentId = () => {
   const { fetchPosts } = useFetchPosts(onSuccess, onError);
 
   const onSubmit = useCallback(async (input: PostSettingFormInput) => {
-    const request = getGetPostsRequest(input)
+    const request: GetPostsRequest = {
+      departmentId: Number(input.departmentId),
+    }
+
     await fetchPosts(request)
   }, [fetchPosts])
 
