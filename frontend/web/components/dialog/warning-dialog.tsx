@@ -42,11 +42,10 @@ export default function WarningDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           {title && <AlertDialogTitle>{title}</AlertDialogTitle>}
-          {description && (
-            <AlertDialogDescription>
-              {description}
-            </AlertDialogDescription>
-          )}
+          {/* AlertDialogDescription is required. Warning in browser if not set */}
+          <AlertDialogDescription>
+            {description}
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>取消</AlertDialogCancel>

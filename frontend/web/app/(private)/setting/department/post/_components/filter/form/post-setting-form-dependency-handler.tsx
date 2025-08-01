@@ -5,13 +5,12 @@ import { getDefaultDepartmentIdInDepartments, getDefaultOrganizationId } from "@
 import { useCallback, useEffect, useRef } from "react";
 import { PostSettingFormInput } from "@/libs/client/post/models/post-setting-form-input";
 import { usePostSettingFilterStore } from "@/components/store/setting/post/post-setting-filter-store-provider";
-import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook";
 import { getGetPostsRequest } from "@/libs/server/post/models/get-posts-request";
-import { getPostsAction } from "@/libs/server/post/actions/get-posts-action";
 import { ClientMessage } from "@/libs/client/_general/models/client-message";
 import { ServerResponse, SuccessResponse } from "@/libs/share/_general/models/server-response";
 import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider";
 import { Post } from "@/external/prisma-generated";
+import { useFetchPosts } from "@/libs/client/post/hooks/use-fetch-posts";
 
 const useHandleOrganizationId = () => {
   const { control, resetField } = useFormContext<PostSettingFormInput>();
@@ -42,14 +41,7 @@ const useHandleDepartmentId = () => {
   const departments = usePostSettingFilterStore(state => state.departments);
 
   const setPosts = usePostSettingStore(state => state.setPosts);
-
-  const { handleServerResponse } = useServerResponseHandler();
-
-  const departmentId = useWatch({
-    control,
-    name: 'departmentId',
-    defaultValue: getDefaultDepartmentIdInDepartments(departments),
-  })
+  const setDepartmentId = usePostSettingStore(state => state.setDepartmentId);
 
   const onSuccess = useCallback((response: SuccessResponse<Post[]>) => {
     setPosts(response.data)
@@ -59,16 +51,24 @@ const useHandleDepartmentId = () => {
     setError('root', { type: clientMessage.title, message: clientMessage.content })
   }, [setError])
 
+  const { fetchPosts } = useFetchPosts(onSuccess, onError);
+
   const onSubmit = useCallback(async (input: PostSettingFormInput) => {
     const request = getGetPostsRequest(input)
-    const response = await getPostsAction(request)
-    await handleServerResponse(response, onSuccess, onError)
-  }, [handleServerResponse, onSuccess, onError])
+    await fetchPosts(request)
+  }, [fetchPosts])
+
+  const departmentId = useWatch({
+    control,
+    name: 'departmentId',
+    defaultValue: getDefaultDepartmentIdInDepartments(departments),
+  })
 
   const previousDepartmentId = useRef<string>('');
 
   useEffect(() => {
     if (departmentId !== previousDepartmentId.current) {
+      setDepartmentId(Number(departmentId))
       handleSubmit(onSubmit)()
     }
 
