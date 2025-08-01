@@ -36,6 +36,3 @@ export const isPrismaClientKnownRequestError = (error: unknown): error is Prisma
 
 export const getPrismaErrorTarget = (error: PrismaClientKnownRequestError): string[] | undefined =>
   error.meta?.target as string[] | undefined;
-
-export const getPrismaErrorModelName = (error: PrismaClientKnownRequestError): string | undefined =>
-  error.meta?.modelName as string | undefined;
