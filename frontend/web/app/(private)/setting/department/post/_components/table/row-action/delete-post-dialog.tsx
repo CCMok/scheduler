@@ -7,13 +7,9 @@ import useServerResponseHandler from '@/libs/client/_general/hooks/server-respon
 import { toast } from 'sonner';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
 import { ClientMessageTitle } from '@/libs/client/_general/enums/client-message-enum';
-import { ServerResponse, SuccessResponse } from '@/libs/share/_general/models/server-response';
+import { ServerResponse } from '@/libs/share/_general/models/server-response';
 import { ClientMessage } from '@/libs/client/_general/models/client-message';
-import { useCallback } from 'react';
-import { Post } from '@/external/prisma-generated';
-import { SYSTEM_ERROR_CLIENT_MESSAGE } from '@/libs/client/_general/utils/server-response-handler';
-import { useFetchPosts } from '@/libs/client/post/hooks/use-fetch-posts';
-import { usePostSettingStore } from '@/components/store/setting/post/post-setting-store-provider';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   postId: number;
@@ -29,22 +25,8 @@ export default function DeletePostDialog({
   setIsOpen,
 }: Readonly<Props>) {
   const { handleServerResponse } = useServerResponseHandler();
-  
-  const setPosts = usePostSettingStore(state => state.setPosts);
-  const departmentId = usePostSettingStore(state => state.departmentId);
 
-  const onFetchPostSuccess = useCallback((response: SuccessResponse<Post[]>) => {
-    setPosts(response.data)
-  }, [setPosts])
-
-  const onFetchPostError = useCallback((_: ServerResponse, clientMessage: ClientMessage) => {
-    toast.error(SYSTEM_ERROR_CLIENT_MESSAGE.title, {
-      ...SONNER_DEFAULT_OPTIONS,
-      description: clientMessage.content,
-    })
-  }, [])
-
-  const { fetchPosts } = useFetchPosts(onFetchPostSuccess, onFetchPostError);
+  const router = useRouter();
 
   const onContinue = async () => {
     const request: DeletePostRequest = {
@@ -60,7 +42,7 @@ export default function DeletePostDialog({
       description: '職位已刪除',
     })
     setIsOpen(false)
-    await fetchPosts({ departmentId: Number(departmentId) })
+    router.refresh()
   }
 
   const onError = (_: ServerResponse, clientMessage: ClientMessage) => {

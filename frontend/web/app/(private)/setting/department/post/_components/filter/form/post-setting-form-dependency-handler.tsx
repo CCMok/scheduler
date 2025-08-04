@@ -2,15 +2,11 @@
 
 import { useFormContext, useWatch } from "react-hook-form";
 import { getDefaultDepartmentIdInDepartments, getDefaultOrganizationId } from "@/libs/client/organization/utils/organization-utils";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { PostSettingFormInput } from "@/libs/client/post/models/post-setting-form-input";
 import { usePostSettingFilterStore } from "@/components/store/setting/post/post-setting-filter-store-provider";
-import { GetPostsRequest } from "@/libs/server/post/models/get-posts-request";
-import { ClientMessage } from "@/libs/client/_general/models/client-message";
-import { ServerResponse, SuccessResponse } from "@/libs/share/_general/models/server-response";
-import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider";
-import { Post } from "@/external/prisma-generated";
-import { useFetchPosts } from "@/libs/client/post/hooks/use-fetch-posts";
+import { useRouter } from "next/navigation";
+import { PATH } from "@/libs/share/_general/utils/path";
 
 const useHandleOrganizationId = () => {
   const { control, resetField } = useFormContext<PostSettingFormInput>();
@@ -36,30 +32,11 @@ const useHandleOrganizationId = () => {
 }
 
 const useHandleDepartmentId = () => {
-  const { control, handleSubmit, setError } = useFormContext<PostSettingFormInput>();
+  const { control, } = useFormContext<PostSettingFormInput>();
+
+  const router = useRouter();
 
   const departments = usePostSettingFilterStore(state => state.departments);
-
-  const setPosts = usePostSettingStore(state => state.setPosts);
-  const setDepartmentId = usePostSettingStore(state => state.setDepartmentId);
-
-  const onSuccess = useCallback((response: SuccessResponse<Post[]>) => {
-    setPosts(response.data)
-  }, [setPosts])
-
-  const onError = useCallback((_: ServerResponse, clientMessage: ClientMessage) => {
-    setError('root', { type: clientMessage.title, message: clientMessage.content })
-  }, [setError])
-
-  const { fetchPosts } = useFetchPosts(onSuccess, onError);
-
-  const onSubmit = useCallback(async (input: PostSettingFormInput) => {
-    const request: GetPostsRequest = {
-      departmentId: Number(input.departmentId),
-    }
-
-    await fetchPosts(request)
-  }, [fetchPosts])
 
   const departmentId = useWatch({
     control,
@@ -71,12 +48,11 @@ const useHandleDepartmentId = () => {
 
   useEffect(() => {
     if (departmentId !== previousDepartmentId.current) {
-      setDepartmentId(Number(departmentId))
-      handleSubmit(onSubmit)()
+      router.push(PATH.setting.department.post.build(departmentId))
     }
 
     previousDepartmentId.current = departmentId;
-  }, [departmentId, handleSubmit, onSubmit, setDepartmentId])
+  }, [departmentId, router])
 }
 
 export default function PostSettingFormDependencyHandler() {

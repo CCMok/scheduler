@@ -24,7 +24,7 @@ export const PATH = {
     department: {
       base: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}`,
       post: {
-        build: (departmentId?: string) => {
+        build: (departmentId?: number | string) => {
           const base = `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.POST}`;
           return departmentId ? `${base}?departmentId=${departmentId}` : base
         }

@@ -11,7 +11,7 @@ type Props = {
   postName: string;
 };
 
-export default function PostTableRowActions({
+export default function PostTableRowAction({
   postId,
   postName,
 }: Readonly<Props>) {
