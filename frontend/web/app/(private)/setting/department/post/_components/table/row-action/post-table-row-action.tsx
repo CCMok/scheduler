@@ -5,6 +5,7 @@ import { Trash2, Edit } from 'lucide-react';
 import CustomDropdownMenuItem from '@/components/dropdown/custom-dropdown-menu-item';
 import { useState } from "react";
 import DeletePostDialog from './delete-post-dialog';
+import UpdatePostDialog from './update/update-post-dialog';
 
 type Props = {
   postId: number;
@@ -15,13 +16,13 @@ export default function PostTableRowAction({
   postId,
   postName,
 }: Readonly<Props>) {
-  const [isOpenEditDialog, setIsOpenEditDialog] = useState(false)
+  const [isOpenUpdateDialog, setIsOpenUpdateDialog] = useState(false)
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState(false)
 
   return (
     <>
       <MoreDropdownMenu contentProps={{ align: 'end' }}>
-        <CustomDropdownMenuItem onClick={() => setIsOpenEditDialog(true)}>
+        <CustomDropdownMenuItem onClick={() => setIsOpenUpdateDialog(true)}>
           <Edit className="mr-2 h-4 w-4" />
           編輯
         </CustomDropdownMenuItem>
@@ -30,6 +31,12 @@ export default function PostTableRowAction({
           刪除
         </CustomDropdownMenuItem>
       </MoreDropdownMenu>
+      <UpdatePostDialog
+        postId={postId}
+        postName={postName}
+        isOpen={isOpenUpdateDialog}
+        setIsOpen={setIsOpenUpdateDialog}
+      />
       <DeletePostDialog
         postId={postId}
         postName={postName}

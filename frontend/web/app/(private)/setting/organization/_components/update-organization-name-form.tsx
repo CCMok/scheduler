@@ -57,7 +57,7 @@ export default function UpdateOrganizationNameForm({
     )
 
     if (isSameName) {
-      form.setError('root', {
+      form.setError('organizationId', {
         type: UiMessageTitle.INPUT_ERROR,
         message: UiMessageContent.NOT_MATCH.replaceAll('{0}', '原本名稱')
       });
