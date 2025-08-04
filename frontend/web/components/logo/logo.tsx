@@ -1,6 +1,6 @@
 import { cn } from "@/external/shadcn/libs/utils";
-import { Path } from "@/libs/share/_general/enums/path";
 import { ClassNameProps } from "@/libs/share/_general/props/class-name-props";
+import { PATH } from "@/libs/share/_general/utils/path";
 import { Leckerli_One } from "next/font/google";
 import Link from "next/link";
 
@@ -16,7 +16,7 @@ export default function Logo({
 }: Readonly<Props>) {
   return (
     <Link
-      href={Path.HOME}
+      href={PATH.home}
       className={cn(
         'space-x-2 flex items-center',
         !isRedirectHome && 'pointer-events-none',

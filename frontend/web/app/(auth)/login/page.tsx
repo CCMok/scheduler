@@ -1,7 +1,7 @@
-import { Path } from '@/libs/share/_general/enums/path';
 import AuthMainSectionBase from '../_components/auth-main-section-base';
 import AuthRemarkBase from '../_components/auth-remark-base';
 import LoginForm from './_components/login-form';
+import { PATH } from '@/libs/share/_general/utils/path';
 
 export default function LoginPage() {
   return (
@@ -10,7 +10,7 @@ export default function LoginPage() {
       description='輸入您的登入資訊'
       remark={<AuthRemarkBase
         description='沒有帳號 ?'
-        linkHref={Path.REGISTER}
+        linkHref={PATH.register}
         linkText='立即註冊'
       />}
     >

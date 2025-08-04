@@ -13,12 +13,12 @@ import { ServerResponse } from '@/libs/share/_general/models/server-response';
 import { ClientMessage } from '@/libs/client/_general/models/client-message';
 import { RegisterFormInput, registerFormInputSchema } from '@/libs/client/register/models/register-form-input';
 import { registerAction } from '@/libs/server/register/actions/register-action';
-import { REDIRECT_PRIVATE_PATH } from '@/libs/share/_general/enums/path';
 import { toast } from "sonner";
 import { ClientMessageTitle } from '@/libs/client/_general/enums/client-message-enum';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
 import { RegisterRequest } from '@/libs/server/register/models/register-request';
 import NewPasswordFormField from '../../../../components/form/new-password-form-field';
+import { REDIRECT_PRIVATE_PATH } from '@/libs/share/_general/utils/path';
 
 const inputClassName = 'w-full'
 

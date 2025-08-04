@@ -2,8 +2,8 @@ import { ServerResponseStatus } from "@/libs/server/_general/enums/server-respon
 import { ServerResponse, SuccessResponse } from "@/libs/share/_general/models/server-response"
 import { ClientMessage } from "../models/client-message";
 import { ClientMessageContent, ClientMessageTitle } from "../enums/client-message-enum";
-import { Path } from "@/libs/share/_general/enums/path";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { PATH } from "@/libs/share/_general/utils/path";
 
 export const handleServerResponse = async <T>(
   response: ServerResponse<T>,
@@ -20,7 +20,7 @@ export const handleServerResponse = async <T>(
     case ServerResponseStatus.UNAUTHORIZED: {
       if (router) {
         console.log('Unauthorized. Redirecting')
-        router.push(Path.LOGIN)
+        router.push(PATH.login)
       } else {
         console.error('Unauthorized, but no router provided to redirect.')
       }

@@ -1,11 +1,10 @@
 import CustomButton from '@/components/button/custom-button';
 import Link from 'next/link';
-import { Path } from '@/libs/share/_general/enums/path';
 import { ReactNode } from 'react';
 
 type Props = {
   description: ReactNode;
-  linkHref: Path;
+  linkHref: string;
   linkText: string;
 }
 

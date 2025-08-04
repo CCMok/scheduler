@@ -5,25 +5,25 @@ import {
   SidebarMenu,
   SidebarMenuButton,
 } from "@/external/shadcn/components/ui/sidebar"
-import { Path } from "@/libs/share/_general/enums/path"
 import { Calendar, Home, Settings } from "lucide-react"
 import Link from "next/link"
 import PrivateSidebarMenuItem from "../menu-item/private-sidebar-menu-item"
+import { PATH } from "@/libs/share/_general/utils/path"
 
 const mainMenuItems = [
   {
     title: "主頁",
-    url: Path.DASHBOARD,
+    url: PATH.dashboard,
     icon: Home,
   },
   {
     title: "值班表",
-    url: Path.ROSTER,
+    url: PATH.roster,
     icon: Calendar,
   },
   {
     title: "設定",
-    url: Path.SETTING_USER,
+    url: PATH.setting.user,
     icon: Settings,
   },
 ]

@@ -1,17 +1,17 @@
-import { Path } from "@/libs/share/_general/enums/path";
 import { Role } from "@/libs/share/_general/enums/role";
+import { PATH } from "@/libs/share/_general/utils/path";
 import { z } from "zod";
 
 export const settingMenuItemSchema = z.object({
   title: z.string(),
-  url: z.nativeEnum(Path),
+  url: z.string(),
 })
 
 export type SettingMenuItem = z.infer<typeof settingMenuItemSchema>
 
 export const settingMenuCategorySchema = z.object({
   title: z.string(),
-  parentUrl: z.nativeEnum(Path),
+  parentUrl: z.string(),
   items: settingMenuItemSchema.array(),
 })
 
@@ -22,26 +22,26 @@ export const checkIsSettingMenuCategory = (item: SettingMenuCategory | SettingMe
 
 const userMenuItems: SettingMenuItem = {
   title: "用戶",
-  url: Path.SETTING_USER,
+  url: PATH.setting.user,
 }
 
 const organizationMenuItems: SettingMenuItem = {
   title: "組織",
-  url: Path.SETTING_ORGANIZATION,
+  url: PATH.setting.organization,
 }
 
 const departmentMenuItems: SettingMenuCategory = {
   title: "部門",
-  parentUrl: Path.SETTING_DEPARTMENT,
+  parentUrl: PATH.setting.department.base,
   items: [
     {
       title: "職位",
-      url: Path.SETTING_DEPARTMENT_POST,
+      url: PATH.setting.department.post.build(),
     }
   ]
 }
 
-export const DEPARTMENT_SETTING_DEFAULT_PATH = Path.SETTING_DEPARTMENT_POST
+export const DEPARTMENT_SETTING_DEFAULT_PATH = PATH.setting.department.post.build()
 
 export const ACCESS_MENU_ITEM_MAP = new Map<Role, (SettingMenuCategory | SettingMenuItem)[]>([
   [Role.SYSTEM_ADMIN, [

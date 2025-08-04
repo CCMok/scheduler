@@ -1,7 +1,7 @@
 import { ThemeToggle } from '@/components/button/theme-toggle';
-import { Path } from '@/libs/share/_general/enums/path';
 import Link from 'next/link';
 import CustomButton from '@/components/button/custom-button';
+import { PATH } from '@/libs/share/_general/utils/path';
 
 export default function Home() {
   return (
@@ -15,7 +15,7 @@ export default function Home() {
           簡化您的日程安排並有效率地管理您的團隊。
         </p>
         <CustomButton className='mt-6' asChild>
-          <Link href={Path.LOGIN}>
+          <Link href={PATH.login}>
             開始使用
           </Link>
         </CustomButton>

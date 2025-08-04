@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Path, EXCLUDE_HOME_PUBLIC_PATHS, REDIRECT_PRIVATE_PATH, REDIRECT_PUBLIC_PATH } from './libs/share/_general/enums/path'
 import { deleteSession, getSession, refreshSession } from './libs/server/_general/managers/session-manager';
 import { SessionPayload } from './libs/server/_general/models/session-payload';
+import { EXCLUDE_HOME_PUBLIC_PATHS, PATH, REDIRECT_PRIVATE_PATH, REDIRECT_PUBLIC_PATH } from './libs/share/_general/utils/path';
 
 export default async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
@@ -21,7 +21,7 @@ export const config = {
 }
 
 const checkIsPrivatePath = (path: string): boolean => {
-  if (path === Path.HOME) return false;
+  if (path === PATH.home) return false;
 
   return !EXCLUDE_HOME_PUBLIC_PATHS.some(publicPath => path.startsWith(publicPath));
 }
