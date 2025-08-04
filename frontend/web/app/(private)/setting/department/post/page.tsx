@@ -30,7 +30,7 @@ type SearchParams = {
 }
 
 export default async function PostSettingPage({ searchParams }: Readonly<SearchParamProps<SearchParams>>) {
-  const departmentId = (await searchParams).departmentId
+  const departmentId = (await searchParams)[SEARCH_PARAM_DEPARTMENT_ID]
 
   const posts = !departmentId ? [] : await getPostsFromService(departmentId)
 
