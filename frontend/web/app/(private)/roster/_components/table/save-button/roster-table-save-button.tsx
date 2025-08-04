@@ -9,16 +9,19 @@ import RosterTableSaveConfirmButton from "./roster-table-save-confirm-button";
 import { MaxHistoryCountStoreProvider, useMaxHistoryCountStore } from "@/components/store/roster/save/max-history-count-store-provider";
 import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider";
 import { isNil } from "lodash";
+import { useRouter } from "next/navigation";
 
 function RosterTableSaveAlertDialog() {
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
+
+  const router = useRouter();
 
   const fetchMaxHistoryCount = useMaxHistoryCountStore(state => state.fetchMaxHistoryCount);
   const generatedScheduleDepartmentId = useArrangeRosterStore(state => state.generatedScheduleDepartmentId);
 
   useEffect(() => {
     if (isAlertDialogOpen && !isNil(generatedScheduleDepartmentId)) {
-      fetchMaxHistoryCount(generatedScheduleDepartmentId);
+      fetchMaxHistoryCount(generatedScheduleDepartmentId, path => router.push(path));
     }
   }, [isAlertDialogOpen, fetchMaxHistoryCount, generatedScheduleDepartmentId]);
 
