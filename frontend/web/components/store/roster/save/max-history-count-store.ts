@@ -1,10 +1,10 @@
 import { createStore } from 'zustand/vanilla';
 import { GetMaxHistoryCountRequest } from '@/libs/server/organization/models/get-max-history-count-request';
 import { getMaxHistoryCountAction } from '@/libs/server/organization/actions/get-max-history-count-action';
-import { ServerResponse, SuccessResponse } from '@/libs/share/_general/models/server-response';
+import { ServiceResponse, SuccessResponse } from '@/libs/share/_general/models/service-response';
 import { GetMaxHistoryCountResponse } from '@/libs/server/organization/models/get-max-history-count-response';
 import { isNil } from 'lodash';
-import { handleServerResponse } from '@/libs/client/_general/utils/server-response-handler';
+import { handleServiceResponseOld } from '@/libs/share/_general/utils/service-response-handler';
 
 export type MaxHistoryCountState = {
   maxHistoryCount?: number;
@@ -33,7 +33,7 @@ export const createMaxHistoryCountStore = (initState?: Partial<MaxHistoryCountSt
       set({ maxHistoryCount: response.data.maxHistoryCount });
     };
 
-    const onGetMaxHistoryCountError = (error: ServerResponse) => {
+    const onGetMaxHistoryCountError = (error: ServiceResponse) => {
       console.error(error);
     };
 
@@ -46,7 +46,7 @@ export const createMaxHistoryCountStore = (initState?: Partial<MaxHistoryCountSt
         set({ isFetchingMaxHistoryCount: true });
         const request = getGetMaxHistoryCountRequest(departmentId);
         const response = await getMaxHistoryCountAction(request);
-        await handleServerResponse(response, onGetMaxHistoryCountSuccess, onGetMaxHistoryCountError);
+        await handleServiceResponseOld(response, onGetMaxHistoryCountSuccess, onGetMaxHistoryCountError);
         set({ isFetchingMaxHistoryCount: false });
       },
     };

@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { ClientMessageContent } from "../../_general/enums/client-message-enum";
+import { UiMessageContent } from "../../../share/_general/enums/ui-message";
 
 export const updateOrganizationNameFormInputSchema = z.object({
-  organizationId: z.string().min(1, ClientMessageContent.REQUIRED),
-  name: z.string().min(1, ClientMessageContent.REQUIRED),
+  organizationId: z.string().min(1, UiMessageContent.REQUIRED),
+  name: z.string().min(1, UiMessageContent.REQUIRED),
 })
 
 export type UpdateOrganizationNameFormInput = z.infer<typeof updateOrganizationNameFormInputSchema>

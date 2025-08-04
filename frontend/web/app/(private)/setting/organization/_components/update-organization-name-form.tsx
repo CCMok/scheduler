@@ -12,19 +12,14 @@ import { Organization } from "@/external/prisma-generated"
 import ComboBox from "@/components/combobox/combobox"
 import OrganizationNameField from "./organization-name-field"
 import { getDefaultOrganizationId } from "@/libs/client/organization/utils/organization-utils"
-import { ClientMessageContent, ClientMessageTitle } from "@/libs/client/_general/enums/client-message-enum"
+import { UiMessageContent, UiMessageTitle } from "@/libs/share/_general/enums/ui-message"
 import FormRootMessage from "@/components/form/form-root-message"
 import { updateOrganizationNameAction } from "@/libs/server/organization/actions/update-organization-name-action"
 import { UpdateOrganizationNameRequest } from "@/libs/server/organization/models/update-organization-name-request"
-import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook"
-import { ServerResponse } from "@/libs/share/_general/models/server-response"
-import { ClientMessage } from "@/libs/client/_general/models/client-message"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant"
-import { ServerResponseStatus } from "@/libs/server/_general/enums/server-response-status"
-import { ServerMessage } from "@/libs/server/_general/enums/server-message"
-import { SYSTEM_ERROR_CLIENT_MESSAGE } from "@/libs/client/_general/utils/server-response-handler"
+import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler"
 import WarningDialog from "@/components/dialog/warning-dialog"
 import { useState } from "react"
 
@@ -42,8 +37,6 @@ export default function UpdateOrganizationNameForm({
       name: '',
     }
   })
-
-  const { handleServerResponse } = useServerResponseHandler();
 
   const router = useRouter();
 
@@ -65,8 +58,8 @@ export default function UpdateOrganizationNameForm({
 
     if (isSameName) {
       form.setError('root', {
-        type: ClientMessageTitle.INPUT_ERROR,
-        message: ClientMessageContent.NOT_MATCH.replaceAll('{0}', '原本名稱')
+        type: UiMessageTitle.INPUT_ERROR,
+        message: UiMessageContent.NOT_MATCH.replaceAll('{0}', '原本名稱')
       });
 
       return false;
@@ -83,32 +76,19 @@ export default function UpdateOrganizationNameForm({
     }
 
     const response = await updateOrganizationNameAction(request)
-    await handleServerResponse(response, onSuccess, onError)
-  }
+    const uiResponse = handleServiceResponse(response, path => router.push(path))
+    if (!uiResponse.isSuccess) {
+      form.setError('root', { type: uiResponse.message.title, message: uiResponse.message.content })
+      return
+    }
 
-  const onSuccess = () => {
-    toast.success(ClientMessageTitle.SUCCESS, {
+    toast.success(UiMessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
       description: '已更改組織名稱',
     })
 
     router.refresh()
     form.reset();
-  }
-
-  const onError = (serverResponse: ServerResponse, clientMessage: ClientMessage) => {
-    if (serverResponse.status === ServerResponseStatus.BAD_REQUEST
-      && serverResponse.message === ServerMessage.NOT_FOUND.replaceAll('{0}', '組織')
-    ) {
-      console.error('Organization not found');
-      form.setError('root', {
-        type: SYSTEM_ERROR_CLIENT_MESSAGE.title,
-        message: SYSTEM_ERROR_CLIENT_MESSAGE.content,
-      })
-      return;
-    }
-
-    form.setError('root', { type: clientMessage.title, message: clientMessage.content })
   }
 
   return (

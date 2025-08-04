@@ -8,19 +8,17 @@ import FormRootMessage from '@/components/form/form-root-message';
 import { useRouter } from 'next/navigation';
 import FormSubmitButton from '@/components/form/form-submit-button';
 import CustomInput from '@/components/input/custom-input';
-import useServerResponseHandler from '@/libs/client/_general/hooks/server-response-handler-hook';
-import { ServerResponse } from '@/libs/share/_general/models/server-response';
-import { ClientMessage } from '@/libs/client/_general/models/client-message';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/external/shadcn/components/ui/card';
 import { Save } from 'lucide-react';
 import { useState } from 'react';
 import WarningDialog from '@/components/dialog/warning-dialog';
 import { toast } from 'sonner';
-import { ClientMessageContent, ClientMessageTitle } from '@/libs/client/_general/enums/client-message-enum';
+import { UiMessageContent, UiMessageTitle } from '@/libs/share/_general/enums/ui-message';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
 import { UpdateUserNameFormInput, updateUserNameFormInputSchema } from '@/libs/client/user/models/update-user-name-form-input';
 import { UpdateUserNameRequest } from '@/libs/server/user/models/update-user-name-request';
 import { updateUserNameAction } from '@/libs/server/user/actions/update-user-name-action';
+import { handleServiceResponse } from '@/libs/share/_general/utils/service-response-handler';
 
 type Props = {
   userName: string;
@@ -38,8 +36,6 @@ export default function UpdateUserNameForm({
 
   const router = useRouter()
 
-  const { handleServerResponse } = useServerResponseHandler();
-
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
   const onSubmit = async (input: UpdateUserNameFormInput) => {
@@ -53,8 +49,8 @@ export default function UpdateUserNameForm({
     const isSameName = input.name !== userName;
     if (!isSameName) {
       form.setError('root', {
-        type: ClientMessageTitle.INPUT_ERROR,
-        message: ClientMessageContent.NOT_MATCH.replaceAll('{0}', '原本名稱')
+        type: UiMessageTitle.INPUT_ERROR,
+        message: UiMessageContent.NOT_MATCH.replaceAll('{0}', '原本名稱')
       });
 
       return false;
@@ -70,21 +66,19 @@ export default function UpdateUserNameForm({
     }
 
     const response = await updateUserNameAction(request)
-    await handleServerResponse(response, onSuccess, onError)
-  }
+    const uiResponse = handleServiceResponse(response, path => router.push(path))
+    if (!uiResponse.isSuccess) {
+      form.setError('root', { type: uiResponse.message.title, message: uiResponse.message.content })
+      return
+    }
 
-  const onSuccess = () => {
-    toast.success(ClientMessageTitle.SUCCESS, {
+    toast.success(UiMessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
       description: '已更改用戶名稱',
     })
 
     router.refresh()
     form.reset();
-  }
-
-  const onError = (_: ServerResponse, clientMessage: ClientMessage) => {
-    form.setError('root', { type: clientMessage.title, message: clientMessage.content })
   }
 
   return (

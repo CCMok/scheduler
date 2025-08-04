@@ -1,18 +1,18 @@
 import 'server-only'
-import { ServerResponse } from "@/libs/share/_general/models/server-response";
-import { ServerResponseStatus } from "../../_general/enums/server-response-status";
+import { ServiceResponse } from "@/libs/share/_general/models/service-response";
+import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import { UpdateUserNameRequest, updateUserNameRequestSchema } from '../models/update-user-name-request';
 import { getSession, refreshSession } from '../../_general/managers/session-manager';
 import prisma from '../../_general/managers/database-manager';
 import { serviceWrapper } from '../../_general/services/general-service';
 
-export const updateUserName = async (request: UpdateUserNameRequest): Promise<ServerResponse> =>
+export const updateUserName = async (request: UpdateUserNameRequest): Promise<ServiceResponse> =>
   await serviceWrapper<{}>(async () => {
     const parsedRequest = updateUserNameRequestSchema.parse(request)
 
     const session = await getSession();
     if (!session) return {
-      status: ServerResponseStatus.UNAUTHORIZED,
+      status: ServiceResponseStatus.UNAUTHORIZED,
     }
 
     await update(session.userId, parsedRequest.name)
@@ -23,7 +23,7 @@ export const updateUserName = async (request: UpdateUserNameRequest): Promise<Se
     })
 
     return {
-      status: ServerResponseStatus.OK,
+      status: ServiceResponseStatus.OK,
       data: {},
     }
   })

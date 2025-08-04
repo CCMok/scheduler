@@ -1,7 +1,7 @@
 import 'server-only'
 import { SaveRosterRequest, saveRosterRequestSchema } from '../models/save-roster-request'
-import { ServerResponse } from '@/libs/share/_general/models/server-response'
-import { ServerResponseStatus } from '../../_general/enums/server-response-status'
+import { ServiceResponse } from '@/libs/share/_general/models/service-response'
+import { ServiceResponseStatus } from '../../../share/_general/enums/service-response-status'
 import prisma from '../../_general/managers/database-manager'
 import { getSession } from '../../_general/managers/session-manager'
 import { Transaction } from '../../_general/models/prisma-transaction'
@@ -9,19 +9,19 @@ import { isNil } from 'lodash'
 import { findMaxHistoryCount } from '../../organization/repositories/organization-repository'
 import { serviceWrapper } from '../../_general/services/general-service'
 
-export const saveRoster = async (request: SaveRosterRequest): Promise<ServerResponse> =>
+export const saveRoster = async (request: SaveRosterRequest): Promise<ServiceResponse> =>
   await serviceWrapper<{}>(async () => {
     const parsedRequest = saveRosterRequestSchema.parse(request);
 
     const session = await getSession();
     if (!session) return {
-      status: ServerResponseStatus.UNAUTHORIZED,
+      status: ServiceResponseStatus.UNAUTHORIZED,
     }
 
     await updateRecord(parsedRequest, session.userId)
 
     return {
-      status: ServerResponseStatus.OK,
+      status: ServiceResponseStatus.OK,
       data: {},
     }
   })

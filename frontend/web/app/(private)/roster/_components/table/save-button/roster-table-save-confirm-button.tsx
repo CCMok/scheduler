@@ -9,12 +9,11 @@ import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule"
 import { postBaseToDayBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils";
 import { isNil } from "lodash";
 import { toast } from "sonner";
-import { ClientMessageTitle } from "@/libs/client/_general/enums/client-message-enum";
+import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
-import { ClientMessage } from "@/libs/client/_general/models/client-message";
-import { ServerResponse } from "@/libs/share/_general/models/server-response";
-import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook";
 import { useMaxHistoryCountStore } from "@/components/store/roster/save/max-history-count-store-provider";
+import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
+import { useRouter } from "next/navigation";
 
 const getSaveRosterRequest = (departmentId: number, postBaseSchedules: PostBaseSchedule[]): SaveRosterRequest => {
   const dayBaseSchedules = postBaseToDayBaseSchedule(postBaseSchedules)
@@ -33,13 +32,6 @@ const getSaveRosterRequest = (departmentId: number, postBaseSchedules: PostBaseS
   }
 }
 
-const onSaveRosterError = (_: ServerResponse, clientMessage: ClientMessage) => {
-  toast.error(clientMessage.title, {
-    ...SONNER_DEFAULT_OPTIONS,
-    description: clientMessage.content,
-  })
-}
-
 type Props = {
   setIsAlertDialogOpen: Dispatch<SetStateAction<boolean>>,
 }
@@ -50,10 +42,12 @@ export default function RosterTableSaveConfirmButton({
   const generatedScheduleDepartmentId = useArrangeRosterStore(state => state.generatedScheduleDepartmentId);
   const modifiedSchedules = useArrangeRosterStore(state => state.modifiedSchedules);
   const setInitialSchedules = useArrangeRosterStore(state => state.setInitialSchedules);
-  const { handleServerResponse } = useServerResponseHandler();
+
   const isFetchingMaxHistoryCount = useMaxHistoryCountStore(state => state.isFetchingMaxHistoryCount);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
 
   const onClickContinue = async () => {
     setIsLoading(true);
@@ -65,9 +59,9 @@ export default function RosterTableSaveConfirmButton({
   const saveRoster = async () => {
     if (isNil(generatedScheduleDepartmentId)) {
       console.error('departmentId is not set')
-      toast.error(ClientMessageTitle.SYSTEM_ERROR, {
+      toast.error(UiMessageTitle.SYSTEM_ERROR, {
         ...SONNER_DEFAULT_OPTIONS,
-        description: ClientMessageTitle.SYSTEM_ERROR,
+        description: UiMessageTitle.SYSTEM_ERROR,
       })
       return;
     }
@@ -75,11 +69,16 @@ export default function RosterTableSaveConfirmButton({
     const request = getSaveRosterRequest(generatedScheduleDepartmentId, modifiedSchedules);
     const response = await saveRosterAction(request);
 
-    await handleServerResponse(response, onSaveRosterSuccess, onSaveRosterError)
-  }
+    const uiResponse = handleServiceResponse(response, path => router.push(path))
+    if (!uiResponse.isSuccess) {
+      toast.error(uiResponse.message.title, {
+        ...SONNER_DEFAULT_OPTIONS,
+        description: uiResponse.message.content,
+      })
+      return
+    }
 
-  const onSaveRosterSuccess = () => {
-    toast.success(ClientMessageTitle.SUCCESS, {
+    toast.success(UiMessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
       description: '已儲存值班表',
     })

@@ -1,15 +1,15 @@
 import 'server-only'
 import { deleteSession } from '../../_general/managers/session-manager'
-import { ServerResponse } from '@/libs/share/_general/models/server-response';
-import { ServerResponseStatus } from '../../_general/enums/server-response-status';
+import { ServiceResponse } from '@/libs/share/_general/models/service-response';
+import { ServiceResponseStatus } from '../../../share/_general/enums/service-response-status';
 import { serviceWrapper } from '../../_general/services/general-service';
 
-export const logout = async (): Promise<ServerResponse> =>
+export const logout = async (): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
     await deleteSession();
 
     return {
-      status: ServerResponseStatus.OK,
+      status: ServiceResponseStatus.OK,
       data: {},
     }
   })

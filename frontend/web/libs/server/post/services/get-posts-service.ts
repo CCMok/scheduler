@@ -1,12 +1,12 @@
 import 'server-only';
-import { ServerResponse } from "@/libs/share/_general/models/server-response";
+import { ServiceResponse } from "@/libs/share/_general/models/service-response";
 import { GetPostsRequest, getPostsRequestSchema } from "../models/get-posts-request";
-import { ServerResponseStatus } from "../../_general/enums/server-response-status";
+import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import prisma from "../../_general/managers/database-manager";
 import { Post } from '@/external/prisma-generated';
 import { serviceWrapper } from '../../_general/services/general-service';
 
-export const getPosts = async (request: GetPostsRequest): Promise<ServerResponse<Post[]>> =>
+export const getPosts = async (request: GetPostsRequest): Promise<ServiceResponse<Post[]>> =>
   await serviceWrapper(async () => {
     const parsedRequest = getPostsRequestSchema.parse(request);
 
@@ -15,7 +15,7 @@ export const getPosts = async (request: GetPostsRequest): Promise<ServerResponse
     });
 
     return {
-      status: ServerResponseStatus.OK,
+      status: ServiceResponseStatus.OK,
       data: posts,
     };
   })

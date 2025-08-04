@@ -1,9 +1,9 @@
 import 'server-only'
-import { ServerResponse } from '@/libs/share/_general/models/server-response'
-import { ServerResponseStatus } from '@/libs/server/_general/enums/server-response-status';
+import { ServiceResponse } from '@/libs/share/_general/models/service-response'
+import { ServiceResponseStatus } from '@/libs/share/_general/enums/service-response-status';
 import { RegisterRequest, registerRequestSchema } from '../models/register-request';
 import prisma from '../../_general/managers/database-manager';
-import { ServerMessage } from '../../_general/enums/server-message';
+import { ServiceMessage } from '../../../share/_general/enums/service-message';
 import { DEFAULT_ROLE } from '../../role/constants/role-constant';
 import { setSession } from '../../_general/managers/session-manager';
 import { getPrismaErrorTarget, tryCatchQuery } from '../../_general/utils/database-utils';
@@ -13,7 +13,7 @@ import { hash } from 'bcryptjs';
 import { SALT_ROUNDS } from '../../_general/constants/bcrypt-constant';
 import { serviceWrapper } from '../../_general/services/general-service';
 
-export const register = async (request: RegisterRequest): Promise<ServerResponse> =>
+export const register = async (request: RegisterRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
     const parsedRequest = registerRequestSchema.parse(request);
 
@@ -27,7 +27,7 @@ export const register = async (request: RegisterRequest): Promise<ServerResponse
     await setSession(createResult.data)
 
     return {
-      status: ServerResponseStatus.OK,
+      status: ServiceResponseStatus.OK,
       data: {},
     }
   })
@@ -47,14 +47,14 @@ const createUser = async (request: RegisterRequest, password: string) =>
     })
   )
 
-const handleQueryError = (error: PrismaClientKnownRequestError): ServerResponse => {
+const handleQueryError = (error: PrismaClientKnownRequestError): ServiceResponse => {
   if (error.code === PrismaErrorCode.UNIQUE_CONSTRAINT_VIOLATION) {
     const target = getPrismaErrorTarget(error)
 
     if (target?.includes('email')) {
       return {
-        status: ServerResponseStatus.BAD_REQUEST,
-        message: ServerMessage.ALREADY_USED.replaceAll('{0}', '電郵地址'),
+        status: ServiceResponseStatus.BAD_REQUEST,
+        message: ServiceMessage.ALREADY_USED.replaceAll('{0}', '電郵地址'),
       }
     }
   }

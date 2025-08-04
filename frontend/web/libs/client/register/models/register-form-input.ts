@@ -1,16 +1,16 @@
-import { ClientMessageContent } from "@/libs/client/_general/enums/client-message-enum";
+import { UiMessageContent } from "@/libs/share/_general/enums/ui-message";
 import { z } from "zod";
 import { newPasswordInputSchema } from "../../user/models/new-password";
 
 export const registerFormInputSchema = z.object({
-  email: z.string().min(1, ClientMessageContent.REQUIRED).email(
-    ClientMessageContent.FORMAT_NOT_VALID.replaceAll("{0}", "電郵地址")
+  email: z.string().min(1, UiMessageContent.REQUIRED).email(
+    UiMessageContent.FORMAT_NOT_VALID.replaceAll("{0}", "電郵地址")
   ),
   password: newPasswordInputSchema,
-  confirmPassword: z.string().min(1, ClientMessageContent.REQUIRED),
-  name: z.string().min(0, ClientMessageContent.REQUIRED),
+  confirmPassword: z.string().min(1, UiMessageContent.REQUIRED),
+  name: z.string().min(0, UiMessageContent.REQUIRED),
 }).refine(value => value.password === value.confirmPassword, {
-  message: ClientMessageContent.MATCH.replaceAll("{0}", "密碼"),
+  message: UiMessageContent.MATCH.replaceAll("{0}", "密碼"),
   path: ["confirmPassword"],
 })
 

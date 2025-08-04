@@ -7,16 +7,14 @@ import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange
 import { UseFormSetError } from "react-hook-form"
 import { dayBaseToPostBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils"
 import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider"
-import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook"
-import { DayBaseSchedule } from "@/libs/share/roster/models/day-base-schedule"
-import { ServerResponse, SuccessResponse } from "@/libs/share/_general/models/server-response"
-import { ClientMessage } from "@/libs/client/_general/models/client-message"
+import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler"
+import { useRouter } from "next/navigation"
 
 type Props = {
   setError: UseFormSetError<ArrangeRosterFormInput>,
 }
 
-export default function useArrangeRosterFormSubmit({ 
+export default function useArrangeRosterFormSubmit({
   setError,
 }: Readonly<Props>) {
   // Cannot useFormContext, this hook directly used by form component
@@ -26,8 +24,9 @@ export default function useArrangeRosterFormSubmit({
   const setIsGenerated = useArrangeRosterStore(state => state.setIsGenerated);
   const setModifiedSchedules = useArrangeRosterStore(state => state.setModifiedSchedules);
   const workers = useArrangeRosterFilterStore(state => state.workers);
-  const { handleServerResponse } = useServerResponseHandler();
-  
+
+  const router = useRouter();
+
   const submit = async (input: ArrangeRosterFormInput) => {
     setIsGenerated(false)
 
@@ -35,22 +34,20 @@ export default function useArrangeRosterFormSubmit({
 
     const response = await arrangeRosterAction(request);
 
-    await handleServerResponse(response, onSuccess(input), onError)
-  }
+    const uiResponse = handleServiceResponse(response, path => router.push(path))
+    if (!uiResponse.isSuccess) {
+      setError('root', { type: uiResponse.message.title, message: uiResponse.message.content })
+      return
+    }
 
-  const onSuccess = (input: ArrangeRosterFormInput) => (response: SuccessResponse<DayBaseSchedule[]>) => {
     setGeneratedScheduleDepartmentId(Number(input.departmentId))
     setGeneratedScheduleWorkers(workers)
 
-    const schedules = dayBaseToPostBaseSchedule(response.data)
+    const schedules = dayBaseToPostBaseSchedule(uiResponse.data)
     setInitialSchedules(schedules)
     setModifiedSchedules(schedules)
 
     setIsGenerated(true)
-  }
-
-  const onError = (_: ServerResponse<DayBaseSchedule[]>, clientMessage: ClientMessage) => {
-    setError('root', { type: clientMessage.title, message: clientMessage.content })
   }
 
   return { submit }

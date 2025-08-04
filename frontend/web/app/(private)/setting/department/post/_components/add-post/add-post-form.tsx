@@ -8,12 +8,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { AddPostRequest } from "@/libs/server/post/models/add-post-request";
 import { addPostAction } from "@/libs/server/post/actions/add-post-action";
-import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook";
-import { ServerResponse } from "@/libs/share/_general/models/server-response";
-import { ClientMessage } from "@/libs/client/_general/models/client-message";
 import { isNil } from "lodash";
-import { SYSTEM_ERROR_CLIENT_MESSAGE } from "@/libs/client/_general/utils/server-response-handler";
-import { ClientMessageTitle } from "@/libs/client/_general/enums/client-message-enum";
+import { handleServiceResponse, SYSTEM_ERROR_UI_MESSAGE } from "@/libs/share/_general/utils/service-response-handler";
+import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -38,8 +35,6 @@ export default function AddPostForm({
   const searchParams = useSearchParams();
   const departmentId = searchParams.get(SEARCH_PARAM_DEPARTMENT_ID);
 
-  const { handleServerResponse } = useServerResponseHandler();
-
   const router = useRouter();
 
   const onSubmit = async (input: AddPostFormInput) => {
@@ -47,8 +42,8 @@ export default function AddPostForm({
       console.error('departmentId is not valid. departmentId: ', departmentId)
 
       form.setError('root', {
-        type: SYSTEM_ERROR_CLIENT_MESSAGE.title,
-        message: SYSTEM_ERROR_CLIENT_MESSAGE.content
+        type: SYSTEM_ERROR_UI_MESSAGE.title,
+        message: SYSTEM_ERROR_UI_MESSAGE.content
       })
 
       return;
@@ -61,21 +56,19 @@ export default function AddPostForm({
 
     const response = await addPostAction(request)
 
-    await handleServerResponse(response, onSuccess, onError)
-  }
+    const uiResponse = handleServiceResponse(response, path => router.push(path))
+    if (!uiResponse.isSuccess) {
+      form.setError('root', { type: uiResponse.message.title, message: uiResponse.message.content })
+      return
+    }
 
-  const onSuccess = async () => {
-    toast.success('新增職位' + ClientMessageTitle.SUCCESS, {
+    toast.success('新增職位' + UiMessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
     })
 
     setAlertIsOpen(false)
 
     router.refresh()
-  }
-
-  const onError = (_: ServerResponse, clientMessage: ClientMessage) => {
-    form.setError('root', { type: clientMessage.title, message: clientMessage.content })
   }
 
   return (

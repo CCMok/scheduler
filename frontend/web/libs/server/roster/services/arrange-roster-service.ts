@@ -1,7 +1,7 @@
 import 'server-only'
-import { ServerResponse } from "@/libs/share/_general/models/server-response";
+import { ServiceResponse } from "@/libs/share/_general/models/service-response";
 import { ArrangeRosterRequest, arrangeRosterRequestSchema } from "../models/arrange/arrange-roster-request";
-import { ServerResponseStatus } from "../../_general/enums/server-response-status";
+import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from "../models/arrange/sch-arrange-roster-response";
 import { Arrangement, DayBaseSchedule } from '../../../share/roster/models/day-base-schedule';
 import { DepartmentWorkersPosts } from '../../department/models/department-model';
@@ -12,37 +12,37 @@ import { ApiHeaderKey, ContentType } from '../../_general/enums/api-header';
 import { SCH_API_KEY } from '../../_general/constants/sch-constant';
 import { serviceWrapper } from '../../_general/services/general-service';
 
-export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServerResponse<DayBaseSchedule[]>> =>
+export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServiceResponse<DayBaseSchedule[]>> =>
   await serviceWrapper<DayBaseSchedule[]>(async () => {
     const parsedRequest = arrangeRosterRequestSchema.parse(request);
 
     const department = await getDepartmentWorkersPosts(parsedRequest.departmentId);
     if (!department) return {
-      status: ServerResponseStatus.BAD_REQUEST,
+      status: ServiceResponseStatus.BAD_REQUEST,
     }
 
     const isRequestValid = checkRequest(parsedRequest, department);
     if (!isRequestValid) return {
-      status: ServerResponseStatus.BAD_REQUEST,
+      status: ServiceResponseStatus.BAD_REQUEST,
     }
 
     const responseJson = await sendArrangeRosterRequest(parsedRequest);
     if (!responseJson) return {
-      status: ServerResponseStatus.INTERNAL_ERROR
+      status: ServiceResponseStatus.INTERNAL_ERROR
     }
 
     const schResponse = parseSchResponse(responseJson)
     if (!schResponse) return {
-      status: ServerResponseStatus.INTERNAL_ERROR
+      status: ServiceResponseStatus.INTERNAL_ERROR
     }
 
     const schedules = await mapSchedules(schResponse, department)
     if (!schedules) return {
-      status: ServerResponseStatus.INTERNAL_ERROR
+      status: ServiceResponseStatus.INTERNAL_ERROR
     }
 
     return {
-      status: ServerResponseStatus.OK,
+      status: ServiceResponseStatus.OK,
       data: schedules,
     }
   })

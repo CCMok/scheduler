@@ -6,9 +6,10 @@ import { SearchParamProps } from '@/libs/share/_general/props/search-param-props
 import { Post } from '@/external/prisma-generated';
 import { getPosts } from '@/libs/server/post/services/get-posts-service';
 import { GetPostsRequest } from '@/libs/server/post/models/get-posts-request';
-import { ServerResponseStatus } from '@/libs/server/_general/enums/server-response-status';
 import PostSettingStateUpdater from './_components/post-setting-state-updater';
 import { SEARCH_PARAM_DEPARTMENT_ID } from './_components/post-setting-search-param';
+import { handleServiceResponse } from '@/libs/share/_general/utils/service-response-handler';
+import { redirect } from 'next/navigation';
 
 const getPostsFromService = async (departmentId: string): Promise<Post[]> => {
   const departmentIdNumber = Number(departmentId);
@@ -19,10 +20,14 @@ const getPostsFromService = async (departmentId: string): Promise<Post[]> => {
   }
 
   const response = await getPosts(request)
-  // TODO: more generic response handler
-  if (response.status !== ServerResponseStatus.OK) return [];
 
-  return response.data;
+  const uiResponse = handleServiceResponse(response, path => redirect(path))
+  if (!uiResponse.isSuccess) {
+    console.error(`Failed to get posts. message title: ${uiResponse.message.title}, content: ${uiResponse.message.content}`)
+    return []
+  }
+
+  return uiResponse.data;
 }
 
 type SearchParams = {

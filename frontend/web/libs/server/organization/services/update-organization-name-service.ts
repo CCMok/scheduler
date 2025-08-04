@@ -1,16 +1,16 @@
 import 'server-only'
-import { ServerResponse } from "@/libs/share/_general/models/server-response";
+import { ServiceResponse } from "@/libs/share/_general/models/service-response";
 import { UpdateOrganizationNameRequest, updateOrganizationNameRequestSchema } from "../models/update-organization-name-request";
-import { ServerResponseStatus } from "../../_general/enums/server-response-status";
+import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import prisma from "../../_general/managers/database-manager";
-import { ServerMessage } from "../../_general/enums/server-message";
+import { ServiceMessage } from "../../../share/_general/enums/service-message";
 import { DataBaseQueryResponse } from "../../_general/models/database-query-response";
 import { PrismaErrorCode } from "../../_general/enums/prisma-error-code";
 import { getPrismaErrorTarget, tryCatchQuery } from "../../_general/utils/database-utils";
 import { PrismaClientKnownRequestError } from "@/external/prisma-generated/runtime/library";
 import { serviceWrapper } from '../../_general/services/general-service';
 
-export const updateOrganizationName = async (request: UpdateOrganizationNameRequest): Promise<ServerResponse> =>
+export const updateOrganizationName = async (request: UpdateOrganizationNameRequest): Promise<ServiceResponse> =>
   await serviceWrapper<{}>(async () => {
     const parsedRequest = updateOrganizationNameRequestSchema.parse(request)
 
@@ -20,7 +20,7 @@ export const updateOrganizationName = async (request: UpdateOrganizationNameRequ
     }
 
     return {
-      status: ServerResponseStatus.OK,
+      status: ServiceResponseStatus.OK,
       data: {},
     }
   })
@@ -33,14 +33,14 @@ const updateName = async (request: UpdateOrganizationNameRequest): Promise<DataB
     })
   )
 
-const handleQueryError = (error: PrismaClientKnownRequestError): ServerResponse => {
+const handleQueryError = (error: PrismaClientKnownRequestError): ServiceResponse => {
   if (error.code === PrismaErrorCode.UNIQUE_CONSTRAINT_VIOLATION) {
     const target = getPrismaErrorTarget(error)
 
-    if (target?.includes('email')) {
+    if (target?.includes('name')) {
       return {
-        status: ServerResponseStatus.BAD_REQUEST,
-        message: ServerMessage.ALREADY_USED.replaceAll('{0}', '電郵地址'),
+        status: ServiceResponseStatus.BAD_REQUEST,
+        message: ServiceMessage.ALREADY_USED.replaceAll('{0}', '組織名稱'),
       }
     }
   }

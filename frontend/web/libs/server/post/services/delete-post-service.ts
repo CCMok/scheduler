@@ -1,11 +1,11 @@
 import 'server-only';
-import { ServerResponse } from "@/libs/share/_general/models/server-response";
-import { ServerResponseStatus } from "../../_general/enums/server-response-status";
+import { ServiceResponse } from "@/libs/share/_general/models/service-response";
+import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import { serviceWrapper } from '../../_general/services/general-service';
 import { DeletePostRequest, deletePostRequestSchema } from '../models/delete-post-request';
 import prisma from '../../_general/managers/database-manager';
 
-export const deletePost = async (request: DeletePostRequest): Promise<ServerResponse> =>
+export const deletePost = async (request: DeletePostRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
     const parsedRequest = deletePostRequestSchema.parse(request)
 
@@ -14,7 +14,7 @@ export const deletePost = async (request: DeletePostRequest): Promise<ServerResp
     })
 
     return {
-      status: ServerResponseStatus.OK,
+      status: ServiceResponseStatus.OK,
       data: {},
     }
   })

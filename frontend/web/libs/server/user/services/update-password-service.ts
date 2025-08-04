@@ -1,28 +1,28 @@
 import 'server-only'
-import { ServerResponse } from "@/libs/share/_general/models/server-response";
-import { ServerResponseStatus } from "../../_general/enums/server-response-status";
+import { ServiceResponse } from "@/libs/share/_general/models/service-response";
+import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import { UpdatePasswordRequest, updatePasswordRequestSchema } from '../models/update-password-request';
 import { getSession } from '../../_general/managers/session-manager';
 import { isNil } from 'lodash';
 import prisma from '../../_general/managers/database-manager';
 import { compare, hash } from 'bcryptjs';
-import { ServerMessage } from '../../_general/enums/server-message';
+import { ServiceMessage } from '../../../share/_general/enums/service-message';
 import { SALT_ROUNDS } from '../../_general/constants/bcrypt-constant';
 import { serviceWrapper } from '../../_general/services/general-service';
 
-export const updatePassword = async (request: UpdatePasswordRequest): Promise<ServerResponse> =>
+export const updatePassword = async (request: UpdatePasswordRequest): Promise<ServiceResponse> =>
   await serviceWrapper<{}>(async () => {
     const parsedRequest = updatePasswordRequestSchema.parse(request)
 
     const userId = await getUserId();
     if (isNil(userId)) return {
-      status: ServerResponseStatus.UNAUTHORIZED,
+      status: ServiceResponseStatus.UNAUTHORIZED,
     }
 
     const isSameWithPreviousPassword = await checkSameWithPreviousPassword(userId, parsedRequest.password)
     if (isSameWithPreviousPassword) return {
-      status: ServerResponseStatus.BAD_REQUEST,
-      message: ServerMessage.NOT_MATCH.replaceAll('{0}', '舊密碼'),
+      status: ServiceResponseStatus.BAD_REQUEST,
+      message: ServiceMessage.NOT_MATCH.replaceAll('{0}', '舊密碼'),
     }
 
     const encryptedPassword = await hash(parsedRequest.password, SALT_ROUNDS)
@@ -30,7 +30,7 @@ export const updatePassword = async (request: UpdatePasswordRequest): Promise<Se
     await update(userId, encryptedPassword)
 
     return {
-      status: ServerResponseStatus.OK,
+      status: ServiceResponseStatus.OK,
       data: {},
     }
   })

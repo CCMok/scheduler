@@ -10,10 +10,8 @@ import { OffDay } from "@/libs/client/roster/models/off-day";
 import { format } from "date-fns";
 import { GetWorkersRequest } from "@/libs/server/worker/models/get-workers-request";
 import { getWorkersAction } from "@/libs/server/worker/actions/get-workers-action";
-import useServerResponseHandler from "@/libs/client/_general/hooks/server-response-handler-hook";
-import { ServerResponse, SuccessResponse } from "@/libs/share/_general/models/server-response";
-import { ClientMessage } from "@/libs/client/_general/models/client-message";
-import { Worker } from "@/external/prisma-generated";
+import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
+import { useRouter } from "next/navigation";
 
 const useHandleOrganizationId = () => {
   const { control, resetField } = useFormContext<ArrangeRosterFormInput>();
@@ -43,8 +41,8 @@ const useHandleDepartmentId = () => {
 
   const departments = useArrangeRosterFilterStore(state => state.departments);
   const setWorkers = useArrangeRosterFilterStore(state => state.setWorkers);
-  
-  const { handleServerResponse } = useServerResponseHandler();
+
+  const router = useRouter();
 
   const departmentId = useWatch({
     control,
@@ -52,20 +50,19 @@ const useHandleDepartmentId = () => {
     defaultValue: getDefaultDepartmentIdInDepartments(departments),
   })
 
-  const onSuccess = useCallback((response: SuccessResponse<Worker[]>) => {
-    setWorkers(response.data)
-    resetField('offs')
-  }, [setWorkers, resetField])
-
-  const onError = useCallback((_: ServerResponse, clientMessage: ClientMessage) => {
-    setError('root', { type: clientMessage.title, message: clientMessage.content })
-  }, [setError])
-
   const fetchWorkers = useCallback(async (departmentId: string) => {
     const request: GetWorkersRequest = { departmentId: Number(departmentId) }
     const response = await getWorkersAction(request)
-    await handleServerResponse(response, onSuccess, onError)
-  }, [handleServerResponse, onSuccess, onError])
+
+    const uiResponse = handleServiceResponse(response, path => router.push(path))
+    if (!uiResponse.isSuccess) {
+      setError('root', { type: uiResponse.message.title, message: uiResponse.message.content })
+      return
+    }
+
+    setWorkers(uiResponse.data)
+    resetField('offs')
+  }, [router, setWorkers, resetField, setError])
 
   const previousDepartmentId = useRef<string>('');
 
