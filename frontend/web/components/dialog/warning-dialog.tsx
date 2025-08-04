@@ -2,12 +2,12 @@
 
 import { AlertDialogHeader, AlertDialogFooter, AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel } from "@/external/shadcn/components/ui/alert-dialog";
 import LoadingButton from "@/components/button/loading-button";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { ChildrenProps } from "@/libs/share/_general/props/children-props";
 
 type Props = ChildrenProps & {
   isOpen?: boolean;
-  setIsOpen?: Dispatch<SetStateAction<boolean>>;
+  setIsOpen?: (isOpen: boolean) => void;
   title?: string;
   description?: string;
   onContinue: () => Promise<void> | void;
