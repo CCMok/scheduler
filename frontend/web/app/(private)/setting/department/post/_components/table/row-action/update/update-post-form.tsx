@@ -31,7 +31,7 @@ export default function UpdatePostForm({
   const form = useForm({
     resolver: zodResolver(updatePostFormInputSchema),
     defaultValues: {
-      postName: '',
+      postName,
     },
   })
 
