@@ -4,11 +4,13 @@ import { Post } from '@/external/prisma-generated'
 export type PostSettingState = {
   posts: Post[],
   postNameFilter: string,
+  departmentId?: number,
 }
 
 export type PostSettingActions = {
   setPosts: (posts: Post[]) => void,
   setPostNameFilter: (postNameFilter: string) => void,
+  setDepartmentId: (departmentId: number) => void,
 }
 
 export type PostSettingStore = PostSettingState & PostSettingActions
@@ -26,5 +28,6 @@ export const createPostSettingStore = (
     ...partialInitState,
     setPosts: posts => set(() => ({ posts })),
     setPostNameFilter: postNameFilter => set(() => ({ postNameFilter })),
+    setDepartmentId: departmentId => set(() => ({ departmentId })),
   }))
 }

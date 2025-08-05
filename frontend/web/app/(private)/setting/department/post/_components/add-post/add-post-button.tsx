@@ -9,14 +9,12 @@ import FormSubmitButton from "@/components/form/form-submit-button";
 import FormRootMessage from "@/components/form/form-root-message";
 import AddPostFields from "./add-post-fields";
 import { isNil } from "lodash";
-import { useSearchParams } from "next/navigation";
-import { SearchParam } from "@/libs/share/_general/enums/param";
+import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider";
 
 export default function AddPostButton() {
   const [isOpen, setIsOpen] = useState(false)
 
-  const searchParams = useSearchParams();
-  const departmentId = searchParams.get(SearchParam.departmentId);
+  const departmentId = usePostSettingStore(state => state.departmentId);
 
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>

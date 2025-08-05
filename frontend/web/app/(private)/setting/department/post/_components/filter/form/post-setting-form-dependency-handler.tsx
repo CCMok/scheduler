@@ -2,11 +2,16 @@
 
 import { useFormContext, useWatch } from "react-hook-form";
 import { getDefaultDepartmentIdInDepartments, getDefaultOrganizationId } from "@/libs/client/organization/utils/organization-utils";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { PostSettingFormInput } from "@/libs/client/post/models/post-setting-form-input";
 import { usePostSettingFilterStore } from "@/components/store/setting/post/post-setting-filter-store-provider";
 import { useRouter } from "next/navigation";
-import { PATH } from "@/libs/share/_general/utils/path";
+import { getPostsAction } from "@/libs/server/post/actions/get-posts-action";
+import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
+import { toast } from "sonner";
+import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
+import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider";
+import { GetPostsRequest } from "@/libs/server/post/models/get-posts-request";
 
 const useHandleOrganizationId = () => {
   const { control, resetField } = useFormContext<PostSettingFormInput>();
@@ -38,21 +43,45 @@ const useHandleDepartmentId = () => {
 
   const departments = usePostSettingFilterStore(state => state.departments);
 
+  const setPosts = usePostSettingStore(state => state.setPosts);
+  const setDepartmentId = usePostSettingStore(state => state.setDepartmentId);
+
   const departmentId = useWatch({
     control,
     name: 'departmentId',
     defaultValue: getDefaultDepartmentIdInDepartments(departments),
   })
 
+  const fetchPosts = useCallback(async () => {
+    const request: GetPostsRequest = {
+      departmentId: Number(departmentId),
+    }
+
+    const response = await getPostsAction(request)
+
+    const uiResponse = handleServiceResponse(response, path => router.push(path))
+    if (!uiResponse.isSuccess) {
+      toast.error(uiResponse.message.title, {
+        ...SONNER_DEFAULT_OPTIONS,
+        description: uiResponse.message.content,
+      })
+
+      return
+    }
+
+    setPosts(uiResponse.data)
+  }, [departmentId, router, setPosts])
+
   const previousDepartmentId = useRef<string>('');
 
   useEffect(() => {
     if (departmentId !== previousDepartmentId.current) {
-      router.push(PATH.setting.department.post.build(departmentId))
+      fetchPosts()
+      setDepartmentId(Number(departmentId))
     }
 
     previousDepartmentId.current = departmentId;
-  }, [departmentId, router])
+  }, [departmentId, router, fetchPosts, setDepartmentId])
 }
 
 export default function PostSettingFormDependencyHandler() {

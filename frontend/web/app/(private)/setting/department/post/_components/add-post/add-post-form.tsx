@@ -13,8 +13,8 @@ import { handleServiceResponse, SYSTEM_ERROR_UI_MESSAGE } from "@/libs/share/_ge
 import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
-import { useRouter, useSearchParams } from "next/navigation";
-import { SearchParam } from "@/libs/share/_general/enums/param";
+import { useRouter } from "next/navigation";
+import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider";
 
 type Props = ChildrenProps & ClassNameProps & {
   setAlertIsOpen: (isOpen: boolean) => void,
@@ -32,13 +32,12 @@ export default function AddPostForm({
     },
   })
 
-  const searchParams = useSearchParams();
-  const departmentId = searchParams.get(SearchParam.departmentId);
+  const departmentId = usePostSettingStore(state => state.departmentId);
 
   const router = useRouter();
 
   const onSubmit = async (input: AddPostFormInput) => {
-    if (isNil(departmentId) || isNaN(Number(departmentId))) {
+    if (isNaN(Number(departmentId))) {
       console.error('departmentId is not valid. departmentId: ', departmentId)
 
       form.setError('root', {
