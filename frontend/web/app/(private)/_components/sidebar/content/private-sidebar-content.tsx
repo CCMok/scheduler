@@ -18,7 +18,7 @@ const mainMenuItems = [
   },
   {
     title: "值班表",
-    url: PATH.roster,
+    url: PATH.roster.base,
     icon: Calendar,
   },
   {

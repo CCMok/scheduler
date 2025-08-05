@@ -1,3 +1,5 @@
+import { SearchParam } from "../enums/param";
+
 const enum PathSegment {
   LOGIN = 'login',
   REGISTER = 'register',
@@ -15,7 +17,13 @@ export const PATH = {
   login: `/${PathSegment.LOGIN}`,
   register: `/${PathSegment.REGISTER}`,
   dashboard: `/${PathSegment.DASHBOARD}`,
-  roster: `/${PathSegment.ROSTER}`,
+  roster: {
+    base: `/${PathSegment.ROSTER}`,
+    build: (departmentId?: number | string) => {
+      const base = `/${PathSegment.ROSTER}`;
+      return departmentId ? `${base}?${SearchParam.departmentId}=${departmentId}` : base
+    }
+  },
 
   setting: {
     base: `/${PathSegment.SETTING}`,
@@ -26,7 +34,7 @@ export const PATH = {
       post: {
         build: (departmentId?: number | string) => {
           const base = `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.POST}`;
-          return departmentId ? `${base}?departmentId=${departmentId}` : base
+          return departmentId ? `${base}?${SearchParam.departmentId}=${departmentId}` : base
         }
       },
     }

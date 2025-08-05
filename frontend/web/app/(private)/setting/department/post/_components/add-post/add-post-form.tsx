@@ -14,7 +14,7 @@ import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { useRouter, useSearchParams } from "next/navigation";
-import { SEARCH_PARAM_DEPARTMENT_ID } from "../post-setting-search-param";
+import { SearchParam } from "@/libs/share/_general/enums/param";
 
 type Props = ChildrenProps & ClassNameProps & {
   setAlertIsOpen: (isOpen: boolean) => void,
@@ -33,7 +33,7 @@ export default function AddPostForm({
   })
 
   const searchParams = useSearchParams();
-  const departmentId = searchParams.get(SEARCH_PARAM_DEPARTMENT_ID);
+  const departmentId = searchParams.get(SearchParam.departmentId);
 
   const router = useRouter();
 

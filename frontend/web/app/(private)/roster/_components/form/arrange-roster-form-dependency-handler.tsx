@@ -4,14 +4,12 @@ import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filte
 import { useFormContext, useWatch } from "react-hook-form";
 import { getDefaultDepartmentIdInDepartments, getDefaultOrganizationId } from "../../../../../libs/client/organization/utils/organization-utils";
 import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { DEFAULT_DAYS } from "@/libs/share/roster/constants/roster-constant";
 import { OffDay } from "@/libs/client/roster/models/off-day";
 import { format } from "date-fns";
-import { GetWorkersRequest } from "@/libs/server/worker/models/get-workers-request";
-import { getWorkersAction } from "@/libs/server/worker/actions/get-workers-action";
-import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { useRouter } from "next/navigation";
+import { PATH } from "@/libs/share/_general/utils/path";
 
 const useHandleOrganizationId = () => {
   const { control, resetField } = useFormContext<ArrangeRosterFormInput>();
@@ -37,10 +35,9 @@ const useHandleOrganizationId = () => {
 }
 
 const useHandleDepartmentId = () => {
-  const { control, resetField, setError } = useFormContext<ArrangeRosterFormInput>();
+  const { control, resetField } = useFormContext<ArrangeRosterFormInput>();
 
   const departments = useArrangeRosterFilterStore(state => state.departments);
-  const setWorkers = useArrangeRosterFilterStore(state => state.setWorkers);
 
   const router = useRouter();
 
@@ -50,29 +47,16 @@ const useHandleDepartmentId = () => {
     defaultValue: getDefaultDepartmentIdInDepartments(departments),
   })
 
-  const fetchWorkers = useCallback(async (departmentId: string) => {
-    const request: GetWorkersRequest = { departmentId: Number(departmentId) }
-    const response = await getWorkersAction(request)
-
-    const uiResponse = handleServiceResponse(response, path => router.push(path))
-    if (!uiResponse.isSuccess) {
-      setError('root', { type: uiResponse.message.title, message: uiResponse.message.content })
-      return
-    }
-
-    setWorkers(uiResponse.data)
-    resetField('offs')
-  }, [router, setWorkers, resetField, setError])
-
   const previousDepartmentId = useRef<string>('');
 
   useEffect(() => {
     if (departmentId !== previousDepartmentId.current) {
-      fetchWorkers(departmentId)
+      router.push(PATH.roster.build(departmentId))
+      resetField('offs')
     }
 
     previousDepartmentId.current = departmentId;
-  }, [departmentId, fetchWorkers])
+  }, [departmentId, router, resetField])
 }
 
 const useHandleDays = () => {

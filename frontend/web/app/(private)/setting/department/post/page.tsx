@@ -7,9 +7,9 @@ import { Post } from '@/external/prisma-generated';
 import { getPosts } from '@/libs/server/post/services/get-posts-service';
 import { GetPostsRequest } from '@/libs/server/post/models/get-posts-request';
 import PostSettingStateUpdater from './_components/post-setting-state-updater';
-import { SEARCH_PARAM_DEPARTMENT_ID } from './_components/post-setting-search-param';
 import { handleServiceResponse } from '@/libs/share/_general/utils/service-response-handler';
 import { redirect } from 'next/navigation';
+import { SearchParam } from '@/libs/share/_general/enums/param';
 
 const getPostsFromService = async (departmentId: string): Promise<Post[]> => {
   const departmentIdNumber = Number(departmentId);
@@ -31,11 +31,11 @@ const getPostsFromService = async (departmentId: string): Promise<Post[]> => {
 }
 
 type SearchParams = {
-  [SEARCH_PARAM_DEPARTMENT_ID]?: string;
+  [SearchParam.departmentId]?: string;
 }
 
 export default async function PostSettingPage({ searchParams }: Readonly<SearchParamProps<SearchParams>>) {
-  const departmentId = (await searchParams)[SEARCH_PARAM_DEPARTMENT_ID]
+  const departmentId = (await searchParams)[SearchParam.departmentId]
 
   const posts = !departmentId ? [] : await getPostsFromService(departmentId)
 

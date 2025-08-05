@@ -32,7 +32,7 @@ const useHandleOrganizationId = () => {
 }
 
 const useHandleDepartmentId = () => {
-  const { control, } = useFormContext<PostSettingFormInput>();
+  const { control } = useFormContext<PostSettingFormInput>();
 
   const router = useRouter();
 
