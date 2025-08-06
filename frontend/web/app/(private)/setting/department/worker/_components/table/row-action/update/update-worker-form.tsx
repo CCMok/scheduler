@@ -12,6 +12,8 @@ import { UiMessageTitle, UiMessageContent } from "@/libs/share/_general/enums/ui
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { useRouter } from "next/navigation";
 import { UpdateWorkerFormInput, updateWorkerFormInputSchema } from "@/libs/client/worker/models/update-worker-form-input";
+import { fetchWorkers } from "@/libs/share/worker/utils/fetch-workers-utils";
+import { useWorkerSettingStore } from "@/components/store/setting/worker/worker-setting-store-provider";
 
 type Props = PropsWithChildren<{
   setAlertIsOpen: (isOpen: boolean) => void;
@@ -35,6 +37,9 @@ export default function UpdateWorkerForm({
   });
 
   const router = useRouter();
+
+  const departmentId = useWorkerSettingStore(state => state.departmentId);
+  const setWorkers = useWorkerSettingStore(state => state.setWorkers);
 
   const onSubmit = async (input: UpdateWorkerFormInput) => {
     if (input.workerName === workerName) {
@@ -62,9 +67,10 @@ export default function UpdateWorkerForm({
       ...SONNER_DEFAULT_OPTIONS,
     })
 
-    setAlertIsOpen(false)
+    const workers = await fetchWorkers(Number(departmentId), path => router.push(path))
+    setWorkers(workers)
 
-    router.refresh()
+    setAlertIsOpen(false)
   };
 
   return (

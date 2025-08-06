@@ -8,6 +8,8 @@ import { DeleteWorkerRequest } from '@/libs/server/worker/models/delete-worker-r
 import { deleteWorkerAction } from '@/libs/server/worker/actions/delete-worker-action';
 import { useRouter } from 'next/navigation';
 import { UiMessageTitle } from '@/libs/share/_general/enums/ui-message';
+import { fetchWorkers } from '@/libs/share/worker/utils/fetch-workers-utils';
+import { useWorkerSettingStore } from '@/components/store/setting/worker/worker-setting-store-provider';
 
 type Props = {
   workerId: number;
@@ -23,6 +25,9 @@ export default function DeleteWorkerDialog({
   setIsOpen,
 }: Readonly<Props>) {
   const router = useRouter();
+
+  const departmentId = useWorkerSettingStore(state => state.departmentId);
+  const setWorkers = useWorkerSettingStore(state => state.setWorkers);
 
   const onContinue = async () => {
     const request: DeleteWorkerRequest = {
@@ -43,8 +48,11 @@ export default function DeleteWorkerDialog({
       ...SONNER_DEFAULT_OPTIONS,
       description: '人員已刪除',
     })
+
+    const workers = await fetchWorkers(Number(departmentId), path => router.push(path))
+    setWorkers(workers)
+
     setIsOpen(false)
-    router.refresh()
   }
 
   return (

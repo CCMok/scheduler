@@ -13,6 +13,8 @@ import { useRouter } from "next/navigation";
 import { UpdatePostFormInput, updatePostFormInputSchema } from "@/libs/client/post/models/update-post-form-input";
 import { UpdatePostRequest } from "@/libs/server/post/models/update-post-request";
 import { updatePostAction } from "@/libs/server/post/actions/update-post-action";
+import { fetchPosts } from "@/libs/share/post/utils/fetch-posts-utils";
+import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider";
 
 type Props = ChildrenProps & ClassNameProps & {
   setAlertIsOpen: (isOpen: boolean) => void,
@@ -35,6 +37,9 @@ export default function UpdatePostForm({
   })
 
   const router = useRouter();
+
+  const departmentId = usePostSettingStore(state => state.departmentId);
+  const setPosts = usePostSettingStore(state => state.setPosts);
 
   const onSubmit = async (input: UpdatePostFormInput) => {
     if (input.postName === postName) {
@@ -62,9 +67,10 @@ export default function UpdatePostForm({
       ...SONNER_DEFAULT_OPTIONS,
     })
 
-    setAlertIsOpen(false)
+    const posts = await fetchPosts(Number(departmentId), path => router.push(path))
+    setPosts(posts)
 
-    router.refresh()
+    setAlertIsOpen(false)
   }
 
   return (

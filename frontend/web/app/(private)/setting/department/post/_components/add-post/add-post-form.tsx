@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { useRouter } from "next/navigation";
 import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider";
+import { fetchPosts } from "@/libs/share/post/utils/fetch-posts-utils";
 
 type Props = ChildrenProps & ClassNameProps & {
   setAlertIsOpen: (isOpen: boolean) => void,
@@ -32,6 +33,7 @@ export default function AddPostForm({
   })
 
   const departmentId = usePostSettingStore(state => state.departmentId);
+  const setPosts = usePostSettingStore(state => state.setPosts);
 
   const router = useRouter();
 
@@ -55,7 +57,8 @@ export default function AddPostForm({
 
     setAlertIsOpen(false)
 
-    router.refresh()
+    const posts = await fetchPosts(Number(departmentId), path => router.push(path))
+    setPosts(posts)
   }
 
   return (

@@ -14,6 +14,7 @@ import { addWorkerAction } from "@/libs/server/worker/actions/add-worker-action"
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { useRouter } from "next/navigation";
 import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
+import { fetchWorkers } from "@/libs/share/worker/utils/fetch-workers-utils";
 
 type Props = ChildrenProps & ClassNameProps & {
   setAlertIsOpen: (isOpen: boolean) => void,
@@ -32,6 +33,7 @@ export default function AddWorkerForm({
   })
 
   const departmentId = useWorkerSettingStore(state => state.departmentId);
+  const setWorkers = useWorkerSettingStore(state => state.setWorkers);
 
   const router = useRouter();
 
@@ -53,9 +55,10 @@ export default function AddWorkerForm({
       ...SONNER_DEFAULT_OPTIONS,
     })
 
-    setAlertIsOpen(false)
+    const workers = await fetchWorkers(Number(departmentId), path => router.push(path))
+    setWorkers(workers)
 
-    router.refresh()
+    setAlertIsOpen(false)
   }
 
   return (

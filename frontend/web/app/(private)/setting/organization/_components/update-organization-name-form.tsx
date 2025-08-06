@@ -87,7 +87,6 @@ export default function UpdateOrganizationNameForm({
       description: '已更改組織名稱',
     })
 
-    router.refresh()
     form.reset();
   }
 

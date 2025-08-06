@@ -8,6 +8,8 @@ import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-
 import { UiMessageTitle } from '@/libs/share/_general/enums/ui-message';
 import { useRouter } from 'next/navigation';
 import { handleServiceResponse } from '@/libs/share/_general/utils/service-response-handler';
+import { usePostSettingStore } from '@/components/store/setting/post/post-setting-store-provider';
+import { fetchPosts } from '@/libs/share/post/utils/fetch-posts-utils';
 
 type Props = {
   postId: number;
@@ -23,6 +25,9 @@ export default function DeletePostDialog({
   setIsOpen,
 }: Readonly<Props>) {
   const router = useRouter();
+
+  const departmentId = usePostSettingStore(state => state.departmentId);
+  const setPosts = usePostSettingStore(state => state.setPosts);
 
   const onContinue = async () => {
     const request: DeletePostRequest = {
@@ -43,8 +48,11 @@ export default function DeletePostDialog({
       ...SONNER_DEFAULT_OPTIONS,
       description: '職位已刪除',
     })
+
+    const posts = await fetchPosts(Number(departmentId), path => router.push(path))
+    setPosts(posts)
+
     setIsOpen(false)
-    router.refresh()
   }
 
   return (
