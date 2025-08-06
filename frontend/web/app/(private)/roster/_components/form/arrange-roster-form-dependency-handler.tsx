@@ -9,11 +9,7 @@ import { DEFAULT_DAYS } from "@/libs/share/roster/constants/roster-constant";
 import { OffDay } from "@/libs/client/roster/models/off-day";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
-import { GetWorkersRequest } from "@/libs/server/worker/models/get-workers-request";
-import { getWorkersAction } from "@/libs/server/worker/actions/get-workers-action";
-import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
-import { toast } from "sonner";
-import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
+import { fetchWorkers } from "@/libs/share/worker/utils/fetch-workers-utils";
 
 const useHandleOrganizationId = () => {
   const { control, resetField } = useFormContext<ArrangeRosterFormInput>();
@@ -52,36 +48,22 @@ const useHandleDepartmentId = () => {
     defaultValue: getDefaultDepartmentIdInDepartments(departments),
   })
 
-  const fetchWorkers = useCallback(async () => {
-    const request: GetWorkersRequest = {
-      departmentId: Number(departmentId),
-    }
+  const onDepartmentIdChange = useCallback(async (departmentId: number) => {
+    const workers = await fetchWorkers(departmentId, path => router.push(path))
+    setWorkers(workers)
 
-    const response = await getWorkersAction(request)
-
-    const uiResponse = handleServiceResponse(response, path => router.push(path))
-    if (!uiResponse.isSuccess) {
-      toast.error(uiResponse.message.title, {
-        ...SONNER_DEFAULT_OPTIONS,
-        description: uiResponse.message.content,
-      })
-
-      return
-    }
-
-    setWorkers(uiResponse.data)
-  }, [departmentId, router, setWorkers])
+    resetField('offs')
+  }, [setWorkers, router, resetField])
 
   const previousDepartmentId = useRef<string>('');
 
   useEffect(() => {
     if (departmentId !== previousDepartmentId.current) {
-      resetField('offs')
-      fetchWorkers()
+      onDepartmentIdChange(Number(departmentId));
     }
 
     previousDepartmentId.current = departmentId;
-  }, [departmentId, router, resetField, fetchWorkers])
+  }, [departmentId, onDepartmentIdChange])
 }
 
 const useHandleDays = () => {
