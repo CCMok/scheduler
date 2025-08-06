@@ -5,11 +5,18 @@ import { getOrganizationsService } from "@/libs/server/organization/services/get
 import { OrganizationDepartments } from "@/libs/server/organization/models/organization-dao";
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { redirect } from "next/navigation";
+import { PrismaSortDirection } from "@/libs/client/_general/enums/prisma-sort-direction";
 
 const getOrganizations = async (): Promise<OrganizationDepartments[]> => {
   const response = await getOrganizationsService<OrganizationDepartments>({
-    include: { departments: true },
+    include: {
+      departments: {
+        orderBy: { name: PrismaSortDirection.ASC },
+      }
+    },
+    orderBy: { name: PrismaSortDirection.ASC },
   })
+
 
   const uiResponse = handleServiceResponse(response, path => redirect(path))
   if (!uiResponse.isSuccess) {

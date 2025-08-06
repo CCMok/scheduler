@@ -1,3 +1,4 @@
+import { PrismaSortDirection } from "@/libs/client/_general/enums/prisma-sort-direction";
 import WorkerSettingForm from "./form/worker-setting-form";
 import { WorkerSettingFilterStoreProvider } from "@/components/store/setting/worker/worker-setting-filter-store-provider";
 import { OrganizationDepartments } from "@/libs/server/organization/models/organization-dao";
@@ -7,8 +8,14 @@ import { redirect } from "next/navigation";
 
 const getOrganizations = async (): Promise<OrganizationDepartments[]> => {
   const response = await getOrganizationsService<OrganizationDepartments>({
-    include: { departments: true },
+    include: {
+      departments: {
+        orderBy: { name: PrismaSortDirection.ASC },
+      }
+    },
+    orderBy: { name: PrismaSortDirection.ASC },
   })
+
 
   const uiResponse = handleServiceResponse(response, path => redirect(path))
   if (!uiResponse.isSuccess) {

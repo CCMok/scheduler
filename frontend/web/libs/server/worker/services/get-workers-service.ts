@@ -10,6 +10,7 @@ export const getWorkersService = async (request: GetWorkersRequest): Promise<Ser
 
   const workers = await prisma.worker.findMany({
     where: { departmentId: parsedRequest.departmentId },
+    orderBy: parsedRequest.orderBy ? { name: parsedRequest.orderBy } : undefined,
   });
 
   return {
