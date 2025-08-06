@@ -27,7 +27,7 @@ export const updatePasswordService = async (request: UpdatePasswordRequest): Pro
 
     const encryptedPassword = await hash(parsedRequest.password, SALT_ROUNDS)
 
-    await update(userId, encryptedPassword)
+    await updateUser(userId, encryptedPassword)
 
     return {
       status: ServiceResponseStatus.OK,
@@ -51,7 +51,7 @@ const checkSameWithPreviousPassword = async (userId: number, password: string): 
   return await compare(password, user.password)
 }
 
-const update = async (id: number, password: string) =>
+const updateUser = async (id: number, password: string) =>
   await prisma.user.update({
     where: { id },
     data: { password },

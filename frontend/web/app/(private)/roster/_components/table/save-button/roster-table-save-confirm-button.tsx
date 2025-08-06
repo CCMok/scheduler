@@ -2,8 +2,8 @@
 
 import LoadingButton from "@/components/button/loading-button";
 import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider";
-import { saveRosterAction } from "@/libs/server/roster/actions/save-roster-action";
-import { SaveRosterRequest, SaveScheduleRequest } from "@/libs/server/roster/models/save-roster-request";
+import { createRosterHistoryAction } from "@/libs/server/roster/actions/create-roster-history-action";
+import { CreateRosterHistoryRequest, CreateScheduleRequest } from "@/libs/server/roster/models/create-roster-request";
 import { Dispatch, SetStateAction, useState } from "react";
 import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule";
 import { postBaseToDayBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils";
@@ -15,10 +15,10 @@ import { useMaxHistoryCountStore } from "@/components/store/roster/save/max-hist
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { useRouter } from "next/navigation";
 
-const getSaveRosterRequest = (departmentId: number, postBaseSchedules: PostBaseSchedule[]): SaveRosterRequest => {
+const getSaveRosterRequest = (departmentId: number, postBaseSchedules: PostBaseSchedule[]): CreateRosterHistoryRequest => {
   const dayBaseSchedules = postBaseToDayBaseSchedule(postBaseSchedules)
 
-  const scheduleRequests: SaveScheduleRequest[] = dayBaseSchedules.map(schedule => ({
+  const scheduleRequests: CreateScheduleRequest[] = dayBaseSchedules.map(schedule => ({
     ...schedule,
     arrangements: schedule.arrangements.map(arrangement => ({
       postId: arrangement.post.id,
@@ -67,7 +67,7 @@ export default function RosterTableSaveConfirmButton({
     }
 
     const request = getSaveRosterRequest(generatedScheduleDepartmentId, modifiedSchedules);
-    const response = await saveRosterAction(request);
+    const response = await createRosterHistoryAction(request);
 
     const uiResponse = handleServiceResponse(response, path => router.push(path))
     if (!uiResponse.isSuccess) {

@@ -14,7 +14,7 @@ export const updateOrganizationNameService = async (request: UpdateOrganizationN
   await serviceWrapper<{}>(async () => {
     const parsedRequest = updateOrganizationNameRequestSchema.parse(request)
 
-    const updateResult = await updateName(parsedRequest)
+    const updateResult = await updateOrganization(parsedRequest)
     if (!updateResult.isSuccess) {
       return handleQueryError(updateResult.error)
     }
@@ -25,7 +25,7 @@ export const updateOrganizationNameService = async (request: UpdateOrganizationN
     }
   })
 
-const updateName = async (request: UpdateOrganizationNameRequest): Promise<DataBaseQueryResponse> =>
+const updateOrganization = async (request: UpdateOrganizationNameRequest): Promise<DataBaseQueryResponse> =>
   await tryCatchQuery(async () =>
     await prisma.organization.update({
       where: { id: request.id },

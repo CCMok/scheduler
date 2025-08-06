@@ -29,7 +29,7 @@ export const loginService = async (request: LoginRequest): Promise<ServiceRespon
 
 
 const checkLoginInfo = async (request: LoginRequest): Promise<UserRole | undefined> => {
-  const userRole = await findUser(request.email)
+  const userRole = await getUser(request.email)
 
   if (!userRole) {
     return
@@ -43,7 +43,7 @@ const checkLoginInfo = async (request: LoginRequest): Promise<UserRole | undefin
   return userRole;
 }
 
-const findUser = async (email: string) => (
+const getUser = async (email: string) => (
   await prisma.user.findUnique({
     where: { email },
     include: {
