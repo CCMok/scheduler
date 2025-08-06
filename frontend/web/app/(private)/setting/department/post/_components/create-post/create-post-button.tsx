@@ -4,17 +4,17 @@ import CustomButton from "@/components/button/custom-button";
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/external/shadcn/components/ui/alert-dialog";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import CreatePostForm from "./create-post-form";
 import FormSubmitButton from "@/components/form/form-submit-button";
 import FormRootMessage from "@/components/form/form-root-message";
+import CreatePostFields from "./create-post-fields";
 import { isNil } from "lodash";
-import { useWorkerSettingStore } from "@/components/store/setting/worker/worker-setting-store-provider";
-import AddWorkerForm from "./add-worker-form";
-import AddWorkerFields from "./add-worker-fields";
+import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider";
 
-export default function AddWorkerButton() {
+export default function CreatePostButton() {
   const [isOpen, setIsOpen] = useState(false)
 
-  const departmentId = useWorkerSettingStore(state => state.departmentId);
+  const departmentId = usePostSettingStore(state => state.departmentId);
 
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -28,22 +28,22 @@ export default function AddWorkerButton() {
         </CustomButton>
       </AlertDialogTrigger>
       <AlertDialogContent>
-        <AddWorkerForm
+        <CreatePostForm
           setAlertIsOpen={setIsOpen}
           className="space-y-4"
         >
           <AlertDialogHeader>
-            <AlertDialogTitle>新增員工</AlertDialogTitle>
+            <AlertDialogTitle>新增職位</AlertDialogTitle>
             <AlertDialogDescription />
           </AlertDialogHeader>
-          <AddWorkerFields />
+          <CreatePostFields />
           <FormRootMessage />
           <AlertDialogFooter>
             <AlertDialogCancel>取消</AlertDialogCancel>
             <FormSubmitButton>新增</FormSubmitButton>
           </AlertDialogFooter>
-        </AddWorkerForm>
+        </CreatePostForm>
       </AlertDialogContent>
     </AlertDialog>
   );
-}
+} 

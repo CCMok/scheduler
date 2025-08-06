@@ -1,11 +1,11 @@
 import CustomFormItem from "@/components/form/custom-form-item";
 import CustomInput from "@/components/input/custom-input";
 import { FormField, FormControl } from "@/external/shadcn/components/ui/form";
-import { AddWorkerFormInput } from "@/libs/client/worker/models/add-worker-form-input";
+import { CreateWorkerFormInput } from "@/libs/client/worker/models/create-worker-form-input";
 import { useFormContext } from "react-hook-form";
 
-export default function AddWorkerNameFormField() {
-  const { control } = useFormContext<AddWorkerFormInput>()
+export default function CreateWorkerNameFormField() {
+  const { control } = useFormContext<CreateWorkerFormInput>()
 
   return (
     <FormField

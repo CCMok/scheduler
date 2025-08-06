@@ -1,7 +1,7 @@
 import { WorkerSettingStoreProvider } from '@/components/store/setting/worker/worker-setting-store-provider';
 import WorkerSettingFilterSection from './_components/filter/worker-setting-filter-section';
 import WorkerTableSection from './_components/table/worker-table-section';
-import AddWorkerButton from './_components/add-worker/add-worker-button';
+import CreateWorkerButton from './_components/create-worker/create-worker-button';
 
 export default async function WorkerSettingPage() {
   return (
@@ -10,7 +10,7 @@ export default async function WorkerSettingPage() {
         <WorkerSettingFilterSection />
         <div className='space-y-2'>
           <div className='flex justify-end'>
-            <AddWorkerButton />
+            <CreateWorkerButton />
           </div>
           <WorkerTableSection />
         </div>

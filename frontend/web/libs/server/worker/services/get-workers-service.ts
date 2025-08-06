@@ -5,7 +5,7 @@ import prisma from "../../_general/managers/database-manager";
 import { Worker } from '@/external/prisma-generated';
 import { GetWorkersRequest, getWorkersRequestSchema } from '../models/get-workers-request';
 
-export const getWorkers = async (request: GetWorkersRequest): Promise<ServiceResponse<Worker[]>> => {
+export const getWorkersService = async (request: GetWorkersRequest): Promise<ServiceResponse<Worker[]>> => {
   const parsedRequest = getWorkersRequestSchema.parse(request);
 
   const workers = await prisma.worker.findMany({

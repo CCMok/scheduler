@@ -6,7 +6,7 @@ import { ServiceResponseStatus } from "../../../share/_general/enums/service-res
 import { findMaxHistoryCount } from '../repositories/organization-repository';
 import { serviceWrapper } from '../../_general/services/general-service';
 
-export const getMaxHistoryCount = async (request: GetMaxHistoryCountRequest): Promise<ServiceResponse<GetMaxHistoryCountResponse>> =>
+export const getMaxHistoryCountService = async (request: GetMaxHistoryCountRequest): Promise<ServiceResponse<GetMaxHistoryCountResponse>> =>
   await serviceWrapper<GetMaxHistoryCountResponse>(async () => {
     const parsedRequest = getMaxHistoryCountRequestSchema.parse(request);
 

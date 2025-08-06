@@ -6,7 +6,7 @@ import { getSession, refreshSession } from '../../_general/managers/session-mana
 import prisma from '../../_general/managers/database-manager';
 import { serviceWrapper } from '../../_general/services/general-service';
 
-export const updateUserName = async (request: UpdateUserNameRequest): Promise<ServiceResponse> =>
+export const updateUserNameService = async (request: UpdateUserNameRequest): Promise<ServiceResponse> =>
   await serviceWrapper<{}>(async () => {
     const parsedRequest = updateUserNameRequestSchema.parse(request)
 

@@ -6,7 +6,7 @@ import prisma from "../../_general/managers/database-manager";
 import { Post } from '@/external/prisma-generated';
 import { serviceWrapper } from '../../_general/services/general-service';
 
-export const getPosts = async (request: GetPostsRequest): Promise<ServiceResponse<Post[]>> =>
+export const getPostsService = async (request: GetPostsRequest): Promise<ServiceResponse<Post[]>> =>
   await serviceWrapper(async () => {
     const parsedRequest = getPostsRequestSchema.parse(request);
 

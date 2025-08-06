@@ -4,7 +4,7 @@ import { ServiceResponse } from '@/libs/share/_general/models/service-response';
 import { ServiceResponseStatus } from '../../../share/_general/enums/service-response-status';
 import { serviceWrapper } from '../../_general/services/general-service';
 
-export const logout = async (): Promise<ServiceResponse> =>
+export const logoutService = async (): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
     await deleteSession();
 

@@ -9,11 +9,11 @@ import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { ServiceMessage } from '../../../share/_general/enums/service-message';
 import { UpdateWorkerRequest, updateWorkerRequestSchema } from '../models/update-worker-request';
 
-export const updateWorker = async (request: UpdateWorkerRequest): Promise<ServiceResponse> =>
+export const updateWorkerService = async (request: UpdateWorkerRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
     const parsedRequest = updateWorkerRequestSchema.parse(request);
 
-    const updateResult = await updateWorkerInDb(parsedRequest);
+    const updateResult = await updateWorker(parsedRequest);
     if (!updateResult.isSuccess) {
       return handleQueryError(updateResult.error)
     }
@@ -24,7 +24,7 @@ export const updateWorker = async (request: UpdateWorkerRequest): Promise<Servic
     }
   })
 
-const updateWorkerInDb = async (request: UpdateWorkerRequest) =>
+const updateWorker = async (request: UpdateWorkerRequest) =>
   await tryCatchQuery(async () =>
     await prisma.worker.update({
       where: { id: request.workerId },

@@ -12,7 +12,7 @@ import { ApiHeaderKey, ContentType } from '../../_general/enums/api-header';
 import { SCH_API_KEY } from '../../_general/constants/sch-constant';
 import { serviceWrapper } from '../../_general/services/general-service';
 
-export const arrangeRoster = async (request: ArrangeRosterRequest): Promise<ServiceResponse<DayBaseSchedule[]>> =>
+export const arrangeRosterService = async (request: ArrangeRosterRequest): Promise<ServiceResponse<DayBaseSchedule[]>> =>
   await serviceWrapper<DayBaseSchedule[]>(async () => {
     const parsedRequest = arrangeRosterRequestSchema.parse(request);
 

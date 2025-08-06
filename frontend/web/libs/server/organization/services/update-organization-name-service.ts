@@ -10,7 +10,7 @@ import { getPrismaErrorTarget, tryCatchQuery } from "../../_general/utils/databa
 import { PrismaClientKnownRequestError } from "@/external/prisma-generated/runtime/library";
 import { serviceWrapper } from '../../_general/services/general-service';
 
-export const updateOrganizationName = async (request: UpdateOrganizationNameRequest): Promise<ServiceResponse> =>
+export const updateOrganizationNameService = async (request: UpdateOrganizationNameRequest): Promise<ServiceResponse> =>
   await serviceWrapper<{}>(async () => {
     const parsedRequest = updateOrganizationNameRequestSchema.parse(request)
 

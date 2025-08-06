@@ -23,7 +23,7 @@ function RosterTableSaveAlertDialog() {
     if (isAlertDialogOpen && !isNil(generatedScheduleDepartmentId)) {
       fetchMaxHistoryCount(generatedScheduleDepartmentId, path => router.push(path));
     }
-  }, [isAlertDialogOpen, fetchMaxHistoryCount, generatedScheduleDepartmentId]);
+  }, [isAlertDialogOpen, fetchMaxHistoryCount, generatedScheduleDepartmentId, router]);
 
   return (
     <AlertDialog open={isAlertDialogOpen} onOpenChange={setIsAlertDialogOpen}>

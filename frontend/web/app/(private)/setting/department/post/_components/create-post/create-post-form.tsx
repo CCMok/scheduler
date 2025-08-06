@@ -1,13 +1,13 @@
 'use client'
 
 import { Form } from "@/external/shadcn/components/ui/form";
-import { AddPostFormInput, addPostFormInputSchema } from "@/libs/client/post/models/add-post-form-input";
+import { CreatePostFormInput, createPostFormInputSchema } from "@/libs/client/post/models/create-post-form-input";
 import { ChildrenProps } from "@/libs/share/_general/props/children-props";
 import { ClassNameProps } from "@/libs/share/_general/props/class-name-props";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { AddPostRequest } from "@/libs/server/post/models/add-post-request";
-import { addPostAction } from "@/libs/server/post/actions/add-post-action";
+import { CreatePostRequest } from "@/libs/server/post/models/create-post-request";
+import { createPostAction } from "@/libs/server/post/actions/create-post-action";
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { toast } from "sonner";
@@ -20,13 +20,13 @@ type Props = ChildrenProps & ClassNameProps & {
   setAlertIsOpen: (isOpen: boolean) => void,
 }
 
-export default function AddPostForm({
+export default function CreatePostForm({
   children,
   className,
   setAlertIsOpen,
 }: Readonly<Props>) {
   const form = useForm({
-    resolver: zodResolver(addPostFormInputSchema),
+    resolver: zodResolver(createPostFormInputSchema),
     defaultValues: {
       postName: '',
     },
@@ -37,13 +37,13 @@ export default function AddPostForm({
 
   const router = useRouter();
 
-  const onSubmit = async (input: AddPostFormInput) => {
-    const request: AddPostRequest = {
+  const onSubmit = async (input: CreatePostFormInput) => {
+    const request: CreatePostRequest = {
       departmentId: Number(departmentId),
       postName: input.postName,
     }
 
-    const response = await addPostAction(request)
+    const response = await createPostAction(request)
 
     const uiResponse = handleServiceResponse(response, path => router.push(path))
     if (!uiResponse.isSuccess) {

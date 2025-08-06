@@ -10,7 +10,7 @@ import { ServiceMessage } from '../../../share/_general/enums/service-message';
 import { SALT_ROUNDS } from '../../_general/constants/bcrypt-constant';
 import { serviceWrapper } from '../../_general/services/general-service';
 
-export const updatePassword = async (request: UpdatePasswordRequest): Promise<ServiceResponse> =>
+export const updatePasswordService = async (request: UpdatePasswordRequest): Promise<ServiceResponse> =>
   await serviceWrapper<{}>(async () => {
     const parsedRequest = updatePasswordRequestSchema.parse(request)
 

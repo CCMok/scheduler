@@ -9,7 +9,7 @@ import { isNil } from 'lodash'
 import { findMaxHistoryCount } from '../../organization/repositories/organization-repository'
 import { serviceWrapper } from '../../_general/services/general-service'
 
-export const saveRoster = async (request: SaveRosterRequest): Promise<ServiceResponse> =>
+export const saveRosterService = async (request: SaveRosterRequest): Promise<ServiceResponse> =>
   await serviceWrapper<{}>(async () => {
     const parsedRequest = saveRosterRequestSchema.parse(request);
 
@@ -28,7 +28,7 @@ export const saveRoster = async (request: SaveRosterRequest): Promise<ServiceRes
 
 const updateRecord = async (request: SaveRosterRequest, userId: number): Promise<void> => {
   await prisma.$transaction(async tx => {
-    await saveHisotry(tx, request, userId)
+    await createHisotry(tx, request, userId)
 
     const maxHistoryCount = await findMaxHistoryCount(request.departmentId)
     if (isNil(maxHistoryCount)) return;
@@ -37,7 +37,7 @@ const updateRecord = async (request: SaveRosterRequest, userId: number): Promise
   })
 }
 
-const saveHisotry = async (tx: Transaction, request: SaveRosterRequest, userId: number): Promise<void> => {
+const createHisotry = async (tx: Transaction, request: SaveRosterRequest, userId: number): Promise<void> => {
   await tx.rosterHistory.create({
     data: {
       departmentId: request.departmentId,

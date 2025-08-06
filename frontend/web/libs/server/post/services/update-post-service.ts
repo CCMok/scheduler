@@ -9,11 +9,11 @@ import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { ServiceMessage } from '../../../share/_general/enums/service-message';
 import { UpdatePostRequest, updatePostRequestSchema } from '../models/update-post-request';
 
-export const updatePost = async (request: UpdatePostRequest): Promise<ServiceResponse> =>
+export const updatePostService = async (request: UpdatePostRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
     const parsedRequest = updatePostRequestSchema.parse(request);
 
-    const updateResult = await updatePostInDb(parsedRequest);
+    const updateResult = await updatePost(parsedRequest);
     if (!updateResult.isSuccess) {
       return handleQueryError(updateResult.error)
     }
@@ -24,7 +24,7 @@ export const updatePost = async (request: UpdatePostRequest): Promise<ServiceRes
     }
   })
 
-const updatePostInDb = async (request: UpdatePostRequest) =>
+const updatePost = async (request: UpdatePostRequest) =>
   await tryCatchQuery(async () =>
     await prisma.post.update({
       where: { id: request.postId },

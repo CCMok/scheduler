@@ -2,8 +2,6 @@ import { Post } from "@/external/prisma-generated"
 import { getPostsAction } from "@/libs/server/post/actions/get-posts-action"
 import { GetPostsRequest } from "@/libs/server/post/models/get-posts-request"
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler"
-import { toast } from "sonner"
-import { SONNER_DEFAULT_OPTIONS } from "../../../client/_general/constants/sonnar-constant"
 
 export const fetchPosts = async (departmentId: number, onRoute: (path: string) => void): Promise<Post[]> => {
   const request: GetPostsRequest = {
@@ -14,11 +12,7 @@ export const fetchPosts = async (departmentId: number, onRoute: (path: string) =
 
   const uiResponse = handleServiceResponse(response, onRoute)
   if (!uiResponse.isSuccess) {
-    toast.error(uiResponse.message.title, {
-      ...SONNER_DEFAULT_OPTIONS,
-      description: uiResponse.message.content,
-    })
-
+    console.error(`Failed to fetch posts. message title: ${uiResponse.message.title}, content: ${uiResponse.message.content}`)
     return []
   }
 

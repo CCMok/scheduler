@@ -5,7 +5,7 @@ import { serviceWrapper } from '../../_general/services/general-service';
 import { DeletePostRequest, deletePostRequestSchema } from '../models/delete-post-request';
 import prisma from '../../_general/managers/database-manager';
 
-export const deletePost = async (request: DeletePostRequest): Promise<ServiceResponse> =>
+export const deletePostService = async (request: DeletePostRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
     const parsedRequest = deletePostRequestSchema.parse(request)
 

@@ -9,7 +9,7 @@ import prisma from '../../_general/managers/database-manager';
 import { compare } from 'bcryptjs';
 import { serviceWrapper } from '../../_general/services/general-service';
 
-export const login = async (request: LoginRequest): Promise<ServiceResponse> =>
+export const loginService = async (request: LoginRequest): Promise<ServiceResponse> =>
   await serviceWrapper<{}>(async () => {
     const parsedRequest = loginRequestSchema.parse(request);
 

@@ -13,7 +13,7 @@ import { hash } from 'bcryptjs';
 import { SALT_ROUNDS } from '../../_general/constants/bcrypt-constant';
 import { serviceWrapper } from '../../_general/services/general-service';
 
-export const register = async (request: RegisterRequest): Promise<ServiceResponse> =>
+export const registerService = async (request: RegisterRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
     const parsedRequest = registerRequestSchema.parse(request);
 

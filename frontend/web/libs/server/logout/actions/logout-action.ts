@@ -1,5 +1,5 @@
 'use server'
 
-import { logout } from "../services/logout-service"
+import { logoutService } from "../services/logout-service"
 
-export const logoutAction = async () => await logout()
+export const logoutAction = async () => await logoutService()
