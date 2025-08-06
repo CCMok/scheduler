@@ -8,6 +8,7 @@ const enum PathSegment {
   ORGANIZATION = 'organization',
   DEPARTMENT = 'department',
   POST = 'post',
+  WORKER = 'worker',
 }
 
 export const PATH = {
@@ -24,6 +25,7 @@ export const PATH = {
     department: {
       base: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}`,
       post: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.POST}`,
+      worker: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.WORKER}`,
     }
   }
 } as const

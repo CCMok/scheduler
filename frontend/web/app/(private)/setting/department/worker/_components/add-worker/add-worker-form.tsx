@@ -1,56 +1,47 @@
 'use client'
 
 import { Form } from "@/external/shadcn/components/ui/form";
+import { AddWorkerFormInput, addWorkerFormInputSchema } from "@/libs/client/worker/models/add-worker-form-input";
 import { ChildrenProps } from "@/libs/share/_general/props/children-props";
 import { ClassNameProps } from "@/libs/share/_general/props/class-name-props";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
-import { UiMessageContent, UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
+import { useWorkerSettingStore } from "@/components/store/setting/worker/worker-setting-store-provider";
+import { AddWorkerRequest } from "@/libs/server/worker/models/add-worker-request";
+import { addWorkerAction } from "@/libs/server/worker/actions/add-worker-action";
+import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { useRouter } from "next/navigation";
-import { UpdatePostFormInput, updatePostFormInputSchema } from "@/libs/client/post/models/update-post-form-input";
-import { UpdatePostRequest } from "@/libs/server/post/models/update-post-request";
-import { updatePostAction } from "@/libs/server/post/actions/update-post-action";
+import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 
 type Props = ChildrenProps & ClassNameProps & {
   setAlertIsOpen: (isOpen: boolean) => void,
-  postId: number;
-  postName: string;
 }
 
-export default function UpdatePostForm({
+export default function AddWorkerForm({
   children,
   className,
   setAlertIsOpen,
-  postId,
-  postName,
 }: Readonly<Props>) {
   const form = useForm({
-    resolver: zodResolver(updatePostFormInputSchema),
+    resolver: zodResolver(addWorkerFormInputSchema),
     defaultValues: {
-      postName,
+      workerName: '',
     },
   })
 
+  const departmentId = useWorkerSettingStore(state => state.departmentId);
+
   const router = useRouter();
 
-  const onSubmit = async (input: UpdatePostFormInput) => {
-    if (input.postName === postName) {
-      form.setError('postName', {
-        type: UiMessageTitle.INPUT_ERROR,
-        message: UiMessageContent.NOT_MATCH.replaceAll('{0}', '原本名稱'),
-      })
-      return;
+  const onSubmit = async (input: AddWorkerFormInput) => {
+    const request: AddWorkerRequest = {
+      departmentId: Number(departmentId),
+      workerName: input.workerName,
     }
 
-    const request: UpdatePostRequest = {
-      postId,
-      postName: input.postName,
-    }
-
-    const response = await updatePostAction(request)
+    const response = await addWorkerAction(request)
 
     const uiResponse = handleServiceResponse(response, path => router.push(path))
     if (!uiResponse.isSuccess) {
@@ -58,7 +49,7 @@ export default function UpdatePostForm({
       return
     }
 
-    toast.success('編輯職位' + UiMessageTitle.SUCCESS, {
+    toast.success('新增人員' + UiMessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
     })
 

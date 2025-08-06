@@ -37,6 +37,10 @@ const departmentMenuItems: SettingMenuCategory = {
     {
       title: "職位",
       url: PATH.setting.department.post,
+    },
+    {
+      title: "人員",
+      url: PATH.setting.department.worker,
     }
   ]
 }

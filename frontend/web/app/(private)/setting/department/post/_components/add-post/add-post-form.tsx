@@ -8,8 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { AddPostRequest } from "@/libs/server/post/models/add-post-request";
 import { addPostAction } from "@/libs/server/post/actions/add-post-action";
-import { isNil } from "lodash";
-import { handleServiceResponse, SYSTEM_ERROR_UI_MESSAGE } from "@/libs/share/_general/utils/service-response-handler";
+import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
@@ -37,17 +36,6 @@ export default function AddPostForm({
   const router = useRouter();
 
   const onSubmit = async (input: AddPostFormInput) => {
-    if (isNaN(Number(departmentId))) {
-      console.error('departmentId is not valid. departmentId: ', departmentId)
-
-      form.setError('root', {
-        type: SYSTEM_ERROR_UI_MESSAGE.title,
-        message: SYSTEM_ERROR_UI_MESSAGE.content
-      })
-
-      return;
-    }
-
     const request: AddPostRequest = {
       departmentId: Number(departmentId),
       postName: input.postName,
