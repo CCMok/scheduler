@@ -45,7 +45,7 @@ const departmentMenuItems: SettingMenuCategory = {
   ]
 }
 
-export const DEPARTMENT_SETTING_DEFAULT_PATH = PATH.setting.department.post
+export const DEPARTMENT_SETTING_DEFAULT_PATH: string = PATH.setting.department.post.base
 
 export const ACCESS_MENU_ITEM_MAP = new Map<Role, (SettingMenuCategory | SettingMenuItem)[]>([
   [Role.SYSTEM_ADMIN, [
