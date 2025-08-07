@@ -5,8 +5,13 @@ import { getWorkersAction } from "@/libs/server/worker/actions/get-workers-actio
 
 export const fetchWorkers = async (departmentId: number, onRoute: (path: string) => void): Promise<Worker[]> => {
   const request: GetWorkersRequest = {
-    departmentId,
-    orderBy: Prisma.SortOrder.asc,
+    where: {
+      departmentId,
+    },
+    orderBy: [{
+      field: 'name',
+      direction: Prisma.SortOrder.asc,
+    }],
   }
 
   const response = await getWorkersAction(request)
