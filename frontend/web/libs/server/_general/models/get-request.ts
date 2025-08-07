@@ -8,20 +8,25 @@ export const createGetRequestWhere = <T extends z.ZodTypeAny>(where: T) =>
 
 export const createGetRequestRelate = <T extends z.ZodTypeAny>(relate: T) =>
   z.object({
-    relate: relate?.optional(),
+    relate: relate?.array().optional(),
   });
 
 export const createGetRequestOrderBy = <
   TObjectSchema extends z.ZodTypeAny,
   TFieldSchema extends z.ZodTypeAny,
 >(
-  object: TObjectSchema,
+  level: TObjectSchema,
   field: TFieldSchema,
 ) =>
   z.object({
-    orderBy: z.object({
-      object,
-      field,
-      direction: z.nativeEnum(Prisma.SortOrder),
-    }).array().optional(),
+    level,
+    field,
+    direction: z.nativeEnum(Prisma.SortOrder).optional(),
+  })
+
+export const createGetRequestOrderByArray = <T extends z.ZodTypeAny>(
+  orderBy: T,
+) =>
+  z.object({
+    orderBy: orderBy.array().optional(),
   });

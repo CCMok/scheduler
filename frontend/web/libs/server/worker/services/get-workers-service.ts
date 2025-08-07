@@ -23,8 +23,8 @@ const getQuery = (request: GetWorkersRequest): Prisma.WorkerFindManyArgs => {
 
   const orderBy: Prisma.WorkerOrderByWithRelationInput = {};
   if (request.orderBy) {
-    for (const order of request.orderBy) {
-      orderBy[order.field] = order.direction;
+    for (const requestOrderBy of request.orderBy) {
+      orderBy[requestOrderBy.field] = requestOrderBy.direction ?? Prisma.SortOrder.asc;
     }
   }
 

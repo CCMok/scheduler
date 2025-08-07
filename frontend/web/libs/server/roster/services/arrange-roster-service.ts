@@ -4,7 +4,7 @@ import { ArrangeRosterRequest, arrangeRosterRequestSchema } from "../models/arra
 import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from "../models/arrange/sch-arrange-roster-response";
 import { Arrangement, DayBaseSchedule } from '../../../share/roster/models/day-base-schedule';
-import { DepartmentWorkersPosts } from '../../department/models/department-model';
+import { DepartmentWorkersPosts } from '../../department/models/department-dao';
 import { isNil } from 'lodash';
 import { Worker } from '@/external/prisma-generated';
 import prisma from '../../_general/managers/database-manager';

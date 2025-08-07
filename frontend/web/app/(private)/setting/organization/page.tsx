@@ -2,12 +2,15 @@ import { getOrganizationsService } from "@/libs/server/organization/services/get
 import UpdateOrganizationNameForm from "./_components/update-organization-name-form";
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { redirect } from "next/navigation";
-import { Organization, Prisma } from "@/external/prisma-generated";
+import { Organization } from "@/external/prisma-generated";
+import { GetOrganizationsRequest } from "@/libs/server/organization/models/get-organizations-request";
 
 const getOrganizations = async (): Promise<Organization[]> => {
-  const response = await getOrganizationsService({
-    orderBy: { name: Prisma.SortOrder.asc },
-  })
+  const request: GetOrganizationsRequest = {
+    orderBy: [{ field: 'name' }],
+  }
+
+  const response = await getOrganizationsService(request)
 
   const uiResponse = handleServiceResponse(response, path => redirect(path))
   if (!uiResponse.isSuccess) {

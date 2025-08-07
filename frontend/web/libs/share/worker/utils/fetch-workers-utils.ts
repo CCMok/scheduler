@@ -1,4 +1,4 @@
-import { Worker, Prisma } from "@/external/prisma-generated"
+import { Worker } from "@/external/prisma-generated"
 import { GetWorkersRequest } from "@/libs/server/worker/models/get-workers-request"
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler"
 import { getWorkersAction } from "@/libs/server/worker/actions/get-workers-action"
@@ -8,10 +8,7 @@ export const fetchWorkers = async (departmentId: number, onRoute: (path: string)
     where: {
       departmentId,
     },
-    orderBy: [{
-      field: 'name',
-      direction: Prisma.SortOrder.asc,
-    }],
+    orderBy: [{ field: 'name' }],
   }
 
   const response = await getWorkersAction(request)

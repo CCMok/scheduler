@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { idSchema } from "../../_general/models/id";
-import { createGetRequestOrderBy, createGetRequestWhere } from "../../_general/models/get-request";
+import { createGetRequestOrderBy, createGetRequestOrderByArray, createGetRequestWhere } from "../../_general/models/get-request";
 import { Worker } from "@/external/prisma-generated";
 
 const whereSchema = z.object({
@@ -15,10 +15,9 @@ const orderByFieldSchema = z.enum([
   'departmentId',
 ] as const satisfies (keyof Worker)[])
 
+const orderBySchema = createGetRequestOrderBy(z.undefined(), orderByFieldSchema)
+
 export const getWorkersRequestSchema = createGetRequestWhere(whereSchema)
-  .and(createGetRequestOrderBy(
-    z.undefined(),
-    orderByFieldSchema,
-  ))
+  .merge(createGetRequestOrderByArray(orderBySchema))
 
 export type GetWorkersRequest = z.infer<typeof getWorkersRequestSchema>;
