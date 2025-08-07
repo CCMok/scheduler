@@ -14,8 +14,6 @@ export const getMaxHistoryCountService = async (request: GetMaxHistoryCountReque
 
     return {
       status: ServiceResponseStatus.OK,
-      data: {
-        maxHistoryCount,
-      },
+      data: maxHistoryCount,
     }
   })

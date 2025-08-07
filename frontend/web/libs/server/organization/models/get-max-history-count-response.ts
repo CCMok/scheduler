@@ -1,3 +1,1 @@
-export type GetMaxHistoryCountResponse = {
-  maxHistoryCount?: number,
-}
+export type GetMaxHistoryCountResponse = number | undefined

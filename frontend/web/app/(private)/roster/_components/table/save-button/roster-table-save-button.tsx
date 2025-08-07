@@ -1,7 +1,7 @@
 'use client';
 
 import { Save } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AlertDialogTrigger, AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel } from "@/external/shadcn/components/ui/alert-dialog";
 import CustomButton from "@/components/button/custom-button";
 import RosterTableSaveConfirmDescription from "./roster-table-save-confirm-description";
@@ -10,20 +10,58 @@ import { MaxHistoryCountStoreProvider, useMaxHistoryCountStore } from "@/compone
 import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider";
 import { isNil } from "lodash";
 import { useRouter } from "next/navigation";
+import { GetMaxHistoryCountRequest } from "@/libs/server/organization/models/get-max-history-count-request";
+import { fetchDatum } from "@/libs/share/_general/utils/fetch";
+import { getMaxHistoryCountAction } from "@/libs/server/organization/actions/get-max-history-count-action";
 
 function RosterTableSaveAlertDialog() {
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
   const router = useRouter();
 
-  const fetchMaxHistoryCount = useMaxHistoryCountStore(state => state.fetchMaxHistoryCount);
   const generatedScheduleDepartmentId = useArrangeRosterStore(state => state.generatedScheduleDepartmentId);
 
-  useEffect(() => {
-    if (isAlertDialogOpen && !isNil(generatedScheduleDepartmentId)) {
-      fetchMaxHistoryCount(generatedScheduleDepartmentId, path => router.push(path));
+  const isFetchingMaxHistoryCount = useMaxHistoryCountStore(state => state.isFetchingMaxHistoryCount);
+  const setMaxHistoryCount = useMaxHistoryCountStore(state => state.setMaxHistoryCount);
+  const setIsFetchingMaxHistoryCount = useMaxHistoryCountStore(state => state.setIsFetchingMaxHistoryCount);
+
+  const fetchMaxHistoryCount = useCallback(async (): Promise<void> => {
+    if (isNil(generatedScheduleDepartmentId)) return;
+
+    const request: GetMaxHistoryCountRequest = {
+      departmentId: generatedScheduleDepartmentId,
     }
-  }, [isAlertDialogOpen, fetchMaxHistoryCount, generatedScheduleDepartmentId, router]);
+
+    const maxHistoryCount = await fetchDatum(
+      async () => await getMaxHistoryCountAction(request),
+      path => router.push(path)
+    )
+
+    setMaxHistoryCount(maxHistoryCount)
+  }, [generatedScheduleDepartmentId, router, setMaxHistoryCount])
+
+  const onDialogOpen = useCallback(async (): Promise<void> => {
+    if (isFetchingMaxHistoryCount) return;
+
+    setIsFetchingMaxHistoryCount(true);
+    await fetchMaxHistoryCount();
+    setIsFetchingMaxHistoryCount(false);
+  }, [isFetchingMaxHistoryCount, setIsFetchingMaxHistoryCount, fetchMaxHistoryCount])
+
+  const previousDepartmentId = useRef<boolean>(false);
+
+  useEffect(() => {
+    if (!isAlertDialogOpen) {
+      previousDepartmentId.current = false;
+      return;
+    }
+
+    if (!previousDepartmentId.current) {
+      onDialogOpen();
+    }
+
+    previousDepartmentId.current = true;
+  }, [isAlertDialogOpen, onDialogOpen]);
 
   return (
     <AlertDialog open={isAlertDialogOpen} onOpenChange={setIsAlertDialogOpen}>
