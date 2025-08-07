@@ -5,7 +5,8 @@ import { handleServiceResponse } from "@/libs/share/_general/utils/service-respo
 
 export const fetchPosts = async (departmentId: number, onRoute: (path: string) => void): Promise<Post[]> => {
   const request: GetPostsRequest = {
-    departmentId,
+    where: { departmentId },
+    orderBy: [{ field: 'name' }],
   }
 
   const response = await getPostsAction(request)
