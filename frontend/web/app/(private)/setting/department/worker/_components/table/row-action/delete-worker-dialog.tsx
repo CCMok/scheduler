@@ -48,7 +48,8 @@ export default function DeleteWorkerDialog({
 
     return await fetchData(
       async () => await getWorkersAction(request),
-      path => router.push(path)
+      path => router.push(path),
+      [],
     )
   }
 

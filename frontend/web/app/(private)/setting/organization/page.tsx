@@ -12,7 +12,8 @@ const getOrganizations = async (): Promise<Organization[]> => {
 
   return await fetchData(
     async () => await getOrganizationsService(request),
-    path => redirect(path)
+    path => redirect(path),
+    [],
   )
 }
 

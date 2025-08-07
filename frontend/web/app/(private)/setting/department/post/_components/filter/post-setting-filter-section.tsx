@@ -18,6 +18,7 @@ const getOrganizations = async (): Promise<OrganizationDepartments[]> => {
   return await fetchData(
     async () => await getOrganizationsService<OrganizationDepartments>(request),
     path => redirect(path),
+    [],
   )
 }
 

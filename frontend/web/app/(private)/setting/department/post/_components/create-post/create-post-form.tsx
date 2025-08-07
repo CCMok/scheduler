@@ -59,7 +59,8 @@ export default function CreatePostForm({
 
     return await fetchData(
       async () => await getPostsAction(request),
-      path => router.push(path)
+      path => router.push(path),
+      [],
     )
   }
 

@@ -11,7 +11,7 @@ import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange
 import { isNil } from "lodash";
 import { useRouter } from "next/navigation";
 import { GetMaxHistoryCountRequest } from "@/libs/server/organization/models/get-max-history-count-request";
-import { fetchDatum } from "@/libs/share/_general/utils/fetch";
+import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { getMaxHistoryCountAction } from "@/libs/server/organization/actions/get-max-history-count-action";
 
 function RosterTableSaveAlertDialog() {
@@ -32,9 +32,10 @@ function RosterTableSaveAlertDialog() {
       departmentId: generatedScheduleDepartmentId,
     }
 
-    const maxHistoryCount = await fetchDatum(
+    const maxHistoryCount = await fetchData(
       async () => await getMaxHistoryCountAction(request),
-      path => router.push(path)
+      path => router.push(path),
+      undefined,
     )
 
     setMaxHistoryCount(maxHistoryCount)

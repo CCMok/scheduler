@@ -2,7 +2,7 @@ import CustomButton from "@/components/button/custom-button";
 import { Separator } from "@/external/shadcn/components/ui/separator";
 import { GetPostNameRequest } from "@/libs/server/post/models/get-post-name-request";
 import { getPostNameService } from "@/libs/server/post/services/get-post-name-service";
-import { fetchDatum } from "@/libs/share/_general/utils/fetch";
+import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { PATH } from "@/libs/share/_general/utils/path";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
@@ -12,12 +12,13 @@ const getPostName = async (id: number): Promise<string> => {
   const request: GetPostNameRequest = { id }
 
   // TODO: check other fetchData / datum, if server component should directly use service not action
-  const name = await fetchDatum(
+  const name = await fetchData(
     async () => getPostNameService(request),
-    path => redirect(path)
+    path => redirect(path),
+    '',
   )
 
-  return name ?? '';
+  return name;
 }
 
 type Props = {

@@ -57,7 +57,8 @@ const useHandleDepartmentId = () => {
 
     const posts = await fetchData(
       async () => await getPostsAction(request),
-      path => router.push(path)
+      path => router.push(path),
+      [],
     )
     setPosts(posts)
 

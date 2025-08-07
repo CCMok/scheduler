@@ -63,7 +63,8 @@ export default function UpdatePostForm({
 
     return await fetchData(
       async () => await getPostsAction(request),
-      path => router.push(path)
+      path => router.push(path),
+      [],
     )
   }
 

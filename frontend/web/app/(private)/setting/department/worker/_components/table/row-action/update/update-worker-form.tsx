@@ -63,7 +63,8 @@ export default function UpdateWorkerForm({
 
     return await fetchData(
       async () => await getWorkersAction(request),
-      path => router.push(path)
+      path => router.push(path),
+      [],
     )
   }
 
