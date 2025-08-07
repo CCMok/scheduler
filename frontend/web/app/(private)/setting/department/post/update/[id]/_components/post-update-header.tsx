@@ -11,7 +11,6 @@ import { redirect } from "next/navigation";
 const getPostName = async (id: number): Promise<string> => {
   const request: GetPostNameRequest = { id }
 
-  // TODO: check other fetchData / datum, if server component should directly use service not action
   const name = await fetchData(
     async () => getPostNameService(request),
     path => redirect(path),
