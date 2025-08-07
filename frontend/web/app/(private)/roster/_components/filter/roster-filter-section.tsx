@@ -5,16 +5,16 @@ import { getOrganizationsService } from "@/libs/server/organization/services/get
 import { OrganizationDepartments } from "@/libs/server/organization/models/organization-dao";
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { redirect } from "next/navigation";
-import { PrismaSortDirection } from "@/libs/client/_general/enums/prisma-sort-direction";
+import { Prisma } from "@/external/prisma-generated";
 
 const getOrganizations = async (): Promise<OrganizationDepartments[]> => {
   const response = await getOrganizationsService<OrganizationDepartments>({
     include: {
       departments: {
-        orderBy: { name: PrismaSortDirection.ASC },
+        orderBy: { name: Prisma.SortOrder.asc },
       }
     },
-    orderBy: { name: PrismaSortDirection.ASC },
+    orderBy: { name: Prisma.SortOrder.asc },
   })
 
 

@@ -1,13 +1,12 @@
-import { Worker } from "@/external/prisma-generated"
+import { Worker, Prisma } from "@/external/prisma-generated"
 import { GetWorkersRequest } from "@/libs/server/worker/models/get-workers-request"
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler"
 import { getWorkersAction } from "@/libs/server/worker/actions/get-workers-action"
-import { PrismaSortDirection } from "@/libs/client/_general/enums/prisma-sort-direction"
 
 export const fetchWorkers = async (departmentId: number, onRoute: (path: string) => void): Promise<Worker[]> => {
   const request: GetWorkersRequest = {
     departmentId,
-    orderBy: PrismaSortDirection.ASC,
+    orderBy: Prisma.SortOrder.asc,
   }
 
   const response = await getWorkersAction(request)

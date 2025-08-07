@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { idSchema } from "../../_general/models/id";
-import { PrismaSortDirection } from "@/libs/client/_general/enums/prisma-sort-direction";
+import { Prisma } from "@/external/prisma-generated";
 
 export const getWorkersRequestSchema = z.object({
   departmentId: idSchema,
-  orderBy: z.nativeEnum(PrismaSortDirection).optional(),
+  orderBy: z.nativeEnum(Prisma.SortOrder).optional(),
 });
 
 export type GetWorkersRequest = z.infer<typeof getWorkersRequestSchema>;
