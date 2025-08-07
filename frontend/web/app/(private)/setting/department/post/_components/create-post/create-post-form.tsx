@@ -14,7 +14,11 @@ import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { useRouter } from "next/navigation";
 import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider";
-import { fetchPosts } from "@/libs/share/post/utils/fetch-posts-utils";
+import { UiResponse } from "@/libs/share/_general/models/ui-response";
+import { GetPostsRequest } from "@/libs/server/post/models/get-posts-request";
+import { fetchData } from "@/libs/share/_general/utils/fetch";
+import { Post } from "@/external/prisma-generated";
+import { getPostsAction } from "@/libs/server/post/actions/get-posts-action";
 
 type Props = ChildrenProps & ClassNameProps & {
   setAlertIsOpen: (isOpen: boolean) => void,
@@ -37,7 +41,7 @@ export default function CreatePostForm({
 
   const router = useRouter();
 
-  const onSubmit = async (input: CreatePostFormInput) => {
+  const createPost = async (input: CreatePostFormInput): Promise<UiResponse> => {
     const request: CreatePostRequest = {
       departmentId: Number(departmentId),
       postName: input.postName,
@@ -45,7 +49,22 @@ export default function CreatePostForm({
 
     const response = await createPostAction(request)
 
-    const uiResponse = handleServiceResponse(response, path => router.push(path))
+    return handleServiceResponse(response, path => router.push(path))
+  }
+
+  const fetchPosts = async (): Promise<Post[]> => {
+    const request: GetPostsRequest = {
+      where: { departmentId },
+    }
+
+    return await fetchData(
+      async () => await getPostsAction(request),
+      path => router.push(path)
+    )
+  }
+
+  const onSubmit = async (input: CreatePostFormInput) => {
+    const uiResponse = await createPost(input)
     if (!uiResponse.isSuccess) {
       form.setError('root', { type: uiResponse.message.title, message: uiResponse.message.content })
       return
@@ -57,7 +76,7 @@ export default function CreatePostForm({
 
     setAlertIsOpen(false)
 
-    const posts = await fetchPosts(Number(departmentId), path => router.push(path))
+    const posts = await fetchPosts()
     setPosts(posts)
   }
 

@@ -12,8 +12,12 @@ import { UiMessageTitle, UiMessageContent } from "@/libs/share/_general/enums/ui
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { useRouter } from "next/navigation";
 import { UpdateWorkerFormInput, updateWorkerFormInputSchema } from "@/libs/client/worker/models/update-worker-form-input";
-import { fetchWorkers } from "@/libs/share/worker/utils/fetch-workers-utils";
 import { useWorkerSettingStore } from "@/components/store/setting/worker/worker-setting-store-provider";
+import { UiResponse } from "@/libs/share/_general/models/ui-response";
+import { GetWorkersRequest } from "@/libs/server/worker/models/get-workers-request";
+import { Worker } from "@/external/prisma-generated";
+import { fetchData } from "@/libs/share/_general/utils/fetch";
+import { getWorkersAction } from "@/libs/server/worker/actions/get-workers-action";
 
 type Props = PropsWithChildren<{
   setAlertIsOpen: (isOpen: boolean) => void;
@@ -41,6 +45,28 @@ export default function UpdateWorkerForm({
   const departmentId = useWorkerSettingStore(state => state.departmentId);
   const setWorkers = useWorkerSettingStore(state => state.setWorkers);
 
+  const updateWorker = async (input: UpdateWorkerFormInput): Promise<UiResponse> => {
+    const request: UpdateWorkerRequest = {
+      workerId,
+      workerName: input.workerName,
+    }
+
+    const response = await updateWorkerAction(request)
+
+    return handleServiceResponse(response, path => router.push(path))
+  }
+
+  const fetchWorkers = async (): Promise<Worker[]> => {
+    const request: GetWorkersRequest = {
+      where: { departmentId },
+    }
+
+    return await fetchData(
+      async () => await getWorkersAction(request),
+      path => router.push(path)
+    )
+  }
+
   const onSubmit = async (input: UpdateWorkerFormInput) => {
     if (input.workerName === workerName) {
       form.setError('workerName', {
@@ -50,14 +76,7 @@ export default function UpdateWorkerForm({
       return;
     }
 
-    const request: UpdateWorkerRequest = {
-      workerId,
-      workerName: input.workerName,
-    }
-
-    const response = await updateWorkerAction(request)
-
-    const uiResponse = handleServiceResponse(response, path => router.push(path))
+    const uiResponse = await updateWorker(input)
     if (!uiResponse.isSuccess) {
       form.setError('root', { type: uiResponse.message.title, message: uiResponse.message.content })
       return
@@ -67,7 +86,7 @@ export default function UpdateWorkerForm({
       ...SONNER_DEFAULT_OPTIONS,
     })
 
-    const workers = await fetchWorkers(Number(departmentId), path => router.push(path))
+    const workers = await fetchWorkers()
     setWorkers(workers)
 
     setAlertIsOpen(false)

@@ -13,8 +13,12 @@ import { useRouter } from "next/navigation";
 import { UpdatePostFormInput, updatePostFormInputSchema } from "@/libs/client/post/models/update-post-form-input";
 import { UpdatePostRequest } from "@/libs/server/post/models/update-post-request";
 import { updatePostAction } from "@/libs/server/post/actions/update-post-action";
-import { fetchPosts } from "@/libs/share/post/utils/fetch-posts-utils";
 import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider";
+import { UiResponse } from "@/libs/share/_general/models/ui-response";
+import { Post } from "@/external/prisma-generated";
+import { fetchData } from "@/libs/share/_general/utils/fetch";
+import { GetPostsRequest } from "@/libs/server/post/models/get-posts-request";
+import { getPostsAction } from "@/libs/server/post/actions/get-posts-action";
 
 type Props = ChildrenProps & ClassNameProps & {
   setAlertIsOpen: (isOpen: boolean) => void,
@@ -41,6 +45,28 @@ export default function UpdatePostForm({
   const departmentId = usePostSettingStore(state => state.departmentId);
   const setPosts = usePostSettingStore(state => state.setPosts);
 
+  const updatePost = async (input: UpdatePostFormInput): Promise<UiResponse> => {
+    const request: UpdatePostRequest = {
+      postId,
+      postName: input.postName,
+    }
+
+    const response = await updatePostAction(request)
+
+    return handleServiceResponse(response, path => router.push(path))
+  }
+
+  const fetchPosts = async (): Promise<Post[]> => {
+    const request: GetPostsRequest = {
+      where: { departmentId },
+    }
+
+    return await fetchData(
+      async () => await getPostsAction(request),
+      path => router.push(path)
+    )
+  }
+
   const onSubmit = async (input: UpdatePostFormInput) => {
     if (input.postName === postName) {
       form.setError('postName', {
@@ -50,14 +76,7 @@ export default function UpdatePostForm({
       return;
     }
 
-    const request: UpdatePostRequest = {
-      postId,
-      postName: input.postName,
-    }
-
-    const response = await updatePostAction(request)
-
-    const uiResponse = handleServiceResponse(response, path => router.push(path))
+    const uiResponse = await updatePost(input)
     if (!uiResponse.isSuccess) {
       form.setError('root', { type: uiResponse.message.title, message: uiResponse.message.content })
       return
@@ -67,7 +86,7 @@ export default function UpdatePostForm({
       ...SONNER_DEFAULT_OPTIONS,
     })
 
-    const posts = await fetchPosts(Number(departmentId), path => router.push(path))
+    const posts = await fetchPosts()
     setPosts(posts)
 
     setAlertIsOpen(false)

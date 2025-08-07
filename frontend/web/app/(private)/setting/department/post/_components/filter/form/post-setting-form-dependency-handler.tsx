@@ -6,8 +6,10 @@ import { useCallback, useEffect, useRef } from "react";
 import { PostSettingFormInput } from "@/libs/client/post/models/post-setting-form-input";
 import { usePostSettingFilterStore } from "@/components/store/setting/post/post-setting-filter-store-provider";
 import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider";
-import { fetchPosts } from "@/libs/share/post/utils/fetch-posts-utils";
 import { useRouter } from "next/navigation";
+import { GetPostsRequest } from "@/libs/server/post/models/get-posts-request";
+import { getPostsAction } from "@/libs/server/post/actions/get-posts-action";
+import { fetchData } from "@/libs/share/_general/utils/fetch";
 
 const useHandleOrganizationId = () => {
   const { control, resetField } = useFormContext<PostSettingFormInput>();
@@ -49,7 +51,14 @@ const useHandleDepartmentId = () => {
   })
 
   const onDepartmentIdChange = useCallback(async (departmentId: number) => {
-    const posts = await fetchPosts(departmentId, path => router.push(path))
+    const request: GetPostsRequest = {
+      where: { departmentId },
+    }
+
+    const posts = await fetchData(
+      async () => await getPostsAction(request),
+      path => router.push(path)
+    )
     setPosts(posts)
 
     setDepartmentId(departmentId)

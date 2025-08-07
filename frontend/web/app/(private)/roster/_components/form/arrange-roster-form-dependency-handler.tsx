@@ -9,7 +9,9 @@ import { DEFAULT_DAYS } from "@/libs/share/roster/constants/roster-constant";
 import { OffDay } from "@/libs/client/roster/models/off-day";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
-import { fetchWorkers } from "@/libs/share/worker/utils/fetch-workers-utils";
+import { fetchData } from "@/libs/share/_general/utils/fetch";
+import { getWorkersAction } from "@/libs/server/worker/actions/get-workers-action";
+import { GetWorkersRequest } from "@/libs/server/worker/models/get-workers-request";
 
 const useHandleOrganizationId = () => {
   const { control, resetField } = useFormContext<ArrangeRosterFormInput>();
@@ -49,7 +51,16 @@ const useHandleDepartmentId = () => {
   })
 
   const onDepartmentIdChange = useCallback(async (departmentId: number) => {
-    const workers = await fetchWorkers(departmentId, path => router.push(path))
+    const request: GetWorkersRequest = {
+      where: { departmentId },
+      orderBy: [{ field: 'name' }],
+    }
+
+    const workers = await fetchData(
+      async () => await getWorkersAction(request),
+      path => router.push(path)
+    )
+
     setWorkers(workers)
 
     resetField('offs')

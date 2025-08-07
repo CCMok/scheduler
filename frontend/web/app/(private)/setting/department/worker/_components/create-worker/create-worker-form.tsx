@@ -14,7 +14,11 @@ import { createWorkerAction } from "@/libs/server/worker/actions/create-worker-a
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { useRouter } from "next/navigation";
 import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
-import { fetchWorkers } from "@/libs/share/worker/utils/fetch-workers-utils";
+import { GetWorkersRequest } from "@/libs/server/worker/models/get-workers-request";
+import { getWorkersAction } from "@/libs/server/worker/actions/get-workers-action";
+import { fetchData } from "@/libs/share/_general/utils/fetch";
+import { UiResponse } from "@/libs/share/_general/models/ui-response";
+import { Worker } from "@/external/prisma-generated";
 
 type Props = ChildrenProps & ClassNameProps & {
   setAlertIsOpen: (isOpen: boolean) => void,
@@ -37,7 +41,7 @@ export default function CreateWorkerForm({
 
   const router = useRouter();
 
-  const onSubmit = async (input: CreateWorkerFormInput) => {
+  const createWorker = async (input: CreateWorkerFormInput): Promise<UiResponse> => {
     const request: CreateWorkerRequest = {
       departmentId: Number(departmentId),
       workerName: input.workerName,
@@ -45,7 +49,22 @@ export default function CreateWorkerForm({
 
     const response = await createWorkerAction(request)
 
-    const uiResponse = handleServiceResponse(response, path => router.push(path))
+    return handleServiceResponse(response, path => router.push(path))
+  }
+
+  const fetchWorkers = async (): Promise<Worker[]> => {
+    const request: GetWorkersRequest = {
+      where: { departmentId: Number(departmentId) },
+    }
+
+    return await fetchData(
+      async () => await getWorkersAction(request),
+      path => router.push(path)
+    )
+  }
+
+  const onSubmit = async (input: CreateWorkerFormInput) => {
+    const uiResponse = await createWorker(input)
     if (!uiResponse.isSuccess) {
       form.setError('root', { type: uiResponse.message.title, message: uiResponse.message.content })
       return
@@ -55,7 +74,7 @@ export default function CreateWorkerForm({
       ...SONNER_DEFAULT_OPTIONS,
     })
 
-    const workers = await fetchWorkers(Number(departmentId), path => router.push(path))
+    const workers = await fetchWorkers();
     setWorkers(workers)
 
     setAlertIsOpen(false)

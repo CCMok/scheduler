@@ -9,7 +9,11 @@ import { UiMessageTitle } from '@/libs/share/_general/enums/ui-message';
 import { useRouter } from 'next/navigation';
 import { handleServiceResponse } from '@/libs/share/_general/utils/service-response-handler';
 import { usePostSettingStore } from '@/components/store/setting/post/post-setting-store-provider';
-import { fetchPosts } from '@/libs/share/post/utils/fetch-posts-utils';
+import { UiResponse } from '@/libs/share/_general/models/ui-response';
+import { Post } from '@/external/prisma-generated';
+import { GetPostsRequest } from '@/libs/server/post/models/get-posts-request';
+import { getPostsAction } from '@/libs/server/post/actions/get-posts-action';
+import { fetchData } from '@/libs/share/_general/utils/fetch';
 
 type Props = {
   postId: number;
@@ -29,13 +33,27 @@ export default function DeletePostDialog({
   const departmentId = usePostSettingStore(state => state.departmentId);
   const setPosts = usePostSettingStore(state => state.setPosts);
 
-  const onContinue = async () => {
+  const deletePost = async (): Promise<UiResponse> => {
     const request: DeletePostRequest = {
       postId,
     }
     const response = await deletePostAction(request)
+    return handleServiceResponse(response, path => router.push(path))
+  }
 
-    const uiResponse = handleServiceResponse(response, path => router.push(path))
+  const fetchPosts = async (): Promise<Post[]> => {
+    const request: GetPostsRequest = {
+      where: { departmentId },
+    }
+
+    return await fetchData(
+      async () => await getPostsAction(request),
+      path => router.push(path)
+    )
+  }
+
+  const onContinue = async () => {
+    const uiResponse = await deletePost();
     if (!uiResponse.isSuccess) {
       toast.error(uiResponse.message.title, {
         ...SONNER_DEFAULT_OPTIONS,
@@ -49,7 +67,7 @@ export default function DeletePostDialog({
       description: '職位已刪除',
     })
 
-    const posts = await fetchPosts(Number(departmentId), path => router.push(path))
+    const posts = await fetchPosts()
     setPosts(posts)
 
     setIsOpen(false)

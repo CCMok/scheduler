@@ -7,7 +7,9 @@ import { WorkerSettingFormInput } from "@/libs/client/worker/models/worker-setti
 import { useWorkerSettingFilterStore } from "@/components/store/setting/worker/worker-setting-filter-store-provider";
 import { useRouter } from "next/navigation";
 import { useWorkerSettingStore } from "@/components/store/setting/worker/worker-setting-store-provider";
-import { fetchWorkers } from "@/libs/share/worker/utils/fetch-workers-utils";
+import { GetWorkersRequest } from "@/libs/server/worker/models/get-workers-request";
+import { fetchData } from "@/libs/share/_general/utils/fetch";
+import { getWorkersAction } from "@/libs/server/worker/actions/get-workers-action";
 
 const useHandleOrganizationId = () => {
   const { control, resetField } = useFormContext<WorkerSettingFormInput>();
@@ -49,7 +51,14 @@ const useHandleDepartmentId = () => {
   })
 
   const onDepartmentIdChange = useCallback(async (departmentId: number) => {
-    const workers = await fetchWorkers(departmentId, path => router.push(path))
+    const request: GetWorkersRequest = {
+      where: { departmentId },
+    }
+
+    const workers = await fetchData(
+      async () => await getWorkersAction(request),
+      path => router.push(path)
+    )
     setWorkers(workers)
 
     setDepartmentId(departmentId)
