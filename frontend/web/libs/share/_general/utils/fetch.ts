@@ -1,12 +1,10 @@
 import { ServiceResponse } from "../models/service-response";
 import { handleServiceResponse } from "./service-response-handler";
 
-export const fetchData = async <
-  TData,
->(
+export const fetchData = async <TData>(
   action: () => Promise<ServiceResponse<TData[]>>,
   onRoute: (path: string) => void,
-) => {
+): Promise<TData[]> => {
   const response = await action();
 
   const uiResponse = handleServiceResponse(response, onRoute)
