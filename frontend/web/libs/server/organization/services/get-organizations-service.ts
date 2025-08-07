@@ -7,22 +7,24 @@ import { Role } from '@/libs/share/_general/enums/role';
 import prisma from '../../_general/managers/database-manager';
 import { SessionPayload } from '../../_general/models/session-payload';
 import { GetOrganizationsRequest, OrganizationRelate } from '../models/get-organizations-request';
+import { serviceWrapper } from '../../_general/services/general-service';
 
 export const getOrganizationsService = async <T extends Organization = Organization>(
   request: GetOrganizationsRequest
-): Promise<ServiceResponse<T[]>> => {
-  const session = await getSession();
-  if (!session) return { status: ServiceResponseStatus.UNAUTHORIZED }
+): Promise<ServiceResponse<T[]>> =>
+  await serviceWrapper<T[]>(async () => {
+    const session = await getSession();
+    if (!session) return { status: ServiceResponseStatus.UNAUTHORIZED }
 
-  const query = getQuery(request, session);
+    const query = getQuery(request, session);
 
-  const organizations = await prisma.organization.findMany(query) as T[];
+    const organizations = await prisma.organization.findMany(query) as T[];
 
-  return {
-    status: ServiceResponseStatus.OK,
-    data: organizations,
-  }
-}
+    return {
+      status: ServiceResponseStatus.OK,
+      data: organizations,
+    }
+  })
 
 const getQuery = (request: GetOrganizationsRequest, session: SessionPayload): Prisma.OrganizationFindManyArgs => {
   const where: Prisma.OrganizationWhereInput = request.where ? { ...request.where } : {};

@@ -4,19 +4,21 @@ import { ServiceResponseStatus } from "../../../share/_general/enums/service-res
 import prisma from "../../_general/managers/database-manager";
 import { Prisma, Worker } from '@/external/prisma-generated';
 import { GetWorkersRequest, getWorkersRequestSchema } from '../models/get-workers-request';
+import { serviceWrapper } from '../../_general/services/general-service';
 
-export const getWorkersService = async (request: GetWorkersRequest): Promise<ServiceResponse<Worker[]>> => {
-  const parsedRequest = getWorkersRequestSchema.parse(request);
+export const getWorkersService = async (request: GetWorkersRequest): Promise<ServiceResponse<Worker[]>> =>
+  await serviceWrapper(async () => {
+    const parsedRequest = getWorkersRequestSchema.parse(request);
 
-  const query = getQuery(parsedRequest);
+    const query = getQuery(parsedRequest);
 
-  const workers = await prisma.worker.findMany(query);
+    const workers = await prisma.worker.findMany(query);
 
-  return {
-    status: ServiceResponseStatus.OK,
-    data: workers,
-  };
-};
+    return {
+      status: ServiceResponseStatus.OK,
+      data: workers,
+    };
+  });
 
 const getQuery = (request: GetWorkersRequest): Prisma.WorkerFindManyArgs => {
   const where: Prisma.WorkerWhereInput = request.where ? { ...request.where } : {};
