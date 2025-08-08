@@ -1,7 +1,7 @@
-import { Worker } from "@/external/prisma-generated";
 import { ColumnDef } from "@tanstack/react-table";
-import WorkerTableRowAction from "./row-action/worker-table-row-action";
 import TableSortableHeader from "@/components/table/table-sortable-header";
+import { Worker } from "@/external/prisma-generated";
+import PostWorkerTableRowAction from "./post-worker-row-action";
 
 export const columns: ColumnDef<Worker>[] = [
   {
@@ -14,7 +14,7 @@ export const columns: ColumnDef<Worker>[] = [
     id: 'actions',
     header: '動作',
     cell: ({ row }) => (
-      <WorkerTableRowAction workerId={row.original.id} workerName={row.original.name} />
+      <PostWorkerTableRowAction workerId={row.original.id} workerName={row.original.name} />
     ),
   },
 ]

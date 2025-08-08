@@ -6,6 +6,7 @@ import { GetPostNameRequest, getPostNameRequestSchema } from '../models/get-post
 import prisma from '../../_general/managers/database-manager'
 import { ServiceMessage } from '@/libs/share/_general/enums/service-message'
 
+// TODO: remove
 export const getPostNameService = async (request: GetPostNameRequest): Promise<ServiceResponse<string>> => 
   await serviceWrapper(async () => {
     const parsedRequest = getPostNameRequestSchema.parse(request)

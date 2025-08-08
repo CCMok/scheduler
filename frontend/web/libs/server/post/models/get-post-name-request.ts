@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { idSchema } from "../../_general/models/id";
 
+// TODO: remove
 export const getPostNameRequestSchema = z.object({
   id: idSchema,
 })
