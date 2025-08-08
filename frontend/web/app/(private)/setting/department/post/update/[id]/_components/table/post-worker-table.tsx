@@ -14,31 +14,32 @@ type Props = {
 
 export default function PostWorkerTable({
   workers,
-}: Readonly<Props>) {  
+}: Readonly<Props>) {
   const [sorting, setSorting] = useState<SortingState>([{
-  id: 'name',
-  desc: false,
-}]);
-const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    id: 'name',
+    desc: false,
+  }]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-const table = useReactTable({
-  data: workers,
-  columns,
-  getCoreRowModel: getCoreRowModel(),
-  onSortingChange: setSorting,
-  getSortedRowModel: getSortedRowModel(),
-  onColumnFiltersChange: setColumnFilters,
-  getPaginationRowModel: getPaginationRowModel(),
-  state: {
-    sorting,
-    columnFilters,
-  },
-  initialState: {
-    pagination: {
-      pageSize: TABLE_DEFAULT_PAGE_SIZE,
+  const table = useReactTable({
+    data: workers,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getPaginationRowModel: getPaginationRowModel(),
+    state: {
+      sorting,
+      columnFilters,
     },
-  },
-});
+    initialState: {
+      pagination: {
+        pageSize: TABLE_DEFAULT_PAGE_SIZE,
+      },
+    },
+  });
+
   return (
     <CustomTable table={table} />
   )
