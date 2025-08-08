@@ -4,17 +4,21 @@ import MoreDropdownMenu from '@/components/dropdown/more-dropdown-menu';
 import { Trash2 } from 'lucide-react';
 import CustomDropdownMenuItem from '@/components/dropdown/custom-dropdown-menu-item';
 import { useState } from "react";
+import DeletePostWorkerDialog from './delete-post-worker-dialog';
 
 type Props = {
+  postId: number;
+  postName: string;
   workerId: number;
   workerName: string;
 };
 
 export default function PostWorkerTableRowAction({
+  postId,
+  postName,
   workerId,
   workerName,
 }: Readonly<Props>) {
-  // TODO
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState(false)
 
   return (
@@ -25,12 +29,14 @@ export default function PostWorkerTableRowAction({
           刪除
         </CustomDropdownMenuItem>
       </MoreDropdownMenu>
-      {/* <DeletePostDialog
+      <DeletePostWorkerDialog
         postId={postId}
         postName={postName}
+        workerId={workerId}
+        workerName={workerName}
         isOpen={isOpenDeleteDialog}
         setIsOpen={setIsOpenDeleteDialog}
-      /> */}
+      />
     </>
   );
 } 

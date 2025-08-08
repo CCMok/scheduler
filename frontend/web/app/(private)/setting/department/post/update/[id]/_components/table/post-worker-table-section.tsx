@@ -4,10 +4,14 @@ import PostWorkerTable from "./post-worker-table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
 
 type Props = {
+  postId: number;
+  postName: string;
   workers: Worker[];
 }
 
 export default function PostWorkerTableSection({
+  postId,
+  postName,
   workers,
 }: Readonly<Props>) {
   return (
@@ -22,7 +26,7 @@ export default function PostWorkerTableSection({
         <div className="flex justify-end">
           <CreatePostWorkerButton />
         </div>
-        <PostWorkerTable workers={workers} />
+        <PostWorkerTable postId={postId} postName={postName} workers={workers} />
       </CardContent>
     </Card>
   )

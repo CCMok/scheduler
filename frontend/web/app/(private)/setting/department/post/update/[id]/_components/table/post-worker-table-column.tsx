@@ -1,9 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from "@/components/table/table-sortable-header";
 import { Worker } from "@/external/prisma-generated";
-import PostWorkerTableRowAction from "./post-worker-row-action";
+import PostWorkerTableRowAction from "./row-action/post-worker-table-row-action";
 
-export const columns: ColumnDef<Worker>[] = [
+export const getColumns = (postId: number, postName: string): ColumnDef<Worker>[] => [
   {
     accessorKey: 'name',
     header: ({ column }) => (
@@ -14,7 +14,12 @@ export const columns: ColumnDef<Worker>[] = [
     id: 'actions',
     header: '動作',
     cell: ({ row }) => (
-      <PostWorkerTableRowAction workerId={row.original.id} workerName={row.original.name} />
+      <PostWorkerTableRowAction
+        postId={postId}
+        postName={postName}
+        workerId={row.original.id}
+        workerName={row.original.name}
+      />
     ),
   },
 ]

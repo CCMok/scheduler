@@ -4,15 +4,18 @@ import { Worker } from "@/external/prisma-generated"
 import { ColumnFiltersState, getCoreRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import { useState } from "react";
 import CustomTable from "@/components/table/custom-table";
-import { columns } from "./post-worker-table-column";
+import { getColumns } from "./post-worker-table-column";
 import { TABLE_DEFAULT_PAGE_SIZE } from "@/libs/client/_general/constants/table-constant";
 
 type Props = {
+  postId: number;
+  postName: string;
   workers: Worker[];
 }
 
-
 export default function PostWorkerTable({
+  postId,
+  postName,
   workers,
 }: Readonly<Props>) {
   const [sorting, setSorting] = useState<SortingState>([{
@@ -20,6 +23,8 @@ export default function PostWorkerTable({
     desc: false,
   }]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
+  const columns = getColumns(postId, postName);
 
   const table = useReactTable({
     data: workers,
