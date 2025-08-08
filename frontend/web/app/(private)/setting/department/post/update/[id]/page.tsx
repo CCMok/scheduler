@@ -33,7 +33,12 @@ export default async function PostUpdatePage({
     <div className="space-y-4">
       <PostUpdateHeader postName={postWorkers.name} />
       <PostUpdateNameSection postId={id} postName={postWorkers.name} />
-      <PostWorkerTableSection postId={id} postName={postWorkers.name} workers={postWorkers.workers} />
+      <PostWorkerTableSection
+        postId={id}
+        postName={postWorkers.name}
+        workers={postWorkers.workers}
+        departmentId={postWorkers.departmentId}
+      />
     </div>
   )
 }
