@@ -86,7 +86,7 @@ export default function PostUpdateNameSection({
           <CardHeader>
             <CardTitle>職位名稱</CardTitle>
             <CardDescription>
-              這是您的職位在 Scheduler 中的可見名稱。例如: 您組織的職位名稱。
+              這是您的職位在 Scheduler 中的可見名稱。
             </CardDescription>
           </CardHeader>
           <CardContent>

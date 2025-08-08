@@ -1,6 +1,7 @@
 import { Worker } from "@/external/prisma-generated"
 import CreatePostWorkerButton from "./create-post-worker-button";
 import PostWorkerTable from "./post-worker-table";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
 
 type Props = {
   workers: Worker[];
@@ -10,12 +11,19 @@ export default function PostWorkerTableSection({
   workers,
 }: Readonly<Props>) {
   return (
-    <div className="space-y-4">
-      <h2 className='text-2xl font-semibold'>人員管理</h2>
-      <div className="flex justify-end">
-        <CreatePostWorkerButton />
-      </div>
-      <PostWorkerTable workers={workers} />
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>職位人員管理</CardTitle>
+        <CardDescription>
+          指派職位的負責人員
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex justify-end">
+          <CreatePostWorkerButton />
+        </div>
+        <PostWorkerTable workers={workers} />
+      </CardContent>
+    </Card>
   )
 }
