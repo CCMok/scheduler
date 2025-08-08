@@ -7,11 +7,11 @@ import { getPrismaErrorTarget, tryCatchQuery } from '../../_general/utils/databa
 import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runtime/library';
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { ServiceMessage } from '../../../share/_general/enums/service-message';
-import { UpdatePostRequest, updatePostRequestSchema } from '../models/update-post-request';
+import { UpdatePostNameRequest, updatePostNameRequestSchema } from '../models/update-post-name-request';
 
-export const updatePostService = async (request: UpdatePostRequest): Promise<ServiceResponse> =>
+export const updatePostNameService = async (request: UpdatePostNameRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
-    const parsedRequest = updatePostRequestSchema.parse(request);
+    const parsedRequest = updatePostNameRequestSchema.parse(request);
 
     const updateResult = await updatePost(parsedRequest);
     if (!updateResult.isSuccess) {
@@ -24,12 +24,12 @@ export const updatePostService = async (request: UpdatePostRequest): Promise<Ser
     }
   })
 
-const updatePost = async (request: UpdatePostRequest) =>
+const updatePost = async (request: UpdatePostNameRequest) =>
   await tryCatchQuery(async () =>
     await prisma.post.update({
-      where: { id: request.postId },
+      where: { id: request.id },
       data: {
-        name: request.postName,
+        name: request.name,
       }
     })
   )
