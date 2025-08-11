@@ -1,23 +1,17 @@
 'use client'
 
-import { Worker } from "@/external/prisma-generated"
 import { ColumnFiltersState, getCoreRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import { useState } from "react";
 import CustomTable from "@/components/table/custom-table";
 import { getColumns } from "./post-worker-table-column";
 import { TABLE_DEFAULT_PAGE_SIZE } from "@/libs/client/_general/constants/table-constant";
+import { usePostUpdateStore } from "@/components/store/setting/post/post-update-store-provider";
 
-type Props = {
-  postId: number;
-  postName: string;
-  workers: Worker[];
-}
+export default function PostWorkerTable() {
+  const postId = usePostUpdateStore(state => state.postId)
+  const postName = usePostUpdateStore(state => state.postName)
+  const workers = usePostUpdateStore(state => state.workers)
 
-export default function PostWorkerTable({
-  postId,
-  postName,
-  workers,
-}: Readonly<Props>) {
   const [sorting, setSorting] = useState<SortingState>([{
     id: 'name',
     desc: false,

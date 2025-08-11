@@ -19,16 +19,12 @@ import { updatePostNameAction } from "@/libs/server/post/actions/update-post-nam
 import { UiResponse } from "@/libs/share/_general/models/ui-response";
 import { useState } from "react";
 import WarningDialog from "@/components/dialog/warning-dialog";
+import { usePostUpdateStore } from "@/components/store/setting/post/post-update-store-provider";
 
-type Props = {
-  postId: number;
-  postName: string;
-}
+export default function PostUpdateNameSection() {
+  const postId = usePostUpdateStore(state => state.postId)
+  const postName = usePostUpdateStore(state => state.postName)
 
-export default function PostUpdateNameSection({
-  postId,
-  postName,
-}: Readonly<Props>) {
   const form = useForm({
     resolver: zodResolver(updatePostNameFormInputSchema),
     defaultValues: {

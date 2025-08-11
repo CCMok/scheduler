@@ -8,20 +8,14 @@ import CreatePostWorkerIdFormField from "./create-post-worker-id-form-field";
 import CreatePostWorkerForm from "./create-post-worker-form";
 import FormRootMessage from "@/components/form/form-root-message";
 import FormSubmitButton from "@/components/form/form-submit-button";
-import { Worker } from "@/external/prisma-generated";
+import { usePostUpdateStore } from "@/components/store/setting/post/post-update-store-provider";
 
-type Props = {
-  departmentId: number,
-  workers: Worker[],
-  postId: number,
-}
-
-export default function CreatePostWorkerButton({
-  departmentId,
-  workers,
-  postId,
-}: Readonly<Props>) {
+export default function CreatePostWorkerButton() {
   const [isOpen, setIsOpen] = useState(false)
+
+  const postId = usePostUpdateStore(state => state.postId)
+  const departmentId = usePostUpdateStore(state => state.departmentId)
+  const workers = usePostUpdateStore(state => state.workers)
 
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>

@@ -8,6 +8,7 @@ import { notFound, redirect } from "next/navigation";
 import { getPostWorkersService } from "@/libs/server/post/services/get-post-workers-service";
 import { GetPostWorkersRequest } from "@/libs/server/post/models/get-post-workers-request";
 import { PostWorkers } from "@/libs/server/post/models/post-dao";
+import { PostUpdateStoreProvider } from "@/components/store/setting/post/post-update-store-provider";
 
 const getPostWorkers = async (id: number): Promise<PostWorkers | undefined> => {
   const request: GetPostWorkersRequest = { id }
@@ -30,15 +31,17 @@ export default async function PostUpdatePage({
   if (!postWorkers) notFound()
 
   return (
-    <div className="space-y-4">
-      <PostUpdateHeader postName={postWorkers.name} />
-      <PostUpdateNameSection postId={id} postName={postWorkers.name} />
-      <PostWorkerTableSection
-        postId={id}
-        postName={postWorkers.name}
-        workers={postWorkers.workers}
-        departmentId={postWorkers.departmentId}
-      />
-    </div>
+    <PostUpdateStoreProvider initState={{
+      postId: id,
+      postName: postWorkers.name,
+      workers: postWorkers.workers,
+      departmentId: postWorkers.departmentId,
+    }}>
+      <div className="space-y-4">
+        <PostUpdateHeader postName={postWorkers.name} />
+        <PostUpdateNameSection />
+        <PostWorkerTableSection />
+      </div>
+    </PostUpdateStoreProvider>
   )
 }
