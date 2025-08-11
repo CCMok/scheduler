@@ -8,11 +8,6 @@ export type PostUpdateState = {
   departmentId: number,
 }
 
-export type PostUpdateActions = {
-}
-
-export type PostUpdateStore = PostUpdateState & PostUpdateActions
-
 export const defaultInitState: PostUpdateState = { 
   postId: 0,
   postName: '',
@@ -23,7 +18,7 @@ export const defaultInitState: PostUpdateState = {
 export const createPostUpdateStore = (
   partialInitState?: Partial<PostUpdateState>,
 ) => {
-  return createStore<PostUpdateStore>()(set => ({
+  return createStore<PostUpdateState>()(() => ({
     ...defaultInitState,
     ...partialInitState,
   }))

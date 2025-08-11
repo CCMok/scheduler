@@ -3,7 +3,7 @@
 import { createContext, useRef, useContext, useEffect } from 'react'
 import { useStore } from 'zustand'
 import { ChildrenProps } from '@/libs/share/_general/props/children-props'
-import { createPostUpdateStore, PostUpdateState, PostUpdateStore } from './post-update-store'
+import { createPostUpdateStore, PostUpdateState } from './post-update-store'
 
 export type StoreApi = ReturnType<typeof createPostUpdateStore>
 
@@ -22,9 +22,7 @@ export const PostUpdateStoreProvider = ({
   const storeRef = useRef<StoreApi | null>(null)
 
   // Initialize store only once
-  if (!storeRef.current) {
-    storeRef.current = createPostUpdateStore(initState)
-  }
+  storeRef.current ??= createPostUpdateStore(initState);
 
   // Update store state when initState changes (e.g., on page refresh)
   useEffect(() => {
@@ -41,7 +39,7 @@ export const PostUpdateStoreProvider = ({
 }
 
 export const usePostUpdateStore = <T,>(
-  selector: (store: PostUpdateStore) => T,
+  selector: (store: PostUpdateState) => T,
 ): T => {
   const storeContext = useContext(StoreContext)
 
