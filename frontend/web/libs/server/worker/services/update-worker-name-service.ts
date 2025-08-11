@@ -7,11 +7,11 @@ import { getPrismaErrorTarget, tryCatchQuery } from '../../_general/utils/databa
 import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runtime/library';
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { ServiceMessage } from '../../../share/_general/enums/service-message';
-import { UpdateWorkerRequest, updateWorkerRequestSchema } from '../models/update-worker-request';
-// TODO: remove
-export const updateWorkerService = async (request: UpdateWorkerRequest): Promise<ServiceResponse> =>
+import { UpdateWorkerNameRequest, updateWorkerNameRequestSchema } from '../models/update-worker-name-request';
+
+export const updateWorkerNameService = async (request: UpdateWorkerNameRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
-    const parsedRequest = updateWorkerRequestSchema.parse(request);
+    const parsedRequest = updateWorkerNameRequestSchema.parse(request);
 
     const updateResult = await updateWorker(parsedRequest);
     if (!updateResult.isSuccess) {
@@ -24,12 +24,12 @@ export const updateWorkerService = async (request: UpdateWorkerRequest): Promise
     }
   })
 
-const updateWorker = async (request: UpdateWorkerRequest) =>
+const updateWorker = async (request: UpdateWorkerNameRequest) =>
   await tryCatchQuery(async () =>
     await prisma.worker.update({
-      where: { id: request.workerId },
+      where: { id: request.id },
       data: {
-        name: request.workerName,
+        name: request.name,
       }
     })
   )
@@ -41,7 +41,7 @@ const handleQueryError = (error: PrismaClientKnownRequestError): ServiceResponse
     if (target?.includes('name')) {
       return {
         status: ServiceResponseStatus.BAD_REQUEST,
-        message: ServiceMessage.ALREADY_USED.replaceAll('{0}', '職位名稱'),
+        message: ServiceMessage.ALREADY_USED.replaceAll('{0}', '人員名稱'),
       }
     }
   }

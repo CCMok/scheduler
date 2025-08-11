@@ -35,7 +35,13 @@ export const PATH = {
           build: (id: number) => `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.POST}/${PathSegmentAction.UPDATE}/${id}`,
         },
       },
-      worker: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.WORKER}`,
+      worker: {
+        base: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.WORKER}`,
+        update: {
+          base: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.WORKER}/${PathSegmentAction.UPDATE}`,
+          build: (id: number) => `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.WORKER}/${PathSegmentAction.UPDATE}/${id}`,
+        },
+      },
     }
   }
 } as const

@@ -5,7 +5,8 @@ import { Trash2, Edit } from 'lucide-react';
 import CustomDropdownMenuItem from '@/components/dropdown/custom-dropdown-menu-item';
 import { useState } from "react";
 import DeleteWorkerDialog from './delete-worker-dialog';
-import UpdateWorkerDialog from './update/update-worker-dialog';
+import { PATH } from '@/libs/share/_general/utils/path';
+import Link from 'next/link';
 
 type Props = {
   workerId: number;
@@ -16,27 +17,23 @@ export default function WorkerTableRowAction({
   workerId,
   workerName,
 }: Readonly<Props>) {
-  const [isOpenUpdateDialog, setIsOpenUpdateDialog] = useState(false)
+  // TODO: remove update worker dialog
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState(false)
 
   return (
     <>
       <MoreDropdownMenu contentProps={{ align: 'end' }}>
-        <CustomDropdownMenuItem onClick={() => setIsOpenUpdateDialog(true)}>
-          <Edit className="mr-2 h-4 w-4" />
-          編輯
+        <CustomDropdownMenuItem asChild>
+          <Link href={PATH.setting.department.worker.update.build(workerId)}>
+            <Edit className="mr-2 h-4 w-4" />
+            編輯
+          </Link>
         </CustomDropdownMenuItem>
         <CustomDropdownMenuItem onClick={() => setIsOpenDeleteDialog(true)} className="text-destructive">
           <Trash2 className="mr-2 h-4 w-4" />
           刪除
         </CustomDropdownMenuItem>
       </MoreDropdownMenu>
-      <UpdateWorkerDialog
-        workerId={workerId}
-        workerName={workerName}
-        isOpen={isOpenUpdateDialog}
-        setIsOpen={setIsOpenUpdateDialog}
-      />
       <DeleteWorkerDialog
         workerId={workerId}
         workerName={workerName}

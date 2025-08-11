@@ -40,7 +40,7 @@ const departmentMenuItems: SettingMenuCategory = {
     },
     {
       title: "人員",
-      url: PATH.setting.department.worker,
+      url: PATH.setting.department.worker.base,
     }
   ]
 }

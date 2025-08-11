@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { UiMessageContent } from "../../../share/_general/enums/ui-message";
-
+// TODO: remove
 export const updateWorkerFormInputSchema = z.object({
   workerName: z.string().min(1, UiMessageContent.REQUIRED),
 })
