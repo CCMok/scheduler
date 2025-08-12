@@ -37,7 +37,7 @@ class RosterService:
             for post in material.posts:
                 result_worker_id = None
 
-                for worker in post.workers:
+                for worker in post.active_workers:
                     is_off = solver.value(
                         material.shifts[(day, post.id, worker.id)]
                     ) == 0

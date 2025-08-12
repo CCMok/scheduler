@@ -28,21 +28,25 @@ class RosterMaterial:
 
     def __find_posts(self) -> list[Post]:
         return self.db_session.exec(
-            select(Post).where(Post.department_id == self.request.department_id)
+            select(Post)
+            .where(Post.department_id == self.request.department_id)
+            .where(Post.is_deleted == False)
         ).all()
 
-    def __find_workers(self):
+    def __find_workers(self) -> list[Worker]:
         return self.db_session.exec(
             select(Worker)
             .where(Worker.department_id == self.request.department_id)
+            .where(Worker.is_deleted == False)
         ).all()
 
-    def __create_shifts(self) -> dict[tuple[int, int, int], cp_model.IntVar]:
-        shifts: dict[tuple[int, int, int], cp_model.IntVar] = {}
+    def __create_shifts(self) -> dict[tuple[datetime, int, int], cp_model.IntVar]:
+        shifts: dict[tuple[datetime, int, int], cp_model.IntVar] = {}
 
         for day in self.request.days:
             for post in self.posts:
-                for worker in post.workers:
-                    shifts[(day, post.id, worker.id)] = self.model.new_bool_var(f'shift_{day}_{post.id}_{worker.id}')
+                for worker in post.active_workers:
+                    shifts[(day, post.id, worker.id)] = self.model.new_bool_var(
+                        f'shift_{day}_{post.id}_{worker.id}')
 
         return shifts

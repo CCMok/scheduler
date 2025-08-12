@@ -22,6 +22,7 @@ export const getWorkersService = async (request: GetWorkersRequest): Promise<Ser
 
 const getQuery = (request: GetWorkersRequest): Prisma.WorkerFindManyArgs => {
   const where: Prisma.WorkerWhereInput = request.where ? { ...request.where } : {};
+  where.isDeleted = false;
 
   const orderBy: Prisma.WorkerOrderByWithRelationInput = {};
   if (request.orderBy) {

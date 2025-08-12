@@ -17,7 +17,6 @@ export default function PostTableRowAction({
   postId,
   postName,
 }: Readonly<Props>) {
-  // TODO: delete cascade postWorker
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState(false)
 
   return (

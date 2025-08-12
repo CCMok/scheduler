@@ -71,15 +71,17 @@ model Department {
 }
 
 model Post {
+  // TODO: display seq
   id                                Int                                @id @default(autoincrement())
   departmentId                      Int                                @map("department_id")
   name                              String
+  isDeleted                         Boolean                            @default(false) @map("is_deleted")
   department                        Department                         @relation(fields: [departmentId], references: [id])
   postWorkers                       PostWorker[]
   postConstraintPosts               PostConstraintPost[]
   rosterHistoryScheduleArrangements RosterHistoryScheduleArrangement[]
 
-  @@unique([departmentId, name])
+  // Unique index defined at migration 20250812063939
   @@index([departmentId])
   @@map("post")
 }
@@ -88,12 +90,13 @@ model Worker {
   id                                Int                                @id @default(autoincrement())
   departmentId                      Int                                @map("department_id")
   name                              String
+  isDeleted                         Boolean                            @default(false) @map("is_deleted")
   department                        Department                         @relation(fields: [departmentId], references: [id])
   postWorkers                       PostWorker[]
   workerConstraintWorkers           WorkerConstraintWorker[]
   rosterHistoryScheduleArrangements RosterHistoryScheduleArrangement[]
 
-  @@unique([departmentId, name])
+// Unique index defined at migration 20250812063939
   @@index([departmentId])
   @@map("worker")
 }

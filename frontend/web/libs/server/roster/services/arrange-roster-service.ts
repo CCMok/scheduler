@@ -50,7 +50,14 @@ export const arrangeRosterService = async (request: ArrangeRosterRequest): Promi
 export const getDepartmentWorkersPosts = async (id: number) => {
   return await prisma.department.findUnique({
     where: { id },
-    include: { workers: true, posts: true },
+    include: {
+      workers: {
+        where: { isDeleted: false },
+      },
+      posts: {
+        where: { isDeleted: false },
+      },
+    },
   })
 }
 

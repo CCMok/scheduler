@@ -7,7 +7,7 @@ import { PostWorkers } from '../models/post-dao'
 import { GetPostWorkersRequest, getPostWorkersRequestSchema } from '../models/get-post-workers-request'
 import prisma from '../../_general/managers/database-manager'
 
-export const getPostWorkersService = async (request: GetPostWorkersRequest): Promise<ServiceResponse<PostWorkers>> => 
+export const getPostWorkersService = async (request: GetPostWorkersRequest): Promise<ServiceResponse<PostWorkers>> =>
   await serviceWrapper(async () => {
     const parsedRequest = getPostWorkersRequestSchema.parse(request)
 
@@ -17,8 +17,8 @@ export const getPostWorkersService = async (request: GetPostWorkersRequest): Pro
       status: ServiceResponseStatus.BAD_REQUEST,
       message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '職位')
     }
-  
-    return { 
+
+    return {
       status: ServiceResponseStatus.OK,
       data: postWorkers,
     }
@@ -26,9 +26,15 @@ export const getPostWorkersService = async (request: GetPostWorkersRequest): Pro
 
 const getPostWorkers = async (id: number): Promise<PostWorkers | undefined> => {
   const postWithRelation = await prisma.post.findUnique({
-    where: { id },
+    where: {
+      id,
+      isDeleted: false,
+    },
     include: {
       postWorkers: {
+        where: {
+          worker: { isDeleted: false },
+        },
         include: { worker: true },
       },
     },
@@ -37,8 +43,8 @@ const getPostWorkers = async (id: number): Promise<PostWorkers | undefined> => {
   if (!postWithRelation) return;
 
   const { postWorkers, ...post } = postWithRelation;
-  
-  return { 
+
+  return {
     ...post,
     workers: postWorkers.map(postWorker => postWorker.worker),
   }

@@ -9,8 +9,9 @@ export const deleteWorkerService = async (request: DeleteWorkerRequest): Promise
   await serviceWrapper(async () => {
     const parsedRequest = deleteWorkerRequestSchema.parse(request)
 
-    await prisma.worker.delete({
+    await prisma.worker.update({
       where: { id: parsedRequest.workerId },
+      data: { isDeleted: true },
     })
 
     return {
