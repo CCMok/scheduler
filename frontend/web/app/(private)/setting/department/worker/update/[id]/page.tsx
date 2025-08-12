@@ -8,6 +8,7 @@ import { GetWorkerPostsRequest } from "@/libs/server/worker/models/get-worker-po
 import { getWorkerPostsService } from "@/libs/server/worker/services/get-worker-posts-service";
 import WorkerUpdateNameSection from "./_components/name/worker-update-name-section";
 import { WorkerUpdateStoreProvider } from "@/components/store/setting/worker/worker-update-store-provider";
+import WorkerPostTableSection from "./_components/table/worker-post-table-section";
 
 const getWorkerPosts = async (id: number): Promise<WorkerPosts | undefined> => {
   const request: GetWorkerPostsRequest = { id }
@@ -39,7 +40,7 @@ export default async function WorkerUpdatePage({
       <div className="space-y-4">
         <WorkerUpdateHeader workerName={workerPosts.name} />
         <WorkerUpdateNameSection />
-        {/* TODO: posts section */}
+        <WorkerPostTableSection />
       </div>
     </WorkerUpdateStoreProvider>
   )

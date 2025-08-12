@@ -19,7 +19,7 @@ type Props = {
   setIsOpen: (isOpen: boolean) => void;
 };
 
-export default function DeletePostWorkerDialog({
+export default function DeleteWorkerPostDialog({
   postId,
   postName,
   workerId,
@@ -50,7 +50,7 @@ export default function DeletePostWorkerDialog({
 
     toast.success('刪除' + UiMessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
-      description: `已從 ${postName} 刪除 ${workerName}`,
+      description: `已從 ${workerName} 刪除 ${postName}`,
     })
 
     setIsOpen(false)
@@ -62,8 +62,8 @@ export default function DeletePostWorkerDialog({
     <WarningDialog
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      title="刪除職位人員"
-      description={`確定要從 ${postName} 刪除 ${workerName} 嗎？`}
+      title="刪除人員職位"
+      description={`確定要從 ${workerName} 刪除 ${postName} 嗎？`}
       onContinue={onContinue}
     />
   )
