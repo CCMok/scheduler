@@ -14,6 +14,14 @@ export const deleteWorkerService = async (request: DeleteWorkerRequest): Promise
       data: { isDeleted: true },
     })
 
+    await prisma.postWorker.deleteMany({
+      where: { workerId: parsedRequest.workerId },
+    })
+
+    await prisma.workerConstraintWorker.deleteMany({
+      where: { workerId: parsedRequest.workerId },
+    })
+
     return {
       status: ServiceResponseStatus.OK,
       data: {},
