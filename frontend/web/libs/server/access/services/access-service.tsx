@@ -7,7 +7,7 @@ import { cache } from 'react';
 import { Role } from '@/libs/share/_general/enums/role';
 import prisma from '../../_general/managers/database-manager';
 
-export const getAccessibleOrganizationsService = cache(async (): Promise<ServiceResponse<number[]>> =>
+export const getAccessibleOrganizationIdsService = cache(async (): Promise<ServiceResponse<number[]>> =>
   await serviceWrapper<number[]>(async () => {
     const session = await getSession();
     if (!session) return { status: ServiceResponseStatus.UNAUTHORIZED }
@@ -24,8 +24,8 @@ export const getAccessibleOrganizationsService = cache(async (): Promise<Service
     }
 
     const userOrganizations = await prisma.userOrganization.findMany({
-      where: { userId: session.userId },
       select: { organizationId: true },
+      where: { userId: session.userId },
     })
 
     return {
@@ -35,4 +35,59 @@ export const getAccessibleOrganizationsService = cache(async (): Promise<Service
   })
 )
 
-// TOOD: get department, post, worker access
+export const getAccessibleDepartmentIdsService = cache(async (): Promise<ServiceResponse<number[]>> =>
+  await serviceWrapper<number[]>(async () => {
+    const parentResponse = await getAccessibleOrganizationIdsService();
+    if (parentResponse.status !== ServiceResponseStatus.OK) return parentResponse;
+
+    const departments = await prisma.department.findMany({
+      select: { id: true },
+      where: {
+        organizationId: { in: parentResponse.data },
+      },
+    })
+
+    return {
+      status: ServiceResponseStatus.OK,
+      data: departments.map(department => department.id),
+    }
+  })
+)
+
+export const getAccessiblePostIdsService = cache(async (): Promise<ServiceResponse<number[]>> =>
+  await serviceWrapper<number[]>(async () => {
+    const parentResponse = await getAccessibleDepartmentIdsService();
+    if (parentResponse.status !== ServiceResponseStatus.OK) return parentResponse;
+
+    const posts = await prisma.post.findMany({
+      select: { id: true },
+      where: {
+        departmentId: { in: parentResponse.data },
+      },
+    })
+
+    return {
+      status: ServiceResponseStatus.OK,
+      data: posts.map(post => post.id),
+    }
+  })
+)
+
+export const getAccessibleWorkerIdsService = cache(async (): Promise<ServiceResponse<number[]>> =>
+  await serviceWrapper<number[]>(async () => {
+    const parentResponse = await getAccessibleDepartmentIdsService();
+    if (parentResponse.status !== ServiceResponseStatus.OK) return parentResponse;
+
+    const worker = await prisma.worker.findMany({
+      select: { id: true },
+      where: {
+        departmentId: { in: parentResponse.data },
+      },
+    })
+
+    return {
+      status: ServiceResponseStatus.OK,
+      data: worker.map(worker => worker.id),
+    }
+  })
+)
