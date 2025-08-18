@@ -8,10 +8,14 @@ import { getPrismaErrorTarget, tryCatchQuery } from '../../_general/utils/databa
 import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runtime/library';
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { ServiceMessage } from '../../../share/_general/enums/service-message';
+import { getAccessibleDepartmentIdsService } from '../../access/services/access-service';
 
 export const createWorkerService = async (request: CreateWorkerRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
     const parsedRequest = createWorkerRequestSchema.parse(request);
+
+    const checkAccessResponse = await checkAccess(parsedRequest.departmentId);
+    if (checkAccessResponse) return checkAccessResponse;
 
     const createResult = await createWorker(parsedRequest);
     if (!createResult.isSuccess) {
@@ -23,6 +27,19 @@ export const createWorkerService = async (request: CreateWorkerRequest): Promise
       data: {},
     }
   })
+
+const checkAccess = async (departmentId: number): Promise<ServiceResponse | undefined> => {
+  const accessServiceResponse = await getAccessibleDepartmentIdsService();
+
+  if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
+
+  if (accessServiceResponse.data.canAccessAll || accessServiceResponse.data.ids.includes(departmentId)) return;
+
+  return {
+    status: ServiceResponseStatus.BAD_REQUEST,
+    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '部門'),
+  }
+}
 
 const createWorker = async (request: CreateWorkerRequest) =>
   await tryCatchQuery(async () =>

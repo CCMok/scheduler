@@ -11,10 +11,15 @@ import prisma from '../../_general/managers/database-manager';
 import { ApiHeaderKey, ContentType } from '../../_general/enums/api-header';
 import { SCH_API_KEY } from '../../_general/constants/sch-constant';
 import { serviceWrapper } from '../../_general/services/general-service';
+import { getAccessibleDepartmentIdsService } from '../../access/services/access-service';
+import { ServiceMessage } from '@/libs/share/_general/enums/service-message';
 
 export const arrangeRosterService = async (request: ArrangeRosterRequest): Promise<ServiceResponse<DayBaseSchedule[]>> =>
   await serviceWrapper<DayBaseSchedule[]>(async () => {
     const parsedRequest = arrangeRosterRequestSchema.parse(request);
+
+    const checkAccessResponse = await checkAccess(parsedRequest.departmentId);
+    if (checkAccessResponse) return checkAccessResponse;
 
     const department = await getDepartmentWorkersPosts(parsedRequest.departmentId);
     if (!department) return {
@@ -46,6 +51,19 @@ export const arrangeRosterService = async (request: ArrangeRosterRequest): Promi
       data: schedules,
     }
   })
+
+const checkAccess = async (departmentId: number): Promise<ServiceResponse<DayBaseSchedule[]> | undefined> => {
+  const accessServiceResponse = await getAccessibleDepartmentIdsService();
+
+  if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
+
+  if (accessServiceResponse.data.canAccessAll || accessServiceResponse.data.ids.includes(departmentId)) return;
+
+  return {
+    status: ServiceResponseStatus.BAD_REQUEST,
+    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '部門'),
+  }
+}
 
 export const getDepartmentWorkersPosts = async (id: number) => {
   return await prisma.department.findUnique({

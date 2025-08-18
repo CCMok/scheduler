@@ -8,10 +8,14 @@ import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runti
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { ServiceMessage } from '../../../share/_general/enums/service-message';
 import { UpdateWorkerNameRequest, updateWorkerNameRequestSchema } from '../models/update-worker-name-request';
+import { getAccessibleWorkerIdsService } from '../../access/services/access-service';
 
 export const updateWorkerNameService = async (request: UpdateWorkerNameRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
     const parsedRequest = updateWorkerNameRequestSchema.parse(request);
+
+    const checkAccessResponse = await checkAccess(parsedRequest.id);
+    if (checkAccessResponse) return checkAccessResponse;
 
     const updateResult = await updateWorker(parsedRequest);
     if (!updateResult.isSuccess) {
@@ -23,6 +27,19 @@ export const updateWorkerNameService = async (request: UpdateWorkerNameRequest):
       data: {},
     }
   })
+
+const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => {
+  const accessServiceResponse = await getAccessibleWorkerIdsService();
+
+  if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
+
+  if (accessServiceResponse.data.canAccessAll || accessServiceResponse.data.ids.includes(id)) return;
+
+  return {
+    status: ServiceResponseStatus.BAD_REQUEST,
+    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '人員'),
+  }
+}
 
 const updateWorker = async (request: UpdateWorkerNameRequest) =>
   await tryCatchQuery(async () =>

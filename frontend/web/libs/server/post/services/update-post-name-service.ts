@@ -8,10 +8,14 @@ import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runti
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { ServiceMessage } from '../../../share/_general/enums/service-message';
 import { UpdatePostNameRequest, updatePostNameRequestSchema } from '../models/update-post-name-request';
+import { getAccessiblePostIdsService } from '../../access/services/access-service';
 
 export const updatePostNameService = async (request: UpdatePostNameRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
     const parsedRequest = updatePostNameRequestSchema.parse(request);
+
+    const checkAccessResponse = await checkAccess(parsedRequest.id);
+    if (checkAccessResponse) return checkAccessResponse;
 
     const updateResult = await updatePost(parsedRequest);
     if (!updateResult.isSuccess) {
@@ -23,6 +27,19 @@ export const updatePostNameService = async (request: UpdatePostNameRequest): Pro
       data: {},
     }
   })
+
+const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => {
+  const accessServiceResponse = await getAccessiblePostIdsService();
+
+  if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
+
+  if (accessServiceResponse.data.canAccessAll || accessServiceResponse.data.ids.includes(id)) return;
+
+  return {
+    status: ServiceResponseStatus.BAD_REQUEST,
+    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '職位'),
+  }
+}
 
 const updatePost = async (request: UpdatePostNameRequest) =>
   await tryCatchQuery(async () =>
