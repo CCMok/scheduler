@@ -161,6 +161,8 @@ const mapSchedules = async (schResponse: SchArrangeRosterResponse, department: D
 
       schedule.arrangements.push(arrangementInDayBaseSchedule)
     }
+
+    schedule.arrangements.sort((a, b) => a.post.displayPosition - b.post.displayPosition || a.post.name.localeCompare(b.post.name))
   }
 
   return schedules;

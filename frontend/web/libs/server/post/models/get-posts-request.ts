@@ -13,6 +13,7 @@ const orderByFieldSchema = z.enum([
   'id',
   'name',
   'departmentId',
+  'displayPosition',
 ] as const satisfies (keyof Post)[])
 
 const orderBySchema = createGetRequestOrderBy(z.undefined(), orderByFieldSchema)

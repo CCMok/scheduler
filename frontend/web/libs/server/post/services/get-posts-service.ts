@@ -9,7 +9,6 @@ import { getAccessibleDepartmentIdsService } from '../../access/services/access-
 import { isNil } from 'lodash';
 import { AccessResponse } from '../../access/models/access-response';
 
-// TODO: check department access for posts and workers in get / create / update / delete
 export const getPostsService = async (request: GetPostsRequest): Promise<ServiceResponse<Post[]>> =>
   await serviceWrapper(async () => {
     const parsedRequest = getPostsRequestSchema.parse(request);

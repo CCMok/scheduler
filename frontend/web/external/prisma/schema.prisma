@@ -70,12 +70,13 @@ model Department {
   @@map("department")
 }
 
+// TODO: edit display position
 model Post {
-  // TODO: display seq
   id                                Int                                @id @default(autoincrement())
   departmentId                      Int                                @map("department_id")
   name                              String
   isDeleted                         Boolean                            @default(false) @map("is_deleted")
+  displayPosition                   Int                                @default(0) @map("display_position")
   department                        Department                         @relation(fields: [departmentId], references: [id])
   postWorkers                       PostWorker[]
   postConstraintPosts               PostConstraintPost[]
