@@ -6,7 +6,7 @@ import prisma from '../../_general/managers/database-manager'
 import { getSession } from '../../_general/managers/session-manager'
 import { Transaction } from '../../_general/models/prisma-transaction'
 import { isNil } from 'lodash'
-import { getMaxHistoryCount } from '../../organization/repositories/organization-repository'
+import { getMaxHistoryCount } from '../../organization/utils/organization-utils'
 import { serviceWrapper } from '../../_general/services/general-service'
 
 export const createRosterHistoryService = async (request: CreateRosterHistoryRequest): Promise<ServiceResponse> =>

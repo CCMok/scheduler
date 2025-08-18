@@ -3,7 +3,7 @@ import { ServiceResponse } from "@/libs/share/_general/models/service-response";
 import { GetMaxHistoryCountRequest, getMaxHistoryCountRequestSchema } from "../models/get-max-history-count-request";
 import { GetMaxHistoryCountResponse } from "../models/get-max-history-count-response";
 import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
-import { getMaxHistoryCount } from '../repositories/organization-repository';
+import { getMaxHistoryCount } from '../utils/organization-utils';
 import { serviceWrapper } from '../../_general/services/general-service';
 
 export const getMaxHistoryCountService = async (request: GetMaxHistoryCountRequest): Promise<ServiceResponse<GetMaxHistoryCountResponse>> =>
