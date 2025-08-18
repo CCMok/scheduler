@@ -14,10 +14,10 @@ export const getPostsService = async (request: GetPostsRequest): Promise<Service
   await serviceWrapper(async () => {
     const parsedRequest = getPostsRequestSchema.parse(request);
 
-    const accessResponse = await getAccessibleDepartmentIdsService();
-    if (accessResponse.status !== ServiceResponseStatus.OK) return accessResponse
+    const accessServiceResponse = await getAccessibleDepartmentIdsService();
+    if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse
 
-    const query = getQuery(parsedRequest, accessResponse.data);
+    const query = getQuery(parsedRequest, accessServiceResponse.data);
 
     const posts = await prisma.post.findMany(query);
 
@@ -35,20 +35,24 @@ const getQuery = (request: GetPostsRequest, accessResponse: AccessResponse) => {
 }
 
 const getWhereClause = (request: GetPostsRequest, accessResponse: AccessResponse) => {
-  const where: Prisma.PostWhereInput = request.where ? { ...request.where } : {};
-  where.isDeleted = false;
+  const departmentIdFilter = getDepartmentIdFilter(request, accessResponse);
 
-  if (!accessResponse.canAccessAll) {
-    where.departmentId = getDepartmentIdFilter(request, accessResponse.ids);
+  return {
+    ...request.where,
+    isDeleted: false,
+    departmentId: departmentIdFilter,
   }
-
-  return where;
 }
 
-const getDepartmentIdFilter = (request: GetPostsRequest, accessibleIds: number[]) => {
-  if (isNil(request.where?.departmentId)) return { in: accessibleIds };
+const getDepartmentIdFilter = (request: GetPostsRequest, accessResponse: AccessResponse) => {
+  if (accessResponse.canAccessAll) {
+    if (isNil(request.where?.departmentId)) return;
+    return request.where.departmentId;
+  }
 
-  if (accessibleIds.includes(request.where.departmentId)) return request.where.departmentId;
+  if (isNil(request.where?.departmentId)) return { in: accessResponse.ids };
+
+  if (accessResponse.ids.includes(request.where.departmentId)) return request.where.departmentId;
 
   return { in: [] }
 }

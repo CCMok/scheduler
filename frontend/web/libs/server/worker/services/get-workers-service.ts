@@ -34,20 +34,24 @@ const getQuery = (request: GetWorkersRequest, accessResponse: AccessResponse) =>
 }
 
 const getWhereClause = (request: GetWorkersRequest, accessResponse: AccessResponse) => {
-  const where: Prisma.WorkerWhereInput = request.where ? { ...request.where } : {};
-  where.isDeleted = false;
+  const departmentIdFilter = getDepartmentIdFilter(request, accessResponse);
 
-  if (!accessResponse.canAccessAll) {
-    where.departmentId = getDepartmentIdFilter(request, accessResponse.ids);
+  return {
+    ...request.where,
+    isDeleted: false,
+    departmentId: departmentIdFilter,
   }
-
-  return where;
 }
 
-const getDepartmentIdFilter = (request: GetWorkersRequest, accessibleIds: number[]) => {
-  if (isNil(request.where?.departmentId)) return { in: accessibleIds };
+const getDepartmentIdFilter = (request: GetWorkersRequest, accessResponse: AccessResponse) => {
+  if (accessResponse.canAccessAll) {
+    if (isNil(request.where?.departmentId)) return;
+    return request.where.departmentId;
+  }
 
-  if (accessibleIds.includes(request.where.departmentId)) return request.where.departmentId;
+  if (isNil(request.where?.departmentId)) return { in: accessResponse.ids };
+
+  if (accessResponse.ids.includes(request.where.departmentId)) return request.where.departmentId;
 
   return { in: [] }
 }

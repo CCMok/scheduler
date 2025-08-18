@@ -9,10 +9,14 @@ import { PrismaErrorCode } from "../../_general/enums/prisma-error-code";
 import { getPrismaErrorTarget, tryCatchQuery } from "../../_general/utils/database-utils";
 import { PrismaClientKnownRequestError } from "@/external/prisma-generated/runtime/library";
 import { serviceWrapper } from '../../_general/services/general-service';
+import { getAccessibleOrganizationIdsService } from '../../access/services/access-service';
 
 export const updateOrganizationNameService = async (request: UpdateOrganizationNameRequest): Promise<ServiceResponse> =>
   await serviceWrapper<{}>(async () => {
     const parsedRequest = updateOrganizationNameRequestSchema.parse(request)
+
+    const checkAccessResponse = await checkAccess(parsedRequest.id);
+    if (checkAccessResponse) return checkAccessResponse;
 
     const updateResult = await updateOrganization(parsedRequest)
     if (!updateResult.isSuccess) {
@@ -24,6 +28,18 @@ export const updateOrganizationNameService = async (request: UpdateOrganizationN
       data: {},
     }
   })
+
+const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => {
+  const accessServiceResponse = await getAccessibleOrganizationIdsService();
+  if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
+
+  if (accessServiceResponse.data.canAccessAll || accessServiceResponse.data.ids.includes(id)) return;
+
+  return {
+    status: ServiceResponseStatus.BAD_REQUEST,
+    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '組織'),
+  }
+}
 
 const updateOrganization = async (request: UpdateOrganizationNameRequest): Promise<DataBaseQueryResponse> =>
   await tryCatchQuery(async () =>
