@@ -1,4 +1,3 @@
-import PostUpdateHeader from "./_components/post-update-header";
 import PostUpdateNameSection from "./_components/name/post-update-name-section";
 import PostWorkerTableSection from "./_components/table/post-worker-table-section";
 import { ParamProps } from "@/libs/share/_general/props/param-props";
@@ -9,6 +8,8 @@ import { getPostWorkersService } from "@/libs/server/post/services/get-post-work
 import { GetPostWorkersRequest } from "@/libs/server/post/models/get-post-workers-request";
 import { PostWorkers } from "@/libs/server/post/models/post-dao";
 import { PostUpdateStoreProvider } from "@/components/store/setting/post/post-update-store-provider";
+import Header from "@/components/header/header";
+import { PATH } from "@/libs/share/_general/utils/path";
 
 const getPostWorkers = async (id: number): Promise<PostWorkers | undefined> => {
   const request: GetPostWorkersRequest = { id }
@@ -38,7 +39,9 @@ export default async function PostUpdatePage({
       departmentId: postWorkers.departmentId,
     }}>
       <div className="space-y-4">
-        <PostUpdateHeader postName={postWorkers.name} />
+        <Header backPath={PATH.setting.department.post.base}>
+          <span>{postWorkers.name}</span>
+        </Header>
         <PostUpdateNameSection />
         <PostWorkerTableSection />
       </div>
