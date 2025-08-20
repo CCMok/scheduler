@@ -9,6 +9,7 @@ const enum PathSegment {
   DEPARTMENT = 'department',
   POST = 'post',
   WORKER = 'worker',
+  SEQUENCE = 'sequence',
 }
 
 const enum PathSegmentAction {
@@ -34,6 +35,10 @@ export const PATH = {
           base: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.POST}/${PathSegmentAction.UPDATE}`,
           build: (id: number) => `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.POST}/${PathSegmentAction.UPDATE}/${id}`,
         },
+        sequence: {
+          base: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.POST}/${PathSegment.SEQUENCE}`,
+          build: (id: number) => `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.POST}/${PathSegment.SEQUENCE}/${id}`,
+        }
       },
       worker: {
         base: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.WORKER}`,
