@@ -7,11 +7,11 @@ import {
   SidebarMenuSubItem,
   SidebarMenuSubButton,
 } from "@/external/shadcn/components/ui/sidebar";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SettingMenuCategory, SettingMenuItem, checkIsSettingMenuCategory } from "./setting-menu-utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/external/shadcn/components/ui/collapsible";
 import { ChevronRight } from "lucide-react";
+import CustomLink from "@/components/link/custom-link";
 
 type Props = {
   menu: SettingMenuCategory | SettingMenuItem,
@@ -46,7 +46,7 @@ export default function SettingSidebarItem({
                 return (
                   <SidebarMenuSubItem key={item.title}>
                     <SidebarMenuSubButton asChild isActive={isActive}>
-                      <Link href={item.url}>{item.title} </Link>
+                      <CustomLink href={item.url}>{item.title} </CustomLink>
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
                 )
@@ -63,7 +63,7 @@ export default function SettingSidebarItem({
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild isActive={isActive}>
-        <Link href={menu.url}>{menu.title}</Link>
+        <CustomLink href={menu.url}>{menu.title}</CustomLink>
       </SidebarMenuButton>
     </SidebarMenuItem>
   )

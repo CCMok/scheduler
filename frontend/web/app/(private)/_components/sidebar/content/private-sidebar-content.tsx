@@ -6,9 +6,9 @@ import {
   SidebarMenuButton,
 } from "@/external/shadcn/components/ui/sidebar"
 import { Calendar, Home, Settings } from "lucide-react"
-import Link from "next/link"
 import PrivateSidebarMenuItem from "../menu-item/private-sidebar-menu-item"
 import { PATH } from "@/libs/share/_general/utils/path"
+import CustomLink from "@/components/link/custom-link"
 
 const mainMenuItems = [
   {
@@ -37,10 +37,10 @@ export default function PrivateSidebarContent() {
             {mainMenuItems.map(item => (
               <PrivateSidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild>
-                  <Link href={item.url}>
+                  <CustomLink href={item.url}>
                     <item.icon />
                     <span>{item.title}</span>
-                  </Link>
+                  </CustomLink>
                 </SidebarMenuButton>
               </PrivateSidebarMenuItem>
             ))}

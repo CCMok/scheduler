@@ -6,7 +6,7 @@ import CustomDropdownMenuItem from '@/components/dropdown/custom-dropdown-menu-i
 import { useState } from "react";
 import DeletePostDialog from './delete-post-dialog';
 import { PATH } from '@/libs/share/_general/utils/path';
-import Link from 'next/link';
+import CustomLink from '@/components/link/custom-link';
 
 type Props = {
   postId: number;
@@ -23,10 +23,10 @@ export default function PostTableRowAction({
     <>
       <MoreDropdownMenu contentProps={{ align: 'end' }}>
         <CustomDropdownMenuItem asChild>
-          <Link href={PATH.setting.department.post.update.build(postId)}>
+          <CustomLink href={PATH.setting.department.post.update.build(postId)}>
             <Edit className="mr-2 h-4 w-4" />
             編輯
-          </Link>
+          </CustomLink>
         </CustomDropdownMenuItem>
         <CustomDropdownMenuItem onClick={() => setIsOpenDeleteDialog(true)} className="text-destructive">
           <Trash2 className="mr-2 h-4 w-4" />

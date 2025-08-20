@@ -6,7 +6,7 @@ import CustomDropdownMenuItem from '@/components/dropdown/custom-dropdown-menu-i
 import { useState } from "react";
 import DeleteWorkerDialog from './delete-worker-dialog';
 import { PATH } from '@/libs/share/_general/utils/path';
-import Link from 'next/link';
+import CustomLink from '@/components/link/custom-link';
 
 type Props = {
   workerId: number;
@@ -23,10 +23,10 @@ export default function WorkerTableRowAction({
     <>
       <MoreDropdownMenu contentProps={{ align: 'end' }}>
         <CustomDropdownMenuItem asChild>
-          <Link href={PATH.setting.department.worker.update.build(workerId)}>
+          <CustomLink href={PATH.setting.department.worker.update.build(workerId)}>
             <Edit className="mr-2 h-4 w-4" />
             編輯
-          </Link>
+          </CustomLink>
         </CustomDropdownMenuItem>
         <CustomDropdownMenuItem onClick={() => setIsOpenDeleteDialog(true)} className="text-destructive">
           <Trash2 className="mr-2 h-4 w-4" />

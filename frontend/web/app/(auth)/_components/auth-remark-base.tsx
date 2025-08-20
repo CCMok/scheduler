@@ -1,5 +1,5 @@
 import CustomButton from '@/components/button/custom-button';
-import Link from 'next/link';
+import CustomLink from '@/components/link/custom-link';
 import { ReactNode } from 'react';
 
 type Props = {
@@ -17,7 +17,7 @@ export default function AuthRemarkBase({
     <div className='flex justify-center items-center space-x-2'>
       <span>{description}</span>
       <CustomButton variant='link' asChild className='px-0'>
-        <Link href={linkHref}>{linkText}</Link>
+        <CustomLink href={linkHref}>{linkText}</CustomLink>
       </CustomButton>
     </div>
   )
