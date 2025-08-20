@@ -6,6 +6,7 @@ export const organizationMaxHistoryCount = 5
 
 export const departmentName = 'Worship Team'
 
+// TODO: displayPosition
 export const postNames = [
   'Host',
   'Worship Leader',
