@@ -7,10 +7,12 @@ import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { getPostsService } from "@/libs/server/post/services/get-posts-service";
 import { GetPostsRequest } from "@/libs/server/post/models/get-posts-request";
 import { Post } from "@/external/prisma-generated";
-import PostTable from "./_components/table/post-table";
+import PostSequenceTable from "./_components/table/post-sequence-table";
+import PostSaveButton from "./_components/save-button/post-sequence-save-button";
+import { PostSequenceStoreProvider } from "@/components/store/setting/post/sequence/post-sequence-store-provider";
 
 const getPosts = async (departmentId: number): Promise<Post[]> => {
-  const request: GetPostsRequest = { 
+  const request: GetPostsRequest = {
     where: { departmentId },
     orderBy: [{ field: 'displayPosition' }],
   }
@@ -24,7 +26,7 @@ const getPosts = async (departmentId: number): Promise<Post[]> => {
 
 export default async function PostSequencePage({
   params,
-}: Readonly<ParamProps<{ [Param.ID]: string }>>) {  
+}: Readonly<ParamProps<{ [Param.ID]: string }>>) {
   const paramId = (await params).id;
   const departmentId = Number(paramId);
   if (isNaN(departmentId)) notFound();
@@ -32,11 +34,18 @@ export default async function PostSequencePage({
   const posts = await getPosts(departmentId);
 
   return (
-    <div className="space-y-4">
-      <Header backPath={PATH.setting.department.post.base}>
-        <span>職位順序</span>
-      </Header>
-      <PostTable posts={posts} />
-    </div>
+    <PostSequenceStoreProvider initState={{
+      posts,
+    }}>
+      <div className="space-y-4">
+        <Header backPath={PATH.setting.department.post.base}>
+          <span>值班表職位順序</span>
+        </Header>
+        <PostSequenceTable />
+        <div className='flex justify-end'>
+          <PostSaveButton />
+        </div>
+      </div>
+    </PostSequenceStoreProvider>
   )
 }

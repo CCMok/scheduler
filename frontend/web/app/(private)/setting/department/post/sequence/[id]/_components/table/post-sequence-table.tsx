@@ -2,19 +2,13 @@
 
 import { closestCenter, DndContext, DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core"
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable"
-import { useState } from "react"
 import PostRow from "./post-row"
-import { Post } from "@/external/prisma-generated"
 import { Table, TableBody, TableCaption, TableCell, TableHeader, TableRow } from "@/external/shadcn/components/ui/table"
+import { usePostSequenceStore } from "@/components/store/setting/post/sequence/post-sequence-store-provider"
 
-type Props = {
-  posts: Post[];
-}
-
-export default function PostTable({
-  posts,
-}: Readonly<Props>) {
-  const [dndPosts, setDndPosts] = useState(posts)
+export default function PostSequenceTable() {
+  const posts = usePostSequenceStore(state => state.posts);
+  const setPosts = usePostSequenceStore(state => state.setPosts);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -28,12 +22,11 @@ export default function PostTable({
 
     if (active.id === over?.id) return
 
-    setDndPosts(items => {
-      const oldIndex = items.findIndex(item => item.id === active.id);
-      const newIndex = items.findIndex(item => item.id === over?.id);
+    const oldIndex = posts.findIndex(post => post.id === active.id);
+    const newIndex = posts.findIndex(post => post.id === over?.id);
 
-      return arrayMove(items, oldIndex, newIndex);
-    })
+    const newPosts = arrayMove(posts, oldIndex, newIndex);
+    setPosts(newPosts);
   }
 
   return (
@@ -53,11 +46,11 @@ export default function PostTable({
         </TableHeader>
         <TableBody>
           <SortableContext
-            items={dndPosts}
+            items={posts}
             strategy={verticalListSortingStrategy}
           >
-            {dndPosts.map(dndPost => (
-              <PostRow key={dndPost.id} post={dndPost} />
+            {posts.map(post => (
+              <PostRow key={post.id} post={post} />
             ))}
           </SortableContext>
         </TableBody>
