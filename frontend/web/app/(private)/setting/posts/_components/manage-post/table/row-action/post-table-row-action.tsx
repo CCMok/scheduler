@@ -23,7 +23,7 @@ export default function PostTableRowAction({
     <>
       <MoreDropdownMenu contentProps={{ align: 'end' }}>
         <CustomDropdownMenuItem asChild>
-          <CustomLink href={PATH.setting.department.post.update.build(postId)}>
+          <CustomLink href={PATH.setting.post.edit.build(postId)}>
             <Edit className="mr-2 h-4 w-4" />
             編輯
           </CustomLink>

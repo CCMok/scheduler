@@ -21,7 +21,7 @@ const getPostWorkers = async (id: number): Promise<PostWorkers | undefined> => {
   )
 }
 
-export default async function PostUpdatePage({
+export default async function PostEditPage({
   params,
 }: Readonly<ParamProps<{ [Param.ID]: string }>>) {
   const paramId = (await params).id;
@@ -39,7 +39,7 @@ export default async function PostUpdatePage({
       departmentId: postWorkers.departmentId,
     }}>
       <div className="space-y-4">
-        <Header backPath={PATH.setting.department.post.base}>
+        <Header backPath={PATH.setting.posts}>
           <span>{postWorkers.name}</span>
         </Header>
         <PostUpdateNameSection />

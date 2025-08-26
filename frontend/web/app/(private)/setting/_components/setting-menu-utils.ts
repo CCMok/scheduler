@@ -36,7 +36,7 @@ const departmentMenuItems: SettingMenuCategory = {
   items: [
     {
       title: "職位",
-      url: PATH.setting.department.post.base,
+      url: PATH.setting.posts,
     },
     {
       title: "人員",
@@ -45,7 +45,7 @@ const departmentMenuItems: SettingMenuCategory = {
   ]
 }
 
-export const DEPARTMENT_SETTING_DEFAULT_PATH: string = PATH.setting.department.post.base
+export const DEPARTMENT_SETTING_DEFAULT_PATH: string = PATH.setting.posts
 
 export const ACCESS_MENU_ITEM_MAP = new Map<Role, (SettingMenuCategory | SettingMenuItem)[]>([
   [Role.SYSTEM_ADMIN, [

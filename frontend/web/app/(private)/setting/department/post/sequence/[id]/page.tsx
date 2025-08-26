@@ -38,7 +38,7 @@ export default async function PostSequencePage({
       posts,
     }}>
       <div className="space-y-4">
-        <Header backPath={PATH.setting.department.post.base}>
+        <Header backPath={PATH.setting.posts}>
           <span>值班表職位順序</span>
         </Header>
         <PostSequenceTable />

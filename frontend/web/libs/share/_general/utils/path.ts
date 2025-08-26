@@ -8,6 +8,7 @@ const enum PathSegment {
   ORGANIZATION = 'organization',
   DEPARTMENT = 'department',
   POST = 'post',
+  POSTS = 'posts',
   WORKER = 'worker',
   SEQUENCE = 'sequence',
 }
@@ -27,14 +28,15 @@ export const PATH = {
     base: `/${PathSegment.SETTING}`,
     user: `/${PathSegment.SETTING}/${PathSegment.USER}`,
     organization: `/${PathSegment.SETTING}/${PathSegment.ORGANIZATION}`,
+    post: {
+      edit: {
+        build: (id: number) => `/${PathSegment.SETTING}/${PathSegment.POST}/${id}/edit`,
+      },
+    },
+    posts: `/${PathSegment.SETTING}/${PathSegment.POSTS}`,
     department: {
       base: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}`,
       post: {
-        base: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.POST}`,
-        update: {
-          base: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.POST}/${PathSegmentAction.UPDATE}`,
-          build: (id: number) => `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.POST}/${PathSegmentAction.UPDATE}/${id}`,
-        },
         sequence: {
           base: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.POST}/${PathSegment.SEQUENCE}`,
           build: (id: number) => `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.POST}/${PathSegment.SEQUENCE}/${id}`,
