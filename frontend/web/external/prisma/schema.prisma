@@ -70,7 +70,6 @@ model Department {
   @@map("department")
 }
 
-// TODO: edit display position
 model Post {
   id                                Int                                @id @default(autoincrement())
   departmentId                      Int                                @map("department_id")

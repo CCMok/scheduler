@@ -60,9 +60,10 @@ const seedDepartment = async (tx: Transaction, organizationId: number): Promise<
 
 const seedPost = async (tx: Transaction, departmentId: number): Promise<Map<string, Post>> => {
   const posts = await tx.post.createManyAndReturn({
-    data: postNames.map(name => ({
+    data: postNames.map((name, index) => ({
       departmentId,
       name,
+      displayPosition: index,
     })),
   })
 
