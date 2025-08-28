@@ -100,7 +100,7 @@ export default function UpdateUserNameForm({
                   <FormControl>
                     <CustomInput
                       autoComplete='nickname'
-                      placeholder={userName}
+                      placeholder={userName || '用戶名稱'}
                       {...field}
                     />
                   </FormControl>

@@ -15,7 +15,7 @@ const enum PathSegment {
 }
 
 const enum PathSegmentAction {
-  UPDATE = 'update',
+  EDIT = 'edit',
 }
 
 export const PATH = {
@@ -31,13 +31,13 @@ export const PATH = {
     organization: `/${PathSegment.SETTING}/${PathSegment.ORGANIZATION}`,
     post: {
       edit: {
-        build: (id: number) => `/${PathSegment.SETTING}/${PathSegment.POST}/${id}/edit`,
+        build: (id: number) => `/${PathSegment.SETTING}/${PathSegment.POST}/${id}/${PathSegmentAction.EDIT}`,
       },
     },
     posts: `/${PathSegment.SETTING}/${PathSegment.POSTS}`,
     worker: {
       edit: {
-        build: (id: number) => `/${PathSegment.SETTING}/${PathSegment.WORKER}/${id}/edit`,
+        build: (id: number) => `/${PathSegment.SETTING}/${PathSegment.WORKER}/${id}/${PathSegmentAction.EDIT}`,
       },
     },
     workers: `/${PathSegment.SETTING}/${PathSegment.WORKERS}`,

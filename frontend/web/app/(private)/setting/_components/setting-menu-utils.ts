@@ -45,6 +45,7 @@ const departmentMenuItems: SettingMenuCategory = {
   ]
 }
 
+export const SETTING_DEFAULT_PATH: string = PATH.setting.user
 export const DEPARTMENT_SETTING_DEFAULT_PATH: string = PATH.setting.posts
 
 export const ACCESS_MENU_ITEM_MAP = new Map<Role, (SettingMenuCategory | SettingMenuItem)[]>([
@@ -57,6 +58,9 @@ export const ACCESS_MENU_ITEM_MAP = new Map<Role, (SettingMenuCategory | Setting
     userMenuItems,
     organizationMenuItems,
     departmentMenuItems,
+  ]],
+  [Role.OPERATOR, [
+    userMenuItems,
   ]],
 ])
 

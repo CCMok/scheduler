@@ -9,6 +9,7 @@ import { Calendar, Home, Settings } from "lucide-react"
 import PrivateSidebarMenuItem from "../menu-item/private-sidebar-menu-item"
 import { PATH } from "@/libs/share/_general/utils/path"
 import CustomLink from "@/components/link/custom-link"
+import { SETTING_DEFAULT_PATH } from "@/app/(private)/setting/_components/setting-menu-utils"
 
 const mainMenuItems = [
   {
@@ -23,7 +24,7 @@ const mainMenuItems = [
   },
   {
     title: "設定",
-    url: PATH.setting.user,
+    url: SETTING_DEFAULT_PATH,
     icon: Settings,
   },
 ]
