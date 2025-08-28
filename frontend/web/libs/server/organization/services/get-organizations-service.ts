@@ -7,7 +7,7 @@ import { GetOrganizationsRequest, getOrganizationsRequestSchema, OrganizationRel
 import { serviceWrapper } from '../../_general/services/general-service';
 import { AccessResponse } from '../../access/models/access-response';
 import { isNil } from 'lodash';
-import { getAccessibleOrganizationIdsService } from '../../access/services/access-service';
+import { getAccessibleOrganizationIdsService } from '../../access/services/data-access-service';
 
 export const getOrganizationsService = async <T extends Organization = Organization>(
   request: GetOrganizationsRequest

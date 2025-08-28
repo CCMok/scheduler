@@ -1,7 +1,7 @@
 import 'server-only';
 import prisma from '../../_general/managers/database-manager';
 import { isNil } from 'lodash';
-import { getAccessibleOrganizationIdsService } from '../../access/services/access-service';
+import { getAccessibleOrganizationIdsService } from '../../access/services/data-access-service';
 import { ServiceResponseStatus } from '@/libs/share/_general/enums/service-response-status';
 import { AccessResponse } from '../../access/models/access-response';
 

@@ -41,8 +41,8 @@ const departmentMenuItems: SettingMenuCategory = {
     {
       title: "人員",
       url: PATH.setting.workers,
-    }
-  ]
+    },
+  ],
 }
 
 export const SETTING_DEFAULT_PATH: string = PATH.setting.user
@@ -61,6 +61,7 @@ export const ACCESS_MENU_ITEM_MAP = new Map<Role, (SettingMenuCategory | Setting
   ]],
   [Role.OPERATOR, [
     userMenuItems,
+    departmentMenuItems,
   ]],
 ])
 

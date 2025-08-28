@@ -8,7 +8,7 @@ import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runti
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { ServiceMessage } from '../../../share/_general/enums/service-message';
 import { CreatePostWorkerRequest, createPostWorkerRequestSchema } from '../models/create-post-worker-request';
-import { getAccessiblePostIdsService, getAccessibleWorkerIdsService } from '../../access/services/access-service';
+import { getAccessiblePostIdsService, getAccessibleWorkerIdsService } from '../../access/services/data-access-service';
 
 export const createPostWorkerService = async (request: CreatePostWorkerRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {

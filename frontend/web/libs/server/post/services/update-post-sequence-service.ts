@@ -3,7 +3,7 @@ import { ServiceResponse } from "@/libs/share/_general/models/service-response";
 import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import { serviceWrapper } from '../../_general/services/general-service';
 import { UpdatePostSequenceRequest, updatePostSequenceRequestSchema } from '../models/update-post-sequence-request';
-import { getAccessiblePostIdsService } from '../../access/services/access-service';
+import { getAccessiblePostIdsService } from '../../access/services/data-access-service';
 import { ServiceMessage } from '@/libs/share/_general/enums/service-message';
 import prisma from '../../_general/managers/database-manager';
 

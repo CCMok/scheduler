@@ -11,7 +11,7 @@ import prisma from '../../_general/managers/database-manager';
 import { ApiHeaderKey, ContentType } from '../../_general/enums/api-header';
 import { SCH_API_KEY } from '../../_general/constants/sch-constant';
 import { serviceWrapper } from '../../_general/services/general-service';
-import { getAccessibleDepartmentIdsService } from '../../access/services/access-service';
+import { getAccessibleDepartmentIdsService } from '../../access/services/data-access-service';
 import { ServiceMessage } from '@/libs/share/_general/enums/service-message';
 
 export const arrangeRosterService = async (request: ArrangeRosterRequest): Promise<ServiceResponse<DayBaseSchedule[]>> =>

@@ -6,7 +6,7 @@ import { ServiceMessage } from '@/libs/share/_general/enums/service-message'
 import { WorkerPosts } from '../models/worker-dao'
 import { GetWorkerPostsRequest, getWorkerPostsRequestSchema } from '../models/get-worker-posts-request'
 import prisma from '../../_general/managers/database-manager'
-import { getAccessibleWorkerIdsService } from '../../access/services/access-service'
+import { getAccessibleWorkerIdsService } from '../../access/services/data-access-service'
 import { AccessResponse } from '../../access/models/access-response'
 
 export const getWorkerPostsService = async (request: GetWorkerPostsRequest): Promise<ServiceResponse<WorkerPosts>> =>

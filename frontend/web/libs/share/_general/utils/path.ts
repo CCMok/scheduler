@@ -26,7 +26,6 @@ export const PATH = {
   roster: `/${PathSegment.ROSTER}`,
 
   setting: {
-    base: `/${PathSegment.SETTING}`,
     user: `/${PathSegment.SETTING}/${PathSegment.USER}`,
     organization: `/${PathSegment.SETTING}/${PathSegment.ORGANIZATION}`,
     post: {

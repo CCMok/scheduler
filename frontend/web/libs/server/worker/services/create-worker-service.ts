@@ -8,7 +8,7 @@ import { getPrismaErrorTarget, tryCatchQuery } from '../../_general/utils/databa
 import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runtime/library';
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { ServiceMessage } from '../../../share/_general/enums/service-message';
-import { getAccessibleDepartmentIdsService } from '../../access/services/access-service';
+import { getAccessibleDepartmentIdsService } from '../../access/services/data-access-service';
 
 export const createWorkerService = async (request: CreateWorkerRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {

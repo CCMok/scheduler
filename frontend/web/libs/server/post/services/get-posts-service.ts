@@ -5,7 +5,7 @@ import { ServiceResponseStatus } from "../../../share/_general/enums/service-res
 import prisma from "../../_general/managers/database-manager";
 import { Post, Prisma } from '@/external/prisma-generated';
 import { serviceWrapper } from '../../_general/services/general-service';
-import { getAccessibleDepartmentIdsService } from '../../access/services/access-service';
+import { getAccessibleDepartmentIdsService } from '../../access/services/data-access-service';
 import { isNil } from 'lodash';
 import { AccessResponse } from '../../access/models/access-response';
 

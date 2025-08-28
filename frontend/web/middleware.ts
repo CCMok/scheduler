@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { deleteSession, getSession, refreshSession } from './libs/server/_general/managers/session-manager';
 import { SessionPayload } from './libs/server/_general/models/session-payload';
 import { EXCLUDE_HOME_PUBLIC_PATHS, PATH, REDIRECT_PRIVATE_PATH, REDIRECT_PUBLIC_PATH } from './libs/share/_general/utils/path';
+import { isAccessable } from './libs/server/access/services/route-access-service';
 
 export default async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
@@ -10,7 +11,7 @@ export default async function middleware(request: NextRequest) {
   const sessionPayload = await getSession();
 
   if (isPrivatePath) {
-    return await handlePrivatePath(request, sessionPayload)
+    return await handlePrivatePath(request, sessionPayload, path)
   }
 
   return handlePublicPath(request, sessionPayload)
@@ -26,10 +27,19 @@ const checkIsPrivatePath = (path: string): boolean => {
   return !EXCLUDE_HOME_PUBLIC_PATHS.some(publicPath => path.startsWith(publicPath));
 }
 
-const handlePrivatePath = async (request: NextRequest, sessionPayload: SessionPayload | undefined): Promise<NextResponse> => {
+const handlePrivatePath = async (request: NextRequest, sessionPayload: SessionPayload | undefined, path: string): Promise<NextResponse> => {
   if (sessionPayload) {
-    await refreshSession(sessionPayload)
-    return NextResponse.next()
+    // Check if user has access to this specific path
+    const hasAccess = await isAccessable(path);
+    
+    if (hasAccess) {
+      await refreshSession(sessionPayload)
+      return NextResponse.next()
+    } else {
+      // User doesn't have permission for this path, redirect to dashboard
+      await refreshSession(sessionPayload)
+      return NextResponse.redirect(new URL(REDIRECT_PRIVATE_PATH, request.url))
+    }
   }
 
   await deleteSession();

@@ -5,7 +5,7 @@ import prisma from "../../_general/managers/database-manager";
 import { Prisma, Worker } from '@/external/prisma-generated';
 import { GetWorkersRequest, getWorkersRequestSchema } from '../models/get-workers-request';
 import { serviceWrapper } from '../../_general/services/general-service';
-import { getAccessibleDepartmentIdsService } from '../../access/services/access-service';
+import { getAccessibleDepartmentIdsService } from '../../access/services/data-access-service';
 import { AccessResponse } from '../../access/models/access-response';
 import { isNil } from 'lodash';
 

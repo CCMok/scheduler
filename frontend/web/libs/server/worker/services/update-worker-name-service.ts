@@ -8,7 +8,7 @@ import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runti
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { ServiceMessage } from '../../../share/_general/enums/service-message';
 import { UpdateWorkerNameRequest, updateWorkerNameRequestSchema } from '../models/update-worker-name-request';
-import { getAccessibleWorkerIdsService } from '../../access/services/access-service';
+import { getAccessibleWorkerIdsService } from '../../access/services/data-access-service';
 
 export const updateWorkerNameService = async (request: UpdateWorkerNameRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {

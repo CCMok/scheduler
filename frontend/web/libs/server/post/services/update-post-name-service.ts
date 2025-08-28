@@ -8,7 +8,7 @@ import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runti
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { ServiceMessage } from '../../../share/_general/enums/service-message';
 import { UpdatePostNameRequest, updatePostNameRequestSchema } from '../models/update-post-name-request';
-import { getAccessiblePostIdsService } from '../../access/services/access-service';
+import { getAccessiblePostIdsService } from '../../access/services/data-access-service';
 
 export const updatePostNameService = async (request: UpdatePostNameRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {

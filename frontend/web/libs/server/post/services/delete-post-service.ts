@@ -4,7 +4,7 @@ import { ServiceResponseStatus } from "../../../share/_general/enums/service-res
 import { serviceWrapper } from '../../_general/services/general-service';
 import { DeletePostRequest, deletePostRequestSchema } from '../models/delete-post-request';
 import prisma from '../../_general/managers/database-manager';
-import { getAccessiblePostIdsService } from '../../access/services/access-service';
+import { getAccessiblePostIdsService } from '../../access/services/data-access-service';
 import { ServiceMessage } from '@/libs/share/_general/enums/service-message';
 
 export const deletePostService = async (request: DeletePostRequest): Promise<ServiceResponse> =>
