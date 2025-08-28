@@ -24,7 +24,7 @@ const getPosts = async (departmentId: number): Promise<Post[]> => {
   )
 }
 
-export default async function PostSequencePage({
+export default async function PostsSequencePage({
   params,
 }: Readonly<ParamProps<{ [Param.ID]: string }>>) {
   const paramId = (await params).id;

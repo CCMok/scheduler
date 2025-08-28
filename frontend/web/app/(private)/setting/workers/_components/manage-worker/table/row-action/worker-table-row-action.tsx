@@ -23,7 +23,7 @@ export default function WorkerTableRowAction({
     <>
       <MoreDropdownMenu contentProps={{ align: 'end' }}>
         <CustomDropdownMenuItem asChild>
-          <CustomLink href={PATH.setting.department.worker.update.build(workerId)}>
+          <CustomLink href={PATH.setting.worker.edit.build(workerId)}>
             <Edit className="mr-2 h-4 w-4" />
             編輯
           </CustomLink>

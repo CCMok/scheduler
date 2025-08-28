@@ -16,7 +16,7 @@ export default function UpdatePostSequenceButton() {
       asChild
     >
       <CustomLink
-        href={PATH.setting.department.post.sequence.build(departmentId ?? 0)}
+        href={PATH.setting.department.posts.sequence.build(departmentId ?? 0)}
         isDisabled={isNil(departmentId)}
       >
         <ArrowDownUp />

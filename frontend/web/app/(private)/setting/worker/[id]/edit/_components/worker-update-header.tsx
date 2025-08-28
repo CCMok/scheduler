@@ -15,7 +15,7 @@ export default async function WorkerUpdateHeader({
     <div>
       <div className="flex items-center space-x-2">
         <CustomButton size='icon' variant='ghost' asChild>
-          <CustomLink href={PATH.setting.department.worker.base}>
+          <CustomLink href={PATH.setting.workers}>
             <ChevronLeft />
           </CustomLink>
         </CustomButton>

@@ -10,6 +10,7 @@ const enum PathSegment {
   POST = 'post',
   POSTS = 'posts',
   WORKER = 'worker',
+  WORKERS = 'workers',
   SEQUENCE = 'sequence',
 }
 
@@ -34,20 +35,18 @@ export const PATH = {
       },
     },
     posts: `/${PathSegment.SETTING}/${PathSegment.POSTS}`,
+    worker: {
+      edit: {
+        build: (id: number) => `/${PathSegment.SETTING}/${PathSegment.WORKER}/${id}/edit`,
+      },
+    },
+    workers: `/${PathSegment.SETTING}/${PathSegment.WORKERS}`,
     department: {
       base: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}`,
-      post: {
+      posts: {
         sequence: {
-          base: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.POST}/${PathSegment.SEQUENCE}`,
-          build: (id: number) => `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.POST}/${PathSegment.SEQUENCE}/${id}`,
+          build: (departmentId: number) => `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${departmentId}/${PathSegment.POSTS}/${PathSegment.SEQUENCE}`,
         }
-      },
-      worker: {
-        base: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.WORKER}`,
-        update: {
-          base: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.WORKER}/${PathSegmentAction.UPDATE}`,
-          build: (id: number) => `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${PathSegment.WORKER}/${PathSegmentAction.UPDATE}/${id}`,
-        },
       },
     }
   }

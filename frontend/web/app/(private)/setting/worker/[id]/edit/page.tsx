@@ -1,5 +1,5 @@
 import { ParamProps } from "@/libs/share/_general/props/param-props";
-import WorkerUpdateHeader from "./worker-update-header";
+import WorkerUpdateHeader from "./_components/worker-update-header";
 import { Param } from "@/libs/share/_general/enums/param";
 import { notFound, redirect } from "next/navigation";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
@@ -20,7 +20,7 @@ const getWorkerPosts = async (id: number): Promise<WorkerPosts | undefined> => {
   )
 }
 
-export default async function WorkerUpdatePage({
+export default async function WorkerEditPage({
   params,
 }: Readonly<ParamProps<{ [Param.ID]: string }>>) {
   const paramId = (await params).id;
