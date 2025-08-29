@@ -27,8 +27,7 @@ export const PATH = {
 
   setting: {
     user: `/${PathSegment.SETTING}/${PathSegment.USER}`,
-    organization: `/${PathSegment.SETTING}/${PathSegment.ORGANIZATION}`, // TODO: remove
-    organizationNew: {
+    organization: {
       base: `/${PathSegment.SETTING}/${PathSegment.ORGANIZATION}`,
       build: (id: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATION}/${id}`,
     },

@@ -18,7 +18,7 @@ export default function OrganizationComboBox({
   const router = useRouter();
 
   const onValueChange = (value: string) => {
-    router.push(PATH.setting.organizationNew.build(Number(value)))
+    router.push(PATH.setting.organization.build(Number(value)))
   }
 
   return (

@@ -19,7 +19,7 @@ const getOrganizations = async (): Promise<Organization[]> => {
 
 export default async function OrganizationSettingPage() {
   const organizations = await getOrganizations();
-  if (organizations.length) redirect(PATH.setting.organizationNew.build(organizations[0].id))
+  if (organizations.length) redirect(PATH.setting.organization.build(organizations[0].id))
 
   return (
     <div>
