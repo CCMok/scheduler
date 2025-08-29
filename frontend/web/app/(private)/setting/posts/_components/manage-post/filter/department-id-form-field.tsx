@@ -1,6 +1,6 @@
 'use client'
 
-import ComboBox from "@/components/combobox/combobox"
+import ComboBox from "@/components/combobox/combo-box"
 import CustomFormItem from "@/components/form/custom-form-item"
 import { FormField } from "@/external/shadcn/components/ui/form"
 import { PostSettingFormInput } from "@/libs/client/post/models/post-setting-form-input"

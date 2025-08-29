@@ -1,6 +1,6 @@
 'use client'
 
-import ComboBox from "@/components/combobox/combobox"
+import ComboBox from "@/components/combobox/combo-box"
 import CustomFormItem from "@/components/form/custom-form-item"
 import { useWorkerSettingFilterStore } from "@/app/(private)/setting/workers/_components/manage-worker/filter/store/worker-setting-filter-store-provider"
 import { FormField } from "@/external/shadcn/components/ui/form"

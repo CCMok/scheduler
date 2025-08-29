@@ -1,17 +1,14 @@
 'use client'
 
-import { Form, FormField } from "@/external/shadcn/components/ui/form"
+import { Form } from "@/external/shadcn/components/ui/form"
 import { UpdateOrganizationNameFormInput, updateOrganizationNameFormInputSchema } from "@/libs/client/organization/models/update-organization-name-form-input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from "@/external/shadcn/components/ui/card"
-import CustomFormItem from "@/components/form/custom-form-item"
 import FormSubmitButton from "@/components/form/form-submit-button"
 import { Save } from "lucide-react"
 import { Organization } from "@/external/prisma-generated"
-import ComboBox from "@/components/combobox/combobox"
 import OrganizationNameField from "./organization-name-field"
-import { getDefaultOrganizationId } from "@/libs/client/organization/utils/organization-utils"
 import { UiMessageContent, UiMessageTitle } from "@/libs/share/_general/enums/ui-message"
 import FormRootMessage from "@/components/form/form-root-message"
 import { updateOrganizationNameAction } from "@/libs/server/organization/actions/update-organization-name-action"
@@ -24,17 +21,16 @@ import WarningDialog from "@/components/dialog/warning-dialog"
 import { useState } from "react"
 
 type Props = {
-  organizations: Organization[];
+  organization: Organization;
 }
 
 export default function UpdateOrganizationNameForm({
-  organizations,
+  organization,
 }: Readonly<Props>) {
   const form = useForm({
     resolver: zodResolver(updateOrganizationNameFormInputSchema),
     defaultValues: {
-      organizationId: getDefaultOrganizationId(organizations),
-      name: '',
+      name: organization.name,
     }
   })
 
@@ -50,14 +46,10 @@ export default function UpdateOrganizationNameForm({
   }
 
   const inputCheck = (input: UpdateOrganizationNameFormInput): boolean => {
-    const organizationId = form.getValues('organizationId')
-    const isSameName = organizations.some(organization =>
-      organization.id.toString() === organizationId
-      && organization.name === input.name
-    )
+    const isSameName = organization.name === input.name
 
     if (isSameName) {
-      form.setError('organizationId', {
+      form.setError('name', {
         type: UiMessageTitle.INPUT_ERROR,
         message: UiMessageContent.NOT_MATCH.replaceAll('{0}', '原本名稱')
       });
@@ -71,7 +63,7 @@ export default function UpdateOrganizationNameForm({
   const onAlertDialogContinue = async () => {
     const input = form.getValues()
     const request: UpdateOrganizationNameRequest = {
-      id: Number(input.organizationId),
+      id: organization.id,
       name: input.name,
     }
 
@@ -101,25 +93,8 @@ export default function UpdateOrganizationNameForm({
               這是您的組織在 Scheduler 中的可見名稱。例如: 您公司的名稱。
             </CardDescription>
           </CardHeader>
-          <CardContent className='flex flex-wrap space-x-4 space-y-4'>
-            <FormField
-              control={form.control}
-              name='organizationId'
-              render={({ field }) => (
-                <CustomFormItem>
-                  <ComboBox
-                    value={field.value}
-                    options={organizations}
-                    getValue={option => option.id.toString()}
-                    getDisplayName={option => option.name}
-                    onValueChange={value => form.setValue('organizationId', value)}
-                    isFormField
-                  />
-                </CustomFormItem>
-              )}
-            />
-
-            <OrganizationNameField organizations={organizations} />
+          <CardContent>
+            <OrganizationNameField />
           </CardContent>
           <CardFooter className='flex space-x-4'>
             <FormRootMessage />

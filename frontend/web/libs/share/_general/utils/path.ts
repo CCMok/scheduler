@@ -27,16 +27,20 @@ export const PATH = {
 
   setting: {
     user: `/${PathSegment.SETTING}/${PathSegment.USER}`,
-    organization: `/${PathSegment.SETTING}/${PathSegment.ORGANIZATION}`,
+    organization: `/${PathSegment.SETTING}/${PathSegment.ORGANIZATION}`, // TODO: remove
+    organizationNew: {
+      base: `/${PathSegment.SETTING}/${PathSegment.ORGANIZATION}`,
+      build: (id: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATION}/${id}`,
+    },
     post: {
       edit: {
-        build: (id: number) => `/${PathSegment.SETTING}/${PathSegment.POST}/${id}/${PathSegmentAction.EDIT}`,
+        build: (id: string | number) => `/${PathSegment.SETTING}/${PathSegment.POST}/${id}/${PathSegmentAction.EDIT}`,
       },
     },
     posts: `/${PathSegment.SETTING}/${PathSegment.POSTS}`,
     worker: {
       edit: {
-        build: (id: number) => `/${PathSegment.SETTING}/${PathSegment.WORKER}/${id}/${PathSegmentAction.EDIT}`,
+        build: (id: string | number) => `/${PathSegment.SETTING}/${PathSegment.WORKER}/${id}/${PathSegmentAction.EDIT}`,
       },
     },
     workers: `/${PathSegment.SETTING}/${PathSegment.WORKERS}`,
@@ -44,7 +48,7 @@ export const PATH = {
       base: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}`,
       posts: {
         sequence: {
-          build: (departmentId: number) => `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${departmentId}/${PathSegment.POSTS}/${PathSegment.SEQUENCE}`,
+          build: (departmentId: string | number) => `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${departmentId}/${PathSegment.POSTS}/${PathSegment.SEQUENCE}`,
         }
       },
     }
