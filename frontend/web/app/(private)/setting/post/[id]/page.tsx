@@ -8,7 +8,6 @@ import { getPostWorkersService } from "@/libs/server/post/services/get-post-work
 import { GetPostWorkersRequest } from "@/libs/server/post/models/get-post-workers-request";
 import { PostWorkers } from "@/libs/server/post/models/post-dao";
 import Header from "@/components/header/header";
-import { PATH } from "@/libs/share/_general/utils/path";
 import { PostUpdateStoreProvider } from "./_components/store/post-update-store-provider";
 
 const getPostWorkers = async (id: number): Promise<PostWorkers | undefined> => {

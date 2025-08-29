@@ -1,7 +1,6 @@
 import Header from "@/components/header/header";
 import { Param } from "@/libs/share/_general/enums/param";
 import { ParamProps } from "@/libs/share/_general/props/param-props";
-import { PATH } from "@/libs/share/_general/utils/path";
 import { notFound, redirect } from "next/navigation";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { getPostsService } from "@/libs/server/post/services/get-posts-service";
