@@ -1,22 +1,27 @@
-'use client'
+import { MainItem } from "../utils/menu-item";
+import LinkMenuItem from "./link-menu-item";
+import CollapsibleMenuItem from "./collapsible-menu-item";
 
-import { SidebarMenuItem, useSidebar } from "@/external/shadcn/components/ui/sidebar"
-import { ComponentProps } from "react"
+type Props = {
+  item: MainItem;
+}
 
-export default function PrivateSidebarMenuItem(props: Readonly<ComponentProps<typeof SidebarMenuItem>>) {
-  const { open, toggleSidebar, isMobile } = useSidebar()
-
-  const onClick = () => {
-    if (!open) return
-    if (!isMobile) return
-
-    toggleSidebar()
-  }
+export default function PrivateSidebarMenuItem({
+  item,
+}: Readonly<Props>) {
+  if ('url' in item) return (
+    <LinkMenuItem
+      title={item.title}
+      url={item.url}
+      icon={item.icon}
+    />
+  )
 
   return (
-    <SidebarMenuItem
-      onClick={onClick}
-      {...props}
+    <CollapsibleMenuItem
+      title={item.title}
+      icon={item.icon}
+      items={item.children}
     />
   )
 }

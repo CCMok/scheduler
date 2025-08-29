@@ -46,7 +46,7 @@ export default function SettingSidebarItem({
                 return (
                   <SidebarMenuSubItem key={item.title}>
                     <SidebarMenuSubButton asChild isActive={isActive}>
-                      <CustomLink href={item.url}>{item.title} </CustomLink>
+                      <CustomLink href={item.url}>{item.title}</CustomLink>
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
                 )
