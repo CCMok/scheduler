@@ -1,33 +1,29 @@
+import ToggleSidebarMenuSubItem from "@/components/sidebar/toggle-sidebar-menu-sub-item";
 import CustomLink from "@/components/link/custom-link";
-import ToggleSidebarMenuItem from "@/components/sidebar/toggle-sidebar-menu-item";
-import { SidebarMenuButton } from "@/external/shadcn/components/ui/sidebar";
+import { SidebarMenuSubButton } from "@/external/shadcn/components/ui/sidebar";
 import { isAccessable } from "@/libs/server/access/services/route-access-service";
-import { ReactNode } from "react";
 
 type Props = {
   title: string;
   url: string;
-  icon?: ReactNode;
 }
 
-export default async function LinkMenuItem({
+export default async function LinkMenuSubItem({
   title,
   url,
-  icon,
 }: Readonly<Props>) {
   const hasAccess = await isAccessable(url)
   if (!hasAccess) return <></>
 
   return (
-    <ToggleSidebarMenuItem>
-      <SidebarMenuButton
+    <ToggleSidebarMenuSubItem>
+      <SidebarMenuSubButton
         asChild
       >
         <CustomLink href={url}>
-          {icon}
           <span>{title}</span>
         </CustomLink>
-      </SidebarMenuButton>
-    </ToggleSidebarMenuItem>
+      </SidebarMenuSubButton>
+    </ToggleSidebarMenuSubItem>
   )
 }

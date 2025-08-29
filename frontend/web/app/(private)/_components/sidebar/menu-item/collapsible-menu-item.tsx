@@ -1,10 +1,9 @@
-import { SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton } from "@/external/shadcn/components/ui/sidebar";
+import { SidebarMenuButton, SidebarMenuItem, SidebarMenuSub } from "@/external/shadcn/components/ui/sidebar";
 import { MenuItem } from "../utils/menu-item";
 import { ReactNode } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/external/shadcn/components/ui/collapsible";
 import { ChevronRight } from "lucide-react";
-import ToggleSidebarMenuSubItem from "@/components/sidebar/toggle-sidebar-menu-sub-item";
-import CustomLink from "@/components/link/custom-link";
+import LinkMenuSubItem from "./link-menu-sub-item";
 
 type Props = {
   title: string;
@@ -32,19 +31,13 @@ export default function CollapsibleMenuItem({
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarMenuSub>
-            {items.map(item => {
-              return (
-                <ToggleSidebarMenuSubItem key={item.title}>
-                  <SidebarMenuSubButton
-                    asChild
-                  >
-                    <CustomLink href={item.url}>
-                      <span>{item.title}</span>
-                    </CustomLink>
-                  </SidebarMenuSubButton>
-                </ToggleSidebarMenuSubItem>
-              )
-            })}
+            {items.map(item => (
+              <LinkMenuSubItem
+                key={item.title}
+                title={item.title}
+                url={item.url}
+              />
+            ))}
           </SidebarMenuSub>
         </CollapsibleContent>
       </SidebarMenuItem>

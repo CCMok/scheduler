@@ -36,8 +36,20 @@ export const MENU_ITEMS: MainItem[] = [
     icon: <Settings />,
     children: [
       {
+        title: '用戶',
+        url: PATH.setting.user,
+      },
+      {
         title: '組織',
         url: PATH.setting.organization,
+      },
+      {
+        title: '職位',
+        url: PATH.setting.posts,
+      },
+      {
+        title: '人員',
+        url: PATH.setting.workers,
       },
     ],
   },

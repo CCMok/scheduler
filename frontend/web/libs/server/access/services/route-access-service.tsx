@@ -4,8 +4,8 @@ import { Role } from '../../../share/_general/enums/role';
 import { PATH } from '../../../share/_general/utils/path';
 
 // private route only
-const ROLE_ACCESS_RULES: Record<Role, string[]> = {
-  [Role.SYSTEM_ADMIN]: [
+const ROLE_ACCESS_RULES: Map<Role, string[]> = new Map([
+  [Role.SYSTEM_ADMIN, [
     PATH.home,
     PATH.dashboard,
     PATH.roster,
@@ -16,8 +16,8 @@ const ROLE_ACCESS_RULES: Record<Role, string[]> = {
     '/setting/worker/*/edit',
     PATH.setting.workers,
     '/setting/department/*/posts/sequence',
-  ],
-  [Role.ORGANIZATION_ADMIN]: [
+  ]],
+  [Role.ORGANIZATION_ADMIN, [
     PATH.home,
     PATH.dashboard,
     PATH.roster,
@@ -28,8 +28,8 @@ const ROLE_ACCESS_RULES: Record<Role, string[]> = {
     '/setting/worker/*/edit',
     PATH.setting.workers,
     '/setting/department/*/posts/sequence',
-  ],
-  [Role.OPERATOR]: [
+  ]],
+  [Role.OPERATOR, [
     PATH.home,
     PATH.dashboard,
     PATH.roster,
@@ -39,8 +39,8 @@ const ROLE_ACCESS_RULES: Record<Role, string[]> = {
     '/setting/worker/*/edit',
     PATH.setting.workers,
     '/setting/department/*/posts/sequence',
-  ],
-};
+  ]],
+]);
 
 export const isAccessable = async (path: string): Promise<boolean> => {
   try {
@@ -50,7 +50,7 @@ export const isAccessable = async (path: string): Promise<boolean> => {
     }
 
     const userRole = session.roleEnum as Role;
-    const allowedPaths = ROLE_ACCESS_RULES[userRole];
+    const allowedPaths = ROLE_ACCESS_RULES.get(userRole);
 
     if (!allowedPaths) {
       return false;
