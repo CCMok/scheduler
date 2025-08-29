@@ -9,7 +9,7 @@ import { Separator } from "@/external/shadcn/components/ui/separator";
 import { ParamProps } from "@/libs/share/_general/props/param-props";
 import { Param } from "@/libs/share/_general/enums/param";
 
-const getOrganizations = async (): Promise<Organization[]> => {
+const getOrganization = async (): Promise<Organization[]> => {
   const request: GetOrganizationsRequest = {
     orderBy: [{ field: 'name' }],
   }
@@ -28,7 +28,7 @@ export default async function OrganizationSettingPage({
   const id = Number(paramId);
   if (isNaN(id)) notFound();
 
-  const organizations = await getOrganizations();
+  const organizations = await getOrganization();
   const currentOrg = organizations.find(org => org.id === id);
   if (!currentOrg) notFound();
 

@@ -4,6 +4,7 @@ import { z } from "zod";
 export const createGetRequestWhere = <T extends z.ZodTypeAny>(where: T) =>
   z.object({
     where: where?.optional(),
+    take: z.number().optional(),
   });
 
 export const createGetRequestRelate = <T extends z.ZodTypeAny>(relate: T) =>

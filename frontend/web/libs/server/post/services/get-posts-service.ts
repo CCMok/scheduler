@@ -30,7 +30,7 @@ const getQuery = (request: GetPostsRequest, accessResponse: AccessResponse) => {
   const where = getWhereClause(request, accessResponse);
   const orderBy = getOrderByClause(request);
 
-  return { where, orderBy };
+  return { where, orderBy, take: request.take };
 }
 
 const getWhereClause = (request: GetPostsRequest, accessResponse: AccessResponse) => {

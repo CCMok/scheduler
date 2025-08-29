@@ -33,7 +33,7 @@ const getQuery = (request: GetOrganizationsRequest, accessResponse: AccessRespon
   const include = getIncludeClause(request);
   const orderBy = getOrderByClause(request, include);
 
-  return { where, include, orderBy };
+  return { where, include, orderBy, take: request.take };
 }
 
 const getWhereClause = (request: GetOrganizationsRequest, accessResponse: AccessResponse) => {

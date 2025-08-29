@@ -5,21 +5,24 @@ import { GetOrganizationsRequest } from "@/libs/server/organization/models/get-o
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { PATH } from "@/libs/share/_general/utils/path";
 
-const getOrganizations = async (): Promise<Organization[]> => {
+const getFirstOrganization = async (): Promise<Organization | undefined> => {
   const request: GetOrganizationsRequest = {
     orderBy: [{ field: 'name' }],
+    take: 1,
   }
 
-  return await fetchData(
+  const orgs = await fetchData(
     async () => await getOrganizationsService(request),
     path => redirect(path),
     [],
   )
+
+  return orgs[0];
 }
 
 export default async function OrganizationSettingPage() {
-  const organizations = await getOrganizations();
-  if (organizations.length) redirect(PATH.setting.organization.build(organizations[0].id))
+  const org = await getFirstOrganization();
+  if (org) redirect(PATH.setting.organization.build(org.id))
 
   return (
     <div>
