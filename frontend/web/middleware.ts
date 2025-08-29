@@ -29,27 +29,22 @@ const checkIsPrivatePath = (path: string): boolean => {
 
 const handlePrivatePath = async (request: NextRequest, sessionPayload: SessionPayload | undefined, path: string): Promise<NextResponse> => {
   if (sessionPayload) {
-    // Check if user has access to this specific path
-    const hasAccess = await isAccessable(path);
-    
-    if (hasAccess) {
-      await refreshSession(sessionPayload)
-      return NextResponse.next()
-    } else {
-      // User doesn't have permission for this path, redirect to dashboard
-      await refreshSession(sessionPayload)
-      return NextResponse.redirect(new URL(REDIRECT_PRIVATE_PATH, request.url))
-    }
+    await refreshSession(sessionPayload)
+    return await checkAuthorized(request, path)
   }
 
   await deleteSession();
   return NextResponse.redirect(new URL(REDIRECT_PUBLIC_PATH, request.url))
 }
 
-const handlePublicPath = (request: NextRequest, sessionPayload: SessionPayload | undefined): NextResponse => {
-  if (sessionPayload) {
-    return NextResponse.redirect(new URL(REDIRECT_PRIVATE_PATH, request.url))
-  }
-
-  return NextResponse.next()
+const checkAuthorized = async (request: NextRequest, path: string) => {
+  const hasAccess = await isAccessable(path);
+  return hasAccess
+    ? NextResponse.next()
+    : NextResponse.redirect(new URL(REDIRECT_PRIVATE_PATH, request.url))
 }
+
+const handlePublicPath = (request: NextRequest, sessionPayload: SessionPayload | undefined): NextResponse =>
+  sessionPayload
+    ? NextResponse.redirect(new URL(REDIRECT_PRIVATE_PATH, request.url))
+    : NextResponse.next()
