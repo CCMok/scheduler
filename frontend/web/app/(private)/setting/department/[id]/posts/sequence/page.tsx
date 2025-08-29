@@ -9,7 +9,7 @@ import { GetPostsRequest } from "@/libs/server/post/models/get-posts-request";
 import { Post } from "@/external/prisma-generated";
 import PostSequenceTable from "./_components/table/post-sequence-table";
 import PostSaveButton from "./_components/save-button/post-sequence-save-button";
-import { PostSequenceStoreProvider } from "@/components/store/setting/post/sequence/post-sequence-store-provider";
+import { PostSequenceStoreProvider } from "@/app/(private)/setting/department/[id]/posts/sequence/_components/store/post-sequence-store-provider";
 
 const getPosts = async (departmentId: number): Promise<Post[]> => {
   const request: GetPostsRequest = {

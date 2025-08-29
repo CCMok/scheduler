@@ -8,7 +8,7 @@ import CreatePostWorkerIdFormField from "./create-post-worker-id-form-field";
 import CreatePostWorkerForm from "./create-post-worker-form";
 import FormRootMessage from "@/components/form/form-root-message";
 import FormSubmitButton from "@/components/form/form-submit-button";
-import { usePostUpdateStore } from "@/components/store/setting/post/post-update-store-provider";
+import { usePostUpdateStore } from "@/app/(private)/setting/post/[id]/edit/_components/store/post-update-store-provider";
 
 export default function CreatePostWorkerButton() {
   const [isOpen, setIsOpen] = useState(false)

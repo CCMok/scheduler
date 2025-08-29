@@ -7,7 +7,7 @@ import { useState } from "react";
 import FormSubmitButton from "@/components/form/form-submit-button";
 import FormRootMessage from "@/components/form/form-root-message";
 import { isNil } from "lodash";
-import { useWorkerSettingStore } from "@/components/store/setting/worker/worker-setting-store-provider";
+import { useWorkerSettingStore } from "@/app/(private)/setting/workers/_components/manage-worker/store/worker-setting-store-provider";
 import CreateWorkerForm from "./create-worker-form";
 import CreateWorkerFields from "./create-worker-fields";
 

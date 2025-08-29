@@ -6,7 +6,7 @@ import { FormField } from "@/external/shadcn/components/ui/form";
 import { useFormContext } from "react-hook-form"
 import MultiSelectCombobox from "@/components/combobox/multi/multi-select-combobox";
 import { useEffect } from "react";
-import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider";
+import { useArrangeRosterFilterStore } from "@/app/(private)/roster/_components/filter/store/arrange-roster-filter-store-provider";
 
 type Props = {
   index: number;

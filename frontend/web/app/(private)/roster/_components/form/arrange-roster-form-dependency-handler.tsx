@@ -3,7 +3,7 @@
 import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
 import { useFormContext, useWatch } from "react-hook-form";
 import { getDefaultDepartmentIdInDepartments, getDefaultOrganizationId } from "../../../../../libs/client/organization/utils/organization-utils";
-import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider";
+import { useArrangeRosterFilterStore } from "@/app/(private)/roster/_components/filter/store/arrange-roster-filter-store-provider";
 import { useCallback, useEffect, useRef } from "react";
 import { DEFAULT_DAYS } from "@/libs/share/roster/constants/roster-constant";
 import { OffDay } from "@/libs/client/roster/models/off-day";

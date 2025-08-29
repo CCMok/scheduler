@@ -1,6 +1,6 @@
 'use client'
 
-import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider"
+import { usePostSettingStore } from "@/app/(private)/setting/posts/_components/manage-post/store/post-setting-store-provider"
 import { ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import { columns } from "./post-table-column";
 import { useEffect, useState } from "react";

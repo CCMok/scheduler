@@ -1,6 +1,6 @@
 'use client'
 
-import { useWorkerSettingStore } from "@/components/store/setting/worker/worker-setting-store-provider"
+import { useWorkerSettingStore } from "@/app/(private)/setting/workers/_components/manage-worker/store/worker-setting-store-provider"
 import { ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import { columns } from "./worker-table-column";
 import { useEffect, useState } from "react";

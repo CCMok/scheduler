@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
-import { useWorkerSettingStore } from "@/components/store/setting/worker/worker-setting-store-provider";
+import { useWorkerSettingStore } from "@/app/(private)/setting/workers/_components/manage-worker/store/worker-setting-store-provider";
 import { CreateWorkerRequest } from "@/libs/server/worker/models/create-worker-request";
 import { createWorkerAction } from "@/libs/server/worker/actions/create-worker-action";
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";

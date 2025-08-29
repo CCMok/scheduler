@@ -5,7 +5,7 @@ import { useState } from "react";
 import CustomTable from "@/components/table/custom-table";
 import { getColumns } from "./post-worker-table-column";
 import { TABLE_DEFAULT_PAGE_SIZE } from "@/libs/client/_general/constants/table-constant";
-import { usePostUpdateStore } from "@/components/store/setting/post/post-update-store-provider";
+import { usePostUpdateStore } from "@/app/(private)/setting/post/[id]/edit/_components/store/post-update-store-provider";
 
 export default function PostWorkerTable() {
   const postId = usePostUpdateStore(state => state.postId)

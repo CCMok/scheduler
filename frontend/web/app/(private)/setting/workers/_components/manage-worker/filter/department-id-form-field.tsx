@@ -5,7 +5,7 @@ import CustomFormItem from "@/components/form/custom-form-item"
 import { FormField } from "@/external/shadcn/components/ui/form"
 import { WorkerSettingFormInput } from "@/libs/client/worker/models/worker-setting-form-input"
 import { useFormContext } from "react-hook-form"
-import { useWorkerSettingFilterStore } from "@/components/store/setting/worker/worker-setting-filter-store-provider"
+import { useWorkerSettingFilterStore } from "@/app/(private)/setting/workers/_components/manage-worker/filter/store/worker-setting-filter-store-provider"
 
 export default function DepartmentIdFormField() {
   const { control, setValue } = useFormContext<WorkerSettingFormInput>();

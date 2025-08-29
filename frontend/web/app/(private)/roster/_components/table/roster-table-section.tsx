@@ -1,6 +1,6 @@
 "use client";
 
-import { useArrangeRosterStore } from '@/components/store/roster/arrange/arrange-roster-store-provider';
+import { useArrangeRosterStore } from '@/app/(private)/roster/_components/store/arrange-roster-store-provider';
 import RosterTable from './roster-table';
 import RosterTableSaveButton from './save-button/roster-table-save-button';
 import RosterTableResetButton from './roster-table-reset-button';

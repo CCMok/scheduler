@@ -8,7 +8,7 @@ import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-
 import { UiMessageTitle } from '@/libs/share/_general/enums/ui-message';
 import { useRouter } from 'next/navigation';
 import { handleServiceResponse } from '@/libs/share/_general/utils/service-response-handler';
-import { usePostSettingStore } from '@/components/store/setting/post/post-setting-store-provider';
+import { usePostSettingStore } from '@/app/(private)/setting/posts/_components/manage-post/store/post-setting-store-provider';
 import { UiResponse } from '@/libs/share/_general/models/ui-response';
 import { Post } from '@/external/prisma-generated';
 import { GetPostsRequest } from '@/libs/server/post/models/get-posts-request';

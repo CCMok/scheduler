@@ -1,7 +1,7 @@
 'use client';
 
 import CustomInput from "@/components/input/custom-input";
-import { useWorkerSettingStore } from "@/components/store/setting/worker/worker-setting-store-provider";
+import { useWorkerSettingStore } from "@/app/(private)/setting/workers/_components/manage-worker/store/worker-setting-store-provider";
 import { Label } from "@/external/shadcn/components/ui/label";
 
 export default function WorkerNameField() {

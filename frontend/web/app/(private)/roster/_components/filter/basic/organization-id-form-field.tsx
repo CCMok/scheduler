@@ -2,7 +2,7 @@
 
 import ComboBox from "@/components/combobox/combobox"
 import CustomFormItem from "@/components/form/custom-form-item"
-import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider"
+import { useArrangeRosterFilterStore } from "@/app/(private)/roster/_components/filter/store/arrange-roster-filter-store-provider"
 import { FormField } from "@/external/shadcn/components/ui/form"
 import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
 import { useFormContext } from "react-hook-form"

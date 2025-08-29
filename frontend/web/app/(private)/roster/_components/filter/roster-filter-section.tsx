@@ -1,5 +1,5 @@
 import { ClassNameProps } from "@/libs/share/_general/props/class-name-props";
-import { ArrangeRosterFilterStoreProvider } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider";
+import { ArrangeRosterFilterStoreProvider } from "@/app/(private)/roster/_components/filter/store/arrange-roster-filter-store-provider";
 import ArrangeRosterForm from "../form/arrange-roster-form";
 import { getOrganizationsService } from "@/libs/server/organization/services/get-organizations-service";
 import { OrganizationDepartments } from "@/libs/server/organization/models/organization-dao";

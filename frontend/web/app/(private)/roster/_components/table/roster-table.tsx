@@ -15,7 +15,7 @@ import {
   sortableKeyboardCoordinates,
   rectSwappingStrategy,
 } from '@dnd-kit/sortable';
-import { useArrangeRosterStore } from '@/components/store/roster/arrange/arrange-roster-store-provider';
+import { useArrangeRosterStore } from '@/app/(private)/roster/_components/store/arrange-roster-store-provider';
 import {
   Table,
   TableBody,

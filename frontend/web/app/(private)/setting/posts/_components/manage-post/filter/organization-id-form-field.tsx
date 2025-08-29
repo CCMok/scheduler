@@ -2,7 +2,7 @@
 
 import ComboBox from "@/components/combobox/combobox"
 import CustomFormItem from "@/components/form/custom-form-item"
-import { usePostSettingFilterStore } from "@/components/store/setting/post/post-setting-filter-store-provider"
+import { usePostSettingFilterStore } from "@/app/(private)/setting/posts/_components/manage-post/filter/store/post-setting-filter-store-provider"
 import { FormField } from "@/external/shadcn/components/ui/form"
 import { PostSettingFormInput } from "@/libs/client/post/models/post-setting-form-input"
 import { useFormContext } from "react-hook-form"

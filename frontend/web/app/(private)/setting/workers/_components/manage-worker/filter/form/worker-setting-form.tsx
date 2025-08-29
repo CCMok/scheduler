@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form"
 import WorkerSettingFilter from "../worker-setting-filter"
 import WorkerSettingFormDependencyHandler from "./worker-setting-form-dependency-handler"
 import { getDefaultDepartmentIdInOrganizations, getDefaultOrganizationId } from "@/libs/client/organization/utils/organization-utils"
-import { useWorkerSettingFilterStore } from "@/components/store/setting/worker/worker-setting-filter-store-provider"
+import { useWorkerSettingFilterStore } from "@/app/(private)/setting/workers/_components/manage-worker/filter/store/worker-setting-filter-store-provider"
 import FormRootMessage from "@/components/form/form-root-message"
 
 export default function WorkerSettingForm() {

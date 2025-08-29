@@ -7,7 +7,7 @@ import { notFound, redirect } from "next/navigation";
 import { getPostWorkersService } from "@/libs/server/post/services/get-post-workers-service";
 import { GetPostWorkersRequest } from "@/libs/server/post/models/get-post-workers-request";
 import { PostWorkers } from "@/libs/server/post/models/post-dao";
-import { PostUpdateStoreProvider } from "@/components/store/setting/post/post-update-store-provider";
+import { PostUpdateStoreProvider } from "@/app/(private)/setting/post/[id]/edit/_components/store/post-update-store-provider";
 import Header from "@/components/header/header";
 import { PATH } from "@/libs/share/_general/utils/path";
 

@@ -3,10 +3,10 @@
 import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
 import { getArrangeRosterRequest } from "@/libs/server/roster/models/arrange/arrange-roster-request"
 import { arrangeRosterAction } from "@/libs/server/roster/actions/arrange-roster-action"
-import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider"
+import { useArrangeRosterStore } from "@/app/(private)/roster/_components/store/arrange-roster-store-provider"
 import { UseFormSetError } from "react-hook-form"
 import { dayBaseToPostBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils"
-import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider"
+import { useArrangeRosterFilterStore } from "@/app/(private)/roster/_components/filter/store/arrange-roster-filter-store-provider"
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler"
 import { useRouter } from "next/navigation"
 

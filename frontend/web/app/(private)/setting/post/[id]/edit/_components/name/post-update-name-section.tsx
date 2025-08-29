@@ -19,7 +19,7 @@ import { updatePostNameAction } from "@/libs/server/post/actions/update-post-nam
 import { UiResponse } from "@/libs/share/_general/models/ui-response";
 import { useState } from "react";
 import WarningDialog from "@/components/dialog/warning-dialog";
-import { usePostUpdateStore } from "@/components/store/setting/post/post-update-store-provider";
+import { usePostUpdateStore } from "@/app/(private)/setting/post/[id]/edit/_components/store/post-update-store-provider";
 
 export default function PostUpdateNameSection() {
   const postId = usePostUpdateStore(state => state.postId)

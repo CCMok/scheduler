@@ -2,26 +2,26 @@
 
 import { createContext, useRef, useContext } from 'react'
 import { useStore } from 'zustand'
-import { ArrangeRosterState, ArrangeRosterStore, createArrangeRosterStore } from '@/components/store/roster/arrange/arrange-roster-store'
+import { ArrangeRosterFilterState, ArrangeRosterFilterStore, createArrangeRosterFilterStore } from '@/app/(private)/roster/_components/filter/store/arrange-roster-filter-store'
 import { ChildrenProps } from '@/libs/share/_general/props/children-props'
 
-export type StoreApi = ReturnType<typeof createArrangeRosterStore>
+export type StoreApi = ReturnType<typeof createArrangeRosterFilterStore>
 
 export const StoreContext = createContext<StoreApi | undefined>(
   undefined,
 )
 
 export type Props = ChildrenProps & {
-  initState?: Partial<ArrangeRosterState>,
+  initState?: Partial<ArrangeRosterFilterState>,
 }
 
-export const ArrangeRosterStoreProvider = ({
+export const ArrangeRosterFilterStoreProvider = ({
   children,
   initState,
 }: Readonly<Props>) => {
   const storeRef = useRef<StoreApi | null>(null)
 
-  storeRef.current ??= createArrangeRosterStore(initState);
+  storeRef.current ??= createArrangeRosterFilterStore(initState);
 
   return (
     <StoreContext.Provider value={storeRef.current}>
@@ -30,13 +30,13 @@ export const ArrangeRosterStoreProvider = ({
   )
 }
 
-export const useArrangeRosterStore = <T,>(
-  selector: (store: ArrangeRosterStore) => T,
+export const useArrangeRosterFilterStore = <T,>(
+  selector: (store: ArrangeRosterFilterStore) => T,
 ): T => {
   const storeContext = useContext(StoreContext)
 
   if (!storeContext) {
-    throw new Error(`useArrangeRosterStore must be used within ArrangeRosterStoreProvider`)
+    throw new Error(`useArrangeRosterFilterStore must be used within ArrangeRosterFilterStoreProvider`)
   }
 
   return useStore(storeContext, selector)

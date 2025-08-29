@@ -3,7 +3,7 @@
 import CustomButton from "@/components/button/custom-button";
 import { ArrowDownUp } from "lucide-react";
 import { isNil } from "lodash";
-import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider";
+import { usePostSettingStore } from "@/app/(private)/setting/posts/_components/manage-post/store/post-setting-store-provider";
 import { PATH } from "@/libs/share/_general/utils/path";
 import CustomLink from "@/components/link/custom-link";
 

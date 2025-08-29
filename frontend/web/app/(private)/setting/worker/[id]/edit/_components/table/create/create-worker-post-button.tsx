@@ -8,7 +8,7 @@ import CreateWorkerPostIdFormField from "./create-worker-post-id-form-field";
 import CreateWorkerPostForm from "./create-worker-post-form";
 import FormRootMessage from "@/components/form/form-root-message";
 import FormSubmitButton from "@/components/form/form-submit-button";
-import { useWorkerUpdateStore } from "@/components/store/setting/worker/worker-update-store-provider";
+import { useWorkerUpdateStore } from "@/app/(private)/setting/worker/[id]/edit/_components/store/worker-update-store-provider";
 
 export default function CreateWorkerPostButton() {
   const [isOpen, setIsOpen] = useState(false)

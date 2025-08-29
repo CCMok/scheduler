@@ -2,7 +2,7 @@
 
 import ComboBox from "@/components/combobox/combobox"
 import CustomFormItem from "@/components/form/custom-form-item"
-import { useWorkerSettingFilterStore } from "@/components/store/setting/worker/worker-setting-filter-store-provider"
+import { useWorkerSettingFilterStore } from "@/app/(private)/setting/workers/_components/manage-worker/filter/store/worker-setting-filter-store-provider"
 import { FormField } from "@/external/shadcn/components/ui/form"
 import { WorkerSettingFormInput } from "@/libs/client/worker/models/worker-setting-form-input"
 import { useFormContext } from "react-hook-form"

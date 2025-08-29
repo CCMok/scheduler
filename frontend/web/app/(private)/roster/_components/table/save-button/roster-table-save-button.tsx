@@ -6,8 +6,8 @@ import { AlertDialogTrigger, AlertDialog, AlertDialogContent, AlertDialogHeader,
 import CustomButton from "@/components/button/custom-button";
 import RosterTableSaveConfirmDescription from "./roster-table-save-confirm-description";
 import RosterTableSaveConfirmButton from "./roster-table-save-confirm-button";
-import { MaxHistoryCountStoreProvider, useMaxHistoryCountStore } from "@/components/store/roster/save/max-history-count-store-provider";
-import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider";
+import { MaxHistoryCountStoreProvider, useMaxHistoryCountStore } from "@/app/(private)/roster/_components/table/save-button/store/max-history-count-store-provider";
+import { useArrangeRosterStore } from "@/app/(private)/roster/_components/store/arrange-roster-store-provider";
 import { isNil } from "lodash";
 import { useRouter } from "next/navigation";
 import { GetMaxHistoryCountRequest } from "@/libs/server/organization/models/get-max-history-count-request";

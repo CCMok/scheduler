@@ -1,6 +1,6 @@
 'use client';
 
-import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider";
+import { useArrangeRosterStore } from "@/app/(private)/roster/_components/store/arrange-roster-store-provider";
 import { RotateCcw } from "lucide-react";
 import { AlertDialogTrigger } from "@/external/shadcn/components/ui/alert-dialog";
 import CustomButton from "@/components/button/custom-button";

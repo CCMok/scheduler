@@ -1,4 +1,4 @@
-import { PostSettingStoreProvider } from '@/components/store/setting/post/post-setting-store-provider';
+import { PostSettingStoreProvider } from '@/app/(private)/setting/posts/_components/manage-post/store/post-setting-store-provider';
 import PostSettingFilterSection from './filter/post-setting-filter-section';
 import PostTableSection from './table/post-table-section';
 import CreatePostButton from './create-post/create-post-button';

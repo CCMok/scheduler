@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/external/shadcn/comp
 import WorkerTableSection from './table/worker-table-section';
 import WorkerSettingFilterSection from './filter/worker-setting-filter-section';
 import CreateWorkerButton from './create-worker/create-worker-button';
-import { WorkerSettingStoreProvider } from '@/components/store/setting/worker/worker-setting-store-provider';
+import { WorkerSettingStoreProvider } from '@/app/(private)/setting/workers/_components/manage-worker/store/worker-setting-store-provider';
 
 export default function ManageWorkerSection() {
   return (

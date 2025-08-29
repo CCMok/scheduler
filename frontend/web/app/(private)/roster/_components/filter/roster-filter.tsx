@@ -3,7 +3,7 @@
 import FormSubmitButton from "@/components/form/form-submit-button"
 import BasicFilter from "./basic/basic-filter"
 import OffFilter from "./off/off-filter"
-import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider"
+import { useArrangeRosterStore } from "@/app/(private)/roster/_components/store/arrange-roster-store-provider"
 import FormRootMessage from "@/components/form/form-root-message"
 import { CalendarSync } from "lucide-react"
 

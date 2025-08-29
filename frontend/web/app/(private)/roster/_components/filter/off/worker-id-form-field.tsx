@@ -5,7 +5,7 @@ import ComboBox from "@/components/combobox/combobox";
 import CustomFormItem from "@/components/form/custom-form-item";
 import { FormField } from "@/external/shadcn/components/ui/form";
 import { useFormContext } from "react-hook-form"
-import { useArrangeRosterFilterStore } from "@/components/store/roster/arrange/filter/arrange-roster-filter-store-provider";
+import { useArrangeRosterFilterStore } from "@/app/(private)/roster/_components/filter/store/arrange-roster-filter-store-provider";
 
 type Props = {
   index: number;

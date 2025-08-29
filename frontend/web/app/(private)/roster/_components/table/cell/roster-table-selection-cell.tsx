@@ -11,7 +11,7 @@ import {
   useRef
 } from "react";
 import ComboBox from "@/components/combobox/combobox";
-import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider";
+import { useArrangeRosterStore } from "@/app/(private)/roster/_components/store/arrange-roster-store-provider";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { Worker } from "@/external/prisma-generated";
 

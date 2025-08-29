@@ -4,7 +4,7 @@ import { closestCenter, DndContext, DragEndEvent, KeyboardSensor, PointerSensor,
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import PostRow from "./post-row"
 import { Table, TableBody, TableCaption, TableCell, TableHeader, TableRow } from "@/external/shadcn/components/ui/table"
-import { usePostSequenceStore } from "@/components/store/setting/post/sequence/post-sequence-store-provider"
+import { usePostSequenceStore } from "@/app/(private)/setting/department/[id]/posts/sequence/_components/store/post-sequence-store-provider"
 
 export default function PostSequenceTable() {
   const posts = usePostSequenceStore(state => state.posts);

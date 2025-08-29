@@ -1,7 +1,7 @@
 'use client';
 
 import CustomInput from "@/components/input/custom-input";
-import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider";
+import { usePostSettingStore } from "@/app/(private)/setting/posts/_components/manage-post/store/post-setting-store-provider";
 import { Label } from "@/external/shadcn/components/ui/label";
 
 export default function PostNameField() {

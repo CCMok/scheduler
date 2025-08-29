@@ -1,7 +1,7 @@
 'use client'
 
 import { Loader2 } from "lucide-react";
-import { useMaxHistoryCountStore } from "@/components/store/roster/save/max-history-count-store-provider";
+import { useMaxHistoryCountStore } from "@/app/(private)/roster/_components/table/save-button/store/max-history-count-store-provider";
 
 export default function RosterTableSaveConfirmDescription() {
   const maxHistoryCount = useMaxHistoryCountStore(state => state.maxHistoryCount);

@@ -19,7 +19,7 @@ import { updateWorkerNameAction } from "@/libs/server/worker/actions/update-work
 import { UiResponse } from "@/libs/share/_general/models/ui-response";
 import { useState } from "react";
 import WarningDialog from "@/components/dialog/warning-dialog";
-import { useWorkerUpdateStore } from "@/components/store/setting/worker/worker-update-store-provider";
+import { useWorkerUpdateStore } from "@/app/(private)/setting/worker/[id]/edit/_components/store/worker-update-store-provider";
 
 export default function WorkerUpdateNameSection() {
   const workerId = useWorkerUpdateStore(state => state.workerId)

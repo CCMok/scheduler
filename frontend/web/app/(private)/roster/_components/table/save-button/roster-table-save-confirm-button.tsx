@@ -1,7 +1,7 @@
 'use client'
 
 import LoadingButton from "@/components/button/loading-button";
-import { useArrangeRosterStore } from "@/components/store/roster/arrange/arrange-roster-store-provider";
+import { useArrangeRosterStore } from "@/app/(private)/roster/_components/store/arrange-roster-store-provider";
 import { createRosterHistoryAction } from "@/libs/server/roster/actions/create-roster-history-action";
 import { CreateRosterHistoryRequest, CreateScheduleRequest } from "@/libs/server/roster/models/create-roster-request";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -11,7 +11,7 @@ import { isNil } from "lodash";
 import { toast } from "sonner";
 import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
-import { useMaxHistoryCountStore } from "@/components/store/roster/save/max-history-count-store-provider";
+import { useMaxHistoryCountStore } from "@/app/(private)/roster/_components/table/save-button/store/max-history-count-store-provider";
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { useRouter } from "next/navigation";
 

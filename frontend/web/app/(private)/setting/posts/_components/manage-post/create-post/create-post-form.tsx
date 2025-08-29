@@ -13,7 +13,7 @@ import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { useRouter } from "next/navigation";
-import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider";
+import { usePostSettingStore } from "@/app/(private)/setting/posts/_components/manage-post/store/post-setting-store-provider";
 import { UiResponse } from "@/libs/share/_general/models/ui-response";
 import { GetPostsRequest } from "@/libs/server/post/models/get-posts-request";
 import { fetchData } from "@/libs/share/_general/utils/fetch";

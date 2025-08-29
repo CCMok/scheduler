@@ -1,5 +1,5 @@
 import WorkerSettingForm from "./form/worker-setting-form";
-import { WorkerSettingFilterStoreProvider } from "@/components/store/setting/worker/worker-setting-filter-store-provider";
+import { WorkerSettingFilterStoreProvider } from "@/app/(private)/setting/workers/_components/manage-worker/filter/store/worker-setting-filter-store-provider";
 import { OrganizationDepartments } from "@/libs/server/organization/models/organization-dao";
 import { getOrganizationsService } from "@/libs/server/organization/services/get-organizations-service";
 import { redirect } from "next/navigation";

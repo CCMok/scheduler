@@ -9,7 +9,7 @@ import FormSubmitButton from "@/components/form/form-submit-button";
 import FormRootMessage from "@/components/form/form-root-message";
 import CreatePostFields from "./create-post-fields";
 import { isNil } from "lodash";
-import { usePostSettingStore } from "@/components/store/setting/post/post-setting-store-provider";
+import { usePostSettingStore } from "@/app/(private)/setting/posts/_components/manage-post/store/post-setting-store-provider";
 
 export default function CreatePostButton() {
   const [isOpen, setIsOpen] = useState(false)

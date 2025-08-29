@@ -8,7 +8,7 @@ import { DeleteWorkerRequest } from '@/libs/server/worker/models/delete-worker-r
 import { deleteWorkerAction } from '@/libs/server/worker/actions/delete-worker-action';
 import { useRouter } from 'next/navigation';
 import { UiMessageTitle } from '@/libs/share/_general/enums/ui-message';
-import { useWorkerSettingStore } from '@/components/store/setting/worker/worker-setting-store-provider';
+import { useWorkerSettingStore } from '@/app/(private)/setting/workers/_components/manage-worker/store/worker-setting-store-provider';
 import { UiResponse } from '@/libs/share/_general/models/ui-response';
 import { GetWorkersRequest } from '@/libs/server/worker/models/get-workers-request';
 import { Worker } from '@/external/prisma-generated';
