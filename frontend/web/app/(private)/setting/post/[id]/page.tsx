@@ -39,7 +39,7 @@ export default async function PostEditPage({
       departmentId: postWorkers.departmentId,
     }}>
       <div className="space-y-4">
-        <Header backPath={PATH.setting.posts}>
+        <Header>
           <span>{postWorkers.name}</span>
         </Header>
         <PostUpdateNameSection />

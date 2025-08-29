@@ -1,5 +1,5 @@
 import { getOrganizationsService } from "@/libs/server/organization/services/get-organizations-service";
-import UpdateOrganizationNameForm from "./_components/update-organization-name-form";
+import UpdateOrganizationNameSection from "./_components/organization-update-name-section";
 import { notFound, redirect } from "next/navigation";
 import { Organization } from "@/external/prisma-generated";
 import { GetOrganizationsRequest } from "@/libs/server/organization/models/get-organizations-request";
@@ -39,7 +39,7 @@ export default async function OrganizationSettingPage({
         currentOrgId={id}
       />
       <Separator />
-      <UpdateOrganizationNameForm organization={currentOrg} />
+      <UpdateOrganizationNameSection organization={currentOrg} />
     </div>
   )
 }

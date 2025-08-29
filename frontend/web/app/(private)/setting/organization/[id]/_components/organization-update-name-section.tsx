@@ -24,7 +24,7 @@ type Props = {
   organization: Organization;
 }
 
-export default function UpdateOrganizationNameForm({
+export default function UpdateOrganizationNameSection({
   organization,
 }: Readonly<Props>) {
   const form = useForm({

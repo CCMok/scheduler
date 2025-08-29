@@ -1,24 +1,25 @@
+'use client'
+
 import { ChevronLeft } from "lucide-react";
 import CustomButton from "../button/custom-button";
-import CustomLink from "../link/custom-link";
 import { Separator } from "@/external/shadcn/components/ui/separator";
 import { ChildrenProps } from "@/libs/share/_general/props/children-props";
+import { useRouter } from "next/navigation";
 
-type Props = ChildrenProps & {
-  backPath: string;
-}
+type Props = ChildrenProps
 
 export default function Header({
-  backPath,
   children,
 }: Readonly<Props>) {
+  const router = useRouter();
+
+  const onClick = () => router.back();
+
   return (
     <div>
       <div className="flex items-center space-x-2">
-        <CustomButton size='icon' variant='ghost' asChild>
-          <CustomLink href={backPath}>
-            <ChevronLeft />
-          </CustomLink>
+        <CustomButton size='icon' variant='ghost' onClick={onClick}>
+          <ChevronLeft />
         </CustomButton>
         {children}
       </div>
