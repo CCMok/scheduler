@@ -7,8 +7,8 @@ import { WorkerPosts } from "@/libs/server/worker/models/worker-dao";
 import { GetWorkerPostsRequest } from "@/libs/server/worker/models/get-worker-posts-request";
 import { getWorkerPostsService } from "@/libs/server/worker/services/get-worker-posts-service";
 import WorkerUpdateNameSection from "./_components/name/worker-update-name-section";
-import { WorkerUpdateStoreProvider } from "@/app/(private)/setting/worker/[id]/edit/_components/store/worker-update-store-provider";
 import WorkerPostTableSection from "./_components/table/worker-post-table-section";
+import { WorkerUpdateStoreProvider } from "./_components/store/worker-update-store-provider";
 
 const getWorkerPosts = async (id: number): Promise<WorkerPosts | undefined> => {
   const request: GetWorkerPostsRequest = { id }

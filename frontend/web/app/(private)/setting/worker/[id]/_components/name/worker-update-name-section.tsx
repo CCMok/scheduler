@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
 import { Save } from "lucide-react";
-import PostNameField from "./post-name-field";
+import WorkerNameField from "./worker-name-field";
 import FormRootMessage from "@/components/form/form-root-message";
 import FormSubmitButton from "@/components/form/form-submit-button";
 import { Form } from "@/external/shadcn/components/ui/form";
@@ -13,22 +13,22 @@ import { UiMessageContent, UiMessageTitle } from "@/libs/share/_general/enums/ui
 import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { useRouter } from "next/navigation";
-import { UpdatePostNameFormInput, updatePostNameFormInputSchema } from "@/libs/client/post/models/update-post-name-form-input";
-import { UpdatePostNameRequest } from "@/libs/server/post/models/update-post-name-request";
-import { updatePostNameAction } from "@/libs/server/post/actions/update-post-name-action";
+import { UpdateWorkerNameFormInput, updateWorkerNameFormInputSchema } from "@/libs/client/worker/models/update-worker-name-form-input";
+import { UpdateWorkerNameRequest } from "@/libs/server/worker/models/update-worker-name-request";
+import { updateWorkerNameAction } from "@/libs/server/worker/actions/update-worker-name-action";
 import { UiResponse } from "@/libs/share/_general/models/ui-response";
 import { useState } from "react";
 import WarningDialog from "@/components/dialog/warning-dialog";
-import { usePostUpdateStore } from "@/app/(private)/setting/post/[id]/edit/_components/store/post-update-store-provider";
+import { useWorkerUpdateStore } from "../store/worker-update-store-provider";
 
-export default function PostUpdateNameSection() {
-  const postId = usePostUpdateStore(state => state.postId)
-  const postName = usePostUpdateStore(state => state.postName)
+export default function WorkerUpdateNameSection() {
+  const workerId = useWorkerUpdateStore(state => state.workerId)
+  const workerName = useWorkerUpdateStore(state => state.workerName)
 
   const form = useForm({
-    resolver: zodResolver(updatePostNameFormInputSchema),
+    resolver: zodResolver(updateWorkerNameFormInputSchema),
     defaultValues: {
-      name: postName,
+      name: workerName,
     },
   })
 
@@ -36,8 +36,8 @@ export default function PostUpdateNameSection() {
 
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false)
 
-  const onSubmit = async (input: UpdatePostNameFormInput) => {
-    if (input.name === postName) {
+  const onSubmit = async (input: UpdateWorkerNameFormInput) => {
+    if (input.name === workerName) {
       form.setError('name', {
         type: UiMessageTitle.INPUT_ERROR,
         message: UiMessageContent.NOT_MATCH.replaceAll('{0}', '原本名稱'),
@@ -51,26 +51,26 @@ export default function PostUpdateNameSection() {
   const onAlertDialogContinue = async () => {
     const input = form.getValues()
 
-    const uiResponse = await updatePost(input)
+    const uiResponse = await updateWorker(input)
     if (!uiResponse.isSuccess) {
       form.setError('root', { type: uiResponse.message.title, message: uiResponse.message.content })
       return
     }
 
-    toast.success('編輯職位名稱' + UiMessageTitle.SUCCESS, {
+    toast.success('編輯人員名稱' + UiMessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
     })
 
     router.refresh()
   }
 
-  const updatePost = async (input: UpdatePostNameFormInput): Promise<UiResponse> => {
-    const request: UpdatePostNameRequest = {
-      id: postId,
+  const updateWorker = async (input: UpdateWorkerNameFormInput): Promise<UiResponse> => {
+    const request: UpdateWorkerNameRequest = {
+      id: workerId,
       name: input.name,
     }
 
-    const response = await updatePostNameAction(request)
+    const response = await updateWorkerNameAction(request)
 
     return handleServiceResponse(response, path => router.push(path))
   }
@@ -80,13 +80,13 @@ export default function PostUpdateNameSection() {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <Card>
           <CardHeader>
-            <CardTitle>職位名稱</CardTitle>
+            <CardTitle>人員名稱</CardTitle>
             <CardDescription>
-              這是您的職位在 Scheduler 中的可見名稱。
+              這是您的人員在 Scheduler 中的可見名稱。
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <PostNameField postName={postName} />
+            <WorkerNameField workerName={workerName} />
           </CardContent>
           <CardFooter className='flex space-x-4'>
             <FormRootMessage />
@@ -102,7 +102,7 @@ export default function PostUpdateNameSection() {
           isOpen={isAlertDialogOpen}
           setIsOpen={setIsAlertDialogOpen}
           title='確定要儲存嗎?'
-          description='儲存後將更改職位名稱，請確認是否繼續。'
+          description='儲存後將更改人員名稱，請確認是否繼續。'
           onContinue={onAlertDialogContinue}
         />
       </form>

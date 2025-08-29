@@ -4,18 +4,18 @@ import CustomButton from "@/components/button/custom-button";
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/external/shadcn/components/ui/alert-dialog";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import CreatePostWorkerIdFormField from "./create-post-worker-id-form-field";
-import CreatePostWorkerForm from "./create-post-worker-form";
+import CreateWorkerPostIdFormField from "./create-worker-post-id-form-field";
+import CreateWorkerPostForm from "./create-worker-post-form";
 import FormRootMessage from "@/components/form/form-root-message";
 import FormSubmitButton from "@/components/form/form-submit-button";
-import { usePostUpdateStore } from "@/app/(private)/setting/post/[id]/edit/_components/store/post-update-store-provider";
+import { useWorkerUpdateStore } from "../../store/worker-update-store-provider";
 
-export default function CreatePostWorkerButton() {
+export default function CreateWorkerPostButton() {
   const [isOpen, setIsOpen] = useState(false)
 
-  const postId = usePostUpdateStore(state => state.postId)
-  const departmentId = usePostUpdateStore(state => state.departmentId)
-  const workers = usePostUpdateStore(state => state.workers)
+  const workerId = useWorkerUpdateStore(state => state.workerId)
+  const departmentId = useWorkerUpdateStore(state => state.departmentId)
+  const posts = useWorkerUpdateStore(state => state.posts)
 
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -26,25 +26,25 @@ export default function CreatePostWorkerButton() {
         </CustomButton>
       </AlertDialogTrigger>
       <AlertDialogContent>
-        <CreatePostWorkerForm
+        <CreateWorkerPostForm
           setAlertIsOpen={setIsOpen}
           className="space-y-4"
-          postId={postId}
+          workerId={workerId}
         >
           <AlertDialogHeader>
             <AlertDialogTitle>新增職位人員</AlertDialogTitle>
             <AlertDialogDescription />
           </AlertDialogHeader>
-          <CreatePostWorkerIdFormField
+          <CreateWorkerPostIdFormField
             departmentId={departmentId}
-            existingWorkers={workers}
+            existingPosts={posts}
           />
           <FormRootMessage />
           <AlertDialogFooter>
             <AlertDialogCancel>取消</AlertDialogCancel>
             <FormSubmitButton>新增</FormSubmitButton>
           </AlertDialogFooter>
-        </CreatePostWorkerForm>
+        </CreateWorkerPostForm>
       </AlertDialogContent>
     </AlertDialog>
   )

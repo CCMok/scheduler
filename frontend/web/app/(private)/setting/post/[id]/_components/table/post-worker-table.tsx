@@ -3,14 +3,14 @@
 import { ColumnFiltersState, getCoreRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import { useState } from "react";
 import CustomTable from "@/components/table/custom-table";
-import { getColumns } from "./worker-post-table-column";
+import { getColumns } from "./post-worker-table-column";
 import { TABLE_DEFAULT_PAGE_SIZE } from "@/libs/client/_general/constants/table-constant";
-import { useWorkerUpdateStore } from "@/app/(private)/setting/worker/[id]/edit/_components/store/worker-update-store-provider";
+import { usePostUpdateStore } from "../store/post-update-store-provider";
 
-export default function WorkerPostTable() {
-  const workerId = useWorkerUpdateStore(state => state.workerId)
-  const workerName = useWorkerUpdateStore(state => state.workerName)
-  const posts = useWorkerUpdateStore(state => state.posts)
+export default function PostWorkerTable() {
+  const postId = usePostUpdateStore(state => state.postId)
+  const postName = usePostUpdateStore(state => state.postName)
+  const workers = usePostUpdateStore(state => state.workers)
 
   const [sorting, setSorting] = useState<SortingState>([{
     id: 'name',
@@ -18,10 +18,10 @@ export default function WorkerPostTable() {
   }]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-  const columns = getColumns(workerId, workerName);
+  const columns = getColumns(postId, postName);
 
   const table = useReactTable({
-    data: posts,
+    data: workers,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,

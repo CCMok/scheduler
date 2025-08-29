@@ -14,10 +14,6 @@ const enum PathSegment {
   SEQUENCE = 'sequence',
 }
 
-const enum PathSegmentAction {
-  EDIT = 'edit',
-}
-
 export const PATH = {
   home: '/',
   login: `/${PathSegment.LOGIN}`,
@@ -32,15 +28,11 @@ export const PATH = {
       build: (id: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATION}/${id}`,
     },
     post: {
-      edit: {
-        build: (id: string | number) => `/${PathSegment.SETTING}/${PathSegment.POST}/${id}/${PathSegmentAction.EDIT}`,
-      },
+      build: (id: string | number) => `/${PathSegment.SETTING}/${PathSegment.POST}/${id}`,
     },
     posts: `/${PathSegment.SETTING}/${PathSegment.POSTS}`,
     worker: {
-      edit: {
-        build: (id: string | number) => `/${PathSegment.SETTING}/${PathSegment.WORKER}/${id}/${PathSegmentAction.EDIT}`,
-      },
+      build: (id: string | number) => `/${PathSegment.SETTING}/${PathSegment.WORKER}/${id}`,
     },
     workers: `/${PathSegment.SETTING}/${PathSegment.WORKERS}`,
     department: {
