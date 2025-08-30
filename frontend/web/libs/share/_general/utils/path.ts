@@ -36,7 +36,7 @@ export const PATH = {
     },
     workers: `/${PathSegment.SETTING}/${PathSegment.WORKERS}`,
     department: {
-      base: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}`,
+      build: (id: string | number) => `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${id}`,
       posts: {
         sequence: {
           build: (departmentId: string | number) => `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${departmentId}/${PathSegment.POSTS}/${PathSegment.SEQUENCE}`,

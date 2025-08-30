@@ -1,6 +1,7 @@
 import { Department } from "@/external/prisma-generated";
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from "@/components/table/table-sortable-header";
+import DepartmentTableRowAction from "./department-table-row-action";
 
 export const columns: ColumnDef<Department>[] = [
   {
@@ -9,12 +10,11 @@ export const columns: ColumnDef<Department>[] = [
       <TableSortableHeader title="部門名稱" column={column} />
     ),
   },
-  // TODO
-  // {
-  //   id: 'actions',
-  //   header: '動作',
-  //   cell: ({ row }) => (
-  //     <PostTableRowAction postId={row.original.id} postName={row.original.name} />
-  //   ),
-  // },
+  {
+    id: 'actions',
+    header: '動作',
+    cell: ({ row }) => (
+      <DepartmentTableRowAction departmentId={row.original.id} departmentName={row.original.name} />
+    ),
+  },
 ]
