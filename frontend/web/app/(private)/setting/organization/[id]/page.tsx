@@ -1,13 +1,14 @@
 import { getOrganizationsService } from "@/libs/server/organization/services/get-organizations-service";
-import UpdateOrganizationNameSection from "./_components/organization-update-name-section";
+import UpdateOrganizationNameSection from "./_components/update-name/organization-update-name-section";
 import { notFound, redirect } from "next/navigation";
 import { Organization } from "@/external/prisma-generated";
 import { GetOrganizationsRequest } from "@/libs/server/organization/models/get-organizations-request";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
-import OrganizationComboBox from "./_components/organization-combo-box";
+import OrganizationComboBox from "./_components/update-name/organization-combo-box";
 import { Separator } from "@/external/shadcn/components/ui/separator";
 import { ParamProps } from "@/libs/share/_general/props/param-props";
 import { Param } from "@/libs/share/_general/enums/param";
+import DepartmentsSection from "./_components/departments/departments-section";
 
 const getOrganization = async (): Promise<Organization[]> => {
   const request: GetOrganizationsRequest = {
@@ -40,6 +41,7 @@ export default async function OrganizationSettingPage({
       />
       <Separator />
       <UpdateOrganizationNameSection organization={currentOrg} />
+      <DepartmentsSection orgId={id} />
     </div>
   )
 }
