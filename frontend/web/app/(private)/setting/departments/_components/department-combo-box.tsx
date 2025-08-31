@@ -6,8 +6,8 @@ import { Label } from "@/external/shadcn/components/ui/label";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
-import { DepartmentParam } from "./department-param";
 import { PATH } from "@/libs/share/_general/utils/path";
+import { Param } from "@/libs/share/_general/enums/param";
 
 type Props = {
   departments: Department[];
@@ -21,7 +21,7 @@ export default function DepartmentComboBox({
 
   const updateQuery = useCallback((id: string) => {
     const params = new URLSearchParams(searchParams);
-    params.set(DepartmentParam.ID, id);
+    params.set(Param.ID, id);
     const paramString = params.toString();
     router.push(`${PATH.setting.departments}?${paramString}`);
   }, [searchParams, router])
@@ -30,7 +30,7 @@ export default function DepartmentComboBox({
     updateQuery(value);
   }
 
-  const id = searchParams.get(DepartmentParam.ID) ?? '';
+  const id = searchParams.get(Param.ID) ?? '';
 
   const options = useMemo(() => {
     return [{ id: '', name: '(未選擇)' }, ...departments]

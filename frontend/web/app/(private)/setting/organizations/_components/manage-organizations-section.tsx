@@ -8,7 +8,9 @@ import OrganizationTable from "./organization-table";
 
 const getOrganizations = async (): Promise<Organization[]> => {
   return await fetchData(
-    async () => await getOrganizationsService({}),
+    async () => await getOrganizationsService({
+      orderBy: [{ field: 'name' }],
+    }),
     path => redirect(path),
     [],
   )

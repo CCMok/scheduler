@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import { DepartmentParam } from "./department-param";
 import { PATH } from "@/libs/share/_general/utils/path";
+import { Param } from "@/libs/share/_general/enums/param";
 
 type Props = {
   organizations: Organization[];
@@ -22,6 +23,7 @@ export default function OrganizationComboBox({
   const updateQuery = useCallback((id: string) => {
     const params = new URLSearchParams(searchParams);
     params.set(DepartmentParam.ORGANIZATION_ID, id);
+    params.delete(Param.ID);
     const paramString = params.toString();
     router.push(`${PATH.setting.departments}?${paramString}`);
   }, [searchParams, router])

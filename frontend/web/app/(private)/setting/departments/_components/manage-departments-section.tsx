@@ -1,14 +1,20 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
 import DepartmentFilter from "./department-filter";
 
-export default async function ManageDepartmentsSection() {
+type Props = {
+  orgId?: number;
+}
+
+export default async function ManageDepartmentsSection({
+  orgId,
+}: Readonly<Props>) {
   return (
     <Card>
       <CardHeader>
         <CardTitle>部門管理</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <DepartmentFilter />
+        <DepartmentFilter orgId={orgId} />
         {/* TODO */}
         {/* 
         <OrganizationTable organizations={organizations} /> */}
