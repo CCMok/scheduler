@@ -4,22 +4,23 @@ import { notFound, redirect } from "next/navigation";
 import { Organization } from "@/external/prisma-generated";
 import { GetOrganizationsRequest } from "@/libs/server/organization/models/get-organizations-request";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
-import OrganizationComboBox from "./_components/update-name/organization-combo-box";
-import { Separator } from "@/external/shadcn/components/ui/separator";
 import { ParamProps } from "@/libs/share/_general/props/param-props";
 import { Param } from "@/libs/share/_general/enums/param";
 import DepartmentsSection from "./_components/departments/departments-section";
+import Header from "@/components/header/header";
 
-const getOrganization = async (): Promise<Organization[]> => {
+const getOrganization = async (id: number): Promise<Organization | undefined> => {
   const request: GetOrganizationsRequest = {
-    orderBy: [{ field: 'name' }],
+    where: { id },
   }
 
-  return await fetchData(
+  const organizations = await fetchData(
     async () => await getOrganizationsService(request),
     path => redirect(path),
     [],
   )
+
+  return organizations[0];
 }
 
 export default async function OrganizationSettingPage({
@@ -29,18 +30,15 @@ export default async function OrganizationSettingPage({
   const id = Number(paramId);
   if (isNaN(id)) notFound();
 
-  const organizations = await getOrganization();
-  const currentOrg = organizations.find(org => org.id === id);
-  if (!currentOrg) notFound();
+  const organization = await getOrganization(id);
+  if (!organization) notFound();
 
   return (
     <div className='space-y-4'>
-      <OrganizationComboBox
-        organizations={organizations}
-        currentOrgId={id}
-      />
-      <Separator />
-      <UpdateOrganizationNameSection organization={currentOrg} />
+      <Header>
+        <span>{organization.name}</span>
+      </Header>
+      <UpdateOrganizationNameSection organization={organization} />
       <DepartmentsSection orgId={id} />
     </div>
   )

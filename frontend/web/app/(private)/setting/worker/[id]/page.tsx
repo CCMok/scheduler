@@ -1,5 +1,4 @@
 import { ParamProps } from "@/libs/share/_general/props/param-props";
-import WorkerUpdateHeader from "./_components/worker-update-header";
 import { Param } from "@/libs/share/_general/enums/param";
 import { notFound, redirect } from "next/navigation";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
@@ -9,6 +8,7 @@ import { getWorkerPostsService } from "@/libs/server/worker/services/get-worker-
 import WorkerUpdateNameSection from "./_components/name/worker-update-name-section";
 import WorkerPostTableSection from "./_components/table/worker-post-table-section";
 import { WorkerUpdateStoreProvider } from "./_components/store/worker-update-store-provider";
+import Header from "@/components/header/header";
 
 const getWorkerPosts = async (id: number): Promise<WorkerPosts | undefined> => {
   const request: GetWorkerPostsRequest = { id }
@@ -38,7 +38,9 @@ export default async function WorkerEditPage({
       departmentId: workerPosts.departmentId,
     }}>
       <div className="space-y-4">
-        <WorkerUpdateHeader workerName={workerPosts.name} />
+        <Header>
+          <span>{workerPosts.name}</span>
+        </Header>
         <WorkerUpdateNameSection />
         <WorkerPostTableSection />
       </div>
