@@ -7,7 +7,7 @@ import { serviceWrapper } from '../../_general/services/general-service';
 import { AccessResponse } from '../../access/models/access-response';
 import { isNil } from 'lodash';
 import { getAccessibleOrganizationIdsService } from '../../access/services/data-access-service';
-import { GetDepartmentsRequest, getDepartmentsRequestSchema } from '../models/get-department-request';
+import { DepartmentRelate, GetDepartmentsRequest, getDepartmentsRequestSchema } from '../models/get-department-request';
 
 export const getDepartmentsService = async <T extends Department = Department>(
   request: GetDepartmentsRequest
@@ -30,9 +30,10 @@ export const getDepartmentsService = async <T extends Department = Department>(
 
 const getQuery = (request: GetDepartmentsRequest, accessResponse: AccessResponse): Prisma.DepartmentFindManyArgs => {
   const where = getWhereClause(request, accessResponse);
+  const include = getIncludeClause(request);
   const orderBy = getOrderByClause(request);
 
-  return { where, orderBy, take: request.take };
+  return { where, include, orderBy, take: request.take };
 }
 
 const getWhereClause = (request: GetDepartmentsRequest, accessResponse: AccessResponse): Prisma.DepartmentWhereInput => {
@@ -55,6 +56,20 @@ const getOrgIdFilter = (request: GetDepartmentsRequest, accessResponse: AccessRe
   if (accessResponse.ids.includes(request.where.organizationId)) return request.where.organizationId;
 
   return { in: [] }
+}
+
+const getIncludeClause = (request: GetDepartmentsRequest): Prisma.DepartmentInclude => {
+  const include: Prisma.DepartmentInclude = {};
+
+  if (!request.relate) return include;
+
+  for (const relate of request.relate) {
+    if (relate === DepartmentRelate.ORGANIZATION) {
+      include.organization = true;
+    }
+  }
+
+  return include;
 }
 
 const getOrderByClause = (request: GetDepartmentsRequest) => {

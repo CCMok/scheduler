@@ -1,4 +1,6 @@
-import { Department, Post, Worker } from "@/external/prisma-generated";
+import { Department, Organization, Post, Worker } from "@/external/prisma-generated";
+
+export type DepartmentOrganization = Department & { organization: Organization }
 
 export type DepartmentWorkers = Department & { workers: Worker[] }
 
