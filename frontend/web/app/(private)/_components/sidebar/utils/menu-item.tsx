@@ -41,7 +41,7 @@ export const MENU_ITEMS: MainItem[] = [
       },
       {
         title: '組織',
-        url: PATH.setting.organization.base,
+        url: PATH.setting.organizations,
       },
       {
         title: '職位',
