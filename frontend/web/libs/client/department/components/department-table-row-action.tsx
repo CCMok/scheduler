@@ -8,15 +8,15 @@ type Props = {
   name: string;
 };
 
-export default function OrganizationTableRowAction({
+export default function DepartmentTableRowAction({
   id,
   name,
 }: Readonly<Props>) {
   // TODO: delete
   return (
     <ActionDropdownMenu
-      editPath={PATH.setting.organization.build(id)}
-      entityName="組織"
+      editPath={PATH.setting.department.build(id)}
+      entityName="部門"
       displayName={name}
     />
   )

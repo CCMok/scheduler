@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from "@/components/table/table-sortable-header";
-import DepartmentTableRowAction from "./department-table-row-action";
+import DepartmentTableRowAction from "../../../../../libs/client/department/components/department-table-row-action";
 import { DepartmentOrganization } from "@/libs/server/department/models/department-dao";
 
 export enum DepartmentTableId {
@@ -27,7 +27,7 @@ export const columns: ColumnDef<DepartmentOrganization>[] = [
     id: DepartmentTableId.ACTIONS,
     header: '動作',
     cell: ({ row }) => (
-      <DepartmentTableRowAction departmentId={row.original.id} departmentName={row.original.name} />
+      <DepartmentTableRowAction id={row.original.id} name={row.original.name} />
     ),
   },
 ]
