@@ -1,11 +1,9 @@
 'use client'
 
 import { Organization } from "@/external/prisma-generated";
-import { ColumnFiltersState, SortingState } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import CustomTable from "@/components/table/custom-table";
-import { getCoreRowModel, getSortedRowModel, getFilteredRowModel, getPaginationRowModel } from "@tanstack/react-table";
-import { useReactTable } from "@tanstack/react-table";
+import { getCoreRowModel, getSortedRowModel, getFilteredRowModel, getPaginationRowModel, useReactTable, SortingState, ColumnFiltersState } from "@tanstack/react-table";
 import { TABLE_DEFAULT_PAGE_SIZE } from "@/libs/client/_general/constants/table-constant";
 import { columns } from "./organization-table-column";
 import { useSearchParams } from "next/navigation";
