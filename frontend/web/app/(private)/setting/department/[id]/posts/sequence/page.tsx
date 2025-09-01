@@ -23,9 +23,11 @@ const getPosts = async (departmentId: number): Promise<Post[]> => {
   )
 }
 
+type Props = ParamProps<{ [Param.ID]: string }>
+
 export default async function PostsSequencePage({
   params,
-}: Readonly<ParamProps<{ [Param.ID]: string }>>) {
+}: Readonly<Props>) {
   const paramId = (await params).id;
   const departmentId = Number(paramId);
   if (isNaN(departmentId)) notFound();

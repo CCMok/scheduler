@@ -20,9 +20,11 @@ const getPostWorkers = async (id: number): Promise<PostWorkers | undefined> => {
   )
 }
 
+type Props = ParamProps<{ [Param.ID]: string }>
+
 export default async function PostEditPage({
   params,
-}: Readonly<ParamProps<{ [Param.ID]: string }>>) {
+}: Readonly<Props>) {
   const paramId = (await params).id;
   const id = Number(paramId);
   if (isNaN(id)) notFound();

@@ -2,6 +2,6 @@ export type ParamProps<T> = {
   params: Promise<T>;
 }
 
-export type SearchParamsProps<T> = {
+export type SearchParamProps<T> = {
   searchParams: Promise<T>;
 }

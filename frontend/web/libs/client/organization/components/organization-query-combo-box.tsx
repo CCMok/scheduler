@@ -5,6 +5,8 @@ import QueryInputWrapper from "@/components/input/query-input-wrapper";
 import { Organization } from "@/external/prisma-generated";
 import { Label } from "@/external/shadcn/components/ui/label";
 import { DEFAULT_ORGANIZATION_OPTION } from "@/libs/server/organization/models/organization-dao";
+import { toNumber } from "@/libs/share/_general/utils/number";
+import { isNil } from "lodash";
 import { useMemo } from "react";
 
 type Props = {
@@ -28,9 +30,9 @@ export default function OrganizationQueryComboBox({
     <div className='space-y-2'>
       <Label>組織</Label>
       <QueryInputWrapper
-        render={(id, onValueChange) => (
+        render={(value, onValueChange) => (
           <ComboBox
-            value={id ?? ''}
+            value={isNil(toNumber(value)) ? '' : value}
             options={options}
             getValue={option => option.id?.toString() ?? ''}
             getDisplayName={option => option.name}

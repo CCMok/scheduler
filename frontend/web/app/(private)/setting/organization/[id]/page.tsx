@@ -23,9 +23,11 @@ const getOrganization = async (id: number): Promise<Organization | undefined> =>
   return organizations[0];
 }
 
+type Props = ParamProps<{ [Param.ID]: string }>
+
 export default async function OrganizationSettingPage({
   params,
-}: Readonly<ParamProps<{ [Param.ID]: string }>>) {
+}: Readonly<Props>) {
   const paramId = (await params).id;
   const id = Number(paramId);
   if (isNaN(id)) notFound();

@@ -1,4 +1,4 @@
-import { SearchParamsProps } from "@/libs/share/_general/props/param-props";
+import { SearchParamProps } from "@/libs/share/_general/props/param-props";
 import { DepartmentParam } from "./_components/department-param";
 import { Param } from "@/libs/share/_general/enums/param";
 import { DepartmentOrganization } from "@/libs/server/department/models/department-dao";
@@ -26,12 +26,14 @@ const getDepartments = async (id?: number, orgId?: number): Promise<DepartmentOr
   )
 }
 
-export default async function DepartmentsPage({
-  searchParams,
-}: SearchParamsProps<{
+type Props = SearchParamProps<{
   [Param.ID]: string | undefined,
   [DepartmentParam.ORGANIZATION_ID]: string | undefined,
-}>) {
+}>
+
+export default async function DepartmentsPage({
+  searchParams,
+}: Readonly<Props>) {
   const params = await searchParams;
   const id = toNumber(params.id);
   const orgId = toNumber(params.organizationId);

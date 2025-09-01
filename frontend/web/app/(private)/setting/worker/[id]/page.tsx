@@ -20,9 +20,11 @@ const getWorkerPosts = async (id: number): Promise<WorkerPosts | undefined> => {
   )
 }
 
+type Props = ParamProps<{ [Param.ID]: string }>
+
 export default async function WorkerEditPage({
   params,
-}: Readonly<ParamProps<{ [Param.ID]: string }>>) {
+}: Readonly<Props>) {
   const paramId = (await params).id;
   const id = Number(paramId);
   if (isNaN(id)) notFound();
