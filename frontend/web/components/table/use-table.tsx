@@ -1,0 +1,39 @@
+'use client'
+import { ColumnDef, ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
+import { useState } from "react";
+import { TABLE_DEFAULT_PAGE_SIZE } from "@/libs/client/_general/constants/table-constant";
+
+type Props<TData> = {
+  data: TData[];
+  columns: ColumnDef<TData>[];
+  defaultSorting: SortingState;
+}
+
+export default function useTable<TData>({
+  data,
+  columns,
+  defaultSorting,
+}: Readonly<Props<TData>>) {
+  const [sorting, setSorting] = useState<SortingState>(defaultSorting);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
+  return useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    state: {
+      sorting,
+      columnFilters,
+    },
+    initialState: {
+      pagination: {
+        pageSize: TABLE_DEFAULT_PAGE_SIZE,
+      },
+    },
+  })
+}

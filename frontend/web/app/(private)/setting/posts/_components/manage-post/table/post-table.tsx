@@ -1,41 +1,23 @@
 'use client'
 
 import { usePostSettingStore } from "@/app/(private)/setting/posts/_components/manage-post/store/post-setting-store-provider"
-import { ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
-import { columns } from "./post-table-column";
-import { useEffect, useState } from "react";
-import { TABLE_DEFAULT_PAGE_SIZE } from "@/libs/client/_general/constants/table-constant";
+import { columns, PostTableId } from "./post-table-column";
+import { useEffect } from "react";
 import CustomTable from "@/components/table/custom-table";
+import useTable from "@/components/table/use-table";
 
 export default function PostTable() {
   const posts = usePostSettingStore(state => state.posts);
   const postNameFilter = usePostSettingStore(state => state.postNameFilter);
 
-  const [sorting, setSorting] = useState<SortingState>([{
-    id: 'name',
-    desc: false,
-  }]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
-  const table = useReactTable({
+  const table = useTable({
     data: posts,
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      sorting,
-      columnFilters,
-    },
-    initialState: {
-      pagination: {
-        pageSize: TABLE_DEFAULT_PAGE_SIZE,
-      },
-    },
-  });
+    defaultSorting: [{
+      id: PostTableId.NAME,
+      desc: false,
+    }],
+  })
 
   useEffect(() => {
     table.getColumn('name')?.setFilterValue(postNameFilter);
