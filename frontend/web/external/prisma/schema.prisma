@@ -45,8 +45,8 @@ model UserOrganization {
   id             Int          @id @default(autoincrement())
   userId         Int          @map("user_id")
   organizationId Int          @map("organization_id")
-  user           User         @relation(fields: [userId], references: [id])
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@unique([userId, organizationId])
   @@index([userId])
@@ -63,7 +63,7 @@ model Department {
   postConstraints   PostConstraint[]
   workerConstraints WorkerConstraint[]
   rosterHistories   RosterHistory[]
-  organization      Organization       @relation(fields: [organizationId], references: [id])
+  organization      Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@unique([organizationId, name])
   @@index([organizationId])
@@ -76,7 +76,7 @@ model Post {
   name                              String
   isDeleted                         Boolean                            @default(false) @map("is_deleted")
   displayPosition                   Int                                @default(0) @map("display_position")
-  department                        Department                         @relation(fields: [departmentId], references: [id])
+  department                        Department                         @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   postWorkers                       PostWorker[]
   postConstraintPosts               PostConstraintPost[]
   rosterHistoryScheduleArrangements RosterHistoryScheduleArrangement[]
@@ -91,7 +91,7 @@ model Worker {
   departmentId                      Int                                @map("department_id")
   name                              String
   isDeleted                         Boolean                            @default(false) @map("is_deleted")
-  department                        Department                         @relation(fields: [departmentId], references: [id])
+  department                        Department                         @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   postWorkers                       PostWorker[]
   workerConstraintWorkers           WorkerConstraintWorker[]
   rosterHistoryScheduleArrangements RosterHistoryScheduleArrangement[]
@@ -105,8 +105,8 @@ model PostWorker {
   id       Int    @id @default(autoincrement())
   postId   Int    @map("post_id")
   workerId Int    @map("worker_id")
-  post     Post   @relation(fields: [postId], references: [id])
-  worker   Worker @relation(fields: [workerId], references: [id])
+  post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  worker   Worker @relation(fields: [workerId], references: [id], onDelete: Cascade)
 
   @@unique([postId, workerId])
   @@index([postId])
@@ -128,7 +128,7 @@ model PostConstraint {
   departmentId         Int                  @map("department_id")
   postConstraintTypeId Int                  @map("post_constraint_type_id")
   weighting            Int
-  department           Department           @relation(fields: [departmentId], references: [id])
+  department           Department           @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   postConstraintType   PostConstraintType   @relation(fields: [postConstraintTypeId], references: [id])
   postConstraintPosts  PostConstraintPost[]
 
@@ -142,7 +142,7 @@ model PostConstraintPost {
   postConstraintId Int            @map("post_constraint_id")
   postId           Int            @map("post_id")
   postConstraint   PostConstraint @relation(fields: [postConstraintId], references: [id], onDelete: Cascade)
-  post             Post           @relation(fields: [postId], references: [id])
+  post             Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@unique([postConstraintId, postId])
   @@index([postConstraintId])
@@ -164,7 +164,7 @@ model WorkerConstraint {
   departmentId            Int                      @map("department_id")
   workerConstraintTypeId  Int                      @map("worker_constraint_type_id")
   weighting               Int
-  department              Department               @relation(fields: [departmentId], references: [id])
+  department              Department               @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   workerConstraintType    WorkerConstraintType     @relation(fields: [workerConstraintTypeId], references: [id])
   workerConstraintWorkers WorkerConstraintWorker[]
 
@@ -178,7 +178,7 @@ model WorkerConstraintWorker {
   workerConstraintId Int              @map("worker_constraint_id")
   workerId           Int              @map("worker_id")
   workerConstraint   WorkerConstraint @relation(fields: [workerConstraintId], references: [id], onDelete: Cascade)
-  worker             Worker           @relation(fields: [workerId], references: [id])
+  worker             Worker           @relation(fields: [workerId], references: [id], onDelete: Cascade)
 
   @@unique([workerConstraintId, workerId])
   @@index([workerConstraintId])
@@ -191,7 +191,7 @@ model RosterHistory {
   departmentId           Int                     @map("department_id")
   createdAt              DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)
   createdByUserId        Int                     @map("created_by_user_id")
-  department             Department              @relation(fields: [departmentId], references: [id])
+  department             Department              @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   createdByUser          User                    @relation(fields: [createdByUserId], references: [id])
   rosterHistorySchedules RosterHistorySchedule[]
 
@@ -217,8 +217,8 @@ model RosterHistoryScheduleArrangement {
   postId                  Int                   @map("post_id")
   workerId                Int?                  @map("worker_id")
   rosterHistorySchedule   RosterHistorySchedule @relation(fields: [rosterHistoryScheduleId], references: [id], onDelete: Cascade)
-  post                    Post                  @relation(fields: [postId], references: [id])
-  worker                  Worker?               @relation(fields: [workerId], references: [id], onDelete: Restrict)
+  post                    Post                  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  worker                  Worker?               @relation(fields: [workerId], references: [id], onDelete: Cascade)
 
   @@index([rosterHistoryScheduleId])
   @@index([postId])
