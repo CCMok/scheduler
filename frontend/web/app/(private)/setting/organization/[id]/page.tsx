@@ -1,5 +1,5 @@
 import { getOrganizationsService } from "@/libs/server/organization/services/get-organizations-service";
-import UpdateOrganizationNameSection from "./_components/update-name/organization-update-name-section";
+import UpdateOrganizationNameSection from "./_components/update-name/update-organization-name-section";
 import { notFound, redirect } from "next/navigation";
 import { Organization } from "@/external/prisma-generated";
 import { GetOrganizationsRequest } from "@/libs/server/organization/models/get-organizations-request";
