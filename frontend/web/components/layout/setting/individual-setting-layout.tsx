@@ -1,5 +1,5 @@
+import BackHeader from "@/components/header/back-header";
 import { ReactNode } from "react";
-import BackHeader from "../header/back-header";
 
 type Props = {
   title?: string;

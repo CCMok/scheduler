@@ -6,7 +6,7 @@ import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { ParamProps } from "@/libs/share/_general/props/param-props";
 import { Param } from "@/libs/share/_general/enums/param";
 import DepartmentsSection from "./_components/departments/departments-section";
-import IndividualSettingLayout from "@/components/layout/individual-setting-layout";
+import IndividualSettingLayout from "@/components/layout/setting/individual-setting-layout";
 
 const getOrganization = async (id: number): Promise<Organization | undefined> => {
   const organizations = await fetchData(

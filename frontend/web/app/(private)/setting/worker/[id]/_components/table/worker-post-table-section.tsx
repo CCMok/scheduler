@@ -6,7 +6,7 @@ export default function WorkerPostTableSection() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>人員職位管理</CardTitle>
+        <CardTitle>職位</CardTitle>
         <CardDescription>
           指派職位
         </CardDescription>

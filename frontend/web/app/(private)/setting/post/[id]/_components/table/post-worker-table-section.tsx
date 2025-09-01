@@ -6,7 +6,7 @@ export default function PostWorkerTableSection() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>職位人員管理</CardTitle>
+        <CardTitle>人員</CardTitle>
         <CardDescription>
           指派職位的負責人員
         </CardDescription>
