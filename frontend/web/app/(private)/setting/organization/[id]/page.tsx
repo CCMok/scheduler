@@ -2,7 +2,6 @@ import { getOrganizationsService } from "@/libs/server/organization/services/get
 import UpdateOrganizationNameSection from "./_components/update-name/update-organization-name-section";
 import { notFound, redirect } from "next/navigation";
 import { Organization } from "@/external/prisma-generated";
-import { GetOrganizationsRequest } from "@/libs/server/organization/models/get-organizations-request";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { ParamProps } from "@/libs/share/_general/props/param-props";
 import { Param } from "@/libs/share/_general/enums/param";
@@ -10,12 +9,10 @@ import DepartmentsSection from "./_components/departments/departments-section";
 import IndividualSettingLayout from "@/components/layout/individual-setting-layout";
 
 const getOrganization = async (id: number): Promise<Organization | undefined> => {
-  const request: GetOrganizationsRequest = {
-    where: { id },
-  }
-
   const organizations = await fetchData(
-    async () => await getOrganizationsService(request),
+    async () => await getOrganizationsService({
+      where: { id },
+    }),
     path => redirect(path),
     [],
   )

@@ -2,19 +2,16 @@ import DepartmentTable from './department-table';
 import { Department } from '@/external/prisma-generated';
 import { redirect } from 'next/navigation';
 import { fetchData } from '@/libs/share/_general/utils/fetch';
-import { GetDepartmentsRequest } from '@/libs/server/department/models/get-department-request';
 import { getDepartmentsService } from '@/libs/server/department/services/get-departments-service';
 import ManageTableSection from '@/components/table/manage-table-section';
 
 const getDepartments = async (orgId: number): Promise<Department[]> => {
-  const request: GetDepartmentsRequest = {
-    where: {
-      organizationId: orgId,
-    }
-  }
-
   return await fetchData(
-    async () => await getDepartmentsService(request),
+    async () => await getDepartmentsService({
+      where: {
+        organizationId: orgId,
+      },
+    }),
     path => redirect(path),
     [],
   )

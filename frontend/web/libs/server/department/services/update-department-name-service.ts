@@ -1,6 +1,6 @@
 import 'server-only'
 import { ServiceResponse } from "@/libs/share/_general/models/service-response";
-import { UpdateOrganizationNameRequest, updateOrganizationNameRequestSchema } from "../models/update-organization-name-request";
+import { UpdateDepartmentNameRequest, updateDepartmentNameRequestSchema } from "../models/update-department-name-request";
 import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import prisma from "../../_general/managers/database-manager";
 import { ServiceMessage } from "../../../share/_general/enums/service-message";
@@ -9,16 +9,16 @@ import { PrismaErrorCode } from "../../_general/enums/prisma-error-code";
 import { getPrismaErrorTarget, tryCatchQuery } from "../../_general/utils/database-utils";
 import { PrismaClientKnownRequestError } from "@/external/prisma-generated/runtime/library";
 import { serviceWrapper } from '../../_general/services/general-service';
-import { getAccessibleOrganizationIdsService } from '../../access/services/data-access-service';
+import { getAccessibleDepartmentIdsService } from '../../access/services/data-access-service';
 
-export const updateOrganizationNameService = async (request: UpdateOrganizationNameRequest): Promise<ServiceResponse> =>
+export const updateDepartmentNameService = async (request: UpdateDepartmentNameRequest): Promise<ServiceResponse> =>
   await serviceWrapper<{}>(async () => {
-    const parsedRequest = updateOrganizationNameRequestSchema.parse(request)
+    const parsedRequest = updateDepartmentNameRequestSchema.parse(request)
 
     const checkAccessResponse = await checkAccess(parsedRequest.id);
     if (checkAccessResponse) return checkAccessResponse;
 
-    const updateResult = await updateOrganization(parsedRequest)
+    const updateResult = await updateDepartment(parsedRequest)
     if (!updateResult.isSuccess) {
       return handleQueryError(updateResult.error)
     }
@@ -30,7 +30,7 @@ export const updateOrganizationNameService = async (request: UpdateOrganizationN
   })
 
 const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => {
-  const accessServiceResponse = await getAccessibleOrganizationIdsService();
+  const accessServiceResponse = await getAccessibleDepartmentIdsService();
   if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
 
   if (accessServiceResponse.data.canAccessAll || accessServiceResponse.data.ids.includes(id)) return;
@@ -41,9 +41,9 @@ const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => 
   }
 }
 
-const updateOrganization = async (request: UpdateOrganizationNameRequest): Promise<DataBaseQueryResponse> =>
+const updateDepartment = async (request: UpdateDepartmentNameRequest): Promise<DataBaseQueryResponse> =>
   await tryCatchQuery(async () =>
-    await prisma.organization.update({
+    await prisma.department.update({
       where: { id: request.id },
       data: { name: request.name },
     })
