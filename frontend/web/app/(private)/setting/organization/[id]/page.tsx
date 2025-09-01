@@ -5,7 +5,7 @@ import { Organization } from "@/external/prisma-generated";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { ParamProps } from "@/libs/share/_general/props/param-props";
 import { Param } from "@/libs/share/_general/enums/param";
-import DepartmentsSection from "./_components/departments/departments-section";
+import ChildrenSection from "./_components/children/children-section";
 import IndividualSettingLayout from "@/components/layout/setting/individual-setting-layout";
 
 const getOrganization = async (id: number): Promise<Organization | undefined> => {
@@ -36,7 +36,7 @@ export default async function OrganizationSettingPage({
     <IndividualSettingLayout
       title={organization.name}
       updateNameSection={<UpdateOrganizationNameSection organization={organization} />}
-      otherSection={<DepartmentsSection orgId={id} />}
+      otherSection={<ChildrenSection orgId={id} />}
     />
   )
 }
