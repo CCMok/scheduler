@@ -8,7 +8,6 @@ type Props = {
   paramName: string;
   cascadeParamNames?: string[];
   path: string;
-  debounceMs?: number;
 }
 
 export default function QueryInputWrapper({
