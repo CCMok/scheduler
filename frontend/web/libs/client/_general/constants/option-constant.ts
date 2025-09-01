@@ -1,0 +1,1 @@
+export const NO_SELECTION_NAME = '(未選擇)';

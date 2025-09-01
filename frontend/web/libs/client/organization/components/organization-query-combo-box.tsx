@@ -4,19 +4,24 @@ import ComboBox from "@/components/combobox/combo-box";
 import QueryInputWrapper from "@/components/input/query-input-wrapper";
 import { Organization } from "@/external/prisma-generated";
 import { Label } from "@/external/shadcn/components/ui/label";
-import { Param } from "@/libs/share/_general/enums/param";
-import { PATH } from "@/libs/share/_general/utils/path";
+import { DEFAULT_ORGANIZATION_OPTION } from "@/libs/server/organization/models/organization-dao";
 import { useMemo } from "react";
 
 type Props = {
   organizations: Organization[];
+  paramName: string;
+  cascadeParamNames?: string[];
+  path: string;
 }
 
-export default function OrganizationComboBox({
+export default function OrganizationQueryComboBox({
   organizations,
+  paramName,
+  cascadeParamNames,
+  path,
 }: Readonly<Props>) {
   const options = useMemo(() => {
-    return [{ id: '', name: '(未選擇)' }, ...organizations]
+    return [DEFAULT_ORGANIZATION_OPTION, ...organizations]
   }, [organizations])
 
   return (
@@ -25,15 +30,16 @@ export default function OrganizationComboBox({
       <QueryInputWrapper
         render={(id, onValueChange) => (
           <ComboBox
-            value={id}
+            value={id ?? ''}
             options={options}
-            getValue={option => option.id.toString()}
+            getValue={option => option.id?.toString() ?? ''}
             getDisplayName={option => option.name}
             onValueChange={onValueChange}
           />
         )}
-        paramName={Param.ID}
-        path={PATH.setting.organizations}
+        paramName={paramName}
+        cascadeParamNames={cascadeParamNames}
+        path={path}
       />
     </div>
   )
