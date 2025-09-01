@@ -1,4 +1,4 @@
-import Header from "@/components/header/header";
+import BackHeader from "@/components/header/back-header";
 import { Param } from "@/libs/share/_general/enums/param";
 import { ParamProps } from "@/libs/share/_general/props/param-props";
 import { notFound, redirect } from "next/navigation";
@@ -39,9 +39,9 @@ export default async function PostsSequencePage({
       posts,
     }}>
       <div className="space-y-4">
-        <Header>
+        <BackHeader>
           <span>值班表職位順序</span>
-        </Header>
+        </BackHeader>
         <PostSequenceTable />
         <div className='flex justify-end'>
           <PostSaveButton />

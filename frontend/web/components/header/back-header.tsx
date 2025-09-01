@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 type Props = ChildrenProps
 
-export default function Header({
+export default function BackHeader({
   children,
 }: Readonly<Props>) {
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function Header({
   const onClick = () => router.back();
 
   return (
-    <div>
+    <div className="space-y-2">
       <div className="flex items-center space-x-2">
         <CustomButton size='icon' variant='ghost' onClick={onClick}>
           <ChevronLeft />

@@ -7,7 +7,7 @@ import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { ParamProps } from "@/libs/share/_general/props/param-props";
 import { Param } from "@/libs/share/_general/enums/param";
 import DepartmentsSection from "./_components/departments/departments-section";
-import Header from "@/components/header/header";
+import IndividualSettingLayout from "@/components/layout/individual-setting-layout";
 
 const getOrganization = async (id: number): Promise<Organization | undefined> => {
   const request: GetOrganizationsRequest = {
@@ -36,12 +36,10 @@ export default async function OrganizationSettingPage({
   if (!organization) notFound();
 
   return (
-    <div className='space-y-4'>
-      <Header>
-        <span>{organization.name}</span>
-      </Header>
-      <UpdateOrganizationNameSection organization={organization} />
-      <DepartmentsSection orgId={id} />
-    </div>
+    <IndividualSettingLayout
+      title={organization.name}
+      updateNameSection={<UpdateOrganizationNameSection organization={organization} />}
+      otherSection={<DepartmentsSection orgId={id} />}
+    />
   )
 }

@@ -7,7 +7,7 @@ import { notFound, redirect } from "next/navigation";
 import { getPostWorkersService } from "@/libs/server/post/services/get-post-workers-service";
 import { GetPostWorkersRequest } from "@/libs/server/post/models/get-post-workers-request";
 import { PostWorkers } from "@/libs/server/post/models/post-dao";
-import Header from "@/components/header/header";
+import BackHeader from "@/components/header/back-header";
 import { PostUpdateStoreProvider } from "./_components/store/post-update-store-provider";
 
 const getPostWorkers = async (id: number): Promise<PostWorkers | undefined> => {
@@ -40,9 +40,9 @@ export default async function PostEditPage({
       departmentId: postWorkers.departmentId,
     }}>
       <div className="space-y-4">
-        <Header>
+        <BackHeader>
           <span>{postWorkers.name}</span>
-        </Header>
+        </BackHeader>
         <PostUpdateNameSection />
         <PostWorkerTableSection />
       </div>

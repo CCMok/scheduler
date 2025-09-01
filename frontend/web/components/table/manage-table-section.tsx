@@ -8,7 +8,7 @@ type Props = {
   controlPanel?: ReactNode;
 }
 
-export default function FilterTableSection({
+export default function ManageTableSection({
   title,
   filter,
   table,

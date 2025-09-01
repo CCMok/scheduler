@@ -1,4 +1,4 @@
-import FilterTableSection from "@/components/table/filter-table-section";
+import ManageTableSection from "@/components/table/manage-table-section";
 import OrganizationQueryComboBox from "@/libs/client/organization/components/organization-query-combo-box";
 import { PATH } from "@/libs/share/_general/utils/path";
 import { Param } from "@/libs/share/_general/enums/param";
@@ -22,7 +22,7 @@ export default async function OrganizationsPage() {
   const organizations = await getOrganizations();
 
   return (
-    <FilterTableSection
+    <ManageTableSection
       title="組織管理"
       filter={<OrganizationQueryComboBox
         organizations={organizations}

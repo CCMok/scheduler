@@ -1,10 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/external/shadcn/components/ui/card';
 import DepartmentTable from './department-table';
 import { Department } from '@/external/prisma-generated';
 import { redirect } from 'next/navigation';
 import { fetchData } from '@/libs/share/_general/utils/fetch';
 import { GetDepartmentsRequest } from '@/libs/server/department/models/get-department-request';
 import { getDepartmentsService } from '@/libs/server/department/services/get-departments-service';
+import ManageTableSection from '@/components/table/manage-table-section';
 
 const getDepartments = async (orgId: number): Promise<Department[]> => {
   const request: GetDepartmentsRequest = {
@@ -30,13 +30,9 @@ export default async function DepartmentsSection({
   const departments = await getDepartments(orgId);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>部門管理</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <DepartmentTable departments={departments} />
-      </CardContent>
-    </Card>
+    <ManageTableSection
+      title="部門管理"
+      table={<DepartmentTable departments={departments} />}
+    />
   )
 }

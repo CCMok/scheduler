@@ -8,7 +8,7 @@ import { getWorkerPostsService } from "@/libs/server/worker/services/get-worker-
 import WorkerUpdateNameSection from "./_components/name/worker-update-name-section";
 import WorkerPostTableSection from "./_components/table/worker-post-table-section";
 import { WorkerUpdateStoreProvider } from "./_components/store/worker-update-store-provider";
-import Header from "@/components/header/header";
+import BackHeader from "@/components/header/back-header";
 
 const getWorkerPosts = async (id: number): Promise<WorkerPosts | undefined> => {
   const request: GetWorkerPostsRequest = { id }
@@ -40,9 +40,9 @@ export default async function WorkerEditPage({
       departmentId: workerPosts.departmentId,
     }}>
       <div className="space-y-4">
-        <Header>
+        <BackHeader>
           <span>{workerPosts.name}</span>
-        </Header>
+        </BackHeader>
         <WorkerUpdateNameSection />
         <WorkerPostTableSection />
       </div>
