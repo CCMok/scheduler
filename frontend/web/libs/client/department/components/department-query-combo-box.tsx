@@ -1,9 +1,9 @@
 'use client'
 
 import ComboBox from "@/components/combobox/combo-box";
+import LabelInput from "@/components/input/label-input";
 import QueryInputWrapper from "@/components/input/query-input-wrapper";
 import { Department } from "@/external/prisma-generated";
-import { Label } from "@/external/shadcn/components/ui/label";
 import { DEFAULT_DEPARTMENT_OPTION } from "@/libs/server/department/models/department-dao";
 import { toNumber } from "@/libs/share/_general/utils/number";
 import { isNil } from "lodash";
@@ -27,8 +27,7 @@ export default function DepartmentQueryComboBox({
   }, [departments])
 
   return (
-    <div className='space-y-2'>
-      <Label>部門</Label>
+    <LabelInput label="部門">
       <QueryInputWrapper
         render={(value, onValueChange) => (
           <ComboBox
@@ -43,6 +42,6 @@ export default function DepartmentQueryComboBox({
         cascadeParamNames={cascadeParamNames}
         path={path}
       />
-    </div>
+    </LabelInput>
   )
 }

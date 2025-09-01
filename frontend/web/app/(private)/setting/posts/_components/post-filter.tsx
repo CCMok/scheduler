@@ -9,6 +9,7 @@ import { PATH } from "@/libs/share/_general/utils/path";
 import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
 import { isNil } from "lodash";
 import DepartmentQueryComboBox from "@/libs/client/department/components/department-query-combo-box";
+import PostNameQueryInput from "./post-name-query-input";
 
 const getOrganizations = async (): Promise<Organization[]> => {
   return await fetchData(
@@ -56,7 +57,7 @@ export default async function PostFilter({
         cascadeParamNames={[Param.ID]}
         path={PATH.setting.posts}
       />
-      {/* TODO post name filter  */}
+      <PostNameQueryInput />
     </div>
   )
 }

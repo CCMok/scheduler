@@ -1,9 +1,9 @@
 'use client'
 
 import ComboBox from "@/components/combobox/combo-box";
+import LabelInput from "@/components/input/label-input";
 import QueryInputWrapper from "@/components/input/query-input-wrapper";
 import { Organization } from "@/external/prisma-generated";
-import { Label } from "@/external/shadcn/components/ui/label";
 import { DEFAULT_ORGANIZATION_OPTION } from "@/libs/server/organization/models/organization-dao";
 import { toNumber } from "@/libs/share/_general/utils/number";
 import { isNil } from "lodash";
@@ -27,8 +27,7 @@ export default function OrganizationQueryComboBox({
   }, [organizations])
 
   return (
-    <div className='space-y-2'>
-      <Label>組織</Label>
+    <LabelInput label="組織">
       <QueryInputWrapper
         render={(value, onValueChange) => (
           <ComboBox
@@ -43,6 +42,6 @@ export default function OrganizationQueryComboBox({
         cascadeParamNames={cascadeParamNames}
         path={path}
       />
-    </div>
+    </LabelInput>
   )
 }
