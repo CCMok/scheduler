@@ -5,6 +5,7 @@ import QueryInputWrapper from "@/components/input/query-input-wrapper";
 import { PostParam } from "./post-param";
 import { PATH } from "@/libs/share/_general/utils/path";
 import DebounceInput from "@/components/input/debounce-input";
+import { DEFAULT_SEARCH_PLACEHOLDER } from "@/libs/client/_general/constants/input-constant";
 
 export default function PostNameQueryInput() {
   return (
@@ -14,6 +15,7 @@ export default function PostNameQueryInput() {
           <DebounceInput
             value={value}
             onChange={e => onValueChange(e.target.value)}
+            placeholder={DEFAULT_SEARCH_PLACEHOLDER}
           />
         )}
         paramName={PostParam.NAME}
