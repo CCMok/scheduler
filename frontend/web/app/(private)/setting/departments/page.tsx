@@ -43,7 +43,7 @@ export default async function DepartmentsPage({
   return (
     <ManageTableSection
       title="部門管理"
-      filter={<DepartmentFilter orgId={orgId} />}
+      filter={<DepartmentFilter />}
       table={<DepartmentTable departments={departments} />}
     />
   )

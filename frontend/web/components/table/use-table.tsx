@@ -7,15 +7,17 @@ type Props<TData> = {
   data: TData[];
   columns: ColumnDef<TData>[];
   defaultSorting: SortingState;
+  defaultColumnFilters?: ColumnFiltersState;
 }
 
 export default function useTable<TData>({
   data,
   columns,
   defaultSorting,
+  defaultColumnFilters,
 }: Readonly<Props<TData>>) {
   const [sorting, setSorting] = useState<SortingState>(defaultSorting);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(defaultColumnFilters ?? []);
 
   return useReactTable({
     data,
