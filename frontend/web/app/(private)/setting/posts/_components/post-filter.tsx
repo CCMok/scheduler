@@ -9,6 +9,7 @@ import { getDepartmentsService } from "@/libs/server/department/services/get-dep
 import { isNil } from "lodash";
 import DepartmentQueryComboBox from "@/libs/client/department/components/department-query-combo-box";
 import PostNameQueryInput from "./post-name-query-input";
+import FilterLayout from "@/components/layout/filter/filter-layout";
 
 const getOrganizations = async (): Promise<Organization[]> => {
   return await fetchData(
@@ -43,7 +44,7 @@ export default async function PostFilter({
   const departments = isNil(orgId) ? [] : await getDepartments(orgId);
 
   return (
-    <div className='flex gap-2'>
+    <FilterLayout>
       <OrganizationQueryComboBox
         organizations={organizations}
         paramName={PostParam.ORGANIZATION_ID}
@@ -56,6 +57,6 @@ export default async function PostFilter({
         path={PATH.setting.posts}
       />
       <PostNameQueryInput />
-    </div>
+    </FilterLayout>
   )
 }

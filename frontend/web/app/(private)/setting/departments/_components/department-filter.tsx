@@ -6,6 +6,7 @@ import OrganizationQueryComboBox from "@/libs/client/organization/components/org
 import { DepartmentParam } from "./department-param";
 import { PATH } from "@/libs/share/_general/utils/path";
 import DepartmentNameQueryInput from "./department-name-query-input";
+import FilterLayout from "@/components/layout/filter/filter-layout";
 
 const getOrganizations = async (): Promise<Organization[]> => {
   return await fetchData(
@@ -21,13 +22,13 @@ export default async function DepartmentFilter() {
   const organizations = await getOrganizations();
 
   return (
-    <div className='flex gap-2'>
+    <FilterLayout>
       <OrganizationQueryComboBox
         organizations={organizations}
         paramName={DepartmentParam.ORGANIZATION_ID}
         path={PATH.setting.departments}
       />
       <DepartmentNameQueryInput />
-    </div>
+    </FilterLayout>
   )
 }
