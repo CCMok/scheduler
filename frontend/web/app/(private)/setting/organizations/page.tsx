@@ -1,12 +1,10 @@
 import ManageTableSection from "@/components/table/manage-table-section";
-import OrganizationQueryComboBox from "@/libs/client/organization/components/organization-query-combo-box";
-import { PATH } from "@/libs/share/_general/utils/path";
-import { Param } from "@/libs/share/_general/enums/param";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { Organization } from "@/external/prisma-generated";
 import { redirect } from "next/navigation";
 import { getOrganizationsService } from "@/libs/server/organization/services/get-organizations-service";
 import OrganizationTable from "./_components/organization-table";
+import OrganizationNameQueryInput from "./_components/organization-name-query-input";
 
 const getOrganizations = async (): Promise<Organization[]> => {
   return await fetchData(
@@ -24,11 +22,7 @@ export default async function OrganizationsPage() {
   return (
     <ManageTableSection
       title="組織管理"
-      filter={<OrganizationQueryComboBox
-        organizations={organizations}
-        paramName={Param.ID}
-        path={PATH.setting.organizations}
-      />}
+      filter={<OrganizationNameQueryInput />}
       table={<OrganizationTable organizations={organizations} />}
     />
   )
