@@ -18,6 +18,7 @@ export default function PostNameQueryInput() {
         )}
         paramName={PostParam.NAME}
         path={PATH.setting.posts}
+        debounceMs={500}
       />
     </LabelInput>
   )
