@@ -8,6 +8,7 @@ import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { PostDeptOrg } from "@/libs/server/post/models/post-dao";
 import { getPostsService } from "@/libs/server/post/services/get-posts-dept-org-service";
 import { redirect } from "next/navigation";
+import PostTable from "./_components/post-table";
 
 const getPosts = async (deptId?: number, orgId?: number): Promise<PostDeptOrg[]> => {
   return await fetchData(
@@ -33,13 +34,12 @@ export default async function PostsPage({
   const deptId = toNumber(params.departmentId);
 
   const posts = await getPosts(deptId, orgId);
-  console.log(posts);
 
   return (
     <ManageTableSection
       title="職位管理"
-      // TODO: table
       filter={<PostFilter orgId={orgId} />}
+      table={<PostTable posts={posts} />}
     />
   )
 }

@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import OrganizationQueryComboBox from "@/libs/client/organization/components/organization-query-combo-box";
 import { DepartmentParam } from "./department-param";
 import { PATH } from "@/libs/share/_general/utils/path";
-import { Param } from "@/libs/share/_general/enums/param";
 import DepartmentNameQueryInput from "./department-name-query-input";
 
 const getOrganizations = async (): Promise<Organization[]> => {
@@ -26,7 +25,6 @@ export default async function DepartmentFilter() {
       <OrganizationQueryComboBox
         organizations={organizations}
         paramName={DepartmentParam.ORGANIZATION_ID}
-        cascadeParamNames={[Param.ID]}
         path={PATH.setting.departments}
       />
       <DepartmentNameQueryInput />
