@@ -12,10 +12,22 @@ export default function TableSortableHeader<TData, TValue>({
   title,
   column,
 }: Readonly<Props<TData, TValue>>) {
+  const onClick = () => {
+    if (!column.getIsSorted()) {
+      column.toggleSorting(false, true)
+      return
+    }
+    if (column.getIsSorted() === TableSortDirection.ASC) {
+      column.toggleSorting(true, true)
+      return
+    }
+    column.clearSorting()
+  }
+
   return (
     <CustomButton
       variant="ghost"
-      onClick={() => column.toggleSorting(column.getIsSorted() === TableSortDirection.ASC)}
+      onClick={onClick}
     >
       {title}
       {column.getIsSorted() === TableSortDirection.ASC && <ArrowUp className="ml-2 h-4 w-4" />}
