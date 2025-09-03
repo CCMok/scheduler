@@ -5,8 +5,9 @@ import { getDepartmentsService } from "@/libs/server/department/services/get-dep
 import { Department } from "@/external/prisma-generated";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import UpdateDepartmentNameSection from "./_components/update-name/update-department-name-section";
-import ChildrenSection from "./_components/children/children-section";
 import IndividualSettingLayout from "@/components/layout/setting/individual-setting-layout";
+import PostsSection from "./_components/posts/posts-section";
+import WorkersSection from "./_components/workers/workers-section";
 
 const getDepartment = async (id: number): Promise<Department | undefined> => {
   const departments = await fetchData(
@@ -36,7 +37,11 @@ export default async function DepartmentSettingPage({
     <IndividualSettingLayout
       title={department.name}
       updateNameSection={<UpdateDepartmentNameSection department={department} />}
-      otherSection={<ChildrenSection departmentId={id} />}
+      otherSection={<>
+        <PostsSection deptId={id} />
+        {/* TODO: sequnce */}
+        <WorkersSection deptId={id} />
+      </>}
     />
   )
 }
