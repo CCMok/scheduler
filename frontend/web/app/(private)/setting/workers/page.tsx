@@ -1,7 +1,45 @@
-import ManageWorkerSection from './_components/manage-worker/manage-worker-section';
+import ManageTableSection from '@/components/table/manage-table-section';
+import { SearchParamProps } from '@/libs/share/_general/props/param-props';
+import { WorkerParam } from './_components/worker-param';
+import { Param } from '@/libs/share/_general/enums/param';
+import { toNumber } from '@/libs/share/_general/utils/number';
+import { fetchData } from '@/libs/share/_general/utils/fetch';
+import { redirect } from 'next/navigation';
+import { WorkerDeptOrg } from '@/libs/server/worker/models/worker-dao';
+import { getWorkersDeptOrgService } from '@/libs/server/worker/services/get-workers-dept-org-service';
+import WorkerFilter from './_components/worker-filter';
+import WorkerTable from './_components/worker-table';
 
-export default async function WorkersSettingPage() {
+const getWorkers = async (deptId?: number, orgId?: number): Promise<WorkerDeptOrg[]> => {
+  return await fetchData(
+    async () => await getWorkersDeptOrgService({
+      where: { deptId, orgId },
+    }),
+    path => redirect(path),
+    [],
+  )
+}
+
+type Props = SearchParamProps<{
+  [Param.ID]: string | undefined,
+  [WorkerParam.ORGANIZATION_ID]: string | undefined,
+  [WorkerParam.DEPARTMENT_ID]: string | undefined,
+}>
+
+export default async function WorkersSettingPage({
+  searchParams,
+}: Readonly<Props>) {
+  const params = await searchParams;
+  const orgId = toNumber(params.organizationId);
+  const deptId = toNumber(params.departmentId);
+
+  const workers = await getWorkers(deptId, orgId);
+
   return (
-    <ManageWorkerSection />
+    <ManageTableSection
+      title="人員管理"
+      filter={<WorkerFilter orgId={orgId} />}
+      table={<WorkerTable workers={workers} />}
+    />
   )
 }

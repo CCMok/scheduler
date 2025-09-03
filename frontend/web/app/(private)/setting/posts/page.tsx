@@ -6,13 +6,13 @@ import { Param } from "@/libs/share/_general/enums/param";
 import { toNumber } from "@/libs/share/_general/utils/number";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { PostDeptOrg } from "@/libs/server/post/models/post-dao";
-import { getPostsService } from "@/libs/server/post/services/get-posts-dept-org-service";
+import { getPostsDeptOrgService } from "@/libs/server/post/services/get-posts-dept-org-service";
 import { redirect } from "next/navigation";
 import PostTable from "./_components/post-table";
 
 const getPosts = async (deptId?: number, orgId?: number): Promise<PostDeptOrg[]> => {
   return await fetchData(
-    async () => await getPostsService({
+    async () => await getPostsDeptOrgService({
       where: { deptId, orgId },
     }),
     path => redirect(path),
