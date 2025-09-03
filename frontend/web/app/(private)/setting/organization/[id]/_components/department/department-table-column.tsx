@@ -1,22 +1,14 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from "@/components/table/table-sortable-header";
-import DepartmentTableRowAction from "../../../../../libs/client/department/components/department-table-row-action";
-import { DepartmentOrganization } from "@/libs/server/department/models/department-dao";
+import { Department } from "@/external/prisma-generated";
+import DepartmentTableRowAction from "@/libs/client/department/components/department-table-row-action";
 
 export enum DepartmentTableId {
-  ORGANIZATION_NAME = 'organizationName',
   NAME = 'name',
   ACTIONS = 'actions',
 }
 
-export const columns: ColumnDef<DepartmentOrganization>[] = [
-  {
-    id: DepartmentTableId.ORGANIZATION_NAME,
-    accessorFn: row => row.organization.name,
-    header: ({ column }) => (
-      <TableSortableHeader title="組織名稱" column={column} />
-    ),
-  },
+export const columns: ColumnDef<Department>[] = [
   {
     accessorKey: DepartmentTableId.NAME,
     header: ({ column }) => (
