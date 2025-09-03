@@ -30,6 +30,8 @@ export default function CreatePostButton({
     })
   }
 
+  // TODO: fix success submit cannot refresh post sequence table. Due to store init issue
+
   return (
     <CreateDialog
       entityName="職位"
