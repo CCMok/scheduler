@@ -1,9 +1,9 @@
 'use client'
 
-import { AlertDialogHeader, AlertDialogFooter, AlertDialog, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel } from "@/external/shadcn/components/ui/alert-dialog";
 import LoadingButton from "@/components/button/loading-button";
 import { useState } from "react";
 import { ChildrenProps } from "@/libs/share/_general/props/children-props";
+import CustomDialog from "./custom-dialog";
 
 type Props = ChildrenProps & {
   isOpen?: boolean;
@@ -22,7 +22,7 @@ export default function WarningDialog({
   children,
 }: Readonly<Props>) {
   const [isLoading, setIsLoading] = useState(false)
-  
+
   const [isOpenDefault, setIsOpenDefault] = useState(false)
   const isOpenFinal = isOpen ?? isOpenDefault
   const setIsOpenFinal = setIsOpen ?? setIsOpenDefault
@@ -37,26 +37,20 @@ export default function WarningDialog({
   }
 
   return (
-    <AlertDialog open={isOpenFinal} onOpenChange={setIsOpenFinal}>
-      {children}
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          {title && <AlertDialogTitle>{title}</AlertDialogTitle>}
-          {/* AlertDialogDescription is required. Warning in browser if not set */}
-          <AlertDialogDescription>
-            {description}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>取消</AlertDialogCancel>
-          <LoadingButton
-            isLoading={isLoading}
-            onClick={onClickContinue}
-          >
-            繼續
-          </LoadingButton>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <CustomDialog
+      isOpen={isOpenFinal}
+      setIsOpen={setIsOpenFinal}
+      trigger={children}
+      title={title}
+      description={description}
+      submitButton={(
+        <LoadingButton
+          isLoading={isLoading}
+          onClick={onClickContinue}
+        >
+          確定
+        </LoadingButton>
+      )}
+    />
   )
 }

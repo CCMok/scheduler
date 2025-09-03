@@ -12,7 +12,7 @@ export default function ButtonTable<T>({
   ...props
 }: Readonly<Props<T>>) {
   return (
-    <div className='space-y-1'>
+    <div className='space-y-2'>
       <div className='flex justify-end'>
         {button}
       </div>

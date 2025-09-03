@@ -7,7 +7,7 @@ import { useState } from "react";
 import CreatePostForm from "./create-post-form";
 import FormSubmitButton from "@/components/form/form-submit-button";
 import FormRootMessage from "@/components/form/form-root-message";
-import CreatePostFields from "./create-post-fields";
+import CreatePostFields from "../../../../department/[id]/_components/posts/individual/create/create-post-fields";
 import { isNil } from "lodash";
 import { usePostSettingStore } from "@/app/(private)/setting/posts/_components/manage-post/store/post-setting-store-provider";
 
