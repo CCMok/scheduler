@@ -3,14 +3,17 @@
 import useTable from "@/components/table/use-table";
 import { Post } from "@/external/prisma-generated";
 import { PostIndividualTableId, columns } from "./post-individual-table-column";
-import CustomTable from "@/components/table/custom-table";
+import ButtonTable from "@/components/table/button-table";
+import { ReactNode } from "react";
 
 type Props = {
   posts: Post[];
+  button?: ReactNode;
 }
 
 export default function PostIndividualTable({
   posts,
+  button,
 }: Readonly<Props>) {
   const table = useTable({
     data: posts,
@@ -20,8 +23,11 @@ export default function PostIndividualTable({
       desc: false,
     }],
   })
-  
+
   return (
-    <CustomTable table={table} />
+    <ButtonTable
+      table={table}
+      button={button}
+    />
   )
 }
