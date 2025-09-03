@@ -3,20 +3,20 @@ import TableSortableHeader from "@/components/table/table-sortable-header";
 import { Post } from "@/external/prisma-generated";
 import PostTableRowAction from "@/libs/client/post/components/post-table-row-action";
 
-export enum PostTableId {
+export enum PostIndividualTableId {
   NAME = 'name',
   ACTIONS = 'actions',
 }
 
 export const columns: ColumnDef<Post>[] = [
   {
-    accessorKey: PostTableId.NAME,
+    accessorKey: PostIndividualTableId.NAME,
     header: ({ column }) => (
       <TableSortableHeader title="職位名稱" column={column} />
     ),
   },
   {
-    id: PostTableId.ACTIONS,
+    id: PostIndividualTableId.ACTIONS,
     header: '動作',
     cell: ({ row }) => (
       <PostTableRowAction id={row.original.id} name={row.original.name} />

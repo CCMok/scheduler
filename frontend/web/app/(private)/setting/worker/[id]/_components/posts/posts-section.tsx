@@ -1,26 +1,29 @@
 import { Post } from "@/external/prisma-generated";
-import { getPostsService } from "@/libs/server/post/services/get-posts-service";
+import UpdateChildLayout from "@/components/layout/update-child/update-child-layout";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
-import UpdateChildLayout from "@/components/layout/update-child/update-child-layout";
+import { getWorkerPostsService } from "@/libs/server/worker/services/get-worker-posts-service";
 import PostIndividualTable from "@/libs/client/post/components/post-individual-table";
 
-const getPosts = async (deptId: number): Promise<Post[]> => {
-  return await fetchData(
-    async () => await getPostsService({ where: { departmentId: deptId } }),
+const getPosts = async (workerId: number): Promise<Post[]> => {
+  const postPosts = await fetchData(
+    async () => await getWorkerPostsService({ id: workerId }),
     path => redirect(path),
-    [],
+    undefined,
   )
+
+  if (!postPosts) return [];
+  return postPosts.posts;
 }
 
 type Props = {
-  deptId: number;
+  workerId: number;
 }
 
 export default async function PostsSection({
-  deptId,
+  workerId,
 }: Readonly<Props>) {
-  const posts = await getPosts(deptId);
+  const posts = await getPosts(workerId);
 
   return (
     <UpdateChildLayout childName="職位">

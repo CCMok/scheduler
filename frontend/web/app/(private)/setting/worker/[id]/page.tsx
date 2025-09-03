@@ -6,6 +6,7 @@ import IndividualSettingLayout from "@/components/layout/setting/individual-sett
 import { Worker } from "@/external/prisma-generated";
 import { getWorkersService } from "@/libs/server/worker/services/get-workers-service";
 import UpdateWorkerNameSection from "./_components/update-name/update-worker-name-section";
+import PostsSection from "./_components/posts/posts-section";
 
 const getWorkerPosts = async (id: number): Promise<Worker | undefined> => {
   const workers = await fetchData(
@@ -32,8 +33,7 @@ export default async function WorkerEditPage({
     <IndividualSettingLayout
       title={worker.name}
       updateNameSection={<UpdateWorkerNameSection worker={worker} />}
-      // TODO
-      // otherSection={<ChildrenSection departmentId={id} />}
+      otherSection={<PostsSection workerId={id} />}
     />
   )
 }
