@@ -14,7 +14,7 @@ export default function PostSaveButton() {
       <AlertDialogTrigger asChild>
         <CustomButton>
           <Save />
-          儲存
+          儲存順序
         </CustomButton>
       </AlertDialogTrigger>
       <AlertDialogContent>

@@ -7,6 +7,7 @@ import { usePostSettingStore } from "@/app/(private)/setting/posts/_components/m
 import { PATH } from "@/libs/share/_general/utils/path";
 import CustomLink from "@/components/link/custom-link";
 
+// TODO: remove
 export default function UpdatePostSequenceButton() {
   const departmentId = usePostSettingStore(state => state.departmentId);
 
@@ -16,7 +17,7 @@ export default function UpdatePostSequenceButton() {
       asChild
     >
       <CustomLink
-        href={PATH.setting.department.posts.sequence.build(departmentId ?? 0)}
+        href={''}
         isDisabled={isNil(departmentId)}
       >
         <ArrowDownUp />

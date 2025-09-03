@@ -39,7 +39,6 @@ export default async function DepartmentSettingPage({
       updateNameSection={<UpdateDepartmentNameSection department={department} />}
       otherSection={<>
         <PostsSection deptId={id} />
-        {/* TODO: sequnce */}
         <WorkersSection deptId={id} />
       </>}
     />

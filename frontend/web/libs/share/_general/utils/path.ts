@@ -13,7 +13,6 @@ const enum PathSegment {
   POSTS = 'posts',
   WORKER = 'worker',
   WORKERS = 'workers',
-  SEQUENCE = 'sequence',
 }
 
 export const PATH = {
@@ -32,11 +31,6 @@ export const PATH = {
     departments: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENTS}`,
     department: {
       build: (id: string | number) => `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${id}`,
-      posts: {
-        sequence: {
-          build: (departmentId: string | number) => `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${departmentId}/${PathSegment.POSTS}/${PathSegment.SEQUENCE}`,
-        }
-      },
     },
     post: {
       build: (id: string | number) => `/${PathSegment.SETTING}/${PathSegment.POST}/${id}`,

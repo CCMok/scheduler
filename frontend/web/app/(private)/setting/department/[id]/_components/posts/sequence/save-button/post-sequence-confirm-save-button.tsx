@@ -1,7 +1,6 @@
 'use client'
 
 import LoadingButton from "@/components/button/loading-button";
-import { usePostSequenceStore } from "@/app/(private)/setting/department/[id]/posts/sequence/_components/store/post-sequence-store-provider";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { updatePostSequenceAction } from "@/libs/server/post/actions/update-post-sequence-action";
 import { UpdatePostSequenceRequest } from "@/libs/server/post/models/update-post-sequence-request";
@@ -10,6 +9,7 @@ import { handleServiceResponse } from "@/libs/share/_general/utils/service-respo
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { usePostSequenceStore } from "../store/post-sequence-store-provider";
 
 type Props = {
   setIsAlertDialogOpen: (isAlertDialogOpen: boolean) => void;
