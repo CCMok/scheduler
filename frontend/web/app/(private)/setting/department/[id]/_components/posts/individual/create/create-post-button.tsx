@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import CreatePostFields from "./create-post-fields";
 import { ServiceResponse } from "@/libs/share/_general/models/service-response";
 import { createPostAction } from "@/libs/server/post/actions/create-post-action";
-import { Id } from "@/libs/server/_general/models/id";
 
 type Props = {
   deptId: number;
@@ -23,7 +22,7 @@ export default function CreatePostButton({
     },
   })
 
-  const submit = async (input: CreatePostFormInput): Promise<ServiceResponse<Id>> => {
+  const submit = async (input: CreatePostFormInput): Promise<ServiceResponse> => {
     return await createPostAction({
       departmentId: Number(deptId),
       postName: input.postName,

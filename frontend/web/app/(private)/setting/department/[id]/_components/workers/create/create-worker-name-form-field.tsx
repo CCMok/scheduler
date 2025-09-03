@@ -12,7 +12,7 @@ export default function CreateWorkerNameFormField() {
       control={control}
       name="name"
       render={({ field }) => (
-        <CustomFormItem label='員工名稱'>
+        <CustomFormItem label='人員名稱'>
           <FormControl>
             <CustomInput
               {...field}

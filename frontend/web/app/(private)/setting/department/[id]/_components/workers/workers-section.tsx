@@ -4,6 +4,7 @@ import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
 import UpdateChildLayout from "@/components/layout/update-child/update-child-layout";
 import WorkerIndividualTable from "@/libs/client/worker/components/worker-individual-table";
+import CreateWorkerButton from "./create/create-worker-button";
 
 const getWorkers = async (deptId: number): Promise<Worker[]> => {
   return await fetchData(
@@ -24,7 +25,10 @@ export default async function WorkersSection({
 
   return (
     <UpdateChildLayout childName="人員">
-      <WorkerIndividualTable workers={workers} />
+      <WorkerIndividualTable
+       workers={workers} 
+       button={<CreateWorkerButton deptId={deptId} />}
+       />
     </UpdateChildLayout>
   )
 }

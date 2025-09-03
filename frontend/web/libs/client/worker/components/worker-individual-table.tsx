@@ -3,14 +3,17 @@
 import useTable from "@/components/table/use-table";
 import { Worker } from "@/external/prisma-generated";
 import { WorkerIndividualTableId, columns } from "./worker-individual-table-column";
-import CustomTable from "@/components/table/custom-table";
+import ButtonTable from "@/components/table/button-table";
+import { ReactNode } from "react";
 
 type Props = {
   workers: Worker[];
+  button?: ReactNode;
 }
 
 export default function WorkerIndividualTable({
   workers,
+  button,
 }: Readonly<Props>) {
   const table = useTable({
     data: workers,
@@ -22,6 +25,9 @@ export default function WorkerIndividualTable({
   })
   
   return (
-    <CustomTable table={table} />
+    <ButtonTable
+      table={table}
+      button={button}
+    />
   )
 }

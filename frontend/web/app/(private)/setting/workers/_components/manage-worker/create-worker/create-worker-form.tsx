@@ -32,7 +32,7 @@ export default function CreateWorkerForm({
   const form = useForm({
     resolver: zodResolver(createWorkerFormInputSchema),
     defaultValues: {
-      workerName: '',
+      name: '',
     },
   })
 
@@ -44,7 +44,7 @@ export default function CreateWorkerForm({
   const createWorker = async (input: CreateWorkerFormInput): Promise<UiResponse> => {
     const request: CreateWorkerRequest = {
       departmentId: Number(departmentId),
-      workerName: input.workerName,
+      workerName: input.name,
     }
 
     const response = await createWorkerAction(request)
