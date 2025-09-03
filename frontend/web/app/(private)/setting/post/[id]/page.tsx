@@ -20,7 +20,7 @@ const getPost = async (id: number): Promise<Post | undefined> => {
 
 type Props = ParamProps<{ [Param.ID]: string }>
 
-export default async function PostEditPage({
+export default async function PostSettingPage({
   params,
 }: Readonly<Props>) {
   const paramId = (await params).id;
@@ -33,8 +33,18 @@ export default async function PostEditPage({
   return (
     <IndividualSettingLayout
       title={post.name}
-      updateNameSection={<UpdatePostNameSection post={post} />}
-      otherSection={<WorkersSection postId={id} />}
+      tabs={[
+        {
+          value: 'info',
+          label: '基本資料',
+          content: <UpdatePostNameSection post={post} />,
+        },
+        {
+          value: 'workers',
+          label: '人員',
+          content: <WorkersSection postId={id} />,
+        },
+      ]}
     />
   )
 }

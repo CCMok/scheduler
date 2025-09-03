@@ -37,12 +37,28 @@ export default async function DepartmentSettingPage({
   return (
     <IndividualSettingLayout
       title={department.name}
-      updateNameSection={<UpdateDepartmentNameSection department={department} />}
-      otherSection={<>
-        <PostsSection deptId={id} />
-        <PostsSequenceSection deptId={id} />
-        <WorkersSection deptId={id} />
-      </>}
+      tabs={[
+        {
+          value: 'info',
+          label: '基本資料',
+          content: <UpdateDepartmentNameSection department={department} />,
+        },
+        {
+          value: 'posts',
+          label: '職位',
+          content: <PostsSection deptId={id} />,
+        },
+        {
+          value: 'workers',
+          label: '人員',
+          content: <WorkersSection deptId={id} />,
+        },
+        {
+          value: 'posts-sequence',
+          label: '值班表職位順序',
+          content: <PostsSequenceSection deptId={id} />,
+        },
+      ]}
     />
   )
 }

@@ -35,8 +35,18 @@ export default async function OrganizationSettingPage({
   return (
     <IndividualSettingLayout
       title={organization.name}
-      updateNameSection={<UpdateOrganizationNameSection organization={organization} />}
-      otherSection={<DepartmentsSection orgId={id} />}
+      tabs={[
+        {
+          value: 'info',
+          label: '基本資料',
+          content: <UpdateOrganizationNameSection organization={organization} />,
+        },
+        {
+          value: 'departments',
+          label: '部門',
+          content: <DepartmentsSection orgId={id} />,
+        },
+      ]}
     />
   )
 }

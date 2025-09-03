@@ -1,24 +1,22 @@
 import BackHeader from "@/components/header/back-header";
-import { ReactNode } from "react";
+import CustomTab from "@/components/tab/custom-tab";
+import { Tab } from "@/libs/share/_general/models/tab";
 
 type Props = {
   title?: string;
-  updateNameSection?: ReactNode;
-  otherSection?: ReactNode;
+  tabs?: Tab[];
 }
 
 export default function IndividualSettingLayout({
   title,
-  updateNameSection,
-  otherSection,
+  tabs,
 }: Readonly<Props>) {
   return (
     <div className='space-y-4'>
       <BackHeader>
         <span>{title}</span>
       </BackHeader>
-      {updateNameSection}
-      {otherSection}
+      {tabs && <CustomTab tabs={tabs} />}
     </div>
   )
 }

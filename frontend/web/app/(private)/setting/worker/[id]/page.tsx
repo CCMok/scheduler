@@ -19,7 +19,7 @@ const getWorkerPosts = async (id: number): Promise<Worker | undefined> => {
 
 type Props = ParamProps<{ [Param.ID]: string }>
 
-export default async function WorkerEditPage({
+export default async function WorkerSettingPage({
   params,
 }: Readonly<Props>) {
   const paramId = (await params).id;
@@ -32,8 +32,18 @@ export default async function WorkerEditPage({
   return (
     <IndividualSettingLayout
       title={worker.name}
-      updateNameSection={<UpdateWorkerNameSection worker={worker} />}
-      otherSection={<PostsSection workerId={id} />}
+      tabs={[
+        {
+          value: 'info',
+          label: '基本資料',
+          content: <UpdateWorkerNameSection worker={worker} />,
+        },
+        {
+          value: 'posts',
+          label: '職位',
+          content: <PostsSection workerId={id} />,
+        },
+      ]}
     />
   )
 }
