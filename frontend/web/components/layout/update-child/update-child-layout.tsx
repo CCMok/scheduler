@@ -14,7 +14,7 @@ export default function UpdateChildLayout({
       <CardHeader>
         <CardTitle>{childName}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         {children}
       </CardContent>
     </Card>

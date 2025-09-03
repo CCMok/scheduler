@@ -3,7 +3,7 @@ import PostIndividualTable from "@/libs/client/post/components/post-individual-t
 import { getPostsService } from "@/libs/server/post/services/get-posts-service";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
-import TableSectionLayout from "../table-section/table-section-layout";
+import UpdateChildLayout from "@/components/layout/update-child/update-child-layout";
 
 const getPosts = async (deptId: number): Promise<Post[]> => {
   return await fetchData(
@@ -17,13 +17,13 @@ type Props = {
   deptId: number;
 }
 
-export default async function PostIndividualTableSection({
+export default async function PostsSection({
   deptId,
 }: Readonly<Props>) {
   const posts = await getPosts(deptId);
   return (
-    <TableSectionLayout title="職位列表">
+    <UpdateChildLayout childName="職位">
       <PostIndividualTable posts={posts} />
-    </TableSectionLayout>
+    </UpdateChildLayout>
   )
 }

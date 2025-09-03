@@ -6,8 +6,8 @@ import { Department, Post } from "@/external/prisma-generated";
 import PostSequenceTable from "./table/post-sequence-table";
 import PostSaveButton from "./save-button/post-sequence-save-button";
 import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
-import TableSectionLayout from "../table-section/table-section-layout";
 import { PostSequenceStoreProvider } from "./store/post-sequence-store-provider";
+import UpdateChildLayout from "@/components/layout/update-child/update-child-layout";
 
 const getPosts = async (departmentId: number): Promise<Post[]> => {
   const request: GetPostsRequest = {
@@ -38,7 +38,7 @@ type Props = {
   deptId: number;
 }
 
-export default async function PostsSequenceTableSection({
+export default async function PostsSequenceSection({
   deptId,
 }: Readonly<Props>) {
   const posts = await getPosts(deptId);
@@ -50,12 +50,12 @@ export default async function PostsSequenceTableSection({
     <PostSequenceStoreProvider initState={{
       posts,
     }}>
-      <TableSectionLayout title="值班表職位順序">
+      <UpdateChildLayout childName="值班表職位順序">
         <PostSequenceTable />
         <div className='flex justify-end'>
           <PostSaveButton />
         </div>
-      </TableSectionLayout>
+      </UpdateChildLayout>
     </PostSequenceStoreProvider>
   )
 }
