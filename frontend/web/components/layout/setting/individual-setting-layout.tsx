@@ -1,5 +1,5 @@
 import BackHeader from "@/components/header/back-header";
-import CustomTab from "@/components/tab/custom-tab";
+import QueryTab from "@/components/tab/query-tab";
 import { Tab } from "@/libs/share/_general/models/tab";
 
 type Props = {
@@ -14,9 +14,10 @@ export default function IndividualSettingLayout({
   return (
     <div className='space-y-4'>
       <BackHeader>
+        {/* TODO: fix back header will back the query tab */}
         <span>{title}</span>
       </BackHeader>
-      {tabs && <CustomTab tabs={tabs} />}
+      {tabs && <QueryTab tabs={tabs} />}
     </div>
   )
 }
