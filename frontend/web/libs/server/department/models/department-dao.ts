@@ -16,3 +16,10 @@ export const DEFAULT_DEPARTMENT_OPTION: MakeNullable<Department, 'id' | 'organiz
   organizationId: null,
   name: NO_SELECTION_NAME,
 }
+
+export type DepartmentChildrenCount = Department & {
+  _count: {
+    workers: number;
+    posts: number;
+  },
+}

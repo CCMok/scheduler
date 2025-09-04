@@ -1,12 +1,12 @@
 'use client'
 
 import useTable from '@/components/_general/table/use-table';
-import { Department } from "@/external/prisma-generated";
 import { DepartmentTableId, columns } from "./department-table-column";
 import CustomTable from '@/components/_general/table/custom-table';
+import { DepartmentChildrenCount } from '@/libs/server/department/models/department-dao';
 
 type Props = {
-  departments: Department[];
+  departments: DepartmentChildrenCount[];
 }
 
 export default function DepartmentTable({

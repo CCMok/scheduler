@@ -11,9 +11,11 @@ export default function UpdateChildLayout({
 }: Readonly<Props>) {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{childName}</CardTitle>
-      </CardHeader>
+      {childName && (
+        <CardHeader>
+          <CardTitle>{childName}</CardTitle>
+        </CardHeader>
+      )}
       <CardContent className="space-y-4">
         {children}
       </CardContent>

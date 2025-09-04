@@ -1,13 +1,13 @@
-import { Department } from "@/external/prisma-generated";
 import DepartmentTable from "./department-table";
-import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
 import UpdateChildLayout from '@/components/_general/layout/update-child/update-child-layout';
+import { getDepartmentChildrenCountsService } from "@/libs/server/department/services/get-department-children-counts-service";
+import { DepartmentChildrenCount } from "@/libs/server/department/models/department-dao";
 
-const getDepartments = async (orgId: number): Promise<Department[]> => {
+const getDepartments = async (orgId: number): Promise<DepartmentChildrenCount[]> => {
   return await fetchData(
-    async () => await getDepartmentsService({ where: { organizationId: orgId } }),
+    async () => await getDepartmentChildrenCountsService({ where: { organizationId: orgId } }),
     path => redirect(path),
     [],
   )
@@ -23,7 +23,8 @@ export default async function DepartmentsSection({
   const departments = await getDepartments(orgId);
 
   return (
-    <UpdateChildLayout childName="部門">
+    // TODO: filter
+    <UpdateChildLayout>
       <DepartmentTable departments={departments} />
     </UpdateChildLayout>
   )
