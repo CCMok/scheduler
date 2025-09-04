@@ -19,7 +19,7 @@ export default function OrganizationNameQueryInput() {
           />
         )}
         paramName={OrganizationParam.NAME}
-        path={PATH.setting.organizations}
+        path={PATH.setting.organizationsOld}
       />
     </LabelInput>
   )
