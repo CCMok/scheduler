@@ -404,3 +404,263 @@ Create Organization →
 ```
 
 This approach gives you both hierarchical navigation (for context) and flat navigation (for quick access across the entire system).
+
+Excellent observation! You're absolutely right. Looking at the current role access control, the new URL structure would indeed require significant changes to the access control logic. Let me analyze and propose the updated access control structure:
+
+[1 tool called]
+
+Perfect! Based on the current role structure and your requirements, here's how the access control should be updated for the new URL structure:
+
+## **Updated Role Access Control for New URL Structure**
+
+### **Current vs New URL Structure Impact**
+
+**Current Structure Issues:**
+- Fragmented paths make access control complex
+- Inconsistent hierarchy (standalone vs nested routes)
+- Difficult to enforce organization-level permissions
+
+**New Structure Benefits:**
+- Clear hierarchy enables better permission inheritance
+- Organization-scoped access becomes natural
+- Easier to implement "operator can only access their org" logic
+
+### **Proposed Updated Access Control**
+
+```typescript
+// Updated ROLE_ACCESS_RULES for new URL structure
+const ROLE_ACCESS_RULES: Map<Role, string[]> = new Map([
+  
+  // SYSTEM_ADMIN: Full access to everything
+  [Role.SYSTEM_ADMIN, [
+    PATH.home,
+    PATH.dashboard,
+    PATH.roster,
+    
+    // Settings Dashboard
+    PATH.setting.root,                                    // /setting
+    
+    // Organizations - Full Access
+    PATH.setting.organizations,                           // /setting/organizations
+    PATH.setting.organizations.build('*'),                // /setting/organizations/[orgId]
+    PATH.setting.organizations.departments.build('*', '*'), // /setting/organizations/[orgId]/departments/[deptId]
+    PATH.setting.organizations.posts.build('*', '*', '*'), // /setting/organizations/[orgId]/departments/[deptId]/posts/[postId]
+    PATH.setting.organizations.workers.build('*', '*', '*'), // /setting/organizations/[orgId]/departments/[deptId]/workers/[workerId]
+    
+    // Quick Access Routes - Full Access
+    PATH.setting.departments,                             // /setting/departments
+    PATH.setting.posts,                                   // /setting/posts  
+    PATH.setting.workers,                                 // /setting/workers
+    
+    // Templates & System Settings
+    PATH.setting.templates.organizations,                 // /setting/templates/organizations
+    PATH.setting.templates.departments,                   // /setting/templates/departments
+    PATH.setting.system.users,                           // /setting/system/users
+    PATH.setting.system.permissions,                     // /setting/system/permissions
+    
+    // User Settings
+    PATH.setting.user,                                    // /setting/user
+  ]],
+
+  // ORGANIZATION_ADMIN: Access to all organizations they belong to
+  [Role.ORGANIZATION_ADMIN, [
+    PATH.home,
+    PATH.dashboard,
+    PATH.roster,
+    
+    // Settings Dashboard
+    PATH.setting.root,                                    // /setting
+    
+    // Organizations - Limited to their organizations
+    PATH.setting.organizations,                           // /setting/organizations (filtered list)
+    PATH.setting.organizations.build('*'),                // /setting/organizations/[orgId] (if they belong to orgId)
+    PATH.setting.organizations.departments.build('*', '*'), // /setting/organizations/[orgId]/departments/[deptId]
+    PATH.setting.organizations.posts.build('*', '*', '*'), // /setting/organizations/[orgId]/departments/[deptId]/posts/[postId]
+    PATH.setting.organizations.workers.build('*', '*', '*'), // /setting/organizations/[orgId]/departments/[deptId]/workers/[workerId]
+    
+    // Quick Access Routes - Filtered to their organizations
+    PATH.setting.departments,                             // /setting/departments (filtered)
+    PATH.setting.posts,                                   // /setting/posts (filtered)
+    PATH.setting.workers,                                 // /setting/workers (filtered)
+    
+    // Templates - Read only
+    PATH.setting.templates.organizations,                 // /setting/templates/organizations (read-only)
+    PATH.setting.templates.departments,                   // /setting/templates/departments (read-only)
+    
+    // User Settings
+    PATH.setting.user,                                    // /setting/user
+  ]],
+
+  // OPERATOR: Limited to specific organization departments
+  [Role.OPERATOR, [
+    PATH.home,
+    PATH.dashboard,
+    PATH.roster,
+    
+    // Settings Dashboard - Limited view
+    PATH.setting.root,                                    // /setting (limited stats)
+    
+    // NO access to organization list or org-level settings
+    // Only access to specific org departments they're assigned to
+    PATH.setting.organizations.departments.build('*', '*'), // /setting/organizations/[orgId]/departments/[deptId] (if assigned)
+    PATH.setting.organizations.posts.build('*', '*', '*'), // /setting/organizations/[orgId]/departments/[deptId]/posts/[postId] (if assigned)
+    PATH.setting.organizations.workers.build('*', '*', '*'), // /setting/organizations/[orgId]/departments/[deptId]/workers/[workerId] (if assigned)
+    
+    // Quick Access Routes - Very limited, only their department data
+    PATH.setting.departments,                             // /setting/departments (only assigned departments)
+    PATH.setting.posts,                                   // /setting/posts (only from assigned departments)
+    PATH.setting.workers,                                 // /setting/workers (only from assigned departments)
+    
+    // User Settings
+    PATH.setting.user,                                    // /setting/user
+  ]],
+]);
+```
+
+### **Enhanced Access Control Logic**
+
+You'll need to enhance the access control with **organization membership validation**:
+
+```typescript
+// Enhanced access control service
+export const isAccessible = async (path: string): Promise<boolean> => {
+  try {
+    const session = await getSession();
+    if (!session) return false;
+
+    const userRole = session.roleEnum as Role;
+    const allowedPaths = ROLE_ACCESS_RULES.get(userRole);
+    if (!allowedPaths) return false;
+
+    // First check if path pattern is allowed for this role
+    const hasPathAccess = allowedPaths.some(allowedPath => {
+      if (allowedPath.includes('*')) {
+        return matchDynamicPath(path, allowedPath);
+      }
+      return allowedPath === path;
+    });
+
+    if (!hasPathAccess) return false;
+
+    // Additional organization-scoped checks
+    return await checkOrganizationAccess(path, userRole, session.userId);
+  } catch (error) {
+    console.error('Error checking path access:', error);
+    return false;
+  }
+};
+
+// New organization access validation
+const checkOrganizationAccess = async (
+  path: string, 
+  userRole: Role, 
+  userId: number
+): Promise<boolean> => {
+  // System admin has access to everything
+  if (userRole === Role.SYSTEM_ADMIN) return true;
+
+  // Extract organization ID from path if present
+  const orgIdMatch = path.match(/\/setting\/organizations\/(\d+)/);
+  if (!orgIdMatch) return true; // Non-org paths allowed if basic path access granted
+
+  const orgId = parseInt(orgIdMatch[1]);
+  
+  // Check if user belongs to this organization
+  const userOrganizations = await getUserOrganizations(userId);
+  const hasOrgAccess = userOrganizations.some(uo => uo.organizationId === orgId);
+
+  if (!hasOrgAccess) return false;
+
+  // For OPERATOR role, additional department-level checks
+  if (userRole === Role.OPERATOR) {
+    return await checkDepartmentAccess(path, userId, orgId);
+  }
+
+  return true;
+};
+
+// Department-level access for operators
+const checkDepartmentAccess = async (
+  path: string, 
+  userId: number, 
+  orgId: number
+): Promise<boolean> => {
+  // Extract department ID from path if present
+  const deptIdMatch = path.match(/\/departments\/(\d+)/);
+  if (!deptIdMatch) return true; // If no dept in path, allow
+
+  const deptId = parseInt(deptIdMatch[1]);
+  
+  // Check if operator is assigned to this department
+  // This would require a new table or field to track operator-department assignments
+  return await isOperatorAssignedToDepartment(userId, deptId);
+};
+```
+
+### **Updated Path Constants**
+
+You'll also need to update the PATH constants to support the new structure:
+
+```typescript
+export const PATH = {
+  // ... existing paths ...
+  
+  setting: {
+    root: '/setting',
+    user: '/setting/user',
+    
+    // Organizations
+    organizations: '/setting/organizations',
+    organization: {
+      build: (orgId: string | number) => `/setting/organizations/${orgId}`,
+      departments: {
+        build: (orgId: string | number, deptId: string | number) => 
+          `/setting/organizations/${orgId}/departments/${deptId}`,
+        posts: {
+          build: (orgId: string | number, deptId: string | number, postId: string | number) => 
+            `/setting/organizations/${orgId}/departments/${deptId}/posts/${postId}`,
+        },
+        workers: {
+          build: (orgId: string | number, deptId: string | number, workerId: string | number) => 
+            `/setting/organizations/${orgId}/departments/${deptId}/workers/${workerId}`,
+        },
+      },
+    },
+    
+    // Quick Access Routes
+    departments: '/setting/departments',
+    posts: '/setting/posts', 
+    workers: '/setting/workers',
+    
+    // Templates
+    templates: {
+      organizations: '/setting/templates/organizations',
+      departments: '/setting/templates/departments',
+    },
+    
+    // System Settings (System Admin only)
+    system: {
+      users: '/setting/system/users',
+      permissions: '/setting/system/permissions',
+    },
+  }
+} as const;
+```
+
+### **Summary of Access Changes**
+
+**SYSTEM_ADMIN**: ✅ Full access to everything (no change)
+
+**ORGANIZATION_ADMIN**: 
+- ✅ All setting routes within their organizations
+- ✅ Filtered quick access routes (only their org data)
+- ❌ No access to organizations they don't belong to
+
+**OPERATOR**:
+- ✅ Can access `/setting/organizations/[orgId]/departments/[deptId]` and child routes (if assigned to that department)
+- ✅ Quick access routes (`/setting/departments`, `/setting/posts`, `/setting/workers`) but filtered to only show data from departments they're assigned to
+- ❌ No access to organization-level settings
+- ❌ No access to organizations list
+- ❌ No access to departments they're not assigned to
+
+This structure provides much cleaner, more secure, and more intuitive access control that aligns with the hierarchical nature of your data!
