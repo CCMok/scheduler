@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
 import { WorkerDeptOrg } from "@/libs/server/worker/models/worker-dao";
-import WorkerTableRowAction from "../../../../../libs/client/worker/components/worker-table-row-action";
+import WorkerTableRowAction from "../../../../../components/worker/worker-table-row-action";
 
 export enum WorkerTableId {
   ORGANIZATION_NAME = 'organizationName',

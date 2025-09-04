@@ -3,7 +3,7 @@ import UpdateChildLayout from '@/components/_general/layout/update-child/update-
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
 import { getWorkerPostsService } from "@/libs/server/worker/services/get-worker-posts-service";
-import PostIndividualTable from "@/libs/client/post/components/post-individual-table";
+import PostIndividualTable from "@/components/post/post-individual-table";
 
 const getPosts = async (workerId: number): Promise<Post[]> => {
   const postPosts = await fetchData(

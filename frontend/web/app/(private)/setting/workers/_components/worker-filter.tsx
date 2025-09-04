@@ -1,12 +1,12 @@
 import { Department, Organization } from "@/external/prisma-generated";
-import OrganizationQueryComboBox from "@/libs/client/organization/components/organization-query-combo-box";
+import OrganizationQueryComboBox from "@/components/organization/organization-query-combo-box";
 import { getOrganizationsService } from "@/libs/server/organization/services/get-organizations-service";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
 import { PATH } from "@/libs/share/_general/utils/path";
 import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
 import { isNil } from "lodash";
-import DepartmentQueryComboBox from "@/libs/client/department/components/department-query-combo-box";
+import DepartmentQueryComboBox from "@/components/department/department-query-combo-box";
 import FilterLayout from '@/components/_general/layout/filter/filter-layout';
 import { WorkerParam } from "./worker-param";
 import WorkerNameQueryInput from "./worker-name-query-input";

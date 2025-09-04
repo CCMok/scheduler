@@ -1,5 +1,5 @@
 import { Post } from "@/external/prisma-generated";
-import PostIndividualTable from "@/libs/client/post/components/post-individual-table";
+import PostIndividualTable from "@/components/post/post-individual-table";
 import { getPostsService } from "@/libs/server/post/services/get-posts-service";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";

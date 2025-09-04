@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
 import { Worker } from "@/external/prisma-generated";
-import WorkerTableRowAction from "@/libs/client/worker/components/worker-table-row-action";
+import WorkerTableRowAction from "@/components/worker/worker-table-row-action";
 
 export enum WorkerIndividualTableId {
   NAME = 'name',

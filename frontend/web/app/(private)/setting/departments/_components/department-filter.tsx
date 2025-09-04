@@ -2,7 +2,7 @@ import { Organization } from "@/external/prisma-generated";
 import { getOrganizationsService } from "@/libs/server/organization/services/get-organizations-service";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
-import OrganizationQueryComboBox from "@/libs/client/organization/components/organization-query-combo-box";
+import OrganizationQueryComboBox from "@/components/organization/organization-query-combo-box";
 import { DepartmentParam } from "./department-param";
 import { PATH } from "@/libs/share/_general/utils/path";
 import DepartmentNameQueryInput from "./department-name-query-input";

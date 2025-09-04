@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
 import { Post } from "@/external/prisma-generated";
-import PostTableRowAction from "@/libs/client/post/components/post-table-row-action";
+import PostTableRowAction from "@/components/post/post-table-row-action";
 
 export enum PostIndividualTableId {
   NAME = 'name',

@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
-import DepartmentTableRowAction from "../../../../../libs/client/department/components/department-table-row-action";
+import DepartmentTableRowAction from "../../../../../components/department/department-table-row-action";
 import { DepartmentOrganization } from "@/libs/server/department/models/department-dao";
 import { PATH } from "@/libs/share/_general/utils/path";
 
