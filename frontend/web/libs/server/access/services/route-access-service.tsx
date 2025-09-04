@@ -5,21 +5,6 @@ import { PATH } from '../../../share/_general/utils/path';
 
 // private route only
 const ROLE_ACCESS_RULES: Map<Role, string[]> = new Map([
-  [Role.SYSTEM_ADMIN, [
-    PATH.home,
-    PATH.dashboard,
-    PATH.roster,
-    PATH.setting.user,
-    PATH.setting.organizations,
-    PATH.setting.organization.build('*'),
-    PATH.setting.organization.department.build('*', '*'),
-    PATH.setting.departments,
-    PATH.setting.department.build('*'),
-    PATH.setting.post.build('*'),
-    PATH.setting.posts,
-    PATH.setting.worker.build('*'),
-    PATH.setting.workers,
-  ]],
   [Role.ORGANIZATION_ADMIN, [
     PATH.home,
     PATH.dashboard,
@@ -57,6 +42,11 @@ export const isAccessable = async (path: string): Promise<boolean> => {
     }
 
     const userRole = session.roleEnum as Role;
+
+    if (userRole === Role.SYSTEM_ADMIN) {
+      return true;
+    }
+
     const allowedPaths = ROLE_ACCESS_RULES.get(userRole);
 
     if (!allowedPaths) {
