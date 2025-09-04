@@ -16,9 +16,11 @@ export default function ManageTableSection({
 }: Readonly<Props>) {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-      </CardHeader>
+      {title && (
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+        </CardHeader>
+      )}
       <CardContent className="space-y-4">
         {filter}
         {controlPanel && (

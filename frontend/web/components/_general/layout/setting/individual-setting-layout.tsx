@@ -2,6 +2,7 @@ import BreadcrumbHeader from '@/components/_general/header/breadcrumb-header';
 import QueryTab from '@/components/_general/tab/query-tab';
 import { BreadcrumbItem } from "@/libs/share/_general/models/breadcrumb-item";
 import { Tab } from "@/libs/share/_general/models/tab";
+import BreadcrumbHeaderLayout from './breadcrumb-header-layout';
 
 type Props = {
   title?: string;
@@ -15,12 +16,11 @@ export default function IndividualSettingLayout({
   tabs,
 }: Readonly<Props>) {
   return (
-    <div className='space-y-4'>
-      <BreadcrumbHeader
-        breadcrumbItems={breadcrumbItems}
-        current={title}
-      />
+    <BreadcrumbHeaderLayout
+      breadcrumbItems={breadcrumbItems}
+      current={title}
+    >
       {tabs && <QueryTab tabs={tabs} />}
-    </div>
+    </BreadcrumbHeaderLayout>
   )
 }
