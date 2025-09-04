@@ -15,10 +15,12 @@ const getValue = (input: string | null, tabs: Tab[]): string | undefined => {
 
 type Props = {
   tabs: Tab[];
+  isPushRoute?: boolean;
 }
 
 export default function QueryTab({ 
   tabs,
+  isPushRoute,
 }: Readonly<Props>) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -30,7 +32,11 @@ export default function QueryTab({
     const params = new URLSearchParams(searchParams);
     params.set(SEARCH_PARAM_NAME, value);
     const paramString = params.toString();
-    router.push(`${pathname}?${paramString}`)
+    if (isPushRoute) {
+      router.push(`${pathname}?${paramString}`)
+    } else {
+      router.replace(`${pathname}?${paramString}`)
+    }
   }
 
   return (

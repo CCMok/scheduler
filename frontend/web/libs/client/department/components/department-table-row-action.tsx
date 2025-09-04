@@ -1,21 +1,22 @@
 'use client'
 
-import { PATH } from '@/libs/share/_general/utils/path';
 import ActionDropdownMenu from '@/components/dropdown/action-dropdown-menu';
 
 type Props = {
   id: number;
   name: string;
+  editPath?: string;
 };
 
 export default function DepartmentTableRowAction({
   id,
   name,
+  editPath,
 }: Readonly<Props>) {
   // TODO: delete
   return (
     <ActionDropdownMenu
-      editPath={PATH.setting.department.build(id)}
+      editPath={editPath}
       entityName="部門"
       displayName={name}
     />

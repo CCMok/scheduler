@@ -27,6 +27,9 @@ export const PATH = {
     organizations: `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}`,
     organization: {
       build: (id: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATION}/${id}`,
+      department: {
+        build: (orgId: string | number, deptId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATION}/${orgId}/${PathSegment.DEPARTMENT}/${deptId}`,
+      },
     },
     departments: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENTS}`,
     department: {

@@ -1,22 +1,25 @@
-import BackHeader from "@/components/header/back-header";
+import BreadcrumbHeader from "@/components/header/breadcrumb-header";
 import QueryTab from "@/components/tab/query-tab";
+import { BreadcrumbItem } from "@/libs/share/_general/models/breadcrumb-item";
 import { Tab } from "@/libs/share/_general/models/tab";
 
 type Props = {
   title?: string;
+  breadcrumbItems?: BreadcrumbItem[];
   tabs?: Tab[];
 }
 
 export default function IndividualSettingLayout({
   title,
+  breadcrumbItems,
   tabs,
 }: Readonly<Props>) {
   return (
     <div className='space-y-4'>
-      <BackHeader>
-        {/* TODO: fix back header will back the query tab */}
-        <span>{title}</span>
-      </BackHeader>
+      <BreadcrumbHeader
+        breadcrumbItems={breadcrumbItems}
+        current={title}
+      />
       {tabs && <QueryTab tabs={tabs} />}
     </div>
   )
