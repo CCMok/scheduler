@@ -1,5 +1,5 @@
-import CustomButton from '@/components/button/custom-button';
-import CustomLink from '@/components/link/custom-link';
+import CustomButton from '@/components/_general/button/custom-button';
+import CustomLink from '@/components/_general/link/custom-link';
 import { ReactNode } from 'react';
 
 type Props = {

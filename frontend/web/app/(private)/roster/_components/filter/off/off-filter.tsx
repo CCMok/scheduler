@@ -6,7 +6,7 @@ import { Minus, Plus } from "lucide-react";
 import { useFieldArray, useFormContext } from "react-hook-form"
 import WorkerIdFormField from "./worker-id-form-field";
 import OffDaysFormField from "./off-days-form-field";
-import CustomButton from "@/components/button/custom-button";
+import CustomButton from '@/components/_general/button/custom-button';
 import { useArrangeRosterFilterStore } from "@/app/(private)/roster/_components/filter/store/arrange-roster-filter-store-provider";
 
 export default function OffFilter() {

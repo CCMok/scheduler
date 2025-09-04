@@ -1,4 +1,4 @@
-import ManageTableSection from '@/components/table/manage-table-section';
+import ManageTableSection from '@/components/_general/table/manage-table-section';
 import { SearchParamProps } from '@/libs/share/_general/props/param-props';
 import { WorkerParam } from './_components/worker-param';
 import { Param } from '@/libs/share/_general/enums/param';

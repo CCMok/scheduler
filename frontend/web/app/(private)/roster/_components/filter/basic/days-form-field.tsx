@@ -1,7 +1,7 @@
 'use client'
 
-import CustomButton from "@/components/button/custom-button"
-import CustomFormItem from "@/components/form/custom-form-item"
+import CustomButton from '@/components/_general/button/custom-button'
+import CustomFormItem from '@/components/_general/form/custom-form-item'
 import { Calendar } from "@/external/shadcn/components/ui/calendar"
 import { FormControl, FormField } from "@/external/shadcn/components/ui/form"
 import { Popover, PopoverContent, PopoverTrigger } from "@/external/shadcn/components/ui/popover"

@@ -7,7 +7,7 @@ import PostSequenceTable from "./table/post-sequence-table";
 import PostSaveButton from "./save-button/post-sequence-save-button";
 import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
 import { PostSequenceStoreProvider } from "./store/post-sequence-store-provider";
-import UpdateChildLayout from "@/components/layout/update-child/update-child-layout";
+import UpdateChildLayout from '@/components/_general/layout/update-child/update-child-layout';
 
 const getPosts = async (departmentId: number): Promise<Post[]> => {
   const request: GetPostsRequest = {

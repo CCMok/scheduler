@@ -1,7 +1,7 @@
 'use client'
 
 import { PATH } from '@/libs/share/_general/utils/path';
-import ActionDropdownMenu from '@/components/dropdown/action-dropdown-menu';
+import ActionDropdownMenu from '@/components/_general/dropdown/action-dropdown-menu';
 import { ServiceResponse } from '@/libs/share/_general/models/service-response';
 import { deletePostAction } from '@/libs/server/post/actions/delete-post-action';
 

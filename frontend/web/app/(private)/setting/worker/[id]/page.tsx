@@ -2,7 +2,7 @@ import { ParamProps } from "@/libs/share/_general/props/param-props";
 import { Param } from "@/libs/share/_general/enums/param";
 import { notFound, redirect } from "next/navigation";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
-import IndividualSettingLayout from "@/components/layout/setting/individual-setting-layout";
+import IndividualSettingLayout from '@/components/_general/layout/setting/individual-setting-layout';
 import { Worker } from "@/external/prisma-generated";
 import { getWorkersService } from "@/libs/server/worker/services/get-workers-service";
 import UpdateWorkerNameSection from "./_components/update-name/update-worker-name-section";

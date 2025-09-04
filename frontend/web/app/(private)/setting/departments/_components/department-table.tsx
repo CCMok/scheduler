@@ -1,9 +1,9 @@
 'use client'
 
-import CustomTable from "@/components/table/custom-table"
+import CustomTable from '@/components/_general/table/custom-table'
 import { columns, DepartmentTableId } from "./department-table-column";
 import { DepartmentOrganization } from "@/libs/server/department/models/department-dao";
-import useTable from "@/components/table/use-table";
+import useTable from '@/components/_general/table/use-table';
 import { useSearchParams } from "next/navigation";
 import { DepartmentParam } from "./department-param";
 import { useEffect } from "react";

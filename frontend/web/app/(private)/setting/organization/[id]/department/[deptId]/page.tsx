@@ -1,7 +1,7 @@
 import { Param } from "@/libs/share/_general/enums/param"
 import { ParamProps } from "@/libs/share/_general/props/param-props"
 import { OrgIdPageParam } from "../../_components/params/org-id-page-param"
-import IndividualSettingLayout from "@/components/layout/setting/individual-setting-layout";
+import IndividualSettingLayout from '@/components/_general/layout/setting/individual-setting-layout';
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { notFound, redirect } from "next/navigation";
 import { DepartmentOrganization } from "@/libs/server/department/models/department-dao";

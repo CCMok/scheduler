@@ -6,7 +6,7 @@ import OrganizationQueryComboBox from "@/libs/client/organization/components/org
 import { DepartmentParam } from "./department-param";
 import { PATH } from "@/libs/share/_general/utils/path";
 import DepartmentNameQueryInput from "./department-name-query-input";
-import FilterLayout from "@/components/layout/filter/filter-layout";
+import FilterLayout from '@/components/_general/layout/filter/filter-layout';
 
 const getOrganizations = async (): Promise<Organization[]> => {
   return await fetchData(

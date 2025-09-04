@@ -1,6 +1,6 @@
 'use client'
 
-import CustomDropdownMenuItem from "@/components/dropdown/custom-dropdown-menu-item"
+import CustomDropdownMenuItem from '@/components/_general/dropdown/custom-dropdown-menu-item'
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant"
 import { logoutAction } from "@/libs/server/logout/actions/logout-action"
 import { REDIRECT_PUBLIC_PATH } from "@/libs/share/_general/utils/path"

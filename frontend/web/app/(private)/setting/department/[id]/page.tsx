@@ -5,7 +5,7 @@ import { getDepartmentsService } from "@/libs/server/department/services/get-dep
 import { Department } from "@/external/prisma-generated";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import UpdateDepartmentNameSection from "./_components/update-name/update-department-name-section";
-import IndividualSettingLayout from "@/components/layout/setting/individual-setting-layout";
+import IndividualSettingLayout from '@/components/_general/layout/setting/individual-setting-layout';
 import PostsSequenceSection from "./_components/posts/sequence/posts-sequence-section";
 import PostsSection from "./_components/posts/individual/posts-section";
 import WorkersSection from "./_components/workers/workers-section";

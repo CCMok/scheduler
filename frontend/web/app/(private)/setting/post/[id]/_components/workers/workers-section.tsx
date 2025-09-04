@@ -1,5 +1,5 @@
 import { Worker } from "@/external/prisma-generated";
-import UpdateChildLayout from "@/components/layout/update-child/update-child-layout";
+import UpdateChildLayout from '@/components/_general/layout/update-child/update-child-layout';
 import WorkerIndividualTable from "@/libs/client/worker/components/worker-individual-table";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { getPostWorkersService } from "@/libs/server/post/services/get-post-workers-service";

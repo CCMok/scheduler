@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import TableSortableHeader from "@/components/table/table-sortable-header";
+import TableSortableHeader from '@/components/_general/table/table-sortable-header';
 import { Department } from "@/external/prisma-generated";
 import DepartmentTableRowAction from "@/libs/client/department/components/department-table-row-action";
 import { PATH } from "@/libs/share/_general/utils/path";

@@ -1,7 +1,7 @@
 'use client'
 
-import ComboBox from "@/components/combobox/combo-box"
-import CustomFormItem from "@/components/form/custom-form-item"
+import ComboBox from '@/components/_general/combobox/combo-box'
+import CustomFormItem from '@/components/_general/form/custom-form-item'
 import { useArrangeRosterFilterStore } from "@/app/(private)/roster/_components/filter/store/arrange-roster-filter-store-provider"
 import { FormField } from "@/external/shadcn/components/ui/form"
 import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"

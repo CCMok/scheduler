@@ -11,7 +11,7 @@ import { useArrangeRosterFilterStore } from "@/app/(private)/roster/_components/
 import RosterFilter from "../filter/roster-filter"
 import { getDefaultDepartmentIdInOrganizations, getDefaultOrganizationId } from "../../../../../libs/client/organization/utils/organization-utils"
 import { DEFAULT_DAYS } from "@/libs/share/roster/constants/roster-constant"
-import WarningDialog from "@/components/dialog/warning-dialog"
+import WarningDialog from '@/components/_general/dialog/warning-dialog'
 import ArrangeRosterFormDependencyHandler from "./arrange-roster-form-dependency-handler"
 
 export default function ArrangeRosterForm() {

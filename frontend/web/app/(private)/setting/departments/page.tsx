@@ -6,7 +6,7 @@ import { getDepartmentsService } from "@/libs/server/department/services/get-dep
 import { redirect } from "next/navigation";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { DepartmentRelate } from "@/libs/server/department/models/get-department-request";
-import ManageTableSection from "@/components/table/manage-table-section";
+import ManageTableSection from '@/components/_general/table/manage-table-section';
 import DepartmentFilter from "./_components/department-filter";
 import DepartmentTable from "./_components/department-table";
 import { toNumber } from "@/libs/share/_general/utils/number";

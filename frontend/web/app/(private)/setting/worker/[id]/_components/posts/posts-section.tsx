@@ -1,5 +1,5 @@
 import { Post } from "@/external/prisma-generated";
-import UpdateChildLayout from "@/components/layout/update-child/update-child-layout";
+import UpdateChildLayout from '@/components/_general/layout/update-child/update-child-layout';
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
 import { getWorkerPostsService } from "@/libs/server/worker/services/get-worker-posts-service";

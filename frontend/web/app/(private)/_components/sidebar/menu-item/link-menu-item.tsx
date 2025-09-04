@@ -1,5 +1,5 @@
-import CustomLink from "@/components/link/custom-link";
-import ToggleSidebarMenuItem from "@/components/sidebar/toggle-sidebar-menu-item";
+import CustomLink from '@/components/_general/link/custom-link';
+import ToggleSidebarMenuItem from '@/components/_general/sidebar/toggle-sidebar-menu-item';
 import { SidebarMenuButton } from "@/external/shadcn/components/ui/sidebar";
 import { isAccessable } from "@/libs/server/access/services/route-access-service";
 import { ReactNode } from "react";

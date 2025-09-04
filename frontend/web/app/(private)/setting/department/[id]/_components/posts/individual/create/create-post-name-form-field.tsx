@@ -1,5 +1,5 @@
-import CustomFormItem from "@/components/form/custom-form-item";
-import CustomInput from "@/components/input/custom-input";
+import CustomFormItem from '@/components/_general/form/custom-form-item';
+import CustomInput from '@/components/_general/input/custom-input';
 import { FormField, FormControl } from "@/external/shadcn/components/ui/form";
 import { CreatePostFormInput } from "@/libs/client/post/models/create-post-form-input";
 import { useFormContext } from "react-hook-form";

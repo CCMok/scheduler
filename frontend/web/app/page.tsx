@@ -1,7 +1,7 @@
-import { ThemeToggle } from '@/components/button/theme-toggle';
-import CustomButton from '@/components/button/custom-button';
+import { ThemeToggle } from '@/components/_general/button/theme-toggle';
+import CustomButton from '@/components/_general/button/custom-button';
 import { PATH } from '@/libs/share/_general/utils/path';
-import CustomLink from '@/components/link/custom-link';
+import CustomLink from '@/components/_general/link/custom-link';
 
 export default function Home() {
   return (

@@ -1,9 +1,9 @@
 'use client'
 
-import useTable from "@/components/table/use-table";
+import useTable from '@/components/_general/table/use-table';
 import { Department } from "@/external/prisma-generated";
 import { DepartmentTableId, columns } from "./department-table-column";
-import CustomTable from "@/components/table/custom-table";
+import CustomTable from '@/components/_general/table/custom-table';
 
 type Props = {
   departments: Department[];

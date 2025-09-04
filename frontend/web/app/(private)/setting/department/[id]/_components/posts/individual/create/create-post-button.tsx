@@ -1,6 +1,6 @@
 'use client'
 
-import CreateDialog from "@/components/dialog/create-dialog";
+import CreateDialog from '@/components/_general/dialog/create-dialog';
 import { CreatePostFormInput, createPostFormInputSchema } from "@/libs/client/post/models/create-post-form-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";

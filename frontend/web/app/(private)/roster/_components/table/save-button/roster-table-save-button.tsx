@@ -3,7 +3,7 @@
 import { Save } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AlertDialogTrigger, AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel } from "@/external/shadcn/components/ui/alert-dialog";
-import CustomButton from "@/components/button/custom-button";
+import CustomButton from '@/components/_general/button/custom-button';
 import RosterTableSaveConfirmDescription from "./roster-table-save-confirm-description";
 import RosterTableSaveConfirmButton from "./roster-table-save-confirm-button";
 import { MaxHistoryCountStoreProvider, useMaxHistoryCountStore } from "@/app/(private)/roster/_components/table/save-button/store/max-history-count-store-provider";

@@ -1,6 +1,6 @@
 'use client'
 
-import CustomButton from "@/components/button/custom-button";
+import CustomButton from '@/components/_general/button/custom-button';
 import { AlertDialog, AlertDialogTrigger, AlertDialogTitle, AlertDialogDescription, AlertDialogHeader, AlertDialogContent, AlertDialogCancel, AlertDialogFooter } from "@/external/shadcn/components/ui/alert-dialog";
 import { Save } from "lucide-react";
 import { useState } from "react";

@@ -1,6 +1,6 @@
 'use client'
 
-import LoadingButton from "@/components/button/loading-button";
+import LoadingButton from '@/components/_general/button/loading-button';
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { updatePostSequenceAction } from "@/libs/server/post/actions/update-post-sequence-action";
 import { UpdatePostSequenceRequest } from "@/libs/server/post/models/update-post-sequence-request";

@@ -1,8 +1,8 @@
 'use client'
 
-import ComboBox from "@/components/combobox/combo-box";
-import LabelInput from "@/components/input/label-input";
-import QueryInputWrapper from "@/components/input/query-input-wrapper";
+import ComboBox from '@/components/_general/combobox/combo-box';
+import LabelInput from '@/components/_general/input/label-input';
+import QueryInputWrapper from '@/components/_general/input/query-input-wrapper';
 import { Organization } from "@/external/prisma-generated";
 import { DEFAULT_ORGANIZATION_OPTION } from "@/libs/server/organization/models/organization-dao";
 import { toNumber } from "@/libs/share/_general/utils/number";

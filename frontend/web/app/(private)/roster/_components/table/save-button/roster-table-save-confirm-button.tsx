@@ -1,6 +1,6 @@
 'use client'
 
-import LoadingButton from "@/components/button/loading-button";
+import LoadingButton from '@/components/_general/button/loading-button';
 import { useArrangeRosterStore } from "@/app/(private)/roster/_components/store/arrange-roster-store-provider";
 import { createRosterHistoryAction } from "@/libs/server/roster/actions/create-roster-history-action";
 import { CreateRosterHistoryRequest, CreateScheduleRequest } from "@/libs/server/roster/models/create-roster-request";

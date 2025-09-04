@@ -5,7 +5,7 @@ import { Organization } from "@/external/prisma-generated";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { ParamProps } from "@/libs/share/_general/props/param-props";
 import { Param } from "@/libs/share/_general/enums/param";
-import IndividualSettingLayout from "@/components/layout/setting/individual-setting-layout";
+import IndividualSettingLayout from '@/components/_general/layout/setting/individual-setting-layout';
 import DepartmentsSection from "./_components/departments/departments-section";
 
 const getOrganization = async (id: number): Promise<Organization | undefined> => {

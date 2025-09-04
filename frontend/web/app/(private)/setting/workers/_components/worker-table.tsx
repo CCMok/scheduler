@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect } from "react";
-import CustomTable from "@/components/table/custom-table";
+import CustomTable from '@/components/_general/table/custom-table';
 import { useSearchParams } from "next/navigation";
-import useTable from "@/components/table/use-table";
+import useTable from '@/components/_general/table/use-table';
 import { WorkerDeptOrg } from "@/libs/server/worker/models/worker-dao";
 import { WorkerParam } from "./worker-param";
 import { columns, WorkerTableId } from "./worker-table-column";

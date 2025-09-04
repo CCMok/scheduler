@@ -1,4 +1,4 @@
-import ManageTableSection from "@/components/table/manage-table-section";
+import ManageTableSection from '@/components/_general/table/manage-table-section';
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { Organization } from "@/external/prisma-generated";
 import { redirect } from "next/navigation";

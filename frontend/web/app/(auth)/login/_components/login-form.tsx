@@ -4,12 +4,12 @@ import { LoginFormInput, loginFormInputSchema } from '@/libs/client/login/models
 import { Form, FormControl, FormField } from '@/external/shadcn/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import CustomFormItem from '@/components/form/custom-form-item';
-import FormRootMessage from '@/components/form/form-root-message';
+import CustomFormItem from '@/components/_general/form/custom-form-item';
+import FormRootMessage from '@/components/_general/form/form-root-message';
 import { loginAction } from '@/libs/server/login/actions/login-action';
 import { useRouter } from 'next/navigation';
-import FormSubmitButton from '@/components/form/form-submit-button';
-import CustomInput from '@/components/input/custom-input';
+import FormSubmitButton from '@/components/_general/form/form-submit-button';
+import CustomInput from '@/components/_general/input/custom-input';
 import { REDIRECT_PRIVATE_PATH } from '@/libs/share/_general/utils/path';
 import { handleServiceResponse } from '@/libs/share/_general/utils/service-response-handler';
 

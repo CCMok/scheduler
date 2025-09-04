@@ -3,8 +3,8 @@
 import { useArrangeRosterStore } from "@/app/(private)/roster/_components/store/arrange-roster-store-provider";
 import { RotateCcw } from "lucide-react";
 import { AlertDialogTrigger } from "@/external/shadcn/components/ui/alert-dialog";
-import CustomButton from "@/components/button/custom-button";
-import WarningDialog from "@/components/dialog/warning-dialog";
+import CustomButton from '@/components/_general/button/custom-button';
+import WarningDialog from '@/components/_general/dialog/warning-dialog';
 
 export default function RosterTableResetButton() {
   const initialSchedules = useArrangeRosterStore(state => state.initialSchedules);

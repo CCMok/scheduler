@@ -2,7 +2,7 @@ import { ParamProps } from "@/libs/share/_general/props/param-props";
 import { Param } from "@/libs/share/_general/enums/param";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { notFound, redirect } from "next/navigation";
-import IndividualSettingLayout from "@/components/layout/setting/individual-setting-layout";
+import IndividualSettingLayout from '@/components/_general/layout/setting/individual-setting-layout';
 import UpdatePostNameSection from "./_components/update-name/update-post-name-section";
 import { Post } from "@/external/prisma-generated";
 import { getPostsService } from "@/libs/server/post/services/get-posts-service";

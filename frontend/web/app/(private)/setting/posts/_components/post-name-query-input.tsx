@@ -1,10 +1,10 @@
 'use client'
 
-import LabelInput from "@/components/input/label-input";
-import QueryInputWrapper from "@/components/input/query-input-wrapper";
+import LabelInput from '@/components/_general/input/label-input';
+import QueryInputWrapper from '@/components/_general/input/query-input-wrapper';
 import { PostParam } from "./post-param";
 import { PATH } from "@/libs/share/_general/utils/path";
-import DebounceInput from "@/components/input/debounce-input";
+import DebounceInput from '@/components/_general/input/debounce-input';
 import { DEFAULT_SEARCH_PLACEHOLDER } from "@/libs/client/_general/constants/input-constant";
 
 export default function PostNameQueryInput() {

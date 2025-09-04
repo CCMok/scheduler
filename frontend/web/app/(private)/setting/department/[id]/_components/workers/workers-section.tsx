@@ -2,7 +2,7 @@ import { Worker } from "@/external/prisma-generated";
 import { getWorkersService } from "@/libs/server/worker/services/get-workers-service";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
-import UpdateChildLayout from "@/components/layout/update-child/update-child-layout";
+import UpdateChildLayout from '@/components/_general/layout/update-child/update-child-layout';
 import WorkerIndividualTable from "@/libs/client/worker/components/worker-individual-table";
 import CreateWorkerButton from "./create/create-worker-button";
 

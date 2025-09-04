@@ -1,6 +1,6 @@
 import { Organization } from "@/external/prisma-generated";
 import { ColumnDef } from "@tanstack/react-table";
-import TableSortableHeader from "@/components/table/table-sortable-header";
+import TableSortableHeader from '@/components/_general/table/table-sortable-header';
 import OrganizationTableRowAction from "./organization-table-row-action";
 
 export enum OrganizationTableId {

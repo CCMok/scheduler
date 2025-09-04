@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import TableSortableHeader from "@/components/table/table-sortable-header";
+import TableSortableHeader from '@/components/_general/table/table-sortable-header';
 import { PostDeptOrg } from "@/libs/server/post/models/post-dao";
 import PostTableRowAction from "../../../../../libs/client/post/components/post-table-row-action";
 

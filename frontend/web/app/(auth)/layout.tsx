@@ -1,4 +1,4 @@
-import { ThemeToggle } from "@/components/button/theme-toggle";
+import { ThemeToggle } from '@/components/_general/button/theme-toggle';
 import { ChildrenProps } from "@/libs/share/_general/props/children-props";
 import AuthBackdropSection from "./_components/auth-backdrop-section";
 

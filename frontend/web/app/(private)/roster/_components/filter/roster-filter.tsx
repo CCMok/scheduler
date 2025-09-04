@@ -1,10 +1,10 @@
 'use client'
 
-import FormSubmitButton from "@/components/form/form-submit-button"
+import FormSubmitButton from '@/components/_general/form/form-submit-button'
 import BasicFilter from "./basic/basic-filter"
 import OffFilter from "./off/off-filter"
 import { useArrangeRosterStore } from "@/app/(private)/roster/_components/store/arrange-roster-store-provider"
-import FormRootMessage from "@/components/form/form-root-message"
+import FormRootMessage from '@/components/_general/form/form-root-message'
 import { CalendarSync } from "lucide-react"
 
 export default function RosterFilter() {

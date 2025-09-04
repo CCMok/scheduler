@@ -2,10 +2,10 @@
 
 import { Organization } from "@/external/prisma-generated";
 import { useEffect } from "react";
-import CustomTable from "@/components/table/custom-table";
+import CustomTable from '@/components/_general/table/custom-table';
 import { columns, OrganizationTableId } from "./organization-table-column";
 import { useSearchParams } from "next/navigation";
-import useTable from "@/components/table/use-table";
+import useTable from '@/components/_general/table/use-table';
 import { OrganizationParam } from "./organization-param";
 
 type Props = {

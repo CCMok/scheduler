@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect } from "react";
-import CustomTable from "@/components/table/custom-table";
+import CustomTable from '@/components/_general/table/custom-table';
 import { useSearchParams } from "next/navigation";
-import useTable from "@/components/table/use-table";
+import useTable from '@/components/_general/table/use-table';
 import { PostDeptOrg } from "@/libs/server/post/models/post-dao";
 import { PostParam } from "./post-param";
 import { columns, PostTableId } from "./post-table-column";

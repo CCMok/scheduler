@@ -9,7 +9,7 @@ import { getDepartmentsService } from "@/libs/server/department/services/get-dep
 import { isNil } from "lodash";
 import DepartmentQueryComboBox from "@/libs/client/department/components/department-query-combo-box";
 import PostNameQueryInput from "./post-name-query-input";
-import FilterLayout from "@/components/layout/filter/filter-layout";
+import FilterLayout from '@/components/_general/layout/filter/filter-layout';
 
 const getOrganizations = async (): Promise<Organization[]> => {
   return await fetchData(

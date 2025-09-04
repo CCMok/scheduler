@@ -1,4 +1,4 @@
-import ManageTableSection from "@/components/table/manage-table-section";
+import ManageTableSection from '@/components/_general/table/manage-table-section';
 import PostFilter from "./_components/post-filter";
 import { SearchParamProps } from "@/libs/share/_general/props/param-props";
 import { PostParam } from "./_components/post-param";

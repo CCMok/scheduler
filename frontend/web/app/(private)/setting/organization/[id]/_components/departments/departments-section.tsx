@@ -3,7 +3,7 @@ import DepartmentTable from "./department-table";
 import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
-import UpdateChildLayout from "@/components/layout/update-child/update-child-layout";
+import UpdateChildLayout from '@/components/_general/layout/update-child/update-child-layout';
 
 const getDepartments = async (orgId: number): Promise<Department[]> => {
   return await fetchData(

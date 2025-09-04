@@ -3,20 +3,20 @@
 import { Form, FormControl, FormField } from '@/external/shadcn/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import CustomFormItem from '@/components/form/custom-form-item';
-import FormRootMessage from '@/components/form/form-root-message';
+import CustomFormItem from '@/components/_general/form/custom-form-item';
+import FormRootMessage from '@/components/_general/form/form-root-message';
 import { useRouter } from 'next/navigation';
-import FormSubmitButton from '@/components/form/form-submit-button';
-import CustomInput from '@/components/input/custom-input';
+import FormSubmitButton from '@/components/_general/form/form-submit-button';
+import CustomInput from '@/components/_general/input/custom-input';
 import { RegisterFormInput, registerFormInputSchema } from '@/libs/client/register/models/register-form-input';
 import { registerAction } from '@/libs/server/register/actions/register-action';
 import { toast } from "sonner";
 import { UiMessageTitle } from '@/libs/share/_general/enums/ui-message';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
 import { RegisterRequest } from '@/libs/server/register/models/register-request';
-import NewPasswordFormField from '../../../../components/form/new-password-form-field';
 import { REDIRECT_PRIVATE_PATH } from '@/libs/share/_general/utils/path';
 import { handleServiceResponse } from '@/libs/share/_general/utils/service-response-handler';
+import NewPasswordFormField from '@/components/_general/form/new-password-form-field';
 
 const inputClassName = 'w-full'
 

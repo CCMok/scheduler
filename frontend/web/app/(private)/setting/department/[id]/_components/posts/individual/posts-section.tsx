@@ -3,7 +3,7 @@ import PostIndividualTable from "@/libs/client/post/components/post-individual-t
 import { getPostsService } from "@/libs/server/post/services/get-posts-service";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
-import UpdateChildLayout from "@/components/layout/update-child/update-child-layout";
+import UpdateChildLayout from '@/components/_general/layout/update-child/update-child-layout';
 import CreatePostButton from "./create/create-post-button";
 
 const getPosts = async (deptId: number): Promise<Post[]> => {

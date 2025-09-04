@@ -10,7 +10,7 @@ import {
   useEffect,
   useRef
 } from "react";
-import ComboBox from "@/components/combobox/combo-box";
+import ComboBox from '@/components/_general/combobox/combo-box';
 import { useArrangeRosterStore } from "@/app/(private)/roster/_components/store/arrange-roster-store-provider";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { Worker } from "@/external/prisma-generated";
