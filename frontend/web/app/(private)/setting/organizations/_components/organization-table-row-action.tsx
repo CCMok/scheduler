@@ -15,7 +15,7 @@ export default function OrganizationTableRowAction({
   // TODO: delete
   return (
     <ActionDropdownMenu
-      editPath={PATH.setting.organization.build(id)}
+      editPath={PATH.setting.organizations.build(id)}
       entityName="組織"
       displayName={name}
     />

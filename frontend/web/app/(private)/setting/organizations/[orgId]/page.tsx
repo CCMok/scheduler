@@ -7,6 +7,7 @@ import { ParamProps } from "@/libs/share/_general/props/param-props";
 import { Param } from "@/libs/share/_general/enums/param";
 import IndividualSettingLayout from '@/components/_general/layout/setting/individual-setting-layout';
 import DepartmentsSection from "./_components/departments/departments-section";
+import { PATH } from "@/libs/share/_general/utils/path";
 
 const getOrganization = async (id: number): Promise<Organization | undefined> => {
   const organizations = await fetchData(
@@ -20,12 +21,12 @@ const getOrganization = async (id: number): Promise<Organization | undefined> =>
   return organizations[0];
 }
 
-type Props = ParamProps<{ [Param.ID]: string }>
+type Props = ParamProps<{ [Param.ORG_ID]: string }>
 
 export default async function OrganizationSettingPage({
   params,
 }: Readonly<Props>) {
-  const paramId = (await params).id;
+  const paramId = (await params).orgId;
   const id = Number(paramId);
   if (isNaN(id)) notFound();
 
@@ -35,6 +36,12 @@ export default async function OrganizationSettingPage({
   return (
     <IndividualSettingLayout
       title={organization.name}
+      breadcrumbItems={[
+        {
+          label: '組織',
+          href: PATH.setting.organizations.base,
+        },
+      ]}
       tabs={[
         {
           value: 'info',

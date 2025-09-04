@@ -1,6 +1,5 @@
 import { Param } from "@/libs/share/_general/enums/param"
 import { ParamProps } from "@/libs/share/_general/props/param-props"
-import { OrgIdPageParam } from "../../_components/params/org-id-page-param"
 import IndividualSettingLayout from '@/components/_general/layout/setting/individual-setting-layout';
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { notFound, redirect } from "next/navigation";
@@ -26,8 +25,8 @@ const getDepartment = async (deptId: number): Promise<DepartmentOrganization | u
 }
 
 type Props = ParamProps<{
-  [Param.ID]: string;
-  [OrgIdPageParam.DEPT_ID]: string;
+  [Param.ORG_ID]: string;
+  [Param.DEPT_ID]: string;
 }>
 
 export default async function OrgDeptSettingPage({
@@ -45,8 +44,12 @@ export default async function OrgDeptSettingPage({
       title={department.name}
       breadcrumbItems={[
         {
+          label: '組織',
+          href: PATH.setting.organizations.base,
+        },
+        {
           label: department.organization.name,
-          href: PATH.setting.organization.build(department.organization.id),
+          href: PATH.setting.organizations.build(department.organization.id),
         },
       ]}
       tabs={[

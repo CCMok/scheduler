@@ -23,7 +23,7 @@ export const columns: ColumnDef<Department>[] = [
       <DepartmentTableRowAction
         id={row.original.id}
         name={row.original.name}
-        editPath={PATH.setting.organization.department.build(row.original.organizationId, row.original.id)}
+        editPath={PATH.setting.organizations.departments.build(row.original.organizationId, row.original.id)}
       />
     ),
   },
