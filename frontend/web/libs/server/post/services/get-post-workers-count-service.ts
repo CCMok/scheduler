@@ -1,0 +1,65 @@
+import 'server-only'
+import { ServiceResponseStatus } from '@/libs/share/_general/enums/service-response-status';
+import { ServiceResponse } from '@/libs/share/_general/models/service-response';
+import prisma from '../../_general/managers/database-manager';
+import { serviceWrapper } from '../../_general/services/general-service';
+import { AccessResponse } from '../../access/models/access-response';
+import { isNil } from 'lodash';
+import { getAccessibleDepartmentIdsService } from '../../access/services/data-access-service';
+import { PostWorkersCount } from '../models/post-dao';
+import { GetPostWorkersCountRequest, getPostWorkersCountRequestSchema } from '../models/get-post-workers-count-request';
+
+export const getPostWorkersCountService = async (
+  request: GetPostWorkersCountRequest
+): Promise<ServiceResponse<PostWorkersCount[]>> =>
+  await serviceWrapper<PostWorkersCount[]>(async () => {
+    const parsedRequest = getPostWorkersCountRequestSchema.parse(request);
+
+    const accessServiceResponse = await getAccessibleDepartmentIdsService();
+    if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
+
+    const departments = await findEntity(parsedRequest, accessServiceResponse.data);
+
+    return {
+      status: ServiceResponseStatus.OK,
+      data: departments,
+    }
+  })
+
+const findEntity = async (request: GetPostWorkersCountRequest, accessResponse: AccessResponse): Promise<PostWorkersCount[]> => {
+  const departmentIdFilter = getDeptIdFilter(request, accessResponse);
+
+  return await prisma.post.findMany({
+    where: {
+      ...request.where,
+      departmentId: departmentIdFilter,
+      isDeleted: request.where?.isDeleted ?? false,
+    },
+    include: {
+      _count: {
+        select: {
+          postWorkers: {
+            where: {
+              workerId: request.worker?.id,
+              worker: { isDeleted: request.worker?.isDeleted ?? false },
+            },
+          },
+        },
+      },
+    },
+    take: request.take,
+  })
+}
+
+const getDeptIdFilter = (request: GetPostWorkersCountRequest, accessResponse: AccessResponse) => {
+  if (accessResponse.canAccessAll) {
+    if (isNil(request.where?.departmentId)) return;
+    return request.where.departmentId;
+  }
+
+  if (isNil(request.where?.departmentId)) return { in: accessResponse.ids };
+
+  if (accessResponse.ids.includes(request.where.departmentId)) return request.where.departmentId;
+
+  return { in: [] }
+}

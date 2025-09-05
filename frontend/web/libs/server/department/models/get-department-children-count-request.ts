@@ -8,6 +8,6 @@ const whereSchema = z.object({
   organizationId: idSchema.optional(),
 })
 
-export const getDepartmentChildrenCountsRequestSchema = createGetRequestWhere(whereSchema)
+export const getDepartmentChildrenCountRequestSchema = createGetRequestWhere(whereSchema)
 
-export type GetDepartmentChildrenCountsRequest = z.infer<typeof getDepartmentChildrenCountsRequestSchema>;
+export type GetDepartmentChildrenCountRequest = z.infer<typeof getDepartmentChildrenCountRequestSchema>;

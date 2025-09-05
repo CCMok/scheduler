@@ -1,14 +1,14 @@
 import DepartmentTable from "./department-table";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
-import { getDepartmentChildrenCountsService } from "@/libs/server/department/services/get-department-children-counts-service";
+import { getDepartmentChildrenCountService } from "@/libs/server/department/services/get-department-children-count-service";
 import { DepartmentChildrenCount } from "@/libs/server/department/models/department-dao";
 import CustomCard from "@/components/_general/card/custom-card";
 import DepartmentFilter from "./department-filter";
 
 const getDepartments = async (orgId: number): Promise<DepartmentChildrenCount[]> => {
   return await fetchData(
-    async () => await getDepartmentChildrenCountsService({ where: { organizationId: orgId } }),
+    async () => await getDepartmentChildrenCountService({ where: { organizationId: orgId } }),
     path => redirect(path),
     [],
   )

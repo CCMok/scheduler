@@ -1,13 +1,13 @@
 'use client'
 
 import useTable from '@/components/_general/table/use-table';
-import { Post } from "@/external/prisma-generated";
 import { PostIndividualTableId, columns } from "./post-individual-table-column";
 import ButtonTable from '@/components/_general/table/button-table';
 import { ReactNode } from "react";
+import { PostWorkersCount } from '@/libs/server/post/models/post-dao';
 
 type Props = {
-  posts: Post[];
+  posts: PostWorkersCount[];
   button?: ReactNode;
 }
 

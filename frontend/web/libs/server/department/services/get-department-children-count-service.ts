@@ -7,13 +7,13 @@ import { AccessResponse } from '../../access/models/access-response';
 import { isNil } from 'lodash';
 import { getAccessibleOrganizationIdsService } from '../../access/services/data-access-service';
 import { DepartmentChildrenCount } from '../models/department-dao';
-import { GetDepartmentChildrenCountsRequest, getDepartmentChildrenCountsRequestSchema } from '../models/get-department-children-counts-request';
+import { GetDepartmentChildrenCountRequest, getDepartmentChildrenCountRequestSchema } from '../models/get-department-children-count-request';
 
-export const getDepartmentChildrenCountsService = async (
-  request: GetDepartmentChildrenCountsRequest
+export const getDepartmentChildrenCountService = async (
+  request: GetDepartmentChildrenCountRequest
 ): Promise<ServiceResponse<DepartmentChildrenCount[]>> =>
   await serviceWrapper<DepartmentChildrenCount[]>(async () => {
-    const parsedRequest = getDepartmentChildrenCountsRequestSchema.parse(request);
+    const parsedRequest = getDepartmentChildrenCountRequestSchema.parse(request);
 
     const accessServiceResponse = await getAccessibleOrganizationIdsService();
     if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
@@ -26,7 +26,7 @@ export const getDepartmentChildrenCountsService = async (
     }
   })
 
-const findEntity = async (request: GetDepartmentChildrenCountsRequest, accessResponse: AccessResponse): Promise<DepartmentChildrenCount[]> => {
+const findEntity = async (request: GetDepartmentChildrenCountRequest, accessResponse: AccessResponse): Promise<DepartmentChildrenCount[]> => {
   const orgIdFilter = getOrgIdFilter(request, accessResponse);
 
   return await prisma.department.findMany({
@@ -50,7 +50,7 @@ const findEntity = async (request: GetDepartmentChildrenCountsRequest, accessRes
   })
 }
 
-const getOrgIdFilter = (request: GetDepartmentChildrenCountsRequest, accessResponse: AccessResponse) => {
+const getOrgIdFilter = (request: GetDepartmentChildrenCountRequest, accessResponse: AccessResponse) => {
   if (accessResponse.canAccessAll) {
     if (isNil(request.where?.organizationId)) return;
     return request.where.organizationId;

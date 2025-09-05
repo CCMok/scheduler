@@ -3,7 +3,6 @@
 import { Form } from "@/external/shadcn/components/ui/form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/external/shadcn/components/ui/card"
 import FormSubmitButton from '@/components/_general/form/form-submit-button'
 import { Save } from "lucide-react"
 import { UiMessageContent, UiMessageTitle } from "@/libs/share/_general/enums/ui-message"
@@ -17,6 +16,7 @@ import { useState } from "react"
 import { UpdateNameFormInput, updateNameFormInputSchema } from "@/libs/client/setting/models/update-name-form-input"
 import { ServiceResponse } from "@/libs/share/_general/models/service-response"
 import NameField from "./name-field"
+import CustomCard from "../../card/custom-card"
 
 type Props = {
   entityName: string;
@@ -77,14 +77,9 @@ export default function UpdateNameLayout({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <Card>
-          <CardHeader>
-            <CardTitle>{entityName}名稱</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <NameField />
-          </CardContent>
-          <CardFooter className='flex space-x-4'>
+        <CustomCard
+          title={`${entityName}名稱`}
+          footer={(<>
             <FormRootMessage />
             <FormSubmitButton
               icon={<Save />}
@@ -92,8 +87,11 @@ export default function UpdateNameLayout({
             >
               儲存
             </FormSubmitButton>
-          </CardFooter>
-        </Card>
+          </>)}
+        >
+          <NameField />
+        </CustomCard>
+
         <WarningDialog
           isOpen={isAlertDialogOpen}
           setIsOpen={setIsAlertDialogOpen}

@@ -1,6 +1,7 @@
 import { Department, Organization, Post, Worker } from "@/external/prisma-generated";
 import { NO_SELECTION_NAME } from "@/libs/client/_general/constants/input-constant";
 import { MakeNullable } from "@/libs/share/_general/types/custom-utility-type";
+import { Count } from "../../_general/models/count";
 
 export type DepartmentOrganization = Department & { organization: Organization }
 
@@ -17,9 +18,7 @@ export const DEFAULT_DEPARTMENT_OPTION: MakeNullable<Department, 'id' | 'organiz
   name: NO_SELECTION_NAME,
 }
 
-export type DepartmentChildrenCount = Department & {
-  _count: {
-    workers: number;
-    posts: number;
-  },
-}
+export type DepartmentChildrenCount = Department & Count<{
+  workers: number;
+  posts: number;
+}>
