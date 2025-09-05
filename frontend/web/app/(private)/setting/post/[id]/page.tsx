@@ -3,10 +3,10 @@ import { Param } from "@/libs/share/_general/enums/param";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { notFound, redirect } from "next/navigation";
 import IndividualSettingLayout from '@/components/_general/layout/setting/individual-setting-layout';
-import UpdatePostNameSection from "./_components/update-name/update-post-name-section";
+import UpdatePostNameSection from "../../organizations/[orgId]/departments/[deptId]/posts/[postId]/_components/update-name/update-post-name-section";
 import { Post } from "@/external/prisma-generated";
 import { getPostsService } from "@/libs/server/post/services/get-posts-service";
-import WorkersSection from "./_components/workers/workers-section";
+import WorkersSection from "../../organizations/[orgId]/departments/[deptId]/posts/[postId]/_components/workers/workers-section";
 
 const getPost = async (id: number): Promise<Post | undefined> => {
   const posts = await fetchData(
