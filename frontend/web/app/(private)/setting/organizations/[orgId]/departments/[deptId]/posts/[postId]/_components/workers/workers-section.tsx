@@ -13,6 +13,23 @@ const getWorkerPostsCount = async (postId: number): Promise<WorkerPostsCount[]> 
   )
 }
 
+// TODO: potential fix
+// SELECT 
+//     pw.id, 
+//     p.name AS post_name, 
+//     w.name AS worker_name, 
+//     w.department_id,
+//     COALESCE(worker_counts.post_count, 0) AS post_count
+// FROM post_worker pw
+// INNER JOIN post p ON p.id = pw.post_id
+// INNER JOIN worker w ON w.id = pw.worker_id
+// LEFT JOIN (
+//     SELECT worker_id, COUNT(*) AS post_count
+//     FROM post_worker
+//     GROUP BY worker_id
+// ) worker_counts ON worker_counts.worker_id = w.id
+// WHERE p.id = 1;
+
 type Props = {
   postId: number;
 }
