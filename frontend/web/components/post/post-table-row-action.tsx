@@ -23,7 +23,7 @@ export default function PostTableRowAction({
     if (!param.deptId) return;
     if (!param.orgId) return PATH.setting.post.build(id);
     return PATH.setting.organizations.departments.posts(param.orgId, param.deptId, id);
-  }, [])
+  }, [param, id])
 
   const submitDelete = async (): Promise<ServiceResponse> => {
     return await deletePostAction({ postId: id });

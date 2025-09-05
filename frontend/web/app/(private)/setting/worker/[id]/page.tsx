@@ -5,8 +5,8 @@ import { fetchData } from "@/libs/share/_general/utils/fetch";
 import IndividualSettingLayout from '@/components/_general/layout/setting/individual-setting-layout';
 import { Worker } from "@/external/prisma-generated";
 import { getWorkersService } from "@/libs/server/worker/services/get-workers-service";
-import UpdateWorkerNameSection from "./_components/update-name/update-worker-name-section";
-import PostsSection from "./_components/posts/posts-section";
+import UpdateWorkerNameSection from "../../organizations/[orgId]/departments/[deptId]/workers/[workerId]/_components/update-name/update-worker-name-section";
+import PostsSection from "../../organizations/[orgId]/departments/[deptId]/workers/[workerId]/_components/posts/posts-section";
 
 const getWorkerPosts = async (id: number): Promise<Worker | undefined> => {
   const workers = await fetchData(
