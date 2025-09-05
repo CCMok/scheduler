@@ -3,7 +3,7 @@ import PostIndividualTable from "@/components/post/post-individual-table";
 import { getPostsService } from "@/libs/server/post/services/get-posts-service";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
-import CreatePostButton from "./create/create-post-button";
+import CreatePostButton from "../../../../../../department/[id]/_components/posts/individual/create/create-post-button";
 import CustomCard from "@/components/_general/card/custom-card";
 
 const getPosts = async (deptId: number): Promise<Post[]> => {
@@ -23,7 +23,7 @@ export default async function PostsSection({
 }: Readonly<Props>) {
   const posts = await getPosts(deptId);
   return (
-    <CustomCard title="職位">
+    <CustomCard>
       <PostIndividualTable
         posts={posts}
         button={<CreatePostButton deptId={deptId} />}

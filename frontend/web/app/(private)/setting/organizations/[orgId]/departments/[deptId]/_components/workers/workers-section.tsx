@@ -3,7 +3,7 @@ import { getWorkersService } from "@/libs/server/worker/services/get-workers-ser
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
 import WorkerIndividualTable from "@/components/worker/worker-individual-table";
-import CreateWorkerButton from "./create/create-worker-button";
+import CreateWorkerButton from "../../../../../../department/[id]/_components/workers/create/create-worker-button";
 import CustomCard from "@/components/_general/card/custom-card";
 
 const getWorkers = async (deptId: number): Promise<Worker[]> => {
@@ -24,7 +24,7 @@ export default async function WorkersSection({
   const workers = await getWorkers(deptId);
 
   return (
-    <CustomCard title="人員">
+    <CustomCard>
       <WorkerIndividualTable
        workers={workers} 
        button={<CreateWorkerButton deptId={deptId} />}

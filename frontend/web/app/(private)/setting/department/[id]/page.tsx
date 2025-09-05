@@ -4,11 +4,11 @@ import { notFound, redirect } from "next/navigation";
 import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
 import { Department } from "@/external/prisma-generated";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
-import UpdateDepartmentNameSection from "./_components/update-name/update-department-name-section";
+import UpdateDepartmentNameSection from "../../organizations/[orgId]/departments/[deptId]/_components/update-name/update-department-name-section";
 import IndividualSettingLayout from '@/components/_general/layout/setting/individual-setting-layout';
-import PostsSequenceSection from "./_components/posts/sequence/posts-sequence-section";
-import PostsSection from "./_components/posts/individual/posts-section";
-import WorkersSection from "./_components/workers/workers-section";
+import PostsSequenceSection from "../../organizations/[orgId]/departments/[deptId]/_components/posts/sequence/posts-sequence-section";
+import PostsSection from "../../organizations/[orgId]/departments/[deptId]/_components/posts/posts-section";
+import WorkersSection from "../../organizations/[orgId]/departments/[deptId]/_components/workers/workers-section";
 
 const getDepartment = async (id: number): Promise<Department | undefined> => {
   const departments = await fetchData(

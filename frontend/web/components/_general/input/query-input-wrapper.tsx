@@ -25,7 +25,7 @@ export default function QueryInputWrapper({
       params.delete(cascadeParamName);
     });
     const paramString = params.toString();
-    router.push(`${pathname}?${paramString}`);
+    router.replace(`${pathname}?${paramString}`);
   }, [searchParams, router, paramName, cascadeParamNames, pathname])
 
   const onValueChange = (value: string) => {

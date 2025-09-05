@@ -7,10 +7,10 @@ import { DepartmentOrganization } from "@/libs/server/department/models/departme
 import { DepartmentRelate } from "@/libs/server/department/models/get-department-request";
 import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
 import { PATH } from "@/libs/share/_general/utils/path";
-import PostsSequenceSection from "@/app/(private)/setting/department/[id]/_components/posts/sequence/posts-sequence-section";
-import WorkersSection from "@/app/(private)/setting/department/[id]/_components/workers/workers-section";
-import UpdateDepartmentNameSection from "@/app/(private)/setting/department/[id]/_components/update-name/update-department-name-section";
-import PostsSection from "@/app/(private)/setting/department/[id]/_components/posts/individual/posts-section";
+import PostsSequenceSection from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/posts/sequence/posts-sequence-section";
+import WorkersSection from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/workers/workers-section";
+import UpdateDepartmentNameSection from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/update-name/update-department-name-section";
+import PostsSection from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/posts/posts-section";
 
 const getDepartment = async (deptId: number): Promise<DepartmentOrganization | undefined> => {
   const departments = await fetchData(
