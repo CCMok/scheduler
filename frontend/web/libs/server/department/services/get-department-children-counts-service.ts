@@ -1,7 +1,6 @@
 import 'server-only'
 import { ServiceResponseStatus } from '@/libs/share/_general/enums/service-response-status';
 import { ServiceResponse } from '@/libs/share/_general/models/service-response';
-import { Prisma } from '@/external/prisma-generated';
 import prisma from '../../_general/managers/database-manager';
 import { serviceWrapper } from '../../_general/services/general-service';
 import { AccessResponse } from '../../access/models/access-response';
@@ -19,9 +18,7 @@ export const getDepartmentChildrenCountsService = async (
     const accessServiceResponse = await getAccessibleOrganizationIdsService();
     if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
 
-    const query = getQuery(parsedRequest, accessServiceResponse.data);
-
-    const departments = await prisma.department.findMany(query) as DepartmentChildrenCount[];
+    const departments = await findEntity(parsedRequest, accessServiceResponse.data);
 
     return {
       status: ServiceResponseStatus.OK,
@@ -29,20 +26,28 @@ export const getDepartmentChildrenCountsService = async (
     }
   })
 
-const getQuery = (request: GetDepartmentChildrenCountsRequest, accessResponse: AccessResponse): Prisma.DepartmentFindManyArgs => {
-  const where = getWhereClause(request, accessResponse);
-  const include = getIncludeClause();
-
-  return { where, include, take: request.take };
-}
-
-const getWhereClause = (request: GetDepartmentChildrenCountsRequest, accessResponse: AccessResponse): Prisma.DepartmentWhereInput => {
+const findEntity = async (request: GetDepartmentChildrenCountsRequest, accessResponse: AccessResponse): Promise<DepartmentChildrenCount[]> => {
   const orgIdFilter = getOrgIdFilter(request, accessResponse);
 
-  return {
-    ...request.where,
-    organizationId: orgIdFilter,
-  }
+  return await prisma.department.findMany({
+    where: {
+      ...request.where,
+      organizationId: orgIdFilter,
+    },
+    include: {
+      _count: {
+        select: {
+          workers: {
+            where: { isDeleted: false },
+          },
+          posts: {
+            where: { isDeleted: false },
+          },
+        },
+      },
+    },
+    take: request.take,
+  })
 }
 
 const getOrgIdFilter = (request: GetDepartmentChildrenCountsRequest, accessResponse: AccessResponse) => {
@@ -56,15 +61,4 @@ const getOrgIdFilter = (request: GetDepartmentChildrenCountsRequest, accessRespo
   if (accessResponse.ids.includes(request.where.organizationId)) return request.where.organizationId;
 
   return { in: [] }
-}
-
-const getIncludeClause = (): Prisma.DepartmentInclude => {
-  return {
-    _count: {
-      select: {
-        workers: true,
-        posts: true,
-      },
-    },
-  }
 }
