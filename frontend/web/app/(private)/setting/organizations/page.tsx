@@ -1,4 +1,3 @@
-import ManageTableSection from '@/components/_general/table/manage-table-section';
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { Organization } from "@/external/prisma-generated";
 import { redirect } from "next/navigation";
@@ -6,6 +5,7 @@ import { getOrganizationsService } from "@/libs/server/organization/services/get
 import OrganizationTable from "./_components/organization-table";
 import OrganizationFilter from "./_components/organization-filter";
 import BreadcrumbHeaderLayout from '@/components/_general/layout/setting/breadcrumb-header-layout';
+import CustomCard from '@/components/_general/card/custom-card';
 
 const getOrganizations = async (): Promise<Organization[]> => {
   return await fetchData(
@@ -25,10 +25,10 @@ export default async function OrganizationsPage() {
       current="組織"
       isBack={false}
     >
-      <ManageTableSection
-        filter={<OrganizationFilter />}
-        table={<OrganizationTable organizations={organizations} />}
-      />
+      <CustomCard>
+        <OrganizationFilter />
+        <OrganizationTable organizations={organizations} />
+      </CustomCard>
     </BreadcrumbHeaderLayout>
   )
 }

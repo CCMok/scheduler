@@ -3,7 +3,6 @@ import OrganizationQueryComboBox from "@/components/organization/organization-qu
 import { getOrganizationsService } from "@/libs/server/organization/services/get-organizations-service";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
-import { PATH } from "@/libs/share/_general/utils/path";
 import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
 import { isNil } from "lodash";
 import DepartmentQueryComboBox from "@/components/department/department-query-combo-box";
@@ -49,12 +48,10 @@ export default async function WorkerFilter({
         organizations={organizations}
         paramName={WorkerParam.ORGANIZATION_ID}
         cascadeParamNames={[WorkerParam.DEPARTMENT_ID]}
-        path={PATH.setting.workers}
       />
       <DepartmentQueryComboBox
         departments={departments}
         paramName={WorkerParam.DEPARTMENT_ID}
-        path={PATH.setting.workers}
       />
       <WorkerNameQueryInput />
     </FilterLayout>

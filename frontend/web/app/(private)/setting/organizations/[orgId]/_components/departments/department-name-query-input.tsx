@@ -4,11 +4,11 @@ import LabelInput from '@/components/_general/input/label-input';
 import QueryInputWrapper from '@/components/_general/input/query-input-wrapper';
 import DebounceInput from '@/components/_general/input/debounce-input';
 import { DEFAULT_SEARCH_PLACEHOLDER } from "@/libs/client/_general/constants/input-constant";
-import { OrganizationParam } from "./organization-param";
+import { Param } from '@/libs/share/_general/enums/param';
 
-export default function OrganizationNameQueryInput() {
+export default function DepartmentNameQueryInput() {
   return (
-    <LabelInput label="組織名稱">
+    <LabelInput label="部門名稱">
       <QueryInputWrapper
         render={(value, onValueChange) => (
           <DebounceInput
@@ -17,7 +17,7 @@ export default function OrganizationNameQueryInput() {
             placeholder={DEFAULT_SEARCH_PLACEHOLDER}
           />
         )}
-        paramName={OrganizationParam.NAME}
+        paramName={Param.NAME}
       />
     </LabelInput>
   )

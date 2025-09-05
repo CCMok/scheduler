@@ -1,9 +1,10 @@
 import DepartmentTable from "./department-table";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
-import UpdateChildLayout from '@/components/_general/layout/update-child/update-child-layout';
 import { getDepartmentChildrenCountsService } from "@/libs/server/department/services/get-department-children-counts-service";
 import { DepartmentChildrenCount } from "@/libs/server/department/models/department-dao";
+import CustomCard from "@/components/_general/card/custom-card";
+import DepartmentFilter from "./department-filter";
 
 const getDepartments = async (orgId: number): Promise<DepartmentChildrenCount[]> => {
   return await fetchData(
@@ -21,11 +22,10 @@ export default async function DepartmentsSection({
   orgId,
 }: Readonly<Props>) {
   const departments = await getDepartments(orgId);
-
   return (
-    // TODO: filter
-    <UpdateChildLayout>
+    <CustomCard>
+      <DepartmentFilter />
       <DepartmentTable departments={departments} />
-    </UpdateChildLayout>
+    </CustomCard>
   )
 }

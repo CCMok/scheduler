@@ -13,14 +13,12 @@ type Props = {
   departments: Department[];
   paramName: string;
   cascadeParamNames?: string[];
-  path: string;
 }
 
 export default function DepartmentQueryComboBox({
   departments,
   paramName,
   cascadeParamNames,
-  path,
 }: Readonly<Props>) {
   const options = useMemo(() => {
     return [DEFAULT_DEPARTMENT_OPTION, ...departments]
@@ -40,7 +38,6 @@ export default function DepartmentQueryComboBox({
         )}
         paramName={paramName}
         cascadeParamNames={cascadeParamNames}
-        path={path}
       />
     </LabelInput>
   )

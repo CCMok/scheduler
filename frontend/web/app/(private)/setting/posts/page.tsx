@@ -1,4 +1,3 @@
-import ManageTableSection from '@/components/_general/table/manage-table-section';
 import PostFilter from "./_components/post-filter";
 import { SearchParamProps } from "@/libs/share/_general/props/param-props";
 import { PostParam } from "./_components/post-param";
@@ -9,6 +8,7 @@ import { PostDeptOrg } from "@/libs/server/post/models/post-dao";
 import { getPostsDeptOrgService } from "@/libs/server/post/services/get-posts-dept-org-service";
 import { redirect } from "next/navigation";
 import PostTable from "./_components/post-table";
+import CustomCard from '@/components/_general/card/custom-card';
 
 const getPosts = async (deptId?: number, orgId?: number): Promise<PostDeptOrg[]> => {
   return await fetchData(
@@ -36,10 +36,9 @@ export default async function PostsPage({
   const posts = await getPosts(deptId, orgId);
 
   return (
-    <ManageTableSection
-      title="職位管理"
-      filter={<PostFilter orgId={orgId} />}
-      table={<PostTable posts={posts} />}
-    />
+    <CustomCard>
+      <PostFilter orgId={orgId} />
+      <PostTable posts={posts} />
+    </CustomCard>
   )
 }

@@ -1,4 +1,3 @@
-import ManageTableSection from '@/components/_general/table/manage-table-section';
 import { SearchParamProps } from '@/libs/share/_general/props/param-props';
 import { WorkerParam } from './_components/worker-param';
 import { Param } from '@/libs/share/_general/enums/param';
@@ -9,6 +8,7 @@ import { WorkerDeptOrg } from '@/libs/server/worker/models/worker-dao';
 import { getWorkersDeptOrgService } from '@/libs/server/worker/services/get-workers-dept-org-service';
 import WorkerFilter from './_components/worker-filter';
 import WorkerTable from './_components/worker-table';
+import CustomCard from '@/components/_general/card/custom-card';
 
 const getWorkers = async (deptId?: number, orgId?: number): Promise<WorkerDeptOrg[]> => {
   return await fetchData(
@@ -36,10 +36,9 @@ export default async function WorkersSettingPage({
   const workers = await getWorkers(deptId, orgId);
 
   return (
-    <ManageTableSection
-      title="人員管理"
-      filter={<WorkerFilter orgId={orgId} />}
-      table={<WorkerTable workers={workers} />}
-    />
+    <CustomCard>
+      <WorkerFilter orgId={orgId} />
+      <WorkerTable workers={workers} />
+    </CustomCard>
   )
 }

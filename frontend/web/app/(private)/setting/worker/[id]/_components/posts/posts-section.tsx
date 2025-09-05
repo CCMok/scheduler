@@ -1,9 +1,9 @@
 import { Post } from "@/external/prisma-generated";
-import UpdateChildLayout from '@/components/_general/layout/update-child/update-child-layout';
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
 import { getWorkerPostsService } from "@/libs/server/worker/services/get-worker-posts-service";
 import PostIndividualTable from "@/components/post/post-individual-table";
+import CustomCard from "@/components/_general/card/custom-card";
 
 const getPosts = async (workerId: number): Promise<Post[]> => {
   const postPosts = await fetchData(
@@ -26,8 +26,8 @@ export default async function PostsSection({
   const posts = await getPosts(workerId);
 
   return (
-    <UpdateChildLayout childName="職位">
+    <CustomCard title="職位">
       <PostIndividualTable posts={posts} />
-    </UpdateChildLayout>
+    </CustomCard>
   )
 }

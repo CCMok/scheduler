@@ -4,7 +4,6 @@ import { getOrganizationsService } from "@/libs/server/organization/services/get
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
 import { PostParam } from "./post-param";
-import { PATH } from "@/libs/share/_general/utils/path";
 import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
 import { isNil } from "lodash";
 import DepartmentQueryComboBox from "@/components/department/department-query-combo-box";
@@ -49,12 +48,10 @@ export default async function PostFilter({
         organizations={organizations}
         paramName={PostParam.ORGANIZATION_ID}
         cascadeParamNames={[PostParam.DEPARTMENT_ID]}
-        path={PATH.setting.posts}
       />
       <DepartmentQueryComboBox
         departments={departments}
         paramName={PostParam.DEPARTMENT_ID}
-        path={PATH.setting.posts}
       />
       <PostNameQueryInput />
     </FilterLayout>

@@ -7,7 +7,7 @@ import PostSequenceTable from "./table/post-sequence-table";
 import PostSaveButton from "./save-button/post-sequence-save-button";
 import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
 import { PostSequenceStoreProvider } from "./store/post-sequence-store-provider";
-import UpdateChildLayout from '@/components/_general/layout/update-child/update-child-layout';
+import CustomCard from "@/components/_general/card/custom-card";
 
 const getPosts = async (departmentId: number): Promise<Post[]> => {
   const request: GetPostsRequest = {
@@ -50,12 +50,12 @@ export default async function PostsSequenceSection({
     <PostSequenceStoreProvider initState={{
       posts,
     }}>
-      <UpdateChildLayout childName="值班表職位順序">
+      <CustomCard title="值班表職位順序">
         <PostSequenceTable />
         <div className='flex justify-end'>
           <PostSaveButton />
         </div>
-      </UpdateChildLayout>
+      </CustomCard>
     </PostSequenceStoreProvider>
   )
 }

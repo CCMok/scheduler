@@ -4,7 +4,6 @@ import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
 import OrganizationQueryComboBox from "@/components/organization/organization-query-combo-box";
 import { DepartmentParam } from "./department-param";
-import { PATH } from "@/libs/share/_general/utils/path";
 import DepartmentNameQueryInput from "./department-name-query-input";
 import FilterLayout from '@/components/_general/layout/filter/filter-layout';
 
@@ -26,7 +25,6 @@ export default async function DepartmentFilter() {
       <OrganizationQueryComboBox
         organizations={organizations}
         paramName={DepartmentParam.ORGANIZATION_ID}
-        path={PATH.setting.departments}
       />
       <DepartmentNameQueryInput />
     </FilterLayout>

@@ -3,8 +3,8 @@ import PostIndividualTable from "@/components/post/post-individual-table";
 import { getPostsService } from "@/libs/server/post/services/get-posts-service";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
-import UpdateChildLayout from '@/components/_general/layout/update-child/update-child-layout';
 import CreatePostButton from "./create/create-post-button";
+import CustomCard from "@/components/_general/card/custom-card";
 
 const getPosts = async (deptId: number): Promise<Post[]> => {
   return await fetchData(
@@ -23,11 +23,11 @@ export default async function PostsSection({
 }: Readonly<Props>) {
   const posts = await getPosts(deptId);
   return (
-    <UpdateChildLayout childName="職位">
+    <CustomCard title="職位">
       <PostIndividualTable
         posts={posts}
         button={<CreatePostButton deptId={deptId} />}
       />
-    </UpdateChildLayout>
+    </CustomCard>
   )
 }

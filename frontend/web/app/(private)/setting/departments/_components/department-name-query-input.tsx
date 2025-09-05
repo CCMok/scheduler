@@ -2,7 +2,6 @@
 
 import LabelInput from '@/components/_general/input/label-input';
 import QueryInputWrapper from '@/components/_general/input/query-input-wrapper';
-import { PATH } from "@/libs/share/_general/utils/path";
 import { DepartmentParam } from "./department-param";
 import DebounceInput from '@/components/_general/input/debounce-input';
 import { DEFAULT_SEARCH_PLACEHOLDER } from "@/libs/client/_general/constants/input-constant";
@@ -19,7 +18,6 @@ export default function DepartmentNameQueryInput() {
           />
         )}
         paramName={DepartmentParam.NAME}
-        path={PATH.setting.departments}
       />
     </LabelInput>
   )
