@@ -1,19 +1,16 @@
-import { Worker } from "@/external/prisma-generated";
 import WorkerIndividualTable from "@/components/worker/worker-individual-table";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
-import { getPostWorkersService } from "@/libs/server/post/services/get-post-workers-service";
 import { redirect } from "next/navigation";
 import CustomCard from "@/components/_general/card/custom-card";
+import { getWorkerPostsCountService } from "@/libs/server/worker/services/get-worker-posts-count-service";
+import { WorkerPostsCount } from "@/libs/server/worker/models/worker-dao";
 
-const getWorkers = async (postId: number): Promise<Worker[]> => {
-  const postWorkers = await fetchData(
-    async () => await getPostWorkersService({ id: postId }),
+const getWorkerPostsCount = async (postId: number): Promise<WorkerPostsCount[]> => {
+  return await fetchData(
+    async () => await getWorkerPostsCountService({ post: { id: postId } }),
     path => redirect(path),
-    undefined,
+    [],
   )
-
-  if (!postWorkers) return [];
-  return postWorkers.workers;
 }
 
 type Props = {
@@ -23,7 +20,7 @@ type Props = {
 export default async function WorkersSection({
   postId,
 }: Readonly<Props>) {
-  const workers = await getWorkers(postId);
+  const workers = await getWorkerPostsCount(postId);
 
   return (
     <CustomCard title="人員">

@@ -9,12 +9,12 @@ const whereSchema = z.object({
   isDeleted: z.boolean().optional(),
 })
 
-export const getPostWorkersCountRequestSchema = createGetRequestWhere(whereSchema)
+export const getWorkerPostsCountRequestSchema = createGetRequestWhere(whereSchema)
   .merge(z.object({
-    worker: z.object({
+    post: z.object({
       id: idSchema.optional(),
       isDeleted: z.boolean().optional(),
     }).optional(),
   }))
 
-export type GetPostWorkersCountRequest = z.infer<typeof getPostWorkersCountRequestSchema>;
+export type GetWorkerPostsCountRequest = z.infer<typeof getWorkerPostsCountRequestSchema>;
