@@ -7,7 +7,7 @@ import { serviceWrapper } from '../../_general/services/general-service';
 import { AccessResponse } from '../../access/models/access-response';
 import { isNil } from 'lodash';
 import { getAccessibleOrganizationIdsService } from '../../access/services/data-access-service';
-import { DepartmentRelate, GetDepartmentsRequest, getDepartmentsRequestSchema } from '../models/get-department-request';
+import { DepartmentRelate, GetDepartmentsRequest, getDepartmentsRequestSchema } from '../models/get-departments-request';
 
 export const getDepartmentsService = async <T extends Department = Department>(
   request: GetDepartmentsRequest

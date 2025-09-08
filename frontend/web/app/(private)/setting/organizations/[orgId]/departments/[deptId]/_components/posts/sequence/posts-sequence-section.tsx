@@ -3,10 +3,10 @@ import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { getPostsService } from "@/libs/server/post/services/get-posts-service";
 import { GetPostsRequest } from "@/libs/server/post/models/get-posts-request";
 import { Department, Post } from "@/external/prisma-generated";
-import PostSequenceTable from "../../../../../../../department/[id]/_components/posts/sequence/table/post-sequence-table";
-import PostSaveButton from "../../../../../../../department/[id]/_components/posts/sequence/save-button/post-sequence-save-button";
+import PostSequenceTable from "./table/post-sequence-table";
+import PostSaveButton from "./button/post-sequence-save-button";
 import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
-import { PostSequenceStoreProvider } from "../../../../../../../department/[id]/_components/posts/sequence/store/post-sequence-store-provider";
+import { PostSequenceStoreProvider } from "./store/post-sequence-store-provider";
 import CustomCard from "@/components/_general/card/custom-card";
 
 const getPosts = async (departmentId: number): Promise<Post[]> => {

@@ -10,7 +10,7 @@ import WorkersSection from "./_components/workers/workers-section";
 import { PATH } from "@/libs/share/_general/utils/path";
 import { DepartmentOrganization } from "@/libs/server/department/models/department-dao";
 import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
-import { DepartmentRelate } from "@/libs/server/department/models/get-department-request";
+import { DepartmentRelate } from "@/libs/server/department/models/get-departments-request";
 
 const getPost = async (id: number): Promise<Post | undefined> => {
   const posts = await fetchData(

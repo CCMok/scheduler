@@ -2,7 +2,7 @@ import { z } from "zod";
 import { idSchema } from "../../_general/models/id";
 import { createGetRequestOrderBy, createGetRequestOrderByArray, createGetRequestRelate, createGetRequestWhere } from "../../_general/models/get-request";
 import { Organization } from "@/external/prisma-generated";
-import { departmentOrderByFieldSchema } from "../../department/models/get-department-request";
+import { departmentOrderByFieldSchema } from "../../department/models/get-departments-request";
 
 const whereSchema = z.object({
   id: idSchema.optional(),

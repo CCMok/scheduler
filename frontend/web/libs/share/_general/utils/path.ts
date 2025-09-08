@@ -24,7 +24,6 @@ export const PATH = {
 
   setting: {
     user: `/${PathSegment.SETTING}/${PathSegment.USER}`,
-
     organizations: {
       base: `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}`,
       build: (orgId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${orgId}`,
@@ -33,35 +32,6 @@ export const PATH = {
         posts: (orgId: string | number, deptId: string | number, postId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${orgId}/${PathSegment.DEPARTMENTS}/${deptId}/${PathSegment.POSTS}/${postId}`,
         workers: (orgId: string | number, deptId: string | number, workerId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${orgId}/${PathSegment.DEPARTMENTS}/${deptId}/${PathSegment.WORKERS}/${workerId}`,
       },
-    },
-    departments: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENTS}`,
-    posts: `/${PathSegment.SETTING}/${PathSegment.POSTS}`,
-    workers: `/${PathSegment.SETTING}/${PathSegment.WORKERS}`,
-
-
-
-
-
-
-
-
-    // TODO: remove
-    organizationsOld: `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}`,
-    organization: {
-      build: (id: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATION}/${id}`,
-      department: {
-        build: (orgId: string | number, deptId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATION}/${orgId}/${PathSegment.DEPARTMENT}/${deptId}`,
-      },
-    },
-    
-    department: {
-      build: (id: string | number) => `/${PathSegment.SETTING}/${PathSegment.DEPARTMENT}/${id}`,
-    },
-    post: {
-      build: (id: string | number) => `/${PathSegment.SETTING}/${PathSegment.POST}/${id}`,
-    },
-    worker: {
-      build: (id: string | number) => `/${PathSegment.SETTING}/${PathSegment.WORKER}/${id}`,
     },
   }
 } as const

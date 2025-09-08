@@ -7,7 +7,7 @@ import { Worker } from "@/external/prisma-generated";
 import { getWorkersService } from "@/libs/server/worker/services/get-workers-service";
 import { DepartmentOrganization } from "@/libs/server/department/models/department-dao";
 import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
-import { DepartmentRelate } from "@/libs/server/department/models/get-department-request";
+import { DepartmentRelate } from "@/libs/server/department/models/get-departments-request";
 import { PATH } from "@/libs/share/_general/utils/path";
 import UpdateWorkerNameSection from "./_components/update-name/update-worker-name-section";
 import PostsSection from "./_components/posts/posts-section";

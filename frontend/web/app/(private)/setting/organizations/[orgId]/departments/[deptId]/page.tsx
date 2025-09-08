@@ -4,7 +4,7 @@ import IndividualSettingLayout from '@/components/_general/layout/setting/indivi
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { notFound, redirect } from "next/navigation";
 import { DepartmentOrganization } from "@/libs/server/department/models/department-dao";
-import { DepartmentRelate } from "@/libs/server/department/models/get-department-request";
+import { DepartmentRelate } from "@/libs/server/department/models/get-departments-request";
 import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
 import { PATH } from "@/libs/share/_general/utils/path";
 import PostsSequenceSection from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/posts/sequence/posts-sequence-section";

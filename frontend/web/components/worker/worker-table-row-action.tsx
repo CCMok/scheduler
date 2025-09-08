@@ -21,7 +21,7 @@ export default function WorkerTableRowAction({
 
   const editPath = useMemo(() => {
     if (!param.deptId) return;
-    if (!param.orgId) return PATH.setting.worker.build(id);
+    // if (!param.orgId) return PATH.setting.worker.build(id); // TODO
     return PATH.setting.organizations.departments.workers(param.orgId, param.deptId, id);
   }, [param, id])
 
