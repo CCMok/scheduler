@@ -12,7 +12,7 @@ const getOrganizations = async (): Promise<OrganizationDepartments[]> => {
     relate: [OrganizationRelate.DEPARTMENT],
     orderBy: [
       { field: 'name' },
-      { level: OrganizationRelate.DEPARTMENT, field: 'name' },
+      // { level: OrganizationRelate.DEPARTMENT, field: 'name' }, // TODO
     ]
   }
 
