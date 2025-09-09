@@ -22,23 +22,22 @@ export const getOrganizationsDepartmentService = cache(async (request: GetOrgani
 
 const findEntity = async (request: GetOrganizationsDeparmentRequest): Promise<OrganizationDepartments[]> => {
   const query = await getOrganizationQuery(request);
-  const departmentInclude = getDepartmentIncludeClause(request);
+  const departments = getDepartmentIncludeClause(request);
 
   return await prisma.organization.findMany({
     ...query,
-    include: { departments: departmentInclude },
+    include: { departments },
   })
 }
 
 const getDepartmentIncludeClause = (request: GetOrganizationsDeparmentRequest): boolean | Prisma.Organization$departmentsArgs => {
   if (!request.department?.orderBy?.length) return true;
 
-  const clause: Prisma.Organization$departmentsArgs = { orderBy: {} };
-
-  // TODO continue
-  for (const requestOrderBy of request.department.orderBy) {
-    clause.orderBy?[requestOrderBy.field] = requestOrderBy.direction ?? Prisma.SortOrder.asc;
+  return {
+    orderBy: {
+      ...request.department.orderBy.map(orderBy => ({
+        [orderBy.field]: orderBy.direction ?? Prisma.SortOrder.asc,
+      })),
+    },
   }
-
-  return clause;
 }
