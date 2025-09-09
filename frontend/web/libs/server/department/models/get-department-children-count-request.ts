@@ -1,13 +1,12 @@
 import { z } from "zod";
-import { idSchema } from "../../_general/models/id";
 import { createGetRequestWhere } from "../../_general/models/get-request";
+import { getDepartmentsRequestSchema, whereSchema as departmentsWhereSchema } from "./get-departments-request";
 
-const whereSchema = z.object({
-  id: idSchema.optional(),
-  name: z.string().optional(),
-  organizationId: idSchema.optional(),
-})
+const whereSchema = departmentsWhereSchema.merge(z.object({
+  isDeleted: z.boolean().optional(),
+}))
 
-export const getDepartmentChildrenCountRequestSchema = createGetRequestWhere(whereSchema)
+export const getDepartmentChildrenCountRequestSchema = getDepartmentsRequestSchema
+  .merge(createGetRequestWhere(whereSchema))
 
 export type GetDepartmentChildrenCountRequest = z.infer<typeof getDepartmentChildrenCountRequestSchema>;

@@ -4,19 +4,17 @@ import IndividualSettingLayout from '@/components/_general/layout/setting/indivi
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { notFound, redirect } from "next/navigation";
 import { DepartmentOrganization } from "@/libs/server/department/models/department-dao";
-import { DepartmentRelate } from "@/libs/server/department/models/get-departments-request";
-import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
 import { PATH } from "@/libs/share/_general/utils/path";
 import PostsSequenceSection from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/posts/sequence/posts-sequence-section";
 import WorkersSection from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/workers/workers-section";
 import UpdateDepartmentNameSection from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/update-name/update-department-name-section";
 import PostsSection from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/posts/posts-section";
+import { getDepartmentsOrganizationService } from "@/libs/server/department/services/get-departments-organization-service";
 
-const getDepartment = async (deptId: number): Promise<DepartmentOrganization | undefined> => {
+const getDepartment = async (id: number): Promise<DepartmentOrganization | undefined> => {
   const departments = await fetchData(
-    async () => await getDepartmentsService<DepartmentOrganization>({ 
-      where: { id: deptId },
-      relate: [DepartmentRelate.ORGANIZATION],
+    async () => await getDepartmentsOrganizationService({
+      where: { id },
     }),
     path => redirect(path),
     [],

@@ -5,41 +5,37 @@ import prisma from '../../_general/managers/database-manager';
 import { serviceWrapper } from '../../_general/services/general-service';
 import { DepartmentChildrenCount } from '../models/department-dao';
 import { GetDepartmentChildrenCountRequest, getDepartmentChildrenCountRequestSchema } from '../models/get-department-children-count-request';
-import { getOrgIdFilter } from '../../access/utils/data-access-utils';
+import { cache } from 'react';
+import { getDepartmentQuery } from '../utils/department-utils';
 
-export const getDepartmentChildrenCountService = async (
-  request: GetDepartmentChildrenCountRequest
-): Promise<ServiceResponse<DepartmentChildrenCount[]>> =>
+export const getDepartmentsChildrenCountService = cache(async (request: GetDepartmentChildrenCountRequest): Promise<ServiceResponse<DepartmentChildrenCount[]>> =>
   await serviceWrapper<DepartmentChildrenCount[]>(async () => {
     const parsedRequest = getDepartmentChildrenCountRequestSchema.parse(request);
-    const departments = await findEntity(parsedRequest);
+    const entities = await findEntity(parsedRequest);
 
     return {
       status: ServiceResponseStatus.OK,
-      data: departments,
+      data: entities,
     }
-  })
+  }))
 
 const findEntity = async (request: GetDepartmentChildrenCountRequest): Promise<DepartmentChildrenCount[]> => {
-  const orgIdFilter = await getOrgIdFilter(request.where?.organizationId);
+  const query = await getDepartmentQuery(request);
+  const isDeleted = request.where?.isDeleted ?? false;
 
   return await prisma.department.findMany({
-    where: {
-      ...request.where,
-      organizationId: orgIdFilter,
-    },
+    ...query,
     include: {
       _count: {
         select: {
           workers: {
-            where: { isDeleted: false },
+            where: { isDeleted },
           },
           posts: {
-            where: { isDeleted: false },
+            where: { isDeleted },
           },
         },
       },
     },
-    take: request.take,
   })
 }

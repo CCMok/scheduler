@@ -6,11 +6,10 @@ import IndividualSettingLayout from '@/components/_general/layout/setting/indivi
 import { Worker } from "@/external/prisma-generated";
 import { getWorkersService } from "@/libs/server/worker/services/get-workers-service";
 import { DepartmentOrganization } from "@/libs/server/department/models/department-dao";
-import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
-import { DepartmentRelate } from "@/libs/server/department/models/get-departments-request";
 import { PATH } from "@/libs/share/_general/utils/path";
 import UpdateWorkerNameSection from "./_components/update-name/update-worker-name-section";
 import PostsSection from "./_components/posts/posts-section";
+import { getDepartmentsOrganizationService } from "@/libs/server/department/services/get-departments-organization-service";
 
 const getWorkerPosts = async (id: number): Promise<Worker | undefined> => {
   const workers = await fetchData(
@@ -21,11 +20,10 @@ const getWorkerPosts = async (id: number): Promise<Worker | undefined> => {
   return workers[0]
 }
 
-const getDepartment = async (deptId: number): Promise<DepartmentOrganization | undefined> => {
+const getDepartment = async (id: number): Promise<DepartmentOrganization | undefined> => {
   const departments = await fetchData(
-    async () => await getDepartmentsService<DepartmentOrganization>({ 
-      where: { id: deptId },
-      relate: [DepartmentRelate.ORGANIZATION],
+    async () => await getDepartmentsOrganizationService({
+      where: { id },
     }),
     path => redirect(path),
     [],

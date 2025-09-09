@@ -9,8 +9,7 @@ import UpdatePostNameSection from "./_components/update-name/update-post-name-se
 import WorkersSection from "./_components/workers/workers-section";
 import { PATH } from "@/libs/share/_general/utils/path";
 import { DepartmentOrganization } from "@/libs/server/department/models/department-dao";
-import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
-import { DepartmentRelate } from "@/libs/server/department/models/get-departments-request";
+import { getDepartmentsOrganizationService } from "@/libs/server/department/services/get-departments-organization-service";
 
 const getPost = async (id: number): Promise<Post | undefined> => {
   const posts = await fetchData(
@@ -18,15 +17,13 @@ const getPost = async (id: number): Promise<Post | undefined> => {
     path => redirect(path),
     [],
   )
-
   return posts[0];
 }
 
-const getDepartment = async (deptId: number): Promise<DepartmentOrganization | undefined> => {
+const getDepartment = async (id: number): Promise<DepartmentOrganization | undefined> => {
   const departments = await fetchData(
-    async () => await getDepartmentsService<DepartmentOrganization>({ 
-      where: { id: deptId },
-      relate: [DepartmentRelate.ORGANIZATION],
+    async () => await getDepartmentsOrganizationService({
+      where: { id },
     }),
     path => redirect(path),
     [],
