@@ -8,7 +8,9 @@ import { getPostWorkersCountService } from "@/libs/server/post/services/get-post
 
 const getPostWorkersCount = async (deptId: number): Promise<PostWorkersCount[]> => {
   return await fetchData(
-    async () => await getPostWorkersCountService({ where: { departmentId: deptId } }),
+    async () => await getPostWorkersCountService({
+      where: { departmentId: deptId },
+    }),
     path => redirect(path),
     [],
   )

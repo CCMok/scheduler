@@ -6,52 +6,53 @@ import { serviceWrapper } from '../../_general/services/general-service';
 import { AccessResponse } from '../../access/models/access-response';
 import { isNil } from 'lodash';
 import { getAccessibleDepartmentIdsService } from '../../access/services/data-access-service';
-import { GetWorkerPostsCountRequest, getWorkerPostsCountRequestSchema } from '../models/get-worker-posts-count-request';
-import { WorkerPostsCount } from '../models/worker-dao';
+import { GetWorkersPostCountRequest, getWorkersPostCountRequestSchema } from '../models/get-worker-posts-count-request';
+import { WorkersPostWorkerCount } from '../models/worker-dao';
 
 export const getWorkerPostsCountService = async (
-  request: GetWorkerPostsCountRequest
-): Promise<ServiceResponse<WorkerPostsCount[]>> =>
-  await serviceWrapper<WorkerPostsCount[]>(async () => {
-    const parsedRequest = getWorkerPostsCountRequestSchema.parse(request);
+  request: GetWorkersPostCountRequest
+): Promise<ServiceResponse<WorkersPostWorkerCount[]>> =>
+  await serviceWrapper<WorkersPostWorkerCount[]>(async () => {
+    const parsedRequest = getWorkersPostCountRequestSchema.parse(request);
 
     const accessServiceResponse = await getAccessibleDepartmentIdsService();
     if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
 
-    const departments = await findEntity(parsedRequest, accessServiceResponse.data);
+    const entities = await findEntity(parsedRequest, accessServiceResponse.data);
 
     return {
       status: ServiceResponseStatus.OK,
-      data: departments,
+      data: entities,
     }
   })
 
-const findEntity = async (request: GetWorkerPostsCountRequest, accessResponse: AccessResponse): Promise<WorkerPostsCount[]> => {
+const findEntity = async (request: GetWorkersPostCountRequest, accessResponse: AccessResponse): Promise<WorkersPostWorkerCount[]> => {
   const departmentIdFilter = getDeptIdFilter(request, accessResponse);
+  const isDeleted = request.where?.isDeleted ?? false;
 
   return await prisma.worker.findMany({
     where: {
-      ...request.where,
+      id: request.where?.id,
+      name: request.where?.name,
       departmentId: departmentIdFilter,
-      isDeleted: request.where?.isDeleted ?? false,
+      postWorkers: {
+        some: {
+          postId: request.where?.postId,
+          post: { isDeleted },
+        },
+      },
+      isDeleted,
     },
     include: {
       _count: {
-        select: {
-          postWorkers: {
-            where: {
-              postId: request.post?.id, // TODO: fix 0 count in worker / post page
-              post: { isDeleted: request.post?.isDeleted ?? false },
-            },
-          },
-        },
+        select: { postWorkers: true },
       },
     },
     take: request.take,
   })
 }
 
-const getDeptIdFilter = (request: GetWorkerPostsCountRequest, accessResponse: AccessResponse) => {
+const getDeptIdFilter = (request: GetWorkersPostCountRequest, accessResponse: AccessResponse) => {
   if (accessResponse.canAccessAll) {
     if (isNil(request.where?.departmentId)) return;
     return request.where.departmentId;

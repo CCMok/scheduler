@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
 import WorkerTableRowAction from "@/components/worker/worker-table-row-action";
-import { WorkerPostsCount } from "@/libs/server/worker/models/worker-dao";
+import { WorkersPostWorkerCount } from "@/libs/server/worker/models/worker-dao";
 
 export enum WorkerIndividualTableId {
   NAME = 'name',
@@ -9,7 +9,7 @@ export enum WorkerIndividualTableId {
   ACTIONS = 'actions',
 }
 
-export const columns: ColumnDef<WorkerPostsCount>[] = [
+export const columns: ColumnDef<WorkersPostWorkerCount>[] = [
   {
     accessorKey: WorkerIndividualTableId.NAME,
     header: ({ column }) => (

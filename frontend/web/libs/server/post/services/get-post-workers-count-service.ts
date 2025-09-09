@@ -18,33 +18,34 @@ export const getPostWorkersCountService = async (
     const accessServiceResponse = await getAccessibleDepartmentIdsService();
     if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
 
-    const departments = await findEntity(parsedRequest, accessServiceResponse.data);
+    const entities = await findEntity(parsedRequest, accessServiceResponse.data);
 
     return {
       status: ServiceResponseStatus.OK,
-      data: departments,
+      data: entities,
     }
   })
 
 const findEntity = async (request: GetPostWorkersCountRequest, accessResponse: AccessResponse): Promise<PostWorkersCount[]> => {
   const departmentIdFilter = getDeptIdFilter(request, accessResponse);
+  const isDeleted = request.where?.isDeleted ?? false;
 
   return await prisma.post.findMany({
     where: {
-      ...request.where,
+      id: request.where?.id,
+      name: request.where?.name,
       departmentId: departmentIdFilter,
-      isDeleted: request.where?.isDeleted ?? false,
+      postWorkers: {
+        some: {
+          workerId: request.where?.workerId,
+          worker: { isDeleted },
+        },
+      },
+      isDeleted,
     },
     include: {
       _count: {
-        select: {
-          postWorkers: {
-            where: {
-              workerId: request.worker?.id, // TODO: fix 0 count in worker / post page
-              worker: { isDeleted: request.worker?.isDeleted ?? false },
-            },
-          },
-        },
+        select: { postWorkers: true },
       },
     },
     take: request.take,

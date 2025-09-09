@@ -1,13 +1,13 @@
 'use client'
 
 import useTable from '@/components/_general/table/use-table';
-import { WorkerPostsCount } from "@/libs/server/worker/models/worker-dao";
+import { WorkersPostWorkerCount } from "@/libs/server/worker/models/worker-dao";
 import { WorkerIndividualTableId, columns } from "./worker-individual-table-column";
 import ButtonTable from '@/components/_general/table/button-table';
 import { ReactNode } from "react";
 
 type Props = {
-  workers: WorkerPostsCount[];
+  workers: WorkersPostWorkerCount[];
   button?: ReactNode;
 }
 

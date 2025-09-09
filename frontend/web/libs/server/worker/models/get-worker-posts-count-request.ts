@@ -6,15 +6,10 @@ const whereSchema = z.object({
   id: idSchema.optional(),
   name: z.string().optional(),
   departmentId: idSchema.optional(),
+  postId: idSchema.optional(),
   isDeleted: z.boolean().optional(),
 })
 
-export const getWorkerPostsCountRequestSchema = createGetRequestWhere(whereSchema)
-  .merge(z.object({
-    post: z.object({
-      id: idSchema.optional(),
-      isDeleted: z.boolean().optional(),
-    }).optional(),
-  }))
+export const getWorkersPostCountRequestSchema = createGetRequestWhere(whereSchema)
 
-export type GetWorkerPostsCountRequest = z.infer<typeof getWorkerPostsCountRequestSchema>;
+export type GetWorkersPostCountRequest = z.infer<typeof getWorkersPostCountRequestSchema>;

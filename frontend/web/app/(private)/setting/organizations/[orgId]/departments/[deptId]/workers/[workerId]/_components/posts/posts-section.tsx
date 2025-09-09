@@ -7,7 +7,9 @@ import { PostWorkersCount } from "@/libs/server/post/models/post-dao";
 
 const getPostWorkersCount = async (workerId: number): Promise<PostWorkersCount[]> => {
   return await fetchData(
-    async () => await getPostWorkersCountService({ worker: { id: workerId } }),
+    async () => await getPostWorkersCountService({
+      where: { workerId },
+    }),
     path => redirect(path),
     [],
   )

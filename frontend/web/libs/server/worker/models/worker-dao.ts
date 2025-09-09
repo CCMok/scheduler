@@ -1,15 +1,6 @@
-import { Post, Worker } from "@/external/prisma-generated";
-import { DepartmentOrganization } from "../../department/models/department-dao";
+import { Worker } from "@/external/prisma-generated";
 import { Count } from "../../_general/models/count";
 
-export type WorkerPosts = Worker & {
-  posts: Post[];
-}
-
-export type WorkerDeptOrg = Worker & {
-  department: DepartmentOrganization;
-}
-
-export type WorkerPostsCount = Worker & Count<{
+export type WorkersPostWorkerCount = Worker & Count<{
   postWorkers: number;
 }>
