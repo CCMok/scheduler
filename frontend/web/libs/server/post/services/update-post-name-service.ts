@@ -8,7 +8,7 @@ import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runti
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { ServiceMessage } from '../../../share/_general/enums/service-message';
 import { UpdatePostNameRequest, updatePostNameRequestSchema } from '../models/update-post-name-request';
-import { getAccessiblePostIdsService } from '../../access/services/data-access-service';
+import { checkPostIdAccess } from '../../access/utils/data-access-utils';
 
 export const updatePostNameService = async (request: UpdatePostNameRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
@@ -29,13 +29,8 @@ export const updatePostNameService = async (request: UpdatePostNameRequest): Pro
   })
 
 const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => {
-  const accessServiceResponse = await getAccessiblePostIdsService();
-
-  if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
-
-  if (accessServiceResponse.data.canAccessAll || accessServiceResponse.data.ids.includes(id)) return;
-
-  return {
+  const pass = await checkPostIdAccess(id);
+  if (!pass) return {
     status: ServiceResponseStatus.BAD_REQUEST,
     message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '職位'),
   }

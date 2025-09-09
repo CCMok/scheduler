@@ -9,7 +9,7 @@ import { PrismaErrorCode } from "../../_general/enums/prisma-error-code";
 import { getPrismaErrorTarget, tryCatchQuery } from "../../_general/utils/database-utils";
 import { PrismaClientKnownRequestError } from "@/external/prisma-generated/runtime/library";
 import { serviceWrapper } from '../../_general/services/general-service';
-import { getAccessibleOrganizationIdsService } from '../../access/services/data-access-service';
+import { checkOrgIdAccess } from '../../access/utils/data-access-utils';
 
 export const updateOrganizationNameService = async (request: UpdateOrganizationNameRequest): Promise<ServiceResponse> =>
   await serviceWrapper<{}>(async () => {
@@ -30,12 +30,8 @@ export const updateOrganizationNameService = async (request: UpdateOrganizationN
   })
 
 const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => {
-  const accessServiceResponse = await getAccessibleOrganizationIdsService();
-  if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
-
-  if (accessServiceResponse.data.canAccessAll || accessServiceResponse.data.ids.includes(id)) return;
-
-  return {
+  const pass = await checkOrgIdAccess(id);
+  if (!pass) return {
     status: ServiceResponseStatus.BAD_REQUEST,
     message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '組織'),
   }

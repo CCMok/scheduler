@@ -4,8 +4,8 @@ import { ServiceResponseStatus } from "../../../share/_general/enums/service-res
 import { serviceWrapper } from '../../_general/services/general-service';
 import { DeleteWorkerRequest, deleteWorkerRequestSchema } from '../models/delete-worker-request';
 import prisma from '../../_general/managers/database-manager';
-import { getAccessibleWorkerIdsService } from '../../access/services/data-access-service';
 import { ServiceMessage } from '@/libs/share/_general/enums/service-message';
+import { checkWorkerIdAccess } from '../../access/utils/data-access-utils';
 
 export const deleteWorkerService = async (request: DeleteWorkerRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
@@ -34,13 +34,8 @@ export const deleteWorkerService = async (request: DeleteWorkerRequest): Promise
   })
 
 const checkAccess = async (workerId: number): Promise<ServiceResponse | undefined> => {
-  const accessServiceResponse = await getAccessibleWorkerIdsService();
-
-  if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
-
-  if (accessServiceResponse.data.canAccessAll || accessServiceResponse.data.ids.includes(workerId)) return;
-
-  return {
+  const pass = await checkWorkerIdAccess(workerId);
+  if (!pass) return {
     status: ServiceResponseStatus.BAD_REQUEST,
     message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '人員'),
   }

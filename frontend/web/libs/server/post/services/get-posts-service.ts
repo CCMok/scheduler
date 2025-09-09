@@ -5,55 +5,34 @@ import { ServiceResponseStatus } from "../../../share/_general/enums/service-res
 import prisma from "../../_general/managers/database-manager";
 import { Post, Prisma } from '@/external/prisma-generated';
 import { serviceWrapper } from '../../_general/services/general-service';
-import { getAccessibleDepartmentIdsService } from '../../access/services/data-access-service';
-import { isNil } from 'lodash';
-import { AccessResponse } from '../../access/models/access-response';
+import { getDeptIdFilter } from '../../access/utils/data-access-utils';
 
 export const getPostsService = async (request: GetPostsRequest): Promise<ServiceResponse<Post[]>> =>
   await serviceWrapper(async () => {
     const parsedRequest = getPostsRequestSchema.parse(request);
-
-    const accessServiceResponse = await getAccessibleDepartmentIdsService();
-    if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse
-
-    const query = getQuery(parsedRequest, accessServiceResponse.data);
-
-    const posts = await prisma.post.findMany(query);
+    const entities = await findEntity(parsedRequest);
 
     return {
       status: ServiceResponseStatus.OK,
-      data: posts,
+      data: entities,
     };
   })
 
-const getQuery = (request: GetPostsRequest, accessResponse: AccessResponse) => {
-  const where = getWhereClause(request, accessResponse);
+const findEntity = async (request: GetPostsRequest): Promise<Post[]> => {
+  const departmentId = await getDeptIdFilter(request.where?.departmentId);
+  const isDeleted = request.where?.isDeleted ?? false;
   const orderBy = getOrderByClause(request);
 
-  return { where, orderBy, take: request.take };
-}
-
-const getWhereClause = (request: GetPostsRequest, accessResponse: AccessResponse) => {
-  const departmentIdFilter = getDepartmentIdFilter(request, accessResponse);
-
-  return {
-    ...request.where,
-    isDeleted: false,
-    departmentId: departmentIdFilter,
-  }
-}
-
-const getDepartmentIdFilter = (request: GetPostsRequest, accessResponse: AccessResponse) => {
-  if (accessResponse.canAccessAll) {
-    if (isNil(request.where?.departmentId)) return;
-    return request.where.departmentId;
-  }
-
-  if (isNil(request.where?.departmentId)) return { in: accessResponse.ids };
-
-  if (accessResponse.ids.includes(request.where.departmentId)) return request.where.departmentId;
-
-  return { in: [] }
+  return await prisma.post.findMany({
+    where: {
+      id: request.where?.id,
+      departmentId,
+      name: request.where?.name,
+      isDeleted,
+    },
+    orderBy,
+    take: request.take,
+  })
 }
 
 const getOrderByClause = (request: GetPostsRequest) => {

@@ -8,7 +8,7 @@ import { getPrismaErrorTarget, tryCatchQuery } from '../../_general/utils/databa
 import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runtime/library';
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { ServiceMessage } from '../../../share/_general/enums/service-message';
-import { getAccessibleDepartmentIdsService } from '../../access/services/data-access-service';
+import { checkDeptIdAccess } from '../../access/utils/data-access-utils';
 
 export const createWorkerService = async (request: CreateWorkerRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
@@ -28,14 +28,9 @@ export const createWorkerService = async (request: CreateWorkerRequest): Promise
     }
   })
 
-const checkAccess = async (departmentId: number): Promise<ServiceResponse | undefined> => {
-  const accessServiceResponse = await getAccessibleDepartmentIdsService();
-
-  if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
-
-  if (accessServiceResponse.data.canAccessAll || accessServiceResponse.data.ids.includes(departmentId)) return;
-
-  return {
+const checkAccess = async (deptId: number): Promise<ServiceResponse | undefined> => {
+  const pass = await checkDeptIdAccess(deptId);
+  if (!pass) return {
     status: ServiceResponseStatus.BAD_REQUEST,
     message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '部門'),
   }

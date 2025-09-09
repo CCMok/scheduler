@@ -8,7 +8,7 @@ import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runti
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { ServiceMessage } from '../../../share/_general/enums/service-message';
 import { UpdateWorkerNameRequest, updateWorkerNameRequestSchema } from '../models/update-worker-name-request';
-import { getAccessibleWorkerIdsService } from '../../access/services/data-access-service';
+import { checkWorkerIdAccess } from '../../access/utils/data-access-utils';
 
 export const updateWorkerNameService = async (request: UpdateWorkerNameRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
@@ -29,13 +29,8 @@ export const updateWorkerNameService = async (request: UpdateWorkerNameRequest):
   })
 
 const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => {
-  const accessServiceResponse = await getAccessibleWorkerIdsService();
-
-  if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
-
-  if (accessServiceResponse.data.canAccessAll || accessServiceResponse.data.ids.includes(id)) return;
-
-  return {
+  const pass = await checkWorkerIdAccess(id);
+  if (!pass) return {
     status: ServiceResponseStatus.BAD_REQUEST,
     message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '人員'),
   }
@@ -58,7 +53,7 @@ const handleQueryError = (error: PrismaClientKnownRequestError): ServiceResponse
     if (target?.includes('name')) {
       return {
         status: ServiceResponseStatus.BAD_REQUEST,
-        message: ServiceMessage.ALREADY_USED.replaceAll('{0}', '人員名稱'),
+        message: ServiceMessage.ALREADY_USED.replaceAll('{0}', '名稱'),
       }
     }
   }

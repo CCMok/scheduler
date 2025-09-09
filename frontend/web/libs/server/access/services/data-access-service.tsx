@@ -8,7 +8,7 @@ import { Role } from '@/libs/share/_general/enums/role';
 import prisma from '../../_general/managers/database-manager';
 import { AccessResponse } from '../models/access-response';
 
-export const getAccessibleOrganizationIdsService = cache(async (): Promise<ServiceResponse<AccessResponse>> =>
+export const getAccessibleOrgIdsService = cache(async (): Promise<ServiceResponse<AccessResponse>> =>
   await serviceWrapper<AccessResponse>(async () => {
     const session = await getSession();
     if (!session) return { status: ServiceResponseStatus.UNAUTHORIZED }
@@ -38,9 +38,9 @@ export const getAccessibleOrganizationIdsService = cache(async (): Promise<Servi
   })
 )
 
-export const getAccessibleDepartmentIdsService = cache(async (): Promise<ServiceResponse<AccessResponse>> =>
+export const getAccessibleDeptIdsService = cache(async (): Promise<ServiceResponse<AccessResponse>> =>
   await serviceWrapper<AccessResponse>(async () => {
-    const parentResponse = await getAccessibleOrganizationIdsService();
+    const parentResponse = await getAccessibleOrgIdsService();
     if (parentResponse.status !== ServiceResponseStatus.OK || parentResponse.data.canAccessAll) {
       return parentResponse;
     }
@@ -64,7 +64,7 @@ export const getAccessibleDepartmentIdsService = cache(async (): Promise<Service
 
 export const getAccessiblePostIdsService = cache(async (): Promise<ServiceResponse<AccessResponse>> =>
   await serviceWrapper<AccessResponse>(async () => {
-    const parentResponse = await getAccessibleDepartmentIdsService();
+    const parentResponse = await getAccessibleDeptIdsService();
     if (parentResponse.status !== ServiceResponseStatus.OK || parentResponse.data.canAccessAll) {
       return parentResponse;
     }
@@ -88,7 +88,7 @@ export const getAccessiblePostIdsService = cache(async (): Promise<ServiceRespon
 
 export const getAccessibleWorkerIdsService = cache(async (): Promise<ServiceResponse<AccessResponse>> =>
   await serviceWrapper<AccessResponse>(async () => {
-    const parentResponse = await getAccessibleDepartmentIdsService();
+    const parentResponse = await getAccessibleDeptIdsService();
     if (parentResponse.status !== ServiceResponseStatus.OK || parentResponse.data.canAccessAll) {
       return parentResponse;
     }

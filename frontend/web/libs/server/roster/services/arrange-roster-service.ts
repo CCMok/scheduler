@@ -11,8 +11,8 @@ import prisma from '../../_general/managers/database-manager';
 import { ApiHeaderKey, ContentType } from '../../_general/enums/api-header';
 import { SCH_API_KEY } from '../../_general/constants/sch-constant';
 import { serviceWrapper } from '../../_general/services/general-service';
-import { getAccessibleDepartmentIdsService } from '../../access/services/data-access-service';
 import { ServiceMessage } from '@/libs/share/_general/enums/service-message';
+import { checkDeptIdAccess } from '../../access/utils/data-access-utils';
 
 export const arrangeRosterService = async (request: ArrangeRosterRequest): Promise<ServiceResponse<DayBaseSchedule[]>> =>
   await serviceWrapper<DayBaseSchedule[]>(async () => {
@@ -53,13 +53,8 @@ export const arrangeRosterService = async (request: ArrangeRosterRequest): Promi
   })
 
 const checkAccess = async (departmentId: number): Promise<ServiceResponse<DayBaseSchedule[]> | undefined> => {
-  const accessServiceResponse = await getAccessibleDepartmentIdsService();
-
-  if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
-
-  if (accessServiceResponse.data.canAccessAll || accessServiceResponse.data.ids.includes(departmentId)) return;
-
-  return {
+  const pass = await checkDeptIdAccess(departmentId);
+  if (!pass) return {
     status: ServiceResponseStatus.BAD_REQUEST,
     message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '部門'),
   }

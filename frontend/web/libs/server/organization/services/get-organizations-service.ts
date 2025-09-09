@@ -5,57 +5,37 @@ import { Organization, Prisma } from '@/external/prisma-generated';
 import prisma from '../../_general/managers/database-manager';
 import { GetOrganizationsRequest, getOrganizationsRequestSchema, OrganizationRelate } from '../models/get-organizations-request';
 import { serviceWrapper } from '../../_general/services/general-service';
-import { AccessResponse } from '../../access/models/access-response';
-import { isNil } from 'lodash';
-import { getAccessibleOrganizationIdsService } from '../../access/services/data-access-service';
+import { getOrgIdFilter } from '../../access/utils/data-access-utils';
 
 export const getOrganizationsService = async <T extends Organization = Organization>(
   request: GetOrganizationsRequest
 ): Promise<ServiceResponse<T[]>> =>
   await serviceWrapper<T[]>(async () => {
     const parsedRequest = getOrganizationsRequestSchema.parse(request);
-
-    const accessServiceResponse = await getAccessibleOrganizationIdsService();
-    if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
-
-    const query = getQuery(parsedRequest, accessServiceResponse.data);
-
-    const organizations = await prisma.organization.findMany(query) as T[];
+    const query = await getQuery(parsedRequest);
+    const entities = await prisma.organization.findMany(query) as T[];
 
     return {
       status: ServiceResponseStatus.OK,
-      data: organizations,
+      data: entities,
     }
   })
 
-const getQuery = (request: GetOrganizationsRequest, accessResponse: AccessResponse): Prisma.OrganizationFindManyArgs => {
-  const where = getWhereClause(request, accessResponse);
+const getQuery = async (request: GetOrganizationsRequest): Promise<Prisma.OrganizationFindManyArgs> => {
+  const where = await getWhereClause(request);
   const include = getIncludeClause(request);
   const orderBy = getOrderByClause(request, include);
 
   return { where, include, orderBy, take: request.take };
 }
 
-const getWhereClause = (request: GetOrganizationsRequest, accessResponse: AccessResponse) => {
-  const idFilter = getIdFilter(request, accessResponse);
+const getWhereClause = async (request: GetOrganizationsRequest): Promise<Prisma.OrganizationWhereInput> => {
+  const id = await getOrgIdFilter(request.where?.id);
 
   return {
     ...request.where,
-    id: idFilter,
+    id,
   }
-}
-
-const getIdFilter = (request: GetOrganizationsRequest, accessResponse: AccessResponse) => {
-  if (accessResponse.canAccessAll) {
-    if (isNil(request.where?.id)) return;
-    return request.where.id;
-  }
-
-  if (isNil(request.where?.id)) return { in: accessResponse.ids };
-
-  if (accessResponse.ids.includes(request.where.id)) return request.where.id;
-
-  return { in: [] }
 }
 
 const getIncludeClause = (request: GetOrganizationsRequest): Prisma.OrganizationInclude => {

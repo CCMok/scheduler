@@ -4,8 +4,8 @@ import { ServiceResponseStatus } from "../../../share/_general/enums/service-res
 import { serviceWrapper } from '../../_general/services/general-service';
 import { DeletePostRequest, deletePostRequestSchema } from '../models/delete-post-request';
 import prisma from '../../_general/managers/database-manager';
-import { getAccessiblePostIdsService } from '../../access/services/data-access-service';
 import { ServiceMessage } from '@/libs/share/_general/enums/service-message';
+import { checkPostIdAccess } from '../../access/utils/data-access-utils';
 
 export const deletePostService = async (request: DeletePostRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
@@ -34,13 +34,8 @@ export const deletePostService = async (request: DeletePostRequest): Promise<Ser
   })
 
 const checkAccess = async (postId: number): Promise<ServiceResponse | undefined> => {
-  const accessServiceResponse = await getAccessiblePostIdsService();
-
-  if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
-
-  if (accessServiceResponse.data.canAccessAll || accessServiceResponse.data.ids.includes(postId)) return;
-
-  return {
+  const pass = await checkPostIdAccess(postId);
+  if (!pass) return {
     status: ServiceResponseStatus.BAD_REQUEST,
     message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '職位'),
   }

@@ -7,6 +7,7 @@ const whereSchema = z.object({
   id: idSchema.optional(),
   departmentId: idSchema.optional(),
   name: z.string().optional(),
+  isDeleted: z.boolean().optional(),
 })
 
 const orderByFieldSchema = z.enum([

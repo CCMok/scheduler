@@ -4,22 +4,15 @@ import { ServiceResponse } from '@/libs/share/_general/models/service-response';
 import { Department, Prisma } from '@/external/prisma-generated';
 import prisma from '../../_general/managers/database-manager';
 import { serviceWrapper } from '../../_general/services/general-service';
-import { AccessResponse } from '../../access/models/access-response';
-import { isNil } from 'lodash';
-import { getAccessibleOrganizationIdsService } from '../../access/services/data-access-service';
 import { DepartmentRelate, GetDepartmentsRequest, getDepartmentsRequestSchema } from '../models/get-departments-request';
+import { getOrgIdFilter } from '../../access/utils/data-access-utils';
 
 export const getDepartmentsService = async <T extends Department = Department>(
   request: GetDepartmentsRequest
 ): Promise<ServiceResponse<T[]>> =>
   await serviceWrapper<T[]>(async () => {
     const parsedRequest = getDepartmentsRequestSchema.parse(request);
-
-    const accessServiceResponse = await getAccessibleOrganizationIdsService();
-    if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
-
-    const query = getQuery(parsedRequest, accessServiceResponse.data);
-
+    const query = await getQuery(parsedRequest);
     const departments = await prisma.department.findMany(query) as T[];
 
     return {
@@ -28,34 +21,21 @@ export const getDepartmentsService = async <T extends Department = Department>(
     }
   })
 
-const getQuery = (request: GetDepartmentsRequest, accessResponse: AccessResponse): Prisma.DepartmentFindManyArgs => {
-  const where = getWhereClause(request, accessResponse);
+const getQuery = async (request: GetDepartmentsRequest): Promise<Prisma.DepartmentFindManyArgs> => {
+  const where = await getWhereClause(request);
   const include = getIncludeClause(request);
   const orderBy = getOrderByClause(request);
 
   return { where, include, orderBy, take: request.take };
 }
 
-const getWhereClause = (request: GetDepartmentsRequest, accessResponse: AccessResponse): Prisma.DepartmentWhereInput => {
-  const orgIdFilter = getOrgIdFilter(request, accessResponse);
+const getWhereClause = async (request: GetDepartmentsRequest): Promise<Prisma.DepartmentWhereInput> => {
+  const orgIdFilter = await getOrgIdFilter(request.where?.organizationId);
 
   return {
     ...request.where,
     organizationId: orgIdFilter,
   }
-}
-
-const getOrgIdFilter = (request: GetDepartmentsRequest, accessResponse: AccessResponse) => {
-  if (accessResponse.canAccessAll) {
-    if (isNil(request.where?.organizationId)) return;
-    return request.where.organizationId;
-  }
-
-  if (isNil(request.where?.organizationId)) return { in: accessResponse.ids };
-
-  if (accessResponse.ids.includes(request.where.organizationId)) return request.where.organizationId;
-
-  return { in: [] }
 }
 
 const getIncludeClause = (request: GetDepartmentsRequest): Prisma.DepartmentInclude => {

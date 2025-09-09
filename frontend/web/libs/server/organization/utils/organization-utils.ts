@@ -1,22 +1,17 @@
 import 'server-only';
 import prisma from '../../_general/managers/database-manager';
 import { isNil } from 'lodash';
-import { getAccessibleOrganizationIdsService } from '../../access/services/data-access-service';
-import { ServiceResponseStatus } from '@/libs/share/_general/enums/service-response-status';
-import { AccessResponse } from '../../access/models/access-response';
+import { getOrgIdFilter } from '../../access/utils/data-access-utils';
 
-export const getMaxHistoryCount = async (departmentId: number): Promise<number | undefined> => {
-  const accessResponse = await getAccessibleOrganizationIdsService();
-  if (accessResponse.status !== ServiceResponseStatus.OK) return;
+export const getMaxHistoryCount = async (deptId: number): Promise<number | undefined> => {
+  const id = await getOrgIdFilter(undefined);
 
-  const idFilter = getIdFilter(accessResponse.data);
-
-  const organization = await prisma.organization.findFirst({
+  const entity = await prisma.organization.findFirst({
     where: {
-      id: idFilter,
+      id,
       departments: {
         some: {
-          id: departmentId,
+          id: deptId,
         },
       },
     },
@@ -25,11 +20,5 @@ export const getMaxHistoryCount = async (departmentId: number): Promise<number |
     }
   })
 
-  return isNil(organization?.maxHistoryCount) ? undefined : organization.maxHistoryCount;
-}
-
-const getIdFilter = (accessResponse: AccessResponse) => {
-  if (accessResponse.canAccessAll) return;
-
-  return { in: accessResponse.ids }
+  return isNil(entity?.maxHistoryCount) ? undefined : entity.maxHistoryCount;
 }

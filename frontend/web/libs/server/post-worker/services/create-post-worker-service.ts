@@ -8,7 +8,7 @@ import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runti
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { ServiceMessage } from '../../../share/_general/enums/service-message';
 import { CreatePostWorkerRequest, createPostWorkerRequestSchema } from '../models/create-post-worker-request';
-import { getAccessiblePostIdsService, getAccessibleWorkerIdsService } from '../../access/services/data-access-service';
+import { checkPostIdAccess, checkWorkerIdAccess } from '../../access/utils/data-access-utils';
 
 export const createPostWorkerService = async (request: CreatePostWorkerRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
@@ -37,26 +37,16 @@ const checkAccess = async (request: CreatePostWorkerRequest): Promise<ServiceRes
 }
 
 const checkWorkerAccess = async (workerId: number): Promise<ServiceResponse | undefined> => {
-  const accessServiceResponse = await getAccessibleWorkerIdsService();
-
-  if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
-
-  if (accessServiceResponse.data.canAccessAll || accessServiceResponse.data.ids.includes(workerId)) return;
-
-  return {
+  const pass = await checkWorkerIdAccess(workerId);
+  if (!pass) return {
     status: ServiceResponseStatus.BAD_REQUEST,
     message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '人員'),
   }
 }
 
 const checkPostAccess = async (postId: number): Promise<ServiceResponse | undefined> => {
-  const accessServiceResponse = await getAccessiblePostIdsService();
-
-  if (accessServiceResponse.status !== ServiceResponseStatus.OK) return accessServiceResponse;
-
-  if (accessServiceResponse.data.canAccessAll || accessServiceResponse.data.ids.includes(postId)) return;
-
-  return {
+  const pass = await checkPostIdAccess(postId);
+  if (!pass) return {
     status: ServiceResponseStatus.BAD_REQUEST,
     message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '職位'),
   }

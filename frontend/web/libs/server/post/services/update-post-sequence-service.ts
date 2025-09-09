@@ -3,9 +3,9 @@ import { ServiceResponse } from "@/libs/share/_general/models/service-response";
 import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import { serviceWrapper } from '../../_general/services/general-service';
 import { UpdatePostSequenceRequest, updatePostSequenceRequestSchema } from '../models/update-post-sequence-request';
-import { getAccessiblePostIdsService } from '../../access/services/data-access-service';
 import { ServiceMessage } from '@/libs/share/_general/enums/service-message';
 import prisma from '../../_general/managers/database-manager';
+import { checkPostIdsAccess } from '../../access/utils/data-access-utils';
 
 export const updatePostSequenceService = async (request: UpdatePostSequenceRequest): Promise<ServiceResponse> =>
   await serviceWrapper(async () => {
@@ -23,17 +23,10 @@ export const updatePostSequenceService = async (request: UpdatePostSequenceReque
   })
 
 const checkPosts = async (postIds: number[]): Promise<ServiceResponse | undefined> => {
-  const accessResponse = await getAccessiblePostIdsService()
-  if (accessResponse.status !== ServiceResponseStatus.OK) return accessResponse;
-  if (accessResponse.data.canAccessAll) return;
-
-  for (const postId of postIds) {
-    if (!accessResponse.data.ids.includes(postId)) {
-      return {
-        status: ServiceResponseStatus.BAD_REQUEST,
-        message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '職位'),
-      }
-    }
+  const pass = await checkPostIdsAccess(postIds);
+  if (!pass) return {
+    status: ServiceResponseStatus.BAD_REQUEST,
+    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '職位'),
   }
 }
 
