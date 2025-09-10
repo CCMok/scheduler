@@ -29,7 +29,7 @@ export default async function WorkersSection({
     <CustomCard>
       <WorkerIndividualTable
         workers={workers}
-        button={<CreateWorkerButton deptId={deptId} />}
+        button={<CreateWorkerButton />}
       />
     </CustomCard>
   )

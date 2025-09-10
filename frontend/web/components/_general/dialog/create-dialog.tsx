@@ -15,18 +15,20 @@ import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-
 import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { ChildrenProps } from "@/libs/share/_general/props/children-props";
 
-type Props<T extends FieldValues = FieldValues> = ChildrenProps & {
+type Props<T extends FieldValues = FieldValues, R = {}> = ChildrenProps & {
   entityName?: string;
   form?: UseFormReturn<T>;
-  submit?: (input: T) => Promise<ServiceResponse>;
+  submit?: (input: T) => Promise<ServiceResponse<R>>;
+  onSuccess?: (data: R) => (void | Promise<void>);
 }
 
-export default function CreateDialog<T extends FieldValues = FieldValues>({
+export default function CreateDialog<T extends FieldValues = FieldValues, R = {}>({
   children,
   entityName = '',
   form,
   submit,
-}: Readonly<Props<T>>) {
+  onSuccess,
+}: Readonly<Props<T, R>>) {
   const [isOpen, setIsOpen] = useState(false)
 
   const router = useRouter();
@@ -48,8 +50,9 @@ export default function CreateDialog<T extends FieldValues = FieldValues>({
       ...SONNER_DEFAULT_OPTIONS,
     })
 
-    router.refresh()
     setIsOpen(false)
+
+    await onSuccess?.(uiResponse.data);
   }
 
   if (!form) return <></>

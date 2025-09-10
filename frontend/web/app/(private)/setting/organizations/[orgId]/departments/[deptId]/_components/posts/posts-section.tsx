@@ -29,7 +29,7 @@ export default async function PostsSection({
     <CustomCard>
       <PostIndividualTable
         posts={posts}
-        button={<CreatePostButton deptId={deptId} />}
+        button={<CreatePostButton />}
       />
     </CustomCard>
   )

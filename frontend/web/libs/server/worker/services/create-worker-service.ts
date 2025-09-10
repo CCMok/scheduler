@@ -9,8 +9,9 @@ import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runti
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { ServiceMessage } from '../../../share/_general/enums/service-message';
 import { checkDeptIdAccess } from '../../access/utils/data-access-utils';
+import { Id } from '../../_general/models/id';
 
-export const createWorkerService = async (request: CreateWorkerRequest): Promise<ServiceResponse> =>
+export const createWorkerService = async (request: CreateWorkerRequest): Promise<ServiceResponse<Id>> =>
   await serviceWrapper(async () => {
     const parsedRequest = createWorkerRequestSchema.parse(request);
 
@@ -24,11 +25,11 @@ export const createWorkerService = async (request: CreateWorkerRequest): Promise
 
     return {
       status: ServiceResponseStatus.OK,
-      data: {},
+      data: executeResponse.data.id,
     }
   })
 
-const checkAccess = async (deptId: number): Promise<ServiceResponse | undefined> => {
+const checkAccess = async (deptId: number): Promise<ServiceResponse<Id> | undefined> => {
   const pass = await checkDeptIdAccess(deptId);
   if (!pass) return {
     status: ServiceResponseStatus.BAD_REQUEST,
@@ -46,7 +47,7 @@ const execute = async (request: CreateWorkerRequest) =>
     })
   )
 
-const handleQueryError = (error: PrismaClientKnownRequestError): ServiceResponse => {
+const handleQueryError = (error: PrismaClientKnownRequestError): ServiceResponse<Id> => {
   if (error.code === PrismaErrorCode.UNIQUE_CONSTRAINT_VIOLATION) {
     const target = getPrismaErrorTarget(error)
 
