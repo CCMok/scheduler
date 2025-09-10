@@ -29,7 +29,7 @@ export default function QueryTab({
   const value = getValue(searchParams.get(SEARCH_PARAM_NAME), tabs)
 
   const onValueChange = (value: string) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(); // remove other params when change tab
     params.set(SEARCH_PARAM_NAME, value);
     const paramString = params.toString();
     if (isPushRoute) {

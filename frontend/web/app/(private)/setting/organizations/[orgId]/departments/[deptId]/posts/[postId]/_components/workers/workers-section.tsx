@@ -1,9 +1,10 @@
-import WorkerIndividualTable from "@/components/worker/worker-individual-table";
+import WorkerTable from "@/components/worker/worker-table";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
 import CustomCard from "@/components/_general/card/custom-card";
 import { getWorkerPostsCountService } from "@/libs/server/worker/services/get-worker-posts-count-service";
 import { WorkersPostWorkerCount } from "@/libs/server/worker/models/worker-dao";
+import WorkerFilter from "@/components/worker/worker-filter";
 
 const getWorkerPostsCount = async (postId: number): Promise<WorkersPostWorkerCount[]> => {
   return await fetchData(
@@ -26,7 +27,8 @@ export default async function WorkersSection({
 
   return (
     <CustomCard title="人員">
-      <WorkerIndividualTable workers={workers} />
+      <WorkerFilter />
+      <WorkerTable workers={workers} />
     </CustomCard>
   )
 }
