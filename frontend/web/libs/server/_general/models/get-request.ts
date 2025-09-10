@@ -29,5 +29,5 @@ export const createGetRequestOrderByArray = <T extends z.ZodTypeAny>(
   orderBy: T,
 ) =>
   z.object({
-    orderBy: orderBy.array().optional(),
+    orderBys: orderBy.array().optional(),
   });

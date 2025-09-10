@@ -9,9 +9,9 @@ import { getOrganizationsDepartmentService } from "@/libs/server/organization/se
 const getOrganizations = async (): Promise<OrganizationDepartments[]> => {
   return await fetchData(
     async () => await getOrganizationsDepartmentService({
-      orderBy: [{ field: 'name' }],
+      orderBys: [{ field: 'name' }],
       department: {
-        orderBy: [{ field: 'name' }]
+        orderBys: [{ field: 'name' }]
       }
     }),
     path => redirect(path),

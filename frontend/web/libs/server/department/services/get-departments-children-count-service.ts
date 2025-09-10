@@ -11,7 +11,7 @@ import { getDepartmentQuery } from '../utils/department-utils';
 export const getDepartmentsChildrenCountService = cache(async (request: GetDepartmentChildrenCountRequest): Promise<ServiceResponse<DepartmentChildrenCount[]>> =>
   await serviceWrapper<DepartmentChildrenCount[]>(async () => {
     const parsedRequest = getDepartmentChildrenCountRequestSchema.parse(request);
-    const entities = await findEntity(parsedRequest);
+    const entities = await findEntities(parsedRequest);
 
     return {
       status: ServiceResponseStatus.OK,
@@ -19,7 +19,7 @@ export const getDepartmentsChildrenCountService = cache(async (request: GetDepar
     }
   }))
 
-const findEntity = async (request: GetDepartmentChildrenCountRequest): Promise<DepartmentChildrenCount[]> => {
+const findEntities = async (request: GetDepartmentChildrenCountRequest): Promise<DepartmentChildrenCount[]> => {
   const query = await getDepartmentQuery(request);
   const isDeleted = request.where?.isDeleted ?? false;
 

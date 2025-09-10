@@ -10,7 +10,7 @@ import CustomCard from '@/components/_general/card/custom-card';
 const getOrganizations = async (): Promise<Organization[]> => {
   return await fetchData(
     async () => await getOrganizationsService({
-      orderBy: [{ field: 'name' }],
+      orderBys: [{ field: 'name' }],
     }),
     path => redirect(path),
     [],

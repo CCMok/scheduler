@@ -40,12 +40,12 @@ export const getOrganizationQuery = async (request: GetOrganizationsRequest): Pr
   }
 }
 
-const getOrderByClause = (request: GetOrganizationsRequest) => {
+const getOrderByClause = (request: GetOrganizationsRequest): Prisma.OrganizationOrderByWithRelationInput => {
   const orderBy: Prisma.OrganizationOrderByWithRelationInput = {};
 
-  if (!request.orderBy) return orderBy;
+  if (!request.orderBys) return orderBy;
 
-  for (const requestOrderBy of request.orderBy) {
+  for (const requestOrderBy of request.orderBys) {
     orderBy[requestOrderBy.field] = requestOrderBy.direction ?? Prisma.SortOrder.asc;
   }
 

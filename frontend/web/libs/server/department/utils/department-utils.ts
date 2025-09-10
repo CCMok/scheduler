@@ -17,12 +17,14 @@ export const getDepartmentQuery = async (request: GetDepartmentsRequest): Promis
   }
 }
 
-const getOrderByClause = (request: GetDepartmentsRequest) => {
-  if (!request.orderBy) return {};
+const getOrderByClause = (request: GetDepartmentsRequest): Prisma.DepartmentOrderByWithRelationInput => {
+  const orderBy: Prisma.DepartmentOrderByWithRelationInput = {};
 
-  return {
-    ...request.orderBy.map(orderBy => ({
-      [orderBy.field]: orderBy.direction ?? Prisma.SortOrder.asc,
-    })),
+  if (!request.orderBys) return orderBy;
+
+  for (const requestOrderBy of request.orderBys) {
+    orderBy[requestOrderBy.field] = requestOrderBy.direction ?? Prisma.SortOrder.asc;
   }
+
+  return orderBy;
 }

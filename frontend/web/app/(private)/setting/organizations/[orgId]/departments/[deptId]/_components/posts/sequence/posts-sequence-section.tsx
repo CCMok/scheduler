@@ -12,7 +12,7 @@ import CustomCard from "@/components/_general/card/custom-card";
 const getPosts = async (departmentId: number): Promise<Post[]> => {
   const request: GetPostsRequest = {
     where: { departmentId },
-    orderBy: [{ field: 'displayPosition' }],
+    orderBys: [{ field: 'displayPosition' }],
   }
 
   return await fetchData(

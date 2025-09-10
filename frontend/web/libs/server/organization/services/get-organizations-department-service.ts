@@ -12,7 +12,7 @@ import { Prisma } from '@/external/prisma-generated';
 export const getOrganizationsDepartmentService = cache(async (request: GetOrganizationsDeparmentRequest): Promise<ServiceResponse<OrganizationDepartments[]>> =>
   await serviceWrapper<OrganizationDepartments[]>(async () => {
     const parsedRequest = getOrganizationsDeparmentRequestSchema.parse(request);
-    const entities = await findEntity(parsedRequest);
+    const entities = await findEntities(parsedRequest);
 
     return {
       status: ServiceResponseStatus.OK,
@@ -20,7 +20,7 @@ export const getOrganizationsDepartmentService = cache(async (request: GetOrgani
     }
   }))
 
-const findEntity = async (request: GetOrganizationsDeparmentRequest): Promise<OrganizationDepartments[]> => {
+const findEntities = async (request: GetOrganizationsDeparmentRequest): Promise<OrganizationDepartments[]> => {
   const query = await getOrganizationQuery(request);
   const departments = getDepartmentIncludeClause(request);
 
@@ -31,11 +31,11 @@ const findEntity = async (request: GetOrganizationsDeparmentRequest): Promise<Or
 }
 
 const getDepartmentIncludeClause = (request: GetOrganizationsDeparmentRequest): boolean | Prisma.Organization$departmentsArgs => {
-  if (!request.department?.orderBy?.length) return true;
+  if (!request.department?.orderBys?.length) return true;
 
   return {
     orderBy: {
-      ...request.department.orderBy.map(orderBy => ({
+      ...request.department.orderBys.map(orderBy => ({
         [orderBy.field]: orderBy.direction ?? Prisma.SortOrder.asc,
       })),
     },

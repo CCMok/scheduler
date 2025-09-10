@@ -1,7 +1,7 @@
 import { PrismaClient } from '@/external/prisma-generated'
 
-const globalForPrisma = global as unknown as { 
-    prisma: PrismaClient
+const globalForPrisma = global as unknown as {
+	prisma: PrismaClient
 }
 
 const prisma = globalForPrisma.prisma || new PrismaClient()

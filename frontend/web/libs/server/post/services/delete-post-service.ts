@@ -14,18 +14,7 @@ export const deletePostService = async (request: DeletePostRequest): Promise<Ser
     const checkAccessResponse = await checkAccess(parsedRequest.postId);
     if (checkAccessResponse) return checkAccessResponse;
 
-    await prisma.post.update({
-      where: { id: parsedRequest.postId },
-      data: { isDeleted: true },
-    })
-
-    await prisma.postWorker.deleteMany({
-      where: { postId: parsedRequest.postId },
-    })
-
-    await prisma.postConstraintPost.deleteMany({
-      where: { postId: parsedRequest.postId },
-    })
+    await execute(parsedRequest)
 
     return {
       status: ServiceResponseStatus.OK,
@@ -39,4 +28,19 @@ const checkAccess = async (postId: number): Promise<ServiceResponse | undefined>
     status: ServiceResponseStatus.BAD_REQUEST,
     message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '職位'),
   }
+}
+
+const execute = async (request: DeletePostRequest): Promise<void> => {
+  await prisma.$transaction([
+    prisma.post.update({
+      where: { id: request.postId },
+      data: { isDeleted: true },
+    }),
+    prisma.postWorker.deleteMany({
+      where: { postId: request.postId },
+    }),
+    prisma.postConstraintPost.deleteMany({
+      where: { postId: request.postId },
+    }),
+  ])
 }

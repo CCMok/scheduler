@@ -6,6 +6,8 @@ import { serviceWrapper } from '../../_general/services/general-service';
 import { GetWorkersPostCountRequest, getWorkersPostCountRequestSchema } from '../models/get-worker-posts-count-request';
 import { WorkersPostWorkerCount } from '../models/worker-dao';
 import { getDeptIdFilter } from '../../access/utils/data-access-utils';
+import { isNil } from 'lodash';
+import { Prisma } from '@/external/prisma-generated';
 
 export const getWorkerPostsCountService = async (request: GetWorkersPostCountRequest): Promise<ServiceResponse<WorkersPostWorkerCount[]>> =>
   await serviceWrapper<WorkersPostWorkerCount[]>(async () => {
@@ -21,19 +23,15 @@ export const getWorkerPostsCountService = async (request: GetWorkersPostCountReq
 const findEntity = async (request: GetWorkersPostCountRequest): Promise<WorkersPostWorkerCount[]> => {
   const departmentId = await getDeptIdFilter(request.where?.departmentId);
   const isDeleted = request.where?.isDeleted ?? false;
+  const postWorkerWhereClause = getPostWorkersWhereClause(request, isDeleted);
 
   return await prisma.worker.findMany({
     where: {
       id: request.where?.id,
       name: request.where?.name,
       departmentId,
-      postWorkers: {
-        some: {
-          postId: request.where?.postId,
-          post: { isDeleted },
-        },
-      },
       isDeleted,
+      ...postWorkerWhereClause,
     },
     include: {
       _count: {
@@ -42,4 +40,16 @@ const findEntity = async (request: GetWorkersPostCountRequest): Promise<WorkersP
     },
     take: request.take,
   })
+}
+
+const getPostWorkersWhereClause = (request: GetWorkersPostCountRequest, isDeleted: boolean): Prisma.WorkerWhereInput => {
+  if (isNil(request.where?.postId)) return {};
+  return {
+    postWorkers: {
+      some: {
+        postId: request.where.postId,
+        post: { isDeleted },
+      },
+    },
+  }
 }

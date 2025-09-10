@@ -11,7 +11,7 @@ import { getDepartmentQuery } from '../utils/department-utils';
 export const getDepartmentsService = cache(async (request: GetDepartmentsRequest): Promise<ServiceResponse<Department[]>> =>
   await serviceWrapper<Department[]>(async () => {
     const parsedRequest = getDepartmentsRequestSchema.parse(request);
-    const entities = await findEntity(parsedRequest);
+    const entities = await findEntities(parsedRequest);
 
     return {
       status: ServiceResponseStatus.OK,
@@ -19,7 +19,7 @@ export const getDepartmentsService = cache(async (request: GetDepartmentsRequest
     }
   }))
   
-const findEntity = async (request: GetDepartmentsRequest): Promise<Department[]> => {
+const findEntities = async (request: GetDepartmentsRequest): Promise<Department[]> => {
   const query = await getDepartmentQuery(request);
   return await prisma.department.findMany(query)
 }

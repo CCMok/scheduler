@@ -53,7 +53,7 @@ const useHandleDepartmentId = () => {
   const onDepartmentIdChange = useCallback(async (departmentId: number) => {
     const request: GetWorkersRequest = {
       where: { departmentId },
-      orderBy: [{ field: 'name' }],
+      orderBys: [{ field: 'name' }],
     }
 
     const workers = await fetchData(

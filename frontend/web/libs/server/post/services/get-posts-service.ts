@@ -38,9 +38,9 @@ const findEntity = async (request: GetPostsRequest): Promise<Post[]> => {
 const getOrderByClause = (request: GetPostsRequest) => {
   const orderBy: Prisma.PostOrderByWithRelationInput = {};
 
-  if (!request.orderBy) return orderBy;
+  if (!request.orderBys) return orderBy;
 
-  for (const requestOrderBy of request.orderBy) {
+  for (const requestOrderBy of request.orderBys) {
     orderBy[requestOrderBy.field] = requestOrderBy.direction ?? Prisma.SortOrder.asc;
   }
 
