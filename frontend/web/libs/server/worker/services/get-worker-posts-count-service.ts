@@ -8,19 +8,20 @@ import { WorkersPostWorkerCount } from '../models/worker-dao';
 import { getDeptIdFilter } from '../../access/utils/data-access-utils';
 import { isNil } from 'lodash';
 import { Prisma } from '@/external/prisma-generated';
+import { cache } from 'react';
 
-export const getWorkerPostsCountService = async (request: GetWorkersPostCountRequest): Promise<ServiceResponse<WorkersPostWorkerCount[]>> =>
+export const getWorkerPostsCountService = cache(async (request: GetWorkersPostCountRequest): Promise<ServiceResponse<WorkersPostWorkerCount[]>> =>
   await serviceWrapper<WorkersPostWorkerCount[]>(async () => {
     const parsedRequest = getWorkersPostCountRequestSchema.parse(request);
-    const entities = await findEntity(parsedRequest);
+    const entities = await findEntities(parsedRequest);
 
     return {
       status: ServiceResponseStatus.OK,
       data: entities,
     }
-  })
+  }))
 
-const findEntity = async (request: GetWorkersPostCountRequest): Promise<WorkersPostWorkerCount[]> => {
+const findEntities = async (request: GetWorkersPostCountRequest): Promise<WorkersPostWorkerCount[]> => {
   const departmentId = await getDeptIdFilter(request.where?.departmentId);
   const isDeleted = request.where?.isDeleted ?? false;
   const postWorkerWhereClause = getPostWorkersWhereClause(request, isDeleted);

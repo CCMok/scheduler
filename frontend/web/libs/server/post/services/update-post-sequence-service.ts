@@ -11,10 +11,10 @@ export const updatePostSequenceService = async (request: UpdatePostSequenceReque
   await serviceWrapper(async () => {
     const parsedRequest = updatePostSequenceRequestSchema.parse(request);
 
-    const checkResponse = await checkPosts(parsedRequest.postIds)
+    const checkResponse = await checkAccess(parsedRequest.postIds)
     if (checkResponse && checkResponse.status !== ServiceResponseStatus.OK) return checkResponse;
 
-    await savePosts(parsedRequest.postIds)
+    await execute(parsedRequest.postIds)
 
     return {
       status: ServiceResponseStatus.OK,
@@ -22,7 +22,7 @@ export const updatePostSequenceService = async (request: UpdatePostSequenceReque
     }
   })
 
-const checkPosts = async (postIds: number[]): Promise<ServiceResponse | undefined> => {
+const checkAccess = async (postIds: number[]): Promise<ServiceResponse | undefined> => {
   const pass = await checkPostIdsAccess(postIds);
   if (!pass) return {
     status: ServiceResponseStatus.BAD_REQUEST,
@@ -30,7 +30,7 @@ const checkPosts = async (postIds: number[]): Promise<ServiceResponse | undefine
   }
 }
 
-const savePosts = async (postIds: number[]): Promise<void> => {
+const execute = async (postIds: number[]): Promise<void> => {
   await prisma.$transaction(
     postIds.map((id, index) => 
       prisma.post.update({

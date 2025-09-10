@@ -17,9 +17,9 @@ export const updatePostNameService = async (request: UpdatePostNameRequest): Pro
     const checkAccessResponse = await checkAccess(parsedRequest.id);
     if (checkAccessResponse) return checkAccessResponse;
 
-    const updateResult = await updatePost(parsedRequest);
-    if (!updateResult.isSuccess) {
-      return handleQueryError(updateResult.error)
+    const executeResponse = await execute(parsedRequest);
+    if (!executeResponse.isSuccess) {
+      return handleQueryError(executeResponse.error)
     }
 
     return {
@@ -36,7 +36,7 @@ const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => 
   }
 }
 
-const updatePost = async (request: UpdatePostNameRequest) =>
+const execute = async (request: UpdatePostNameRequest) =>
   await tryCatchQuery(async () =>
     await prisma.post.update({
       where: { id: request.id },

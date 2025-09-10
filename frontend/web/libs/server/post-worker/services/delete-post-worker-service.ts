@@ -14,14 +14,7 @@ export const deletePostWorkerService = async (request: DeletePostWorkerRequest):
     const checkAccessResponse = await checkAccess(parsedRequest);
     if (checkAccessResponse) return checkAccessResponse;
 
-    await prisma.postWorker.delete({
-      where: {
-        postId_workerId: {
-          postId: parsedRequest.postId,
-          workerId: parsedRequest.workerId,
-        },
-      },
-    })
+    await execute(parsedRequest)
 
     return {
       status: ServiceResponseStatus.OK,
@@ -51,4 +44,15 @@ export const deletePostWorkerService = async (request: DeletePostWorkerRequest):
       status: ServiceResponseStatus.BAD_REQUEST,
       message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '人員'),
     }
+  }
+
+  const execute = async (request: DeletePostWorkerRequest): Promise<void> => {
+    await prisma.postWorker.delete({
+      where: {
+        postId_workerId: {
+          postId: request.postId,
+          workerId: request.workerId,
+        },
+      },
+    })
   }

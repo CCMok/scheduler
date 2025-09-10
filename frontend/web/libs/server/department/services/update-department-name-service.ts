@@ -18,9 +18,9 @@ export const updateDepartmentNameService = async (request: UpdateDepartmentNameR
     const checkAccessResponse = await checkAccess(parsedRequest.id);
     if (checkAccessResponse) return checkAccessResponse;
 
-    const updateResult = await updateDepartment(parsedRequest)
-    if (!updateResult.isSuccess) {
-      return handleQueryError(updateResult.error)
+    const executeResponse = await execute(parsedRequest)
+    if (!executeResponse.isSuccess) {
+      return handleQueryError(executeResponse.error)
     }
 
     return {
@@ -37,7 +37,7 @@ const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => 
   }
 }
 
-const updateDepartment = async (request: UpdateDepartmentNameRequest): Promise<DataBaseQueryResponse> =>
+const execute = async (request: UpdateDepartmentNameRequest): Promise<DataBaseQueryResponse> =>
   await tryCatchQuery(async () =>
     await prisma.department.update({
       where: { id: request.id },

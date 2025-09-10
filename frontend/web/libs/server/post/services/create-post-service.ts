@@ -17,9 +17,9 @@ export const createPostService = async (request: CreatePostRequest): Promise<Ser
     const checkAccessResponse = await checkAccess(parsedRequest.departmentId);
     if (checkAccessResponse) return checkAccessResponse;
 
-    const createResult = await createPost(parsedRequest);
-    if (!createResult.isSuccess) {
-      return handleQueryError(createResult.error)
+    const executeResponse = await execute(parsedRequest);
+    if (!executeResponse.isSuccess) {
+      return handleQueryError(executeResponse.error)
     }
 
     return {
@@ -36,7 +36,7 @@ const checkAccess = async (departmentId: number): Promise<ServiceResponse | unde
   }
 }
 
-const createPost = async (request: CreatePostRequest) =>
+const execute = async (request: CreatePostRequest) =>
   await tryCatchQuery(async () =>
     await prisma.post.create({
       data: {

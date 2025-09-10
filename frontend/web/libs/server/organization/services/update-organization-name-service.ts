@@ -18,9 +18,9 @@ export const updateOrganizationNameService = async (request: UpdateOrganizationN
     const checkAccessResponse = await checkAccess(parsedRequest.id);
     if (checkAccessResponse) return checkAccessResponse;
 
-    const updateResult = await updateOrganization(parsedRequest)
-    if (!updateResult.isSuccess) {
-      return handleQueryError(updateResult.error)
+    const executeResponse = await execute(parsedRequest)
+    if (!executeResponse.isSuccess) {
+      return handleQueryError(executeResponse.error)
     }
 
     return {
@@ -37,7 +37,7 @@ const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => 
   }
 }
 
-const updateOrganization = async (request: UpdateOrganizationNameRequest): Promise<DataBaseQueryResponse> =>
+const execute = async (request: UpdateOrganizationNameRequest): Promise<DataBaseQueryResponse> =>
   await tryCatchQuery(async () =>
     await prisma.organization.update({
       where: { id: request.id },

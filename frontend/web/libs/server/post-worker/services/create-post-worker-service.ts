@@ -17,9 +17,9 @@ export const createPostWorkerService = async (request: CreatePostWorkerRequest):
     const checkAccessResponse = await checkAccess(parsedRequest);
     if (checkAccessResponse) return checkAccessResponse;
 
-    const createResult = await createPostWorker(parsedRequest);
-    if (!createResult.isSuccess) {
-      return handleQueryError(createResult.error)
+    const executeResponse = await execute(parsedRequest);
+    if (!executeResponse.isSuccess) {
+      return handleQueryError(executeResponse.error)
     }
 
     return {
@@ -52,7 +52,7 @@ const checkPostAccess = async (postId: number): Promise<ServiceResponse | undefi
   }
 }
 
-const createPostWorker = async (request: CreatePostWorkerRequest) =>
+const execute = async (request: CreatePostWorkerRequest) =>
   await tryCatchQuery(async () =>
     await prisma.postWorker.create({
       data: {

@@ -6,19 +6,20 @@ import prisma from "../../_general/managers/database-manager";
 import { Post, Prisma } from '@/external/prisma-generated';
 import { serviceWrapper } from '../../_general/services/general-service';
 import { getDeptIdFilter } from '../../access/utils/data-access-utils';
+import { cache } from 'react';
 
-export const getPostsService = async (request: GetPostsRequest): Promise<ServiceResponse<Post[]>> =>
+export const getPostsService = cache(async (request: GetPostsRequest): Promise<ServiceResponse<Post[]>> =>
   await serviceWrapper(async () => {
     const parsedRequest = getPostsRequestSchema.parse(request);
-    const entities = await findEntity(parsedRequest);
+    const entities = await findEntities(parsedRequest);
 
     return {
       status: ServiceResponseStatus.OK,
       data: entities,
     };
-  })
+  }))
 
-const findEntity = async (request: GetPostsRequest): Promise<Post[]> => {
+const findEntities = async (request: GetPostsRequest): Promise<Post[]> => {
   const departmentId = await getDeptIdFilter(request.where?.departmentId);
   const isDeleted = request.where?.isDeleted ?? false;
   const orderBy = getOrderByClause(request);

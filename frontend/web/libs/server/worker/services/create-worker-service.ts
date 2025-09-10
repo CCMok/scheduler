@@ -17,9 +17,9 @@ export const createWorkerService = async (request: CreateWorkerRequest): Promise
     const checkAccessResponse = await checkAccess(parsedRequest.departmentId);
     if (checkAccessResponse) return checkAccessResponse;
 
-    const createResult = await createWorker(parsedRequest);
-    if (!createResult.isSuccess) {
-      return handleQueryError(createResult.error)
+    const executeResponse = await execute(parsedRequest);
+    if (!executeResponse.isSuccess) {
+      return handleQueryError(executeResponse.error)
     }
 
     return {
@@ -36,7 +36,7 @@ const checkAccess = async (deptId: number): Promise<ServiceResponse | undefined>
   }
 }
 
-const createWorker = async (request: CreateWorkerRequest) =>
+const execute = async (request: CreateWorkerRequest) =>
   await tryCatchQuery(async () =>
     await prisma.worker.create({
       data: {

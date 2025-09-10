@@ -15,7 +15,7 @@ export const updateUserNameService = async (request: UpdateUserNameRequest): Pro
       status: ServiceResponseStatus.UNAUTHORIZED,
     }
 
-    await updateUser(session.userId, parsedRequest.name)
+    await execute(session.userId, parsedRequest.name)
 
     await refreshSession({
       ...session,
@@ -28,7 +28,7 @@ export const updateUserNameService = async (request: UpdateUserNameRequest): Pro
     }
   })
 
-const updateUser = async (id: number, name?: string) =>
+const execute = async (id: number, name?: string) =>
   await prisma.user.update({
     where: { id },
     data: { name: name ?? null },

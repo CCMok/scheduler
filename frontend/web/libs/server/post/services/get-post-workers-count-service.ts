@@ -8,21 +8,20 @@ import { GetPostWorkersCountRequest, getPostWorkersCountRequestSchema } from '..
 import { getDeptIdFilter } from '../../access/utils/data-access-utils';
 import { Prisma } from '@/external/prisma-generated';
 import { isNil } from 'lodash';
+import { cache } from 'react';
 
-export const getPostWorkersCountService = async (
-  request: GetPostWorkersCountRequest
-): Promise<ServiceResponse<PostWorkersCount[]>> =>
+export const getPostWorkersCountService = cache(async (request: GetPostWorkersCountRequest): Promise<ServiceResponse<PostWorkersCount[]>> =>
   await serviceWrapper<PostWorkersCount[]>(async () => {
     const parsedRequest = getPostWorkersCountRequestSchema.parse(request);
-    const entities = await findEntity(parsedRequest);
+    const entities = await findEntities(parsedRequest);
 
     return {
       status: ServiceResponseStatus.OK,
       data: entities,
     }
-  })
+  }))
 
-const findEntity = async (request: GetPostWorkersCountRequest): Promise<PostWorkersCount[]> => {
+const findEntities = async (request: GetPostWorkersCountRequest): Promise<PostWorkersCount[]> => {
   const departmentId = await getDeptIdFilter(request.where?.departmentId);
   const isDeleted = request.where?.isDeleted ?? false;
   const postWorkerWhereClause = getPostWorkersWhereClause(request, isDeleted);

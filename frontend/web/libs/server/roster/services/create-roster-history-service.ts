@@ -18,7 +18,7 @@ export const createRosterHistoryService = async (request: CreateRosterHistoryReq
       status: ServiceResponseStatus.UNAUTHORIZED,
     }
 
-    await saveRecord(parsedRequest, session.userId)
+    await execute(parsedRequest, session.userId)
 
     return {
       status: ServiceResponseStatus.OK,
@@ -26,7 +26,7 @@ export const createRosterHistoryService = async (request: CreateRosterHistoryReq
     }
   })
 
-const saveRecord = async (request: CreateRosterHistoryRequest, userId: number): Promise<void> => {
+const execute = async (request: CreateRosterHistoryRequest, userId: number): Promise<void> => {
   await prisma.$transaction(async tx => {
     await createHisotry(tx, request, userId)
 

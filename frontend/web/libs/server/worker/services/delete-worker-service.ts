@@ -14,18 +14,7 @@ export const deleteWorkerService = async (request: DeleteWorkerRequest): Promise
     const checkAccessResponse = await checkAccess(parsedRequest.workerId);
     if (checkAccessResponse) return checkAccessResponse;
 
-    await prisma.worker.update({
-      where: { id: parsedRequest.workerId },
-      data: { isDeleted: true },
-    })
-
-    await prisma.postWorker.deleteMany({
-      where: { workerId: parsedRequest.workerId },
-    })
-
-    await prisma.workerConstraintWorker.deleteMany({
-      where: { workerId: parsedRequest.workerId },
-    })
+    await execute(parsedRequest)
 
     return {
       status: ServiceResponseStatus.OK,
@@ -39,4 +28,19 @@ const checkAccess = async (workerId: number): Promise<ServiceResponse | undefine
     status: ServiceResponseStatus.BAD_REQUEST,
     message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '人員'),
   }
+}
+
+const execute = async (request: DeleteWorkerRequest): Promise<void> => {
+  await prisma.$transaction([
+    prisma.worker.update({
+      where: { id: request.workerId },
+      data: { isDeleted: true },
+    }),
+    prisma.postWorker.deleteMany({
+      where: { workerId: request.workerId },
+    }),
+    prisma.workerConstraintWorker.deleteMany({
+      where: { workerId: request.workerId },
+    }),
+  ])
 }

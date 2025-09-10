@@ -17,9 +17,9 @@ export const updateWorkerNameService = async (request: UpdateWorkerNameRequest):
     const checkAccessResponse = await checkAccess(parsedRequest.id);
     if (checkAccessResponse) return checkAccessResponse;
 
-    const updateResult = await updateWorker(parsedRequest);
-    if (!updateResult.isSuccess) {
-      return handleQueryError(updateResult.error)
+    const executeResponse = await execute(parsedRequest);
+    if (!executeResponse.isSuccess) {
+      return handleQueryError(executeResponse.error)
     }
 
     return {
@@ -36,7 +36,7 @@ const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => 
   }
 }
 
-const updateWorker = async (request: UpdateWorkerNameRequest) =>
+const execute = async (request: UpdateWorkerNameRequest) =>
   await tryCatchQuery(async () =>
     await prisma.worker.update({
       where: { id: request.id },

@@ -6,19 +6,20 @@ import { Prisma, Worker } from '@/external/prisma-generated';
 import { GetWorkersRequest, getWorkersRequestSchema } from '../models/get-workers-request';
 import { serviceWrapper } from '../../_general/services/general-service';
 import { getDeptIdFilter } from '../../access/utils/data-access-utils';
+import { cache } from 'react';
 
-export const getWorkersService = async (request: GetWorkersRequest): Promise<ServiceResponse<Worker[]>> =>
+export const getWorkersService = cache(async (request: GetWorkersRequest): Promise<ServiceResponse<Worker[]>> =>
   await serviceWrapper(async () => {
     const parsedRequest = getWorkersRequestSchema.parse(request);
-    const entities = await findEntity(parsedRequest);
+    const entities = await findEntities(parsedRequest);
 
     return {
       status: ServiceResponseStatus.OK,
       data: entities,
     };
-  });
+  }))
 
-const findEntity = async (request: GetWorkersRequest): Promise<Worker[]> => {
+const findEntities = async (request: GetWorkersRequest): Promise<Worker[]> => {
   const departmentId = await getDeptIdFilter(request.where?.departmentId);
   const orderBy = getOrderByClause(request);
 
