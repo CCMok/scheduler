@@ -15,14 +15,14 @@ import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-
 import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { ChildrenProps } from "@/libs/share/_general/props/children-props";
 
-type Props<T extends FieldValues = FieldValues, R = {}> = ChildrenProps & {
+type Props<T extends FieldValues = FieldValues, R = object> = ChildrenProps & {
   entityName?: string;
   form?: UseFormReturn<T>;
   submit?: (input: T) => Promise<ServiceResponse<R>>;
   onSuccess?: (data: R) => (void | Promise<void>);
 }
 
-export default function CreateDialog<T extends FieldValues = FieldValues, R = {}>({
+export default function CreateDialog<T extends FieldValues = FieldValues, R = object>({
   children,
   entityName = '',
   form,
