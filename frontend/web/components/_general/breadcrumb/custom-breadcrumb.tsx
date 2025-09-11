@@ -4,10 +4,10 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
+  BreadcrumbSeparator,
 } from "@/external/shadcn/components/ui/breadcrumb"
 import { BreadcrumbItem as TBreadcrumbItem } from "@/libs/share/_general/models/breadcrumb-item";
 import { Fragment, ReactNode } from "react";
-import CustomBreadcrumbSeparator from "./custom-breadcrumb-separator";
 
 type Props = {
   breadcrumbItems?: TBreadcrumbItem[];
@@ -23,7 +23,7 @@ export default function CustomBreadcrumb({
       <BreadcrumbList>
         {breadcrumbItems?.map((breadcrumb, index) => (
           <Fragment key={breadcrumb.href}>
-            {index > 0 && <CustomBreadcrumbSeparator />}
+            {index > 0 && <BreadcrumbSeparator />}
             <BreadcrumbItem>
               <BreadcrumbLink href={breadcrumb.href}>{breadcrumb.label}</BreadcrumbLink>
             </BreadcrumbItem>
@@ -31,7 +31,7 @@ export default function CustomBreadcrumb({
         ))}
         {current && (
           <>
-            {Boolean(breadcrumbItems?.length) && <CustomBreadcrumbSeparator />}
+            {Boolean(breadcrumbItems?.length) && <BreadcrumbSeparator />}
             <BreadcrumbItem>
               <BreadcrumbPage>{current}</BreadcrumbPage>
             </BreadcrumbItem>

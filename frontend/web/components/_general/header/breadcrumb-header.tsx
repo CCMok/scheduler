@@ -11,7 +11,7 @@ export default function BreadcrumbHeader({
   ...props
 }: Readonly<Props>) {
   return (
-    <Header isBack={isBack}>
+    <Header>
       <CustomBreadcrumb {...props} />
     </Header>
   )
