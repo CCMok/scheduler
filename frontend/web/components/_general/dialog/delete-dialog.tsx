@@ -38,9 +38,8 @@ export default function DeleteDialog({
       return
     }
 
-    toast.success('刪除' + UiMessageTitle.SUCCESS, {
+    toast.success(`刪除${entityName}` + UiMessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
-      description: `${entityName}已刪除`,
     })
 
     router.refresh()
