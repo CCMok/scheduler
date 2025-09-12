@@ -7,7 +7,7 @@ import WorkerFilter from "@/components/worker/worker-filter";
 import AssignWorkerDialog from "./assign/assign-worker-dialog";
 import { getWorkersService } from "@/libs/server/worker/services/get-workers-service";
 import { Worker } from "@/external/prisma-generated";
-import WorkerTable from "./table/worker-table";
+import PostWorkerTable from "./table/post-worker-table";
 
 const getWorkerPostsCount = async (postId: number): Promise<WorkersPostWorkerCount[]> => {
   return await fetchData(
@@ -47,7 +47,7 @@ export default async function WorkersSection({
   return (
     <CustomCard title="人員">
       <WorkerFilter />
-      <WorkerTable
+      <PostWorkerTable
         workers={postWorkers}
         button={<AssignWorkerDialog workers={assignableWorkers} />}
       />

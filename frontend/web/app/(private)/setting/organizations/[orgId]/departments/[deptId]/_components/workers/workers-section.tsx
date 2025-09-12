@@ -1,6 +1,6 @@
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
-import WorkerTable from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/workers/table/worker-table";
+import DepartmentWorkerTable from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/workers/table/department-worker-table";
 import CreateWorkerButton from "./create/create-worker-button";
 import CustomCard from "@/components/_general/card/custom-card";
 import { WorkersPostWorkerCount } from "@/libs/server/worker/models/worker-dao";
@@ -29,7 +29,7 @@ export default async function WorkersSection({
   return (
     <CustomCard>
       <WorkerFilter />
-      <WorkerTable
+      <DepartmentWorkerTable
         workers={workers}
         button={<CreateWorkerButton />}
       />

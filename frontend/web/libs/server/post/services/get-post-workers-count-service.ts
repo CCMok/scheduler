@@ -3,15 +3,15 @@ import { ServiceResponseStatus } from '@/libs/share/_general/enums/service-respo
 import { ServiceResponse } from '@/libs/share/_general/models/service-response';
 import prisma from '../../_general/managers/database-manager';
 import { serviceWrapper } from '../../_general/services/general-service';
-import { PostWorkersCount } from '../models/post-dao';
+import { PostsPostWorkersCount } from '../models/post-dao';
 import { GetPostWorkersCountRequest, getPostWorkersCountRequestSchema } from '../models/get-post-workers-count-request';
 import { getDeptIdFilter } from '../../access/utils/data-access-utils';
 import { Prisma } from '@/external/prisma-generated';
 import { isNil } from 'lodash';
 import { cache } from 'react';
 
-export const getPostWorkersCountService = cache(async (request: GetPostWorkersCountRequest): Promise<ServiceResponse<PostWorkersCount[]>> =>
-  await serviceWrapper<PostWorkersCount[]>(async () => {
+export const getPostWorkersCountService = cache(async (request: GetPostWorkersCountRequest): Promise<ServiceResponse<PostsPostWorkersCount[]>> =>
+  await serviceWrapper<PostsPostWorkersCount[]>(async () => {
     const parsedRequest = getPostWorkersCountRequestSchema.parse(request);
     const entities = await findEntities(parsedRequest);
 
@@ -21,7 +21,7 @@ export const getPostWorkersCountService = cache(async (request: GetPostWorkersCo
     }
   }))
 
-const findEntities = async (request: GetPostWorkersCountRequest): Promise<PostWorkersCount[]> => {
+const findEntities = async (request: GetPostWorkersCountRequest): Promise<PostsPostWorkersCount[]> => {
   const departmentId = await getDeptIdFilter(request.where?.departmentId);
   const isDeleted = request.where?.isDeleted ?? false;
   const postWorkerWhereClause = getPostWorkersWhereClause(request, isDeleted);

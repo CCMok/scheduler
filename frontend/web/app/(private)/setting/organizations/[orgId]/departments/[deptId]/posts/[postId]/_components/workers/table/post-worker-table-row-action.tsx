@@ -1,36 +1,36 @@
 'use client'
 
 import ActionDropdownMenu from '@/components/_general/dropdown/action-dropdown-menu';
+import { deletePostWorkerAction } from '@/libs/server/post-worker/actions/delete-post-worker-action';
+import { Param } from '@/libs/share/_general/enums/param';
 import { ServiceResponse } from '@/libs/share/_general/models/service-response';
 import { useParams } from 'next/navigation';
-import { Param } from '@/libs/share/_general/enums/param';
-import { deletePostWorkerAction } from '@/libs/server/post-worker/actions/delete-post-worker-action';
 
 type Props = {
   id: number;
   name: string;
 };
 
-export default function PostTableRowAction({
+export default function PostWorkerTableRowAction({
   id,
   name,
 }: Readonly<Props>) {
   const param = useParams();
-  const workerId = Number(param[Param.WORKER_ID]);
+  const postId = Number(param[Param.POST_ID]);
 
-  if (isNaN(workerId)) return <></>
+  if (isNaN(postId)) return <></>
 
   const submitDelete = async (): Promise<ServiceResponse> => {
     return await deletePostWorkerAction({ 
-      postId: id,
-      workerId,
+      postId,
+      workerId: id,
     });
   }
 
   return (
     <ActionDropdownMenu
       isDelete
-      entityName="職位"
+      entityName="人員"
       displayName={name}
       submitDelete={submitDelete}
     />

@@ -13,16 +13,18 @@ type Props = {
   name: string;
 };
 
-export default function PostTableRowAction({
+export default function DepartmentPostTableRowAction({
   id,
   name,
 }: Readonly<Props>) {
-  const param = useParams<{ [Param.ORG_ID]: string;[Param.DEPT_ID]: string }>();
+  const param = useParams();
+  const deptId = Number(param[Param.DEPT_ID]);
+  const orgId = Number(param[Param.ORG_ID]);
 
   const editPath = useMemo(() => {
-    if (!param.deptId) return;
-    return PATH.setting.organizations.departments.posts(param.orgId, param.deptId, id);
-  }, [param, id])
+    if (isNaN(deptId) || isNaN(orgId)) return;
+    return PATH.setting.organizations.departments.posts(orgId, deptId, id);
+  }, [deptId, orgId, id])
 
   const submitDelete = async (): Promise<ServiceResponse> => {
     return await deletePostAction({ postId: id });
