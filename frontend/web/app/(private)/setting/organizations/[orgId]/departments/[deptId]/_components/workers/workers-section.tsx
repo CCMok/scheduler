@@ -1,7 +1,7 @@
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
-import WorkerTable from "@/components/worker/worker-table";
-import CreateWorkerButton from "./create-worker-button";
+import WorkerTable from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/workers/table/worker-table";
+import CreateWorkerButton from "./create/create-worker-button";
 import CustomCard from "@/components/_general/card/custom-card";
 import { WorkersPostWorkerCount } from "@/libs/server/worker/models/worker-dao";
 import { getWorkerPostsCountService } from "@/libs/server/worker/services/get-worker-posts-count-service";

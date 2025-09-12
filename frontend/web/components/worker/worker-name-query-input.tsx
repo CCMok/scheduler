@@ -8,7 +8,7 @@ import { Param } from '@/libs/share/_general/enums/param';
 
 export default function WorkerNameQueryInput() {
   return (
-    <LabelInput label="職位名稱">
+    <LabelInput label="人員名稱">
       <QueryInputWrapper
         render={(value, onValueChange) => (
           <DebounceInput

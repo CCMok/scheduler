@@ -16,6 +16,7 @@ type Props = {
   submitDelete?: () => Promise<ServiceResponse>;
 };
 
+// TODO: remove edit and delete tighlty coupled
 export default function ActionDropdownMenu({
   editPath,
   isDelete,
