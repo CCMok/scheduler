@@ -8,6 +8,7 @@ import ContextMenu from '@/components/_general/dropdown/context-menu';
 import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdown-menu-item';
 import DeleteDialog from '@/components/_general/dialog/delete-dialog';
 import { useState } from 'react';
+import RemoveAssignmentDialog from '@/components/_general/dialog/remove-assignment-dialog';
 
 type Props = {
   id: number;
@@ -37,10 +38,9 @@ export default function WorkerPostTableRowAction({
       <ContextMenu>
         <DeleteDropdownMenuItem onClick={() => setIsOpenDeleteDialog(true)} />
       </ContextMenu>
-      <DeleteDialog
+      <RemoveAssignmentDialog
         isOpen={isOpenDeleteDialog}
         setIsOpen={setIsOpenDeleteDialog}
-        entityName="職位"
         displayName={name}
         submit={submitDelete}
       />

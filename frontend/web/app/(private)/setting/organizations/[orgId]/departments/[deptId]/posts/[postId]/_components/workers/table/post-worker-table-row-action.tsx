@@ -8,6 +8,7 @@ import { Param } from '@/libs/share/_general/enums/param';
 import { ServiceResponse } from '@/libs/share/_general/models/service-response';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
+import RemoveAssignmentDialog from '@/components/_general/dialog/remove-assignment-dialog';
 
 type Props = {
   id: number;
@@ -37,10 +38,9 @@ export default function PostWorkerTableRowAction({
       <ContextMenu>
         <DeleteDropdownMenuItem onClick={() => setIsOpenDeleteDialog(true)} />
       </ContextMenu>
-      <DeleteDialog
+      <RemoveAssignmentDialog
         isOpen={isOpenDeleteDialog}
         setIsOpen={setIsOpenDeleteDialog}
-        entityName="人員"
         displayName={name}
         submit={submitDelete}
       />

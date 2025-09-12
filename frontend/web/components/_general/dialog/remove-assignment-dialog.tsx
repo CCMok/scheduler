@@ -6,25 +6,23 @@ import ServiceHandleDialog from './service-handle-dialog';
 type Props<R = object> = {
   isOpen?: boolean;
   setIsOpen?: (isOpen: boolean) => void;
-  entityName?: string;
-  displayName?: string;
   submit?: () => Promise<ServiceResponse<R>>;
   onSuccess?: (data: R) => (void | Promise<void>);
+  displayName?: string;
 };
 
-export default function DeleteDialog<R = object>({
+export default function RemoveAssignmentDialog<R = object>({
   isOpen,
   setIsOpen,
-  entityName = '',
-  displayName = '',
   submit,
   onSuccess,
+  displayName = '',
 }: Readonly<Props<R>>) {
   return (
     <ServiceHandleDialog
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      title={`刪除${entityName}`}
+      title='刪除指派'
       description={`確定要刪除${displayName}嗎？`}
       submit={submit}
       onSuccess={onSuccess}
