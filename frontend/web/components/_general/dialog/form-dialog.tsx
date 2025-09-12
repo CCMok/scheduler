@@ -53,6 +53,7 @@ export default function FormDialog<T extends FieldValues = FieldValues, R = obje
     setIsOpen(false)
 
     await onSuccess?.(uiResponse.data);
+    form?.reset();
   }
 
   if (!form) return <></>

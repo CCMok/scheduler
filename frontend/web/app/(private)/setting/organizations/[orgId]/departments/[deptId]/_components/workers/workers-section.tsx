@@ -7,10 +7,10 @@ import { WorkersPostWorkerCount } from "@/libs/server/worker/models/worker-dao";
 import { getWorkerPostsCountService } from "@/libs/server/worker/services/get-worker-posts-count-service";
 import WorkerFilter from "@/components/worker/worker-filter";
 
-const getWorkerPostsCount = async (deptId: number): Promise<WorkersPostWorkerCount[]> => {
+const getWorkerPostsCount = async (departmentId: number): Promise<WorkersPostWorkerCount[]> => {
   return await fetchData(
     async () => await getWorkerPostsCountService({
-      where: { departmentId: deptId },
+      where: { departmentId },
     }),
     path => redirect(path),
     [],

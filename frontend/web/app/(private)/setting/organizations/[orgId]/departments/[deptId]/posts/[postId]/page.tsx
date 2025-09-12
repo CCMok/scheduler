@@ -78,7 +78,7 @@ export default async function OrgDeptPostSettingPage({
         {
           value: 'workers',
           label: '人員',
-          content: <WorkersSection postId={postId} />,
+          content: <WorkersSection departmentId={deptId} postId={postId} />,
         },
       ]}
     />
