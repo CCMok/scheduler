@@ -1,13 +1,13 @@
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
-import PostTable from "@/components/post/post-table";
 import CustomCard from "@/components/_general/card/custom-card";
 import { getPostWorkersCountService } from "@/libs/server/post/services/get-post-workers-count-service";
 import { PostWorkersCount } from "@/libs/server/post/models/post-dao";
 import PostFilter from "@/components/post/post-filter";
-import AssignPostDialog from "./assign-post-dialog";
+import AssignPostDialog from "./assign/assign-post-dialog";
 import { getPostsService } from "@/libs/server/post/services/get-posts-service";
 import { Post } from "@/external/prisma-generated";
+import PostTable from "./table/post-table";
 
 const getPostWorkersCount = async (workerId: number): Promise<PostWorkersCount[]> => {
   return await fetchData(
@@ -47,7 +47,7 @@ export default async function PostsSection({
   return (
     <CustomCard title="職位">
       <PostFilter />
-      <PostTable 
+      <PostTable
         posts={workerPosts}
         button={<AssignPostDialog posts={assignablePosts} />}
       />

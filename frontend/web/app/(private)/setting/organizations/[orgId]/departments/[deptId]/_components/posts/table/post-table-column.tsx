@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
-import PostTableRowAction from "@/components/post/post-table-row-action";
 import { PostWorkersCount } from "@/libs/server/post/models/post-dao";
+import PostTableRowAction from "./post-table-row-action";
 
 export enum PostTableId {
   NAME = 'name',

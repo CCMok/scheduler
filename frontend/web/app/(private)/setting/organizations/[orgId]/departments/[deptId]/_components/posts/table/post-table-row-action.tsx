@@ -21,7 +21,6 @@ export default function PostTableRowAction({
 
   const editPath = useMemo(() => {
     if (!param.deptId) return;
-    // if (!param.orgId) return PATH.setting.post.build(id); // TODO
     return PATH.setting.organizations.departments.posts(param.orgId, param.deptId, id);
   }, [param, id])
 
