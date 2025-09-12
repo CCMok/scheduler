@@ -37,7 +37,6 @@ export const columns: ColumnDef<DepartmentChildrenCount>[] = [
     header: '動作',
     cell: ({ row }) => (
       <DepartmentTableRowAction
-        name={row.original.name}
         editPath={PATH.setting.organizations.departments.build(row.original.organizationId, row.original.id)}
       />
     ),

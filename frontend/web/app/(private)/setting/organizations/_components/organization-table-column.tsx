@@ -19,7 +19,7 @@ export const columns: ColumnDef<Organization>[] = [
     id: OrganizationTableId.ACTIONS,
     header: '動作',
     cell: ({ row }) => (
-      <OrganizationTableRowAction id={row.original.id} name={row.original.name} />
+      <OrganizationTableRowAction id={row.original.id} />
     ),
   },
 ]

@@ -12,7 +12,7 @@ type Props = ChildrenProps & {
   contentProps?: ComponentProps<typeof DropdownMenuContent>;
 }
 
-export default function MoreDropdownMenu({
+export default function ContextMenu({
   children,
   contentProps,
 }: Readonly<Props>) {
@@ -27,7 +27,7 @@ export default function MoreDropdownMenu({
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent {...contentProps}>
+      <DropdownMenuContent align='end' {...contentProps}>
         {children}
       </DropdownMenuContent>
     </DropdownMenu>
