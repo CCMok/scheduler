@@ -4,27 +4,27 @@ import ComboBox from '@/components/_general/combobox/combo-box';
 import CustomFormItem from '@/components/_general/form/custom-form-item';
 import { FormField } from "@/external/shadcn/components/ui/form";
 import { useFormContext } from "react-hook-form"
-import { Worker } from "@/external/prisma-generated"
-import { CreatePostWorkerFormInput } from '@/libs/client/post-worker/models/create-post-worker-form-input';
+import { Post } from "@/external/prisma-generated"
+import { CreateWorkerPostFormInput } from '@/libs/client/post-worker/models/create-worker-post-form-input';
 
 type Props = {
-  workers: Worker[];
+  posts: Post[];
 }
 
-export default function WorkerIdFormField({
-  workers,
+export default function PostIdFormField({
+  posts,
 }: Readonly<Props>) {
-  const { control } = useFormContext<CreatePostWorkerFormInput>();
+  const { control } = useFormContext<CreateWorkerPostFormInput>();
 
   return (
     <FormField
       control={control}
-      name='workerId'
+      name='postId'
       render={({ field }) => (
-        <CustomFormItem label='人員'>
+        <CustomFormItem label='職位'>
           <ComboBox
             value={field.value}
-            options={workers}
+            options={posts}
             getValue={option => option.id.toString()}
             getDisplayName={option => option.name}
             onValueChange={value => field.onChange(value)}

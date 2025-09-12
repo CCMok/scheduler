@@ -78,7 +78,10 @@ export default async function WorkerSettingPage({
         {
           value: 'posts',
           label: '職位',
-          content: <PostsSection workerId={id} />,
+          content: <PostsSection
+            departmentId={deptId}
+            workerId={id}
+          />,
         },
       ]}
     />
