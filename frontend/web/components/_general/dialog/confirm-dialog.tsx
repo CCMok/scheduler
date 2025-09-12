@@ -13,7 +13,7 @@ type Props = ChildrenProps & {
   onContinue: () => Promise<void> | void;
 }
 
-export default function WarningDialog({
+export default function ConfirmDialog({
   isOpen,
   setIsOpen,
   title,

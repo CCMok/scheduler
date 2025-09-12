@@ -11,7 +11,7 @@ import { useArrangeRosterFilterStore } from "@/app/(private)/roster/_components/
 import RosterFilter from "../filter/roster-filter"
 import { getDefaultDepartmentIdInOrganizations, getDefaultOrganizationId } from "../../../../../libs/client/organization/utils/organization-utils"
 import { DEFAULT_DAYS } from "@/libs/share/roster/constants/roster-constant"
-import WarningDialog from '@/components/_general/dialog/warning-dialog'
+import ConfirmDialog from '@/components/_general/dialog/confirm-dialog'
 import ArrangeRosterFormDependencyHandler from "./arrange-roster-form-dependency-handler"
 
 export default function ArrangeRosterForm() {
@@ -51,7 +51,7 @@ export default function ArrangeRosterForm() {
       >
         <ArrangeRosterFormDependencyHandler />
         <RosterFilter />
-        <WarningDialog
+        <ConfirmDialog
           isOpen={isAlertDialogOpen}
           setIsOpen={setIsAlertDialogOpen}
           title='確定要重新編排值班表嗎?'

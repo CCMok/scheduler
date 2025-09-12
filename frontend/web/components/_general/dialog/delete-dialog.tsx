@@ -1,6 +1,6 @@
 'use client';
 
-import WarningDialog from '@/components/_general/dialog/warning-dialog';
+import ConfirmDialog from '@/components/_general/dialog/confirm-dialog';
 import { toast } from 'sonner';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
 import { UiMessageTitle } from '@/libs/share/_general/enums/ui-message';
@@ -47,7 +47,7 @@ export default function DeleteDialog({
   }
 
   return (
-    <WarningDialog
+    <ConfirmDialog
       isOpen={isOpen}
       setIsOpen={setIsOpen}
       title={`刪除${entityName}`}

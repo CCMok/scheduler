@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant"
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler"
-import WarningDialog from '@/components/_general/dialog/warning-dialog'
+import ConfirmDialog from '@/components/_general/dialog/confirm-dialog'
 import { useState } from "react"
 import { UpdateNameFormInput, updateNameFormInputSchema } from "@/libs/client/setting/models/update-name-form-input"
 import { ServiceResponse } from "@/libs/share/_general/models/service-response"
@@ -92,7 +92,7 @@ export default function UpdateNameLayout({
           <NameField />
         </CustomCard>
 
-        <WarningDialog
+        <ConfirmDialog
           isOpen={isAlertDialogOpen}
           setIsOpen={setIsAlertDialogOpen}
           title='確定要儲存嗎?'

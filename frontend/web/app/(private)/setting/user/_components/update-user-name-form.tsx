@@ -11,7 +11,7 @@ import CustomInput from '@/components/_general/input/custom-input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/external/shadcn/components/ui/card';
 import { Save } from 'lucide-react';
 import { useState } from 'react';
-import WarningDialog from '@/components/_general/dialog/warning-dialog';
+import ConfirmDialog from '@/components/_general/dialog/confirm-dialog';
 import { toast } from 'sonner';
 import { UiMessageContent, UiMessageTitle } from '@/libs/share/_general/enums/ui-message';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
@@ -118,7 +118,7 @@ export default function UpdateUserNameForm({
             </FormSubmitButton>
           </CardFooter>
         </Card>
-        <WarningDialog
+        <ConfirmDialog
           isOpen={isAlertDialogOpen}
           setIsOpen={setIsAlertDialogOpen}
           title='確定要儲存嗎?'

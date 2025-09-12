@@ -13,7 +13,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import NewPasswordFormField from '@/components/_general/form/new-password-form-field';
 import { Save } from 'lucide-react';
 import { useState } from 'react';
-import WarningDialog from '@/components/_general/dialog/warning-dialog';
+import ConfirmDialog from '@/components/_general/dialog/confirm-dialog';
 import { toast } from 'sonner';
 import { UiMessageTitle } from '@/libs/share/_general/enums/ui-message';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
@@ -103,7 +103,7 @@ export default function UpdatePasswordForm() {
             </FormSubmitButton>
           </CardFooter>
         </Card>
-        <WarningDialog
+        <ConfirmDialog
           isOpen={isAlertDialogOpen}
           setIsOpen={setIsAlertDialogOpen}
           title='確定要儲存嗎?'
