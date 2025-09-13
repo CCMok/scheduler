@@ -34,10 +34,11 @@ const getDepartmentIncludeClause = (request: GetOrganizationsDeparmentRequest): 
   if (!request.department?.orderBys?.length) return true;
 
   return {
-    orderBy: {
-      ...request.department.orderBys.map(orderBy => ({
-        [orderBy.field]: orderBy.direction ?? Prisma.SortOrder.asc,
-      })),
-    },
+    orderBy: Object.fromEntries(
+      request.department.orderBys.map(orderBy => [
+        orderBy.field,
+        orderBy.direction ?? Prisma.SortOrder.asc
+      ])
+    ),
   }
 }
