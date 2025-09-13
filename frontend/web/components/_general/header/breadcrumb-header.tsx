@@ -2,12 +2,9 @@ import { ComponentProps } from "react";
 import CustomBreadcrumb from "../breadcrumb/custom-breadcrumb";
 import Header from "./header";
 
-type Props = ComponentProps<typeof CustomBreadcrumb> & {
-  isBack?: boolean;
-}
+type Props = ComponentProps<typeof CustomBreadcrumb>
 
 export default function BreadcrumbHeader({
-  isBack = true,
   ...props
 }: Readonly<Props>) {
   return (

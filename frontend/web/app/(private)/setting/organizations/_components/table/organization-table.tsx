@@ -1,22 +1,24 @@
 'use client'
 
 import { Organization } from "@/external/prisma-generated";
-import { useEffect } from "react";
-import CustomTable from '@/components/_general/table/custom-table';
+import { ReactNode, useEffect } from "react";
 import { columns, OrganizationTableId } from "./organization-table-column";
 import { useSearchParams } from "next/navigation";
 import useTable from '@/components/_general/table/use-table';
-import { OrganizationParam } from "./organization-param";
+import ButtonTable from "@/components/_general/table/button-table";
+import { Param } from "@/libs/share/_general/enums/param";
 
 type Props = {
   organizations: Organization[];
+  button?: ReactNode;
 }
 
 export default function OrganizationTable({
   organizations,
+  button,
 }: Readonly<Props>) {
   const searchParams = useSearchParams();
-  const name = searchParams.get(OrganizationParam.NAME);
+  const name = searchParams.get(Param.NAME);
 
   const table = useTable({
     data: organizations,
@@ -36,6 +38,9 @@ export default function OrganizationTable({
   }, [name, table])
 
   return (
-    <CustomTable table={table} />
+    <ButtonTable
+      table={table}
+      button={button}
+    />
   )
 }
