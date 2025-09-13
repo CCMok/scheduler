@@ -44,6 +44,7 @@ export default async function OrganizationsPage() {
         <OrganizationTable
           organizations={organizations}
           button={button}
+          role={role}
         />
       </CustomCard>
     </BreadcrumbHeaderLayout>

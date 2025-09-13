@@ -3,18 +3,48 @@
 import { PATH } from '@/libs/share/_general/utils/path';
 import ContextMenu from '@/components/_general/dropdown/context-menu';
 import UpdateDropdownMenuItem from '@/components/_general/dropdown/update-dropdown-menu-item';
+import { Role } from '@/libs/share/_general/enums/role';
+import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdown-menu-item';
+import { useState } from 'react';
+import DeleteDialog from '@/components/_general/dialog/delete-dialog';
+import { isNil } from 'lodash';
+import { deleteOrganizationAction } from '@/libs/server/organization/actions/delete-organization-action';
+import { ServiceResponse } from '@/libs/share/_general/models/service-response';
+import { ServiceResponseStatus } from '@/libs/share/_general/enums/service-response-status';
 
 type Props = {
   id: number;
+  role?: Role;
+  name?: string;
 };
 
 export default function OrganizationTableRowAction({
   id,
+  role,
+  name = '',
 }: Readonly<Props>) {
-  // TODO: delete
+  const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState(false);
+
+  const canDelete = role === Role.SYSTEM_ADMIN;
+
+  const submitDelete = async (): Promise<ServiceResponse> => {
+    if (isNil(id)) return { status: ServiceResponseStatus.INTERNAL_ERROR };
+    return await deleteOrganizationAction({ id });
+  }
+
   return (
-    <ContextMenu>
-      <UpdateDropdownMenuItem href={PATH.setting.organizations.build(id)} />
-    </ContextMenu>
+    <>
+      <ContextMenu>
+        <UpdateDropdownMenuItem href={PATH.setting.organizations.build(id)} />
+        {canDelete && <DeleteDropdownMenuItem onClick={() => setIsOpenDeleteDialog(true)} />}
+      </ContextMenu>
+      {canDelete && <DeleteDialog
+        isOpen={isOpenDeleteDialog}
+        setIsOpen={setIsOpenDeleteDialog}
+        entityName="組織"
+        displayName={name}
+        submit={submitDelete}
+      />}
+    </>
   )
 } 
