@@ -13,15 +13,11 @@ export default function TableSortableHeader<TData, TValue>({
   column,
 }: Readonly<Props<TData, TValue>>) {
   const onClick = () => {
-    if (!column.getIsSorted()) {
-      column.toggleSorting(false, true)
-      return
-    }
     if (column.getIsSorted() === TableSortDirection.ASC) {
-      column.toggleSorting(true, true)
+      column.toggleSorting(true)
       return
     }
-    column.clearSorting()
+    column.toggleSorting(false)
   }
 
   return (
