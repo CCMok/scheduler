@@ -27,10 +27,9 @@ export default async function DepartmentsSection({
   const departments = await getDepartments(orgId);
   return (
     <CustomCard>
-      <DepartmentFilter />
+      <DepartmentFilter button={<CreateDepartmentButton />} />
       <DepartmentTable
         departments={departments}
-        button={<CreateDepartmentButton />}
       />
     </CustomCard>
   )

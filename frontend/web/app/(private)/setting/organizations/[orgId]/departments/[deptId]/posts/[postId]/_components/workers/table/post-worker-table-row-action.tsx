@@ -1,6 +1,5 @@
 'use client'
 
-import DeleteDialog from '@/components/_general/dialog/delete-dialog';
 import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdown-menu-item';
 import ContextMenu from '@/components/_general/dropdown/context-menu';
 import { deletePostWorkerAction } from '@/libs/server/post-worker/actions/delete-post-worker-action';

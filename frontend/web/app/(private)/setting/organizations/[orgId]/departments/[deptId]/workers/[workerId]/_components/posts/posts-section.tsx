@@ -46,10 +46,9 @@ export default async function PostsSection({
 
   return (
     <CustomCard title="職位">
-      <PostFilter />
+      <PostFilter button={<AssignPostDialog posts={assignablePosts} />} />
       <WorkerPostTable
         posts={workerPosts}
-        button={<AssignPostDialog posts={assignablePosts} />}
       />
     </CustomCard>
   )

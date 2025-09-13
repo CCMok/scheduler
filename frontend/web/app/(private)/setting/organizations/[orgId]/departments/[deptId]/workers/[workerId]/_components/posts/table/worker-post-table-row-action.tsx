@@ -6,7 +6,6 @@ import { Param } from '@/libs/share/_general/enums/param';
 import { deletePostWorkerAction } from '@/libs/server/post-worker/actions/delete-post-worker-action';
 import ContextMenu from '@/components/_general/dropdown/context-menu';
 import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdown-menu-item';
-import DeleteDialog from '@/components/_general/dialog/delete-dialog';
 import { useState } from 'react';
 import RemoveAssignmentDialog from '@/components/_general/dialog/remove-assignment-dialog';
 

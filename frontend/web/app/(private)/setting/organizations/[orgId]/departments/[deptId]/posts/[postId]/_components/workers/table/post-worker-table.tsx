@@ -1,7 +1,6 @@
 'use client'
 
 import { WorkersPostWorkerCount } from "@/libs/server/worker/models/worker-dao";
-import { ReactNode } from "react";
 import { getActionColumn, nameColumn, postCountColumn } from '@/components/worker/workers-post-count-table-column';
 import PostWorkerTableRowAction from './post-worker-table-row-action';
 import { ColumnDef } from '@tanstack/react-table';
@@ -18,17 +17,14 @@ const columns: ColumnDef<WorkersPostWorkerCount>[] = [
 ]
 type Props = {
   workers: WorkersPostWorkerCount[];
-  button?: ReactNode;
 }
 
 export default function PostWorkerTable({
   workers,
-  button,
 }: Readonly<Props>) {
   return (
     <WorkerPostsCountTable 
       data={workers}
-      button={button}
       columns={columns}
     />
   )

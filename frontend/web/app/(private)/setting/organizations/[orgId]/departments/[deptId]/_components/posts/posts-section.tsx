@@ -28,10 +28,9 @@ export default async function PostsSection({
 
   return (
     <CustomCard>
-      <PostFilter />
+      <PostFilter button={<CreatePostButton />} />
       <DepartmentPostTable
         posts={posts}
-        button={<CreatePostButton />}
       />
     </CustomCard>
   )

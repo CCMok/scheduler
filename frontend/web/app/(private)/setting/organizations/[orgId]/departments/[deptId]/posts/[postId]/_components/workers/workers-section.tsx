@@ -46,10 +46,9 @@ export default async function WorkersSection({
 
   return (
     <CustomCard title="人員">
-      <WorkerFilter />
+      <WorkerFilter button={<AssignWorkerDialog workers={assignableWorkers} />} />
       <PostWorkerTable
         workers={postWorkers}
-        button={<AssignWorkerDialog workers={assignableWorkers} />}
       />
     </CustomCard>
   )

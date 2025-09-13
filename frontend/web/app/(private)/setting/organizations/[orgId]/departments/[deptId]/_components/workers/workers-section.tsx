@@ -28,10 +28,9 @@ export default async function WorkersSection({
 
   return (
     <CustomCard>
-      <WorkerFilter />
+      <WorkerFilter button={<CreateWorkerButton />} />
       <DepartmentWorkerTable
         workers={workers}
-        button={<CreateWorkerButton />}
       />
     </CustomCard>
   )

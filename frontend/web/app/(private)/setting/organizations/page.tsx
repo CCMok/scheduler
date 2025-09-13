@@ -40,10 +40,9 @@ export default async function OrganizationsPage() {
       current="組織"
     >
       <CustomCard>
-        <OrganizationFilter />
+        <OrganizationFilter button={button} />
         <OrganizationTable
           organizations={organizations}
-          button={button}
           role={role}
         />
       </CustomCard>

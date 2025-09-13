@@ -5,18 +5,16 @@ import { DepartmentTableId, columns } from "./department-table-column";
 import { DepartmentChildrenCount } from '@/libs/server/department/models/department-dao';
 import { useSearchParams } from 'next/navigation';
 import { Param } from '@/libs/share/_general/enums/param';
-import { ReactNode, useEffect } from 'react';
+import { useEffect } from 'react';
 import { isNil } from 'lodash';
-import ButtonTable from '@/components/_general/table/button-table';
+import CustomTable from '@/components/_general/table/custom-table';
 
 type Props = {
   departments: DepartmentChildrenCount[];
-  button?: ReactNode;
 }
 
 export default function DepartmentTable({
   departments,
-  button,
 }: Readonly<Props>) {
   const table = useTable({
     data: departments,
@@ -37,9 +35,8 @@ export default function DepartmentTable({
   }, [name, table])
 
   return (
-    <ButtonTable
+    <CustomTable
       table={table}
-      button={button}
     />
   )
 }
