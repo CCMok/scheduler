@@ -2,19 +2,21 @@
 
 import useTable from '@/components/_general/table/use-table';
 import { DepartmentTableId, columns } from "./department-table-column";
-import CustomTable from '@/components/_general/table/custom-table';
 import { DepartmentChildrenCount } from '@/libs/server/department/models/department-dao';
 import { useSearchParams } from 'next/navigation';
 import { Param } from '@/libs/share/_general/enums/param';
-import { useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { isNil } from 'lodash';
+import ButtonTable from '@/components/_general/table/button-table';
 
 type Props = {
   departments: DepartmentChildrenCount[];
+  button?: ReactNode;
 }
 
 export default function DepartmentTable({
   departments,
+  button,
 }: Readonly<Props>) {
   const table = useTable({
     data: departments,
@@ -33,8 +35,11 @@ export default function DepartmentTable({
       table.getColumn(DepartmentTableId.NAME)?.setFilterValue(name);
     }
   }, [name, table])
-  
+
   return (
-    <CustomTable table={table} />
+    <ButtonTable
+      table={table}
+      button={button}
+    />
   )
 }

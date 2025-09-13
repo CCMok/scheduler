@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
 import { DepartmentChildrenCount } from '@/libs/server/department/models/department-dao';
-import DepartmentTableRowAction from "@/app/(private)/setting/organizations/[orgId]/_components/departments/department-table-row-action";
+import DepartmentTableRowAction from "@/app/(private)/setting/organizations/[orgId]/_components/departments/table/department-table-row-action";
 import { PATH } from "@/libs/share/_general/utils/path";
 
 export enum DepartmentTableId {

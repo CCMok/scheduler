@@ -54,7 +54,7 @@ const handleQueryError = (error: PrismaClientKnownRequestError): ServiceResponse
     if (target?.includes('name')) {
       return {
         status: ServiceResponseStatus.BAD_REQUEST,
-        message: ServiceMessage.ALREADY_USED.replaceAll('{0}', '職位名稱'),
+        message: ServiceMessage.ALREADY_USED.replaceAll('{0}', '名稱'),
       }
     }
   }
