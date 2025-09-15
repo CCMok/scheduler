@@ -4,7 +4,7 @@ import { Trash2 } from 'lucide-react';
 import CustomDropdownMenuItem from '@/components/_general/dropdown/custom-dropdown-menu-item';
 
 type Props = {
-  onClick?: () => void;
+  onClick?: () => (void | Promise<void>);
 }
 
 export default function DeleteDropdownMenuItem({

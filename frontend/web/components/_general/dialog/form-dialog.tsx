@@ -19,6 +19,8 @@ type Props<T extends FieldValues = FieldValues, R = object> = ChildrenProps & {
   onSuccess?: (data: R) => (void | Promise<void>);
   title?: string;
   renderTrigger?: (onClick: () => (void | Promise<void>)) =>ReactNode;
+  isOpen?: boolean;
+  setIsOpen?: (isOpen: boolean) => void;
 }
 
 export default function FormDialog<T extends FieldValues = FieldValues, R = object>({
@@ -28,8 +30,13 @@ export default function FormDialog<T extends FieldValues = FieldValues, R = obje
   onSuccess,  
   title = '',
   renderTrigger,
+  isOpen,
+  setIsOpen,
 }: Readonly<Props<T, R>>) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpenDefault, setIsOpenDefault] = useState(false)
+
+  const isOpenFinal = isOpen ?? isOpenDefault;
+  const setIsOpenFinal = setIsOpen ?? setIsOpenDefault;
 
   const router = useRouter();
 
@@ -50,7 +57,7 @@ export default function FormDialog<T extends FieldValues = FieldValues, R = obje
       ...SONNER_DEFAULT_OPTIONS,
     })
 
-    setIsOpen(false)
+    setIsOpenFinal(false)
 
     await onSuccess?.(uiResponse.data);
     form?.reset();
@@ -58,12 +65,12 @@ export default function FormDialog<T extends FieldValues = FieldValues, R = obje
 
   if (!form) return <></>
 
-  const trigger = renderTrigger ? renderTrigger(() => setIsOpen(true)) : <></>
+  const trigger = renderTrigger ? renderTrigger(() => setIsOpenFinal(true)) : <></>
 
   return (
     <CustomDialog
-      isOpen={isOpen}
-      setIsOpen={setIsOpen}
+      isOpen={isOpenFinal}
+      setIsOpen={setIsOpenFinal}
       trigger={trigger}
       title={title}
       submitButton={(

@@ -2,11 +2,11 @@ import { Role } from "../../../../libs/share/_general/enums/role";
 import { PostConstraintType, WorkerConstraintType } from "../../../../libs/share/_general/enums/constraint-type";
 
 export const postConstraintTypes = [
-  { name: 'At least 1 worker per day', enum: PostConstraintType.AT_LEAST_1_WORKER_PER_DAY },
+  { name: '每節至少一人', enum: PostConstraintType.AT_LEAST_1_WORKER_PER_DAY },
 ]
 
 export const workerConstraintTypes = [
-  { name: 'Correlate', enum: WorkerConstraintType.CORRELATE },
+  { name: '相關人員', enum: WorkerConstraintType.CORRELATE },
 ]
 
 export const roles = [

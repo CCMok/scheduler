@@ -10,6 +10,7 @@ import WorkersSection from "@/app/(private)/setting/organizations/[orgId]/depart
 import UpdateDepartmentNameSection from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/update-name/update-department-name-section";
 import PostsSection from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/posts/posts-section";
 import { getDepartmentsOrganizationService } from "@/libs/server/department/services/get-departments-organization-service";
+import ConfigSection from "./_components/config/config-section";
 
 const getDepartment = async (id: number): Promise<DepartmentOrganization | undefined> => {
   const departments = await fetchData(
@@ -70,6 +71,11 @@ export default async function OrgDeptSettingPage({
           value: 'posts-sequence',
           label: '值班表職位順序',
           content: <PostsSequenceSection deptId={deptId} />,
+        },
+        {
+          value: 'config',
+          label: '編排配置',
+          content: <ConfigSection deptId={deptId} />,
         },
       ]}
     />
