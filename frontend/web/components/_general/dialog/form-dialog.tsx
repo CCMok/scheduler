@@ -36,7 +36,11 @@ export default function FormDialog<T extends FieldValues = FieldValues, R = obje
   const [isOpenDefault, setIsOpenDefault] = useState(false)
 
   const isOpenFinal = isOpen ?? isOpenDefault;
-  const setIsOpenFinal = setIsOpen ?? setIsOpenDefault;
+  const setIsOpenFinal = (isOpen: boolean) => {
+    const callback = setIsOpen ?? setIsOpenDefault;
+    callback(isOpen);
+    form?.reset();
+  }
 
   const router = useRouter();
 
@@ -60,7 +64,6 @@ export default function FormDialog<T extends FieldValues = FieldValues, R = obje
     setIsOpenFinal(false)
 
     await onSuccess?.(uiResponse.data);
-    form?.reset();
   }
 
   if (!form) return <></>
