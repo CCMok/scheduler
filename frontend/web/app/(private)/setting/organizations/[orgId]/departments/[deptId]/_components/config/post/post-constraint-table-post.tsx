@@ -1,8 +1,7 @@
 import { Badge } from "@/external/shadcn/components/ui/badge";
+import { MAX_DISPLAY_COUNT } from "@/libs/client/_general/constants/display-constant";
 import { PostConstraintPostPost } from "@/libs/server/post-constraint/models/post-constraint-dao";
 import { BriefcaseBusiness } from "lucide-react";
-
-const displayMaximumCount = 2;
 
 type Props = {
   postConstraintPosts: PostConstraintPostPost[];
@@ -11,7 +10,7 @@ type Props = {
 export default function PostConstraintTablePost({
   postConstraintPosts,
 }: Readonly<Props>) {
-  const displayPosts = postConstraintPosts.slice(0, displayMaximumCount);
+  const displayPosts = postConstraintPosts.slice(0, MAX_DISPLAY_COUNT);
 
   return (
     <div className='space-x-1'>
@@ -21,9 +20,9 @@ export default function PostConstraintTablePost({
           {postConstraintPost.post.name}
         </Badge>
       ))}
-      {postConstraintPosts.length > displayMaximumCount && (
+      {postConstraintPosts.length > MAX_DISPLAY_COUNT && (
         <Badge variant='secondary'>
-          + {postConstraintPosts.length - displayMaximumCount} 更多
+          + {postConstraintPosts.length - MAX_DISPLAY_COUNT} 更多
         </Badge>
       )}
     </div>
