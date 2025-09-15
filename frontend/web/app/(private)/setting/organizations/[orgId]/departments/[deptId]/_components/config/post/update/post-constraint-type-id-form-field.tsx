@@ -22,7 +22,7 @@ export default function PostConstraintTypeIdFormField({
       name="postConstraintTypeId"
       render={({ field }) => (
         <CustomFormItem label='職位條件類型'>
-          <ComboBox<PostConstraintType>
+          <ComboBox
             value={field.value}
             options={postConstraintTypes}
             getValue={option => option.id.toString()}
