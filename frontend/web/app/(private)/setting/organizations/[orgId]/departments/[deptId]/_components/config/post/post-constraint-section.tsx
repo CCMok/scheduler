@@ -4,8 +4,9 @@ import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { getPostConstraintPostsService } from "@/libs/server/post-constraint/services/get-post-constraints-post-service";
 import { redirect } from "next/navigation";
 import { PostConstraintPosts } from "@/libs/server/post-constraint/models/post-constraint-dao";
-import { PostConstraintType } from "@/external/prisma-generated";
+import { PostConstraintType, Post } from "@/external/prisma-generated";
 import { getPostConstraintTypesService } from "@/libs/server/post-constraint-type/services/get-post-constraint-types-service";
+import { getPostsService } from "@/libs/server/post/services/get-posts-service";
 
 const getPostConstraints = async (departmentId: number): Promise<PostConstraintPosts[]> => {
   return await fetchData(
@@ -25,6 +26,17 @@ const getPostConstraintTypes = async (): Promise<PostConstraintType[]> => {
   )
 }
 
+const getPosts = async (departmentId: number): Promise<Post[]> => {
+  return await fetchData(
+    async () => getPostsService({
+      where: { departmentId },
+      orderBys: [{ field: 'name' }],
+    }),
+    path => redirect(path),
+    [],
+  )
+}
+
 type Props = {
   deptId: number;
 }
@@ -34,12 +46,14 @@ export default async function PostConstraintSection({
 }: Readonly<Props>) {
   const postConstraints = await getPostConstraints(deptId);
   const postConstraintTypes = await getPostConstraintTypes();
+  const posts = await getPosts(deptId);
 
   return (
     <CustomCard title="職位條件">
       <PostConstraintTable
         postConstraints={postConstraints}
         postConstraintTypes={postConstraintTypes}
+        posts={posts}
       />
     </CustomCard>
   )

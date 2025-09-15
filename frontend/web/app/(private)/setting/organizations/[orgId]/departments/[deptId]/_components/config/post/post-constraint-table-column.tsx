@@ -3,7 +3,7 @@ import { PostConstraintPosts } from "@/libs/server/post-constraint/models/post-c
 import { ColumnDef } from "@tanstack/react-table";
 import PostConstraintTablePost from "./post-constraint-table-post";
 import PostConstraintTableRowAction from "./post-constraint-table-row-action";
-import { PostConstraintType } from "@/external/prisma-generated";
+import { PostConstraintType, Post } from "@/external/prisma-generated";
 
 export enum PostConstraintTableId {
   CONSTRAINT_TYPE = 'constraintType',
@@ -12,7 +12,7 @@ export enum PostConstraintTableId {
   ACTIONS = 'actions',
 }
 
-export const getColumns = (postConstraintTypes: PostConstraintType[]): ColumnDef<PostConstraintPosts>[] => [
+export const getColumns = (postConstraintTypes: PostConstraintType[], posts: Post[]): ColumnDef<PostConstraintPosts>[] => [
   {
     id: PostConstraintTableId.CONSTRAINT_TYPE,
     accessorFn: row => row.postConstraintType.name,
@@ -39,6 +39,7 @@ export const getColumns = (postConstraintTypes: PostConstraintType[]): ColumnDef
       weighting={row.original.weighting}
       postIds={row.original.postConstraintPosts.map(post => post.postId.toString())}
       postConstraintTypes={postConstraintTypes}
+      posts={posts}
     />,
   }
 ]

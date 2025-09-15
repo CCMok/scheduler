@@ -5,7 +5,7 @@ import { updatePostConstraintFormInputSchema } from "@/libs/client/post-constrai
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import UpdatePostConstraintFields from "./update-post-constraint-fields";
-import { PostConstraintType } from "@/external/prisma-generated";
+import { PostConstraintType, Post } from "@/external/prisma-generated";
 
 type Props = {
   isOpen?: boolean;
@@ -14,6 +14,7 @@ type Props = {
   defaultWeighting: number;
   defaultPostIds: string[];
   postConstraintTypes: PostConstraintType[];
+  posts: Post[];
 }
 
 export default function UpdatePostConstraintDialog({
@@ -23,13 +24,16 @@ export default function UpdatePostConstraintDialog({
   defaultWeighting,
   defaultPostIds,
   postConstraintTypes,
+  posts,
 }: Readonly<Props>) {
+  const defaultPosts = defaultPostIds.map(id => ({ id }))
+  
   const form = useForm({
     resolver: zodResolver(updatePostConstraintFormInputSchema),
     defaultValues: {
       postConstraintTypeId: defaultPostConstraintTypeId,
       weighting: defaultWeighting,
-      postIds: defaultPostIds,
+      posts: defaultPosts,
     },
   })
 
@@ -41,7 +45,7 @@ export default function UpdatePostConstraintDialog({
       submit={undefined} // TODO
       form={form}
     >
-      <UpdatePostConstraintFields postConstraintTypes={postConstraintTypes} />
+      <UpdatePostConstraintFields postConstraintTypes={postConstraintTypes} posts={posts} />
     </UpdateDialog>
   )
 }

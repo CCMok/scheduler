@@ -5,13 +5,14 @@ import DeleteDropdownMenuItem from "@/components/_general/dropdown/delete-dropdo
 import UpdateDropdownMenuItem from "@/components/_general/dropdown/update-dropdown-menu-item"
 import { useState } from "react"
 import UpdatePostConstraintDialog from "./update/update-post-constraint-dialog"
-import { PostConstraintType } from "@/external/prisma-generated"
+import { PostConstraintType, Post } from "@/external/prisma-generated"
 
 type Props = {
   postConstraintTypeId: string;
   weighting: number;
   postIds: string[];
   postConstraintTypes: PostConstraintType[];
+  posts: Post[];
 }
 
 export default function PostConstraintTableRowAction({
@@ -19,6 +20,7 @@ export default function PostConstraintTableRowAction({
   weighting,
   postIds,
   postConstraintTypes,
+  posts,
 }: Readonly<Props>) {
   const [isOpenUpdateDialog, setIsOpenUpdateDialog] = useState(false);
 
@@ -36,6 +38,7 @@ export default function PostConstraintTableRowAction({
         defaultWeighting={weighting}
         defaultPostIds={postIds}
         postConstraintTypes={postConstraintTypes}
+        posts={posts}
       />
     </>
   )

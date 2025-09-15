@@ -42,7 +42,6 @@ export default function OffDaysFormField({
             getDisplayName={option => option.name}
             onValueChange={value => setValue(`offs.${index}.days`, value)}
             badgeVariant="inverted"
-            maxDisplayCount={4}
           />
         </CustomFormItem>
       )}

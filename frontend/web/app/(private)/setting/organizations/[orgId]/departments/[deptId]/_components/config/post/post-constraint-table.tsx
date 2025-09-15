@@ -4,18 +4,20 @@ import useTable from "@/components/_general/table/use-table";
 import { PostConstraintPosts } from "@/libs/server/post-constraint/models/post-constraint-dao";
 import { getColumns, PostConstraintTableId } from "./post-constraint-table-column";
 import CustomTable from "@/components/_general/table/custom-table";
-import { PostConstraintType } from "@/external/prisma-generated";
+import { PostConstraintType, Post } from "@/external/prisma-generated";
 
 type Props = {
   postConstraints: PostConstraintPosts[];
   postConstraintTypes: PostConstraintType[];
+  posts: Post[];
 }
 
 export default function PostConstraintTable({
   postConstraints,
   postConstraintTypes,
+  posts,
 }: Readonly<Props>) {
-  const columns = getColumns(postConstraintTypes)
+  const columns = getColumns(postConstraintTypes, posts)
 
   const table = useTable({
     data: postConstraints,
