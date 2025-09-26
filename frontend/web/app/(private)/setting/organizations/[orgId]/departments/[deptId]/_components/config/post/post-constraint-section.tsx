@@ -1,7 +1,7 @@
 import CustomCard from "@/components/_general/card/custom-card";
 import PostConstraintTable from "./post-constraint-table";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
-import { getPostConstraintPostsService } from "@/libs/server/post-constraint/services/get-post-constraints-post-service";
+import { getPostConstraintPostsService } from "@/libs/server/post-constraint/services/get-post-constraints-posts-service";
 import { redirect } from "next/navigation";
 import { PostConstraintPosts } from "@/libs/server/post-constraint/models/post-constraint-dao";
 import { PostConstraintType, Post } from "@/external/prisma-generated";
