@@ -13,6 +13,7 @@ type Props = {
   postIds: string[];
   postConstraintTypes: PostConstraintType[];
   posts: Post[];
+  id: number;
 }
 
 export default function PostConstraintTableRowAction({
@@ -21,6 +22,7 @@ export default function PostConstraintTableRowAction({
   postIds,
   postConstraintTypes,
   posts,
+  id,
 }: Readonly<Props>) {
   const [isOpenUpdateDialog, setIsOpenUpdateDialog] = useState(false);
 
@@ -39,6 +41,7 @@ export default function PostConstraintTableRowAction({
         defaultPostIds={postIds}
         postConstraintTypes={postConstraintTypes}
         posts={posts}
+        id={id}
       />
     </>
   )

@@ -1,11 +1,14 @@
 'use client'
 
 import UpdateDialog from "@/components/_general/dialog/update-dialog";
-import { updatePostConstraintFormInputSchema } from "@/libs/client/post-constraint/models/update-post-constraint-form-input";
+import { UpdatePostConstraintFormInput, updatePostConstraintFormInputSchema } from "@/libs/client/post-constraint/models/update-post-constraint-form-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import UpdatePostConstraintFields from "./update-post-constraint-fields";
 import { PostConstraintType, Post } from "@/external/prisma-generated";
+import { ServiceResponse } from "@/libs/share/_general/models/service-response";
+import { updatePostConstraintAction } from "@/libs/server/post-constraint/actions/update-post-constraint-action";
+import { useRouter } from "next/navigation";
 
 type Props = {
   isOpen?: boolean;
@@ -15,6 +18,7 @@ type Props = {
   defaultPostIds: string[];
   postConstraintTypes: PostConstraintType[];
   posts: Post[];
+  id: number;
 }
 
 export default function UpdatePostConstraintDialog({
@@ -25,6 +29,7 @@ export default function UpdatePostConstraintDialog({
   defaultPostIds,
   postConstraintTypes,
   posts,
+  id,
 }: Readonly<Props>) {
   const defaultPosts = defaultPostIds.map(id => ({ id }))
   
@@ -37,13 +42,29 @@ export default function UpdatePostConstraintDialog({
     },
   })
 
+  const router = useRouter();
+
+  const submit = async (input: UpdatePostConstraintFormInput): Promise<ServiceResponse> => {
+    return await updatePostConstraintAction({
+      id,
+      postConstraintTypeId: Number(input.postConstraintTypeId),
+      weighting: input.weighting,
+      postIds: input.posts.map(post => Number(post.id)),
+    })
+  }
+  
+  const onSuccess = () => {
+    router.refresh()
+  }
+
   return (
     <UpdateDialog
       isOpen={isOpen}
       setIsOpen={setIsOpen}
       entityName="職位條件"
-      submit={undefined} // TODO
+      submit={submit}
       form={form}
+      onSuccess={onSuccess}
     >
       <UpdatePostConstraintFields postConstraintTypes={postConstraintTypes} posts={posts} />
     </UpdateDialog>

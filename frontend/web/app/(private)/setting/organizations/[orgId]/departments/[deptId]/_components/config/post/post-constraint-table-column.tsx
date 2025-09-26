@@ -40,6 +40,7 @@ export const getColumns = (postConstraintTypes: PostConstraintType[], posts: Pos
       postIds={row.original.postConstraintPosts.map(post => post.postId.toString())}
       postConstraintTypes={postConstraintTypes}
       posts={posts}
+      id={row.original.id}
     />,
   }
 ]
