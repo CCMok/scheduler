@@ -22,7 +22,7 @@ export const getPostConstraintPostsService = cache(async (request: GetPostConstr
 const findEntities = async (request: GetPostConstraintPostsRequest): Promise<PostConstraintPosts[]> => {
   const departmentId = await getDeptIdFilter(request.where?.departmentId);
 
-  return await prisma.postConstraint.findMany({
+  const entities = await prisma.postConstraint.findMany({
     where: {
       id: request.where?.id,
       departmentId,
@@ -39,4 +39,9 @@ const findEntities = async (request: GetPostConstraintPostsRequest): Promise<Pos
     },
     take: request.take,
   })
+
+  return entities.map(entity => ({
+    ...entity,
+    weighting: entity.weighting.toNumber(),
+  }))
 }

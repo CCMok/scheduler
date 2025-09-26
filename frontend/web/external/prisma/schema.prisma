@@ -231,7 +231,7 @@ model PostConstraint {
   id                   Int                  @id @default(autoincrement())
   departmentId         Int                  @map("department_id")
   postConstraintTypeId Int                  @map("post_constraint_type_id")
-  weighting            Int
+  weighting            Decimal
   department           Department           @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   postConstraintType   PostConstraintType   @relation(fields: [postConstraintTypeId], references: [id])
   postConstraintPosts  PostConstraintPost[]
@@ -248,7 +248,7 @@ model PostConstraintAudit {
   id                   Int?
   departmentId         Int?     @map("department_id")
   postConstraintTypeId Int?     @map("post_constraint_type_id")
-  weighting            Int?
+  weighting            Decimal?
 
   @@map("post_constraint_audit")
 }
@@ -301,7 +301,7 @@ model WorkerConstraint {
   id                      Int                      @id @default(autoincrement())
   departmentId            Int                      @map("department_id")
   workerConstraintTypeId  Int                      @map("worker_constraint_type_id")
-  weighting               Int
+  weighting               Decimal
   department              Department               @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   workerConstraintType    WorkerConstraintType     @relation(fields: [workerConstraintTypeId], references: [id])
   workerConstraintWorkers WorkerConstraintWorker[]
@@ -318,7 +318,7 @@ model WorkerConstraintAudit {
   id                     Int?
   departmentId           Int?     @map("department_id")
   workerConstraintTypeId Int?     @map("worker_constraint_type_id")
-  weighting              Int?
+  weighting              Decimal?
 
   @@map("worker_constraint_audit")
 }

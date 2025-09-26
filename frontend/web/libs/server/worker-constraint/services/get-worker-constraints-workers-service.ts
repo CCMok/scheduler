@@ -22,7 +22,7 @@ export const getWorkerConstraintWorkersService = cache(async (request: GetWorker
 const findEntities = async (request: GetWorkerConstraintWorkersRequest): Promise<WorkerConstraintWorkers[]> => {
   const departmentId = await getDeptIdFilter(request.where?.departmentId);
 
-  return await prisma.workerConstraint.findMany({
+  const entities = await prisma.workerConstraint.findMany({
     where: {
       id: request.where?.id,
       departmentId,
@@ -39,4 +39,9 @@ const findEntities = async (request: GetWorkerConstraintWorkersRequest): Promise
     },
     take: request.take,
   })
+
+  return entities.map(entity => ({
+    ...entity,
+    weighting: entity.weighting.toNumber(),
+  }))
 }

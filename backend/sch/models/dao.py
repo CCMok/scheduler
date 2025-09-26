@@ -1,4 +1,5 @@
 from sqlmodel import Field, Relationship, SQLModel
+from decimal import Decimal
 
 
 class PostWorker(SQLModel, table=True):
@@ -55,7 +56,7 @@ class PostConstraint(SQLModel, table=True):
     id: int = Field(primary_key=True)
     department_id: int = Field(foreign_key='department.id')
     post_constraint_type_id: int = Field(foreign_key='post_constraint_type.id')
-    weighting: int
+    weighting: Decimal
 
     post_constraint_type: PostConstraintType = Relationship(
         back_populates='post_constraints')
@@ -90,7 +91,7 @@ class WorkerConstraint(SQLModel, table=True):
     department_id: int = Field(foreign_key='department.id')
     worker_constraint_type_id: int = Field(
         foreign_key='worker_constraint_type.id')
-    weighting: int
+    weighting: Decimal
 
     worker_constraint_type: WorkerConstraintType = Relationship(
         back_populates='worker_constraints')

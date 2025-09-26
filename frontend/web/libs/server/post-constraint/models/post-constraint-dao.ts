@@ -1,6 +1,10 @@
 import { Post, PostConstraint, PostConstraintPost, PostConstraintType } from "@/external/prisma-generated";
 
-export type PostConstraintPosts = PostConstraint & {
+export type PostConstraintDao = Omit<PostConstraint, 'weighting'> & {
+  weighting: number;
+}
+
+export type PostConstraintPosts = PostConstraintDao & {
   postConstraintPosts: PostConstraintPostPost[];
   postConstraintType: PostConstraintType;
 }
