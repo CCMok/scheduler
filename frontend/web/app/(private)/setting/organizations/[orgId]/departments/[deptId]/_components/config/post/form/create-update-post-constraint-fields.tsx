@@ -9,7 +9,7 @@ type Props = {
   posts: Post[];
 }
 
-export default function UpdatePostConstraintFields({
+export default function CreateUpdatePostConstraintFields({
   postConstraintTypes,
   posts,
 }: Readonly<Props>) {

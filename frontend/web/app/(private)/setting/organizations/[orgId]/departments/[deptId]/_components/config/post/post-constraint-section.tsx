@@ -7,6 +7,7 @@ import { PostConstraintPosts } from "@/libs/server/post-constraint/models/post-c
 import { PostConstraintType, Post } from "@/external/prisma-generated";
 import { getPostConstraintTypesService } from "@/libs/server/post-constraint-type/services/get-post-constraint-types-service";
 import { getPostsService } from "@/libs/server/post/services/get-posts-service";
+import CreatePostConstraintButton from "./create/create-post-constraint-button";
 
 const getPostConstraints = async (departmentId: number): Promise<PostConstraintPosts[]> => {
   return await fetchData(
@@ -49,7 +50,15 @@ export default async function PostConstraintSection({
   const posts = await getPosts(deptId);
 
   return (
-    <CustomCard title="職位條件">
+    <CustomCard>
+      <div className='flex items-center justify-between'>
+        <span className='font-semibold'>職位條件</span>
+        <CreatePostConstraintButton
+          postConstraintTypes={postConstraintTypes}
+          posts={posts}
+          departmentId={deptId}
+        />
+      </div>
       <PostConstraintTable
         postConstraints={postConstraints}
         postConstraintTypes={postConstraintTypes}

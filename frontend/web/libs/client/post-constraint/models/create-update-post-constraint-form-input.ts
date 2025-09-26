@@ -7,10 +7,10 @@ export const postIdFormInputSchema = z.object({
   id: z.string().min(1, UiMessageContent.REQUIRED),
 })
 
-export const updatePostConstraintFormInputSchema = z.object({
+export const createUpdatePostConstraintFormInputSchema = z.object({
   postConstraintTypeId: z.string().min(1, UiMessageContent.REQUIRED),
   posts: postIdFormInputSchema.array(),
   weighting: z.number().min(MIN_WEIGHTING, UiMessageContent.MIN.replaceAll("{0}", MIN_WEIGHTING.toString())),
 })
 
-export type UpdatePostConstraintFormInput = z.infer<typeof updatePostConstraintFormInputSchema>
+export type CreateUpdatePostConstraintFormInput = z.infer<typeof createUpdatePostConstraintFormInputSchema>

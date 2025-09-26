@@ -1,10 +1,10 @@
 'use client'
 
 import UpdateDialog from "@/components/_general/dialog/update-dialog";
-import { UpdatePostConstraintFormInput, updatePostConstraintFormInputSchema } from "@/libs/client/post-constraint/models/update-post-constraint-form-input";
+import { CreateUpdatePostConstraintFormInput, createUpdatePostConstraintFormInputSchema } from "@/libs/client/post-constraint/models/create-update-post-constraint-form-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import UpdatePostConstraintFields from "./update-post-constraint-fields";
+import CreateUpdatePostConstraintFields from "../form/create-update-post-constraint-fields";
 import { PostConstraintType, Post } from "@/external/prisma-generated";
 import { ServiceResponse } from "@/libs/share/_general/models/service-response";
 import { updatePostConstraintAction } from "@/libs/server/post-constraint/actions/update-post-constraint-action";
@@ -34,7 +34,7 @@ export default function UpdatePostConstraintDialog({
   const defaultPosts = defaultPostIds.map(id => ({ id }))
   
   const form = useForm({
-    resolver: zodResolver(updatePostConstraintFormInputSchema),
+    resolver: zodResolver(createUpdatePostConstraintFormInputSchema),
     defaultValues: {
       postConstraintTypeId: defaultPostConstraintTypeId,
       weighting: defaultWeighting,
@@ -44,7 +44,7 @@ export default function UpdatePostConstraintDialog({
 
   const router = useRouter();
 
-  const submit = async (input: UpdatePostConstraintFormInput): Promise<ServiceResponse> => {
+  const submit = async (input: CreateUpdatePostConstraintFormInput): Promise<ServiceResponse> => {
     return await updatePostConstraintAction({
       id,
       postConstraintTypeId: Number(input.postConstraintTypeId),
@@ -66,7 +66,7 @@ export default function UpdatePostConstraintDialog({
       form={form}
       onSuccess={onSuccess}
     >
-      <UpdatePostConstraintFields postConstraintTypes={postConstraintTypes} posts={posts} />
+      <CreateUpdatePostConstraintFields postConstraintTypes={postConstraintTypes} posts={posts} />
     </UpdateDialog>
   )
 }

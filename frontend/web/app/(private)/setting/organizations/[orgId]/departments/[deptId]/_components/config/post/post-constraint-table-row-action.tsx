@@ -6,6 +6,11 @@ import UpdateDropdownMenuItem from "@/components/_general/dropdown/update-dropdo
 import { useState } from "react"
 import UpdatePostConstraintDialog from "./update/update-post-constraint-dialog"
 import { PostConstraintType, Post } from "@/external/prisma-generated"
+import DeleteDialog from "@/components/_general/dialog/delete-dialog"
+import { isNil } from "lodash"
+import { ServiceResponseStatus } from "@/libs/share/_general/enums/service-response-status"
+import { ServiceResponse } from "@/libs/share/_general/models/service-response"
+import { deletePostConstraintAction } from "@/libs/server/post-constraint/actions/delete-post-constraint-action"
 
 type Props = {
   postConstraintTypeId: string;
@@ -25,13 +30,18 @@ export default function PostConstraintTableRowAction({
   id,
 }: Readonly<Props>) {
   const [isOpenUpdateDialog, setIsOpenUpdateDialog] = useState(false);
+  const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState(false);
 
-  // TODO delete
+  const submitDelete = async (): Promise<ServiceResponse> => {
+    if (isNil(id)) return { status: ServiceResponseStatus.INTERNAL_ERROR };
+    return await deletePostConstraintAction({ id });
+  }
+
   return (
     <>
       <ContextMenu>
         <UpdateDropdownMenuItem onClick={() => setIsOpenUpdateDialog(true)} />
-        <DeleteDropdownMenuItem />
+        <DeleteDropdownMenuItem onClick={() => setIsOpenDeleteDialog(true)} />
       </ContextMenu>
       <UpdatePostConstraintDialog
         isOpen={isOpenUpdateDialog}
@@ -42,6 +52,12 @@ export default function PostConstraintTableRowAction({
         postConstraintTypes={postConstraintTypes}
         posts={posts}
         id={id}
+      />
+      <DeleteDialog
+        isOpen={isOpenDeleteDialog}
+        setIsOpen={setIsOpenDeleteDialog}
+        entityName="職位條件"
+        submit={submitDelete}
       />
     </>
   )

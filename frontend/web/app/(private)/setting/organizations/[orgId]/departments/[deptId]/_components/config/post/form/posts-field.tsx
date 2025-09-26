@@ -1,6 +1,6 @@
 'use client'
 
-import { UpdatePostConstraintFormInput } from "@/libs/client/post-constraint/models/update-post-constraint-form-input";
+import { CreateUpdatePostConstraintFormInput } from "@/libs/client/post-constraint/models/create-update-post-constraint-form-input";
 import { useFormContext } from "react-hook-form";
 import { FormField } from "@/external/shadcn/components/ui/form";
 import CustomFormItem from '@/components/_general/form/custom-form-item';
@@ -14,7 +14,7 @@ type Props = {
 export default function PostsField({
   posts,
 }: Readonly<Props>) {
-  const { control, setValue } = useFormContext<UpdatePostConstraintFormInput>();
+  const { control, setValue } = useFormContext<CreateUpdatePostConstraintFormInput>();
 
   return (
     <FormField
