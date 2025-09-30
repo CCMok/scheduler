@@ -1,12 +1,15 @@
 import { TableBody, TableCell, TableRow } from "@/external/shadcn/components/ui/table";
 import { flexRender, Table } from "@tanstack/react-table";
+import { ReactNode } from "react";
 
 type Props<TData> = {
-  table: Table<TData>
+  table: Table<TData>,
+  noDataDisplay?: ReactNode,
 }
 
 export default function CustomTableBody<TData>({
   table,
+  noDataDisplay = '沒有資料',
 }: Readonly<Props<TData>>) {
   return (
     <TableBody>
@@ -32,7 +35,7 @@ export default function CustomTableBody<TData>({
             colSpan={table.getAllColumns().length}
             className="h-24 text-center"
           >
-            沒有資料
+            {noDataDisplay}
           </TableCell>
         </TableRow>
       )}

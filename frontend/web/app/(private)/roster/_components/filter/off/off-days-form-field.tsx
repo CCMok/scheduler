@@ -34,7 +34,7 @@ export default function OffDaysFormField({
       control={control}
       name={`offs.${index}.days`}
       render={({ field }) => (
-        <CustomFormItem label='缺席日'>
+        <CustomFormItem>
           <MultiSelectCombobox
             values={field.value}
             options={offDays}

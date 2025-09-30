@@ -8,6 +8,7 @@ type Props<TData> = {
   columns: ColumnDef<TData>[];
   defaultSorting: SortingState;
   defaultColumnFilters?: ColumnFiltersState;
+  getRowId?: (row: TData) => string;
 }
 
 export default function useTable<TData>({
@@ -15,6 +16,7 @@ export default function useTable<TData>({
   columns,
   defaultSorting,
   defaultColumnFilters,
+  getRowId,
 }: Readonly<Props<TData>>) {
   const [sorting, setSorting] = useState<SortingState>(defaultSorting);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(defaultColumnFilters ?? []);
@@ -28,6 +30,7 @@ export default function useTable<TData>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getRowId,
     state: {
       sorting,
       columnFilters,

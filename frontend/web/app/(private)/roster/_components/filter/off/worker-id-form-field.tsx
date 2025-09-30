@@ -22,7 +22,7 @@ export default function WorkerIdFormField({
       control={control}
       name={`offs.${index}.workerId`}
       render={({ field }) => (
-        <CustomFormItem label='人員'>
+        <CustomFormItem>
           <ComboBox
             value={field.value}
             options={workers}
