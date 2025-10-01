@@ -3,9 +3,9 @@
 import { Form } from "@/external/shadcn/components/ui/form"
 import { ArrangeRosterFormInput, arrangeRosterFormInputSchema } from "@/libs/client/roster/models/roster-filter-form-input"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { useArrangeRosterStore } from "@/app/(private)/roster/_components/store/arrange-roster-store-provider"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import useArrangeRosterFormSubmit from "./arrange-roster-form-submit"
 import { useArrangeRosterFilterStore } from "@/app/(private)/roster/_components/filter/store/arrange-roster-filter-store-provider"
 import RosterFilter from "../filter/roster-filter"
@@ -13,6 +13,8 @@ import { getDefaultDepartmentIdInOrganizations, getDefaultOrganizationId } from 
 import { DEFAULT_DAYS } from "@/libs/share/roster/constants/roster-constant"
 import ConfirmDialog from '@/components/_general/dialog/confirm-dialog'
 import ArrangeRosterFormDependencyHandler from "./arrange-roster-form-dependency-handler"
+
+const LOCAL_STORAGE_KEY = 'arrange-roster-form'
 
 export default function ArrangeRosterForm() {
   const isGenerated = useArrangeRosterStore(state => state.isGenerated);
@@ -31,6 +33,42 @@ export default function ArrangeRosterForm() {
   })
 
   const { submit } = useArrangeRosterFormSubmit({ setError: form.setError });
+
+  useEffect(() => {
+    const subscription = form.subscribe({
+      formState: { values: true },
+      callback: ({ values }) => {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(values))
+      },
+    })
+    return () => subscription()
+  }, [form])
+
+  const rendered = useRef<boolean>(false)
+
+  useEffect(() => {
+    if (rendered.current) return
+
+    rendered.current = true
+
+    const localStorageValueString = localStorage.getItem(LOCAL_STORAGE_KEY)
+    if (!localStorageValueString) return
+
+    const localStorageValue = JSON.parse(localStorageValueString)
+    const deserialized = {
+      ...localStorageValue,
+      days: localStorageValue.days.map((day: string) => new Date(day)),
+    }
+
+    const parseResult = arrangeRosterFormInputSchema.safeParse(deserialized)
+    if (!parseResult.success) {
+      console.error("Invalid localStorage value", parseResult.error.format())
+      return
+    }
+
+    // TODO: cannot set off value
+    form.reset(parseResult.data, { keepDefaultValues: true })
+  }, [form])
 
   const onSubmit = async (input: ArrangeRosterFormInput) => {
     if (isGenerated) {
