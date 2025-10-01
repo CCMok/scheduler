@@ -3,7 +3,7 @@
 import { Form } from "@/external/shadcn/components/ui/form"
 import { ArrangeRosterFormInput, arrangeRosterFormInputSchema } from "@/libs/client/roster/models/roster-filter-form-input"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm, useWatch } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { useArrangeRosterStore } from "@/app/(private)/roster/_components/store/arrange-roster-store-provider"
 import { useEffect, useRef, useState } from "react"
 import useArrangeRosterFormSubmit from "./arrange-roster-form-submit"
@@ -19,6 +19,7 @@ const LOCAL_STORAGE_KEY = 'arrange-roster-form'
 export default function ArrangeRosterForm() {
   const isGenerated = useArrangeRosterStore(state => state.isGenerated);
   const organizations = useArrangeRosterFilterStore(state => state.organizations);
+  const setByPassDependencyReset = useArrangeRosterFilterStore(state => state.setByPassDependencyReset);
 
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
@@ -66,8 +67,12 @@ export default function ArrangeRosterForm() {
       return
     }
 
-    // TODO: cannot set off value
+    setByPassDependencyReset(true)
     form.reset(parseResult.data, { keepDefaultValues: true })
+
+    setTimeout(() => {
+      setByPassDependencyReset(false)
+    }, 0)
   }, [form])
 
   const onSubmit = async (input: ArrangeRosterFormInput) => {

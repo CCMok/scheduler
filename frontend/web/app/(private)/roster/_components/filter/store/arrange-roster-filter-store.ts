@@ -8,6 +8,7 @@ export type ArrangeRosterFilterState = {
   departments: Department[],
   workers: Worker[],
   offDays: OffDay[],
+  byPassDependencyReset: boolean,
 }
 
 export type ArrangeRosterFilterActions = {
@@ -15,6 +16,7 @@ export type ArrangeRosterFilterActions = {
   setDepartments: (departments: Department[]) => void,
   setWorkers: (workers: Worker[]) => void,
   setOffDays: (offDays: OffDay[]) => void,
+  setByPassDependencyReset: (byPassDependencyReset: boolean) => void,
 }
 
 export type ArrangeRosterFilterStore = ArrangeRosterFilterState & ArrangeRosterFilterActions
@@ -24,6 +26,7 @@ export const defaultInitState: ArrangeRosterFilterState = {
   departments: [],
   workers: [],
   offDays: [],
+  byPassDependencyReset: false,
 }
 
 export const createArrangeRosterFilterStore = (
@@ -36,5 +39,6 @@ export const createArrangeRosterFilterStore = (
     setDepartments: departments => set(() => ({ departments })),
     setWorkers: workers => set(() => ({ workers })),
     setOffDays: offDays => set(() => ({ offDays })),
+    setByPassDependencyReset: byPassDependencyReset => set(() => ({ byPassDependencyReset })),
   }))
 }

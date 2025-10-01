@@ -18,6 +18,7 @@ const useHandleOrganizationId = () => {
 
   const organizations = useArrangeRosterFilterStore(state => state.organizations);
   const setDepartments = useArrangeRosterFilterStore(state => state.setDepartments);
+  const byPassDependencyReset = useArrangeRosterFilterStore(state => state.byPassDependencyReset);
 
   const organizationId = useWatch({
     control,
@@ -25,15 +26,22 @@ const useHandleOrganizationId = () => {
     defaultValue: getDefaultOrganizationId(organizations),
   })
 
+  const previousOrganizationId = useRef<string>('');
+
   useEffect(() => {
     const organization = organizations.find(organization => organization.id.toString() === organizationId)
     const departments = organization ? organization.departments : [];
 
     setDepartments(departments)
 
-    const defaultDeparmtentId = getDefaultDepartmentIdInDepartments(departments)
-    resetField('departmentId', { defaultValue: defaultDeparmtentId })
-  }, [organizations, organizationId, setDepartments, resetField])
+    // Only reset if organizationId actually changed
+    if (organizationId !== previousOrganizationId.current && !byPassDependencyReset) {
+      const defaultDeparmtentId = getDefaultDepartmentIdInDepartments(departments)
+      resetField('departmentId', { defaultValue: defaultDeparmtentId })
+    }
+
+    previousOrganizationId.current = organizationId;
+  }, [organizations, organizationId, setDepartments, resetField, byPassDependencyReset])
 }
 
 const useHandleDepartmentId = () => {
@@ -41,6 +49,7 @@ const useHandleDepartmentId = () => {
 
   const departments = useArrangeRosterFilterStore(state => state.departments);
   const setWorkers = useArrangeRosterFilterStore(state => state.setWorkers);
+  const byPassDependencyReset = useArrangeRosterFilterStore(state => state.byPassDependencyReset);
 
   const router = useRouter();
 
@@ -64,12 +73,16 @@ const useHandleDepartmentId = () => {
 
     setWorkers(workers)
 
-    resetField('offs')
-  }, [setWorkers, router, resetField])
+    // Check bypass before resetting
+    if (!byPassDependencyReset) {
+      resetField('offs')
+    }
+  }, [setWorkers, router, resetField, byPassDependencyReset])
 
   const previousDepartmentId = useRef<string>('');
 
   useEffect(() => {
+    // Only execute callback if departmentId actually changed
     if (departmentId !== previousDepartmentId.current) {
       onDepartmentIdChange(Number(departmentId));
     }
@@ -89,7 +102,17 @@ const useHandleDays = () => {
     defaultValue: DEFAULT_DAYS,
   })
 
+  const previousDays = useRef<Date[]>([]);
+
   useEffect(() => {
+    // Check if days actually changed (by comparing ISO strings)
+    const currentDaysISO = days.map(d => d.toISOString()).sort();
+    const previousDaysISO = previousDays.current.map(d => d.toISOString()).sort();
+    const daysChanged = currentDaysISO.length !== previousDaysISO.length || 
+      currentDaysISO.some((d, i) => d !== previousDaysISO[i]);
+
+    if (!daysChanged) return;
+
     const offDays: OffDay[] = days
       .toSorted((a, b) => a.getTime() - b.getTime())
       .map(day => ({
@@ -98,12 +121,47 @@ const useHandleDays = () => {
       }))
 
     setOffDays(offDays)
+    previousDays.current = days;
   }, [days, setOffDays])
+}
+
+const useHandleOffDays = () => {
+  const { getValues, setValue } = useFormContext<ArrangeRosterFormInput>();
+
+  const offDays = useArrangeRosterFilterStore(state => state.offDays);
+  const byPassDependencyReset = useArrangeRosterFilterStore(state => state.byPassDependencyReset);
+
+  const previousOffDays = useRef<OffDay[]>([]);
+
+  useEffect(() => {
+    // Check if offDays actually changed
+    const offDaysChanged = offDays.length !== previousOffDays.current.length ||
+      offDays.some((day, i) => day.value !== previousOffDays.current[i]?.value);
+
+    if (!offDaysChanged || byPassDependencyReset) return;
+
+    const currentOffs = getValues('offs')
+    
+    currentOffs.forEach((off, index) => {
+      const selectedDays = off.days
+
+      const validSelectedDays = selectedDays.filter(selectedDay =>
+        offDays.some(offDay => offDay.value === selectedDay)
+      )
+
+      if (selectedDays.length !== validSelectedDays.length) {
+        setValue(`offs.${index}.days`, validSelectedDays)
+      }
+    })
+
+    previousOffDays.current = offDays;
+  }, [offDays, getValues, setValue, byPassDependencyReset])
 }
 
 export default function ArrangeRosterFormDependencyHandler() {
   useHandleOrganizationId();
   useHandleDepartmentId();
   useHandleDays();
+  useHandleOffDays();
   return <></>
 }
