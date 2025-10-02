@@ -19,3 +19,15 @@ export const arrangeRosterFormInputSchema = z.object({
 })
 
 export type ArrangeRosterFormInput = z.infer<typeof arrangeRosterFormInputSchema>
+
+export const offFormInputStorageSchema = z.object({
+  workerId: z.string(),
+  days: z.string().array(),
+})
+
+export const arrangeRosterFormInputStorageSchema = z.object({
+  organizationId: z.string(),
+  departmentId: z.string(),
+  days: z.date().array(),
+  offs: offFormInputStorageSchema.array(),
+})

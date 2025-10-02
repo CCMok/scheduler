@@ -1,7 +1,7 @@
 'use client'
 
 import { Form } from "@/external/shadcn/components/ui/form"
-import { ArrangeRosterFormInput, arrangeRosterFormInputSchema } from "@/libs/client/roster/models/roster-filter-form-input"
+import { ArrangeRosterFormInput, arrangeRosterFormInputSchema, arrangeRosterFormInputStorageSchema } from "@/libs/client/roster/models/roster-filter-form-input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useArrangeRosterStore } from "@/app/(private)/roster/_components/store/arrange-roster-store-provider"
@@ -61,7 +61,7 @@ export default function ArrangeRosterForm() {
       days: localStorageValue.days.map((day: string) => new Date(day)),
     }
 
-    const parseResult = arrangeRosterFormInputSchema.safeParse(deserialized)
+    const parseResult = arrangeRosterFormInputStorageSchema.safeParse(deserialized)
     if (!parseResult.success) {
       console.error("Invalid localStorage value", parseResult.error.format())
       return
