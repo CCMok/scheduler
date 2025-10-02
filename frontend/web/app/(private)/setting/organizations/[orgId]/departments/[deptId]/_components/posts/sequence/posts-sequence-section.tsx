@@ -1,13 +1,14 @@
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { getPostsService } from "@/libs/server/post/services/get-posts-service";
 import { GetPostsRequest } from "@/libs/server/post/models/get-posts-request";
-import { Department, Post } from "@/external/prisma-generated";
+import { Post } from "@/external/prisma-generated";
 import PostSaveButton from "./button/post-sequence-save-button";
-import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
 import { PostSequenceStoreProvider } from "./store/post-sequence-store-provider";
 import CustomCard from "@/components/_general/card/custom-card";
 import PostSequenceTableContainer from "./table/post-sequence-table-container";
+import TableSkeleton from "@/components/_general/skeleton/table-skeleton";
+import { Suspense } from "react";
 
 const getPosts = async (departmentId: number): Promise<Post[]> => {
   const request: GetPostsRequest = {
@@ -22,42 +23,37 @@ const getPosts = async (departmentId: number): Promise<Post[]> => {
   )
 }
 
-const getDepartment = async (departmentId: number): Promise<Department> => {
-  const departments = await fetchData(
-    async () => await getDepartmentsService({
-      where: { id: departmentId },
-    }),
-    path => redirect(path),
-    [],
-  )
-
-  return departments[0];
-}
-
 type Props = {
   deptId: number;
 }
 
-export default async function PostsSequenceSection({
+async function PostsSequenceSectionContent({
   deptId,
 }: Readonly<Props>) {
   const posts = await getPosts(deptId);
-
-  const department = await getDepartment(deptId);
-  if (!department) notFound();
 
   return (
     <PostSequenceStoreProvider initState={{
       posts,
     }}>
-      <CustomCard>
-        <div className='space-y-2'>
-          <div className='flex justify-end'>
-            <PostSaveButton />
-          </div>
-          <PostSequenceTableContainer />
+      <div className='space-y-2'>
+        <div className='flex justify-end'>
+          <PostSaveButton />
         </div>
-      </CustomCard>
+        <PostSequenceTableContainer />
+      </div>
     </PostSequenceStoreProvider>
+  )
+}
+
+export default function PostsSequenceSection({
+  deptId,
+}: Readonly<Props>) {
+  return (
+    <CustomCard>
+      <Suspense fallback={<TableSkeleton />}>
+        <PostsSequenceSectionContent deptId={deptId} />
+      </Suspense>
+    </CustomCard>
   )
 }

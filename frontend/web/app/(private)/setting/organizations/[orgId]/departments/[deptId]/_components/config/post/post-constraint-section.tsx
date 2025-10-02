@@ -8,6 +8,8 @@ import { PostConstraintType, Post } from "@/external/prisma-generated";
 import { getPostConstraintTypesService } from "@/libs/server/post-constraint-type/services/get-post-constraint-types-service";
 import { getPostsService } from "@/libs/server/post/services/get-posts-service";
 import CreatePostConstraintButton from "./create/create-post-constraint-button";
+import { Suspense } from "react";
+import TableSkeleton from "@/components/_general/skeleton/table-skeleton";
 
 const getPostConstraints = async (departmentId: number): Promise<PostConstraintPosts[]> => {
   return await fetchData(
@@ -42,15 +44,17 @@ type Props = {
   deptId: number;
 }
 
-export default async function PostConstraintSection({
+async function PostConstraintSectionContent({
   deptId,
 }: Readonly<Props>) {
-  const postConstraints = await getPostConstraints(deptId);
-  const postConstraintTypes = await getPostConstraintTypes();
-  const posts = await getPosts(deptId);
+  const [postConstraints, postConstraintTypes, posts] = await Promise.all([
+    getPostConstraints(deptId),
+    getPostConstraintTypes(),
+    getPosts(deptId),
+  ])
 
   return (
-    <CustomCard>
+    <>
       <div className='flex items-center justify-between'>
         <span className='font-semibold'>職位條件</span>
         <CreatePostConstraintButton
@@ -64,6 +68,18 @@ export default async function PostConstraintSection({
         postConstraintTypes={postConstraintTypes}
         posts={posts}
       />
+    </>
+  )
+}
+
+export default function PostConstraintSection({
+  deptId,
+}: Readonly<Props>) {
+  return (
+    <CustomCard>
+      <Suspense fallback={<TableSkeleton />}>
+        <PostConstraintSectionContent deptId={deptId} />
+      </Suspense>
     </CustomCard>
   )
 }

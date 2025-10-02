@@ -8,6 +8,8 @@ import { WorkerConstraintType, Worker } from "@/external/prisma-generated";
 import { getWorkerConstraintTypesService } from "@/libs/server/worker-constraint-type/services/get-worker-constraint-types-service";
 import { getWorkersService } from "@/libs/server/worker/services/get-workers-service";
 import CreateWorkerConstraintButton from "./create/create-worker-constraint-button";
+import { Suspense } from "react";
+import TableSkeleton from "@/components/_general/skeleton/table-skeleton";
 
 const getWorkerConstraints = async (departmentId: number): Promise<WorkerConstraintWorkers[]> => {
   return await fetchData(
@@ -42,15 +44,17 @@ type Props = {
   deptId: number;
 }
 
-export default async function WorkerConstraintSection({
+async function WorkerConstraintSectionContent({
   deptId,
 }: Readonly<Props>) {
-  const workerConstraints = await getWorkerConstraints(deptId);
-  const workerConstraintTypes = await getWorkerConstraintTypes();
-  const workers = await getWorkers(deptId);
+  const [workerConstraints, workerConstraintTypes, workers] = await Promise.all([
+    getWorkerConstraints(deptId),
+    getWorkerConstraintTypes(),
+    getWorkers(deptId),
+  ])
 
   return (
-    <CustomCard>
+    <>
       <div className='flex items-center justify-between'>
         <span className='font-semibold'>人員條件</span>
         <CreateWorkerConstraintButton
@@ -64,6 +68,18 @@ export default async function WorkerConstraintSection({
         workerConstraintTypes={workerConstraintTypes}
         workers={workers}
       />
+    </>
+  )
+}
+
+export default function WorkerConstraintSection({
+  deptId,
+}: Readonly<Props>) {
+  return (
+    <CustomCard>
+      <Suspense fallback={<TableSkeleton />}>
+        <WorkerConstraintSectionContent deptId={deptId} />
+      </Suspense>
     </CustomCard>
   )
 }
