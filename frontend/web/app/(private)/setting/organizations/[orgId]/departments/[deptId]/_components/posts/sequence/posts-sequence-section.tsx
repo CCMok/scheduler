@@ -3,11 +3,11 @@ import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { getPostsService } from "@/libs/server/post/services/get-posts-service";
 import { GetPostsRequest } from "@/libs/server/post/models/get-posts-request";
 import { Department, Post } from "@/external/prisma-generated";
-import PostSequenceTable from "./table/post-sequence-table";
 import PostSaveButton from "./button/post-sequence-save-button";
 import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
 import { PostSequenceStoreProvider } from "./store/post-sequence-store-provider";
 import CustomCard from "@/components/_general/card/custom-card";
+import PostSequenceTableContainer from "./table/post-sequence-table-container";
 
 const getPosts = async (departmentId: number): Promise<Post[]> => {
   const request: GetPostsRequest = {
@@ -55,7 +55,7 @@ export default async function PostsSequenceSection({
           <div className='flex justify-end'>
             <PostSaveButton />
           </div>
-          <PostSequenceTable />
+          <PostSequenceTableContainer />
         </div>
       </CustomCard>
     </PostSequenceStoreProvider>
