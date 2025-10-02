@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, CardHeader, CardTitle, CardContent } from "@/external/shadcn/components/ui/card"
+import { Card, CardContent } from "@/external/shadcn/components/ui/card"
 import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
 import { Plus } from "lucide-react";
 import { useFieldArray, useFormContext } from "react-hook-form"
@@ -47,11 +47,9 @@ export default function OffFilter() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>請假</CardTitle>
-      </CardHeader>
       <CardContent className='space-y-2'>
-        <div className='flex justify-end'>
+        <div className='flex items-center justify-between'>
+          <span className='font-semibold'>請假</span>
           <CustomButton
             variant='outline'
             onClick={onClickAppend}
