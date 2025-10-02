@@ -34,7 +34,7 @@ export default function SoleCommandItem<T>({
             : "opacity-50 [&_svg]:invisible"
         )}
       >
-        <CheckIcon className="h-4 w-4" />
+        <CheckIcon className="h-4 w-4 text-primary-foreground" />
       </div>
       <span>{getDisplayName(option)}</span>
     </CommandItem>

@@ -34,7 +34,7 @@ export default function SelectAllCommandItem<T>() {
           ? "bg-primary text-primary-foreground"
           : "opacity-50 [&_svg]:invisible"
       )}>
-        <CheckIcon className="h-4 w-4" />
+        <CheckIcon className="h-4 w-4 text-primary-foreground" />
       </div>
       <span>(選擇全部)</span>
     </CommandItem>
