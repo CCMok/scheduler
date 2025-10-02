@@ -37,6 +37,6 @@ export const PATH = {
 } as const
 
 export const REDIRECT_PUBLIC_PATH = PATH.login;
-export const REDIRECT_PRIVATE_PATH = PATH.dashboard;
+export const REDIRECT_PRIVATE_PATH = PATH.roster;
 
 export const EXCLUDE_HOME_PUBLIC_PATHS = [PATH.login, PATH.register];

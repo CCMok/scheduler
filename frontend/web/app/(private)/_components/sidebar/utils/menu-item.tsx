@@ -21,11 +21,11 @@ export type IconMenuItem = MenuItem & Icon
 export type MainItem = IconMenuItem | IconParentItem
 
 export const MENU_ITEMS: MainItem[] = [
-  {
-    title: "主頁",
-    icon: <Home />,
-    url: PATH.dashboard,
-  },
+  // {
+  //   title: "主頁",
+  //   icon: <Home />,
+  //   url: PATH.dashboard,
+  // },
   {
     title: "值班表",
     icon: <Calendar />,
