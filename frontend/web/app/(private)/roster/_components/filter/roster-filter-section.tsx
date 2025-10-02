@@ -5,6 +5,8 @@ import { OrganizationDepartments } from "@/libs/server/organization/models/organ
 import { redirect } from "next/navigation";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { getOrganizationsDepartmentService } from "@/libs/server/organization/services/get-organizations-department-service";
+import { Suspense } from "react";
+import RosterFilterSkeleton from "./roster-filter-skeleton";
 
 const getOrganizations = async (): Promise<OrganizationDepartments[]> => {
   return await fetchData(
@@ -21,7 +23,7 @@ const getOrganizations = async (): Promise<OrganizationDepartments[]> => {
 
 type Props = ClassNameProps
 
-export default async function RosterFilterSection({
+async function RosterFilterSectionContent({
   className,
 }: Readonly<Props>) {
   const organizations = await getOrganizations();
@@ -32,5 +34,15 @@ export default async function RosterFilterSection({
         <ArrangeRosterForm />
       </ArrangeRosterFilterStoreProvider>
     </section>
+  )
+}
+
+export default function RosterFilterSection({
+  className,
+}: Readonly<Props>) {
+  return (
+    <Suspense fallback={<RosterFilterSkeleton />}>
+      <RosterFilterSectionContent className={className} />
+    </Suspense>
   )
 }

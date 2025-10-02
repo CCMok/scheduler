@@ -1,35 +1,13 @@
 import { ParamProps } from "@/libs/share/_general/props/param-props";
 import { Param } from "@/libs/share/_general/enums/param";
-import { fetchData } from "@/libs/share/_general/utils/fetch";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import IndividualSettingLayout from '@/components/_general/layout/setting/individual-setting-layout';
-import { Post } from "@/external/prisma-generated";
-import { getPostsService } from "@/libs/server/post/services/get-posts-service";
-import UpdatePostNameSection from "./_components/update-name/update-post-name-section";
 import WorkersSection from "./_components/workers/workers-section";
 import { PATH } from "@/libs/share/_general/utils/path";
-import { DepartmentOrganization } from "@/libs/server/department/models/department-dao";
-import { getDepartmentsOrganizationService } from "@/libs/server/department/services/get-departments-organization-service";
-
-const getPost = async (id: number): Promise<Post | undefined> => {
-  const posts = await fetchData(
-    async () => await getPostsService({ where: { id } }),
-    path => redirect(path),
-    [],
-  )
-  return posts[0];
-}
-
-const getDepartment = async (id: number): Promise<DepartmentOrganization | undefined> => {
-  const departments = await fetchData(
-    async () => await getDepartmentsOrganizationService({
-      where: { id },
-    }),
-    path => redirect(path),
-    [],
-  )
-  return departments[0];
-}
+import OrganizationName from "@/components/organization/organization-name";
+import DepartmentName from "@/components/department/department-name";
+import PostName from "@/components/post/post-name";
+import UpdatePostNameSectionServer from "./_components/update-name/update-post-name-section-server";
 
 type Props = ParamProps<{
   [Param.ORG_ID]: string;
@@ -44,36 +22,35 @@ export default async function OrgDeptPostSettingPage({
 
   const postId = Number(awaitedParams.postId);
   if (isNaN(postId)) notFound();
-  const post = await getPost(postId);
-  if (!post) notFound()
 
   const deptId = Number(awaitedParams.deptId);
   if (isNaN(deptId)) notFound();
-  const department = await getDepartment(deptId);
-  if (!department) notFound();
+
+  const orgId = Number(awaitedParams.orgId);
+  if (isNaN(orgId)) notFound();
 
   return (
     <IndividualSettingLayout
-      title={post.name}
+      title={<PostName id={postId} failNotFound />}
       breadcrumbItems={[
         {
           label: '組織',
           href: PATH.setting.organizations.base,
         },
         {
-          label: department.organization.name,
-          href: PATH.setting.organizations.build(department.organization.id),
+          label: <OrganizationName id={orgId} failNotFound />,
+          href: PATH.setting.organizations.build(orgId),
         },
         {
-          label: department.name,
-          href: PATH.setting.organizations.departments.build(department.organization.id, department.id),
+          label: <DepartmentName id={deptId} failNotFound />,
+          href: PATH.setting.organizations.departments.build(orgId, deptId),
         },
       ]}
       tabs={[
         {
           value: 'info',
           label: '基本資料',
-          content: <UpdatePostNameSection post={post} />,
+          content: <UpdatePostNameSectionServer id={postId} />,
         },
         {
           value: 'workers',

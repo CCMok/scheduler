@@ -8,6 +8,8 @@ import AssignWorkerDialog from "./assign/assign-worker-dialog";
 import { getWorkersService } from "@/libs/server/worker/services/get-workers-service";
 import { Worker } from "@/external/prisma-generated";
 import PostWorkerTable from "./table/post-worker-table";
+import { Suspense } from "react";
+import TableCardSkeleton from "@/components/_general/skeleton/table-card-skeleton";
 
 const getWorkerPostsCount = async (postId: number): Promise<WorkersPostWorkerCount[]> => {
   return await fetchData(
@@ -35,12 +37,14 @@ type Props = {
   postId: number;
 }
 
-export default async function WorkersSection({
+async function WorkersSectionContent({
   departmentId,
   postId,
 }: Readonly<Props>) {
-  const postWorkers = await getWorkerPostsCount(postId);
-  const departmentWorkers = await getDepartmentWorkers(departmentId);
+  const [postWorkers, departmentWorkers] = await Promise.all([
+    getWorkerPostsCount(postId),
+    getDepartmentWorkers(departmentId),
+  ])
 
   const assignableWorkers = departmentWorkers.filter(worker => !postWorkers.some(postWorker => postWorker.id === worker.id));
 
@@ -51,5 +55,19 @@ export default async function WorkersSection({
         workers={postWorkers}
       />
     </CustomCard>
+  )
+}
+
+export default async function WorkersSection({
+  departmentId,
+  postId,
+}: Readonly<Props>) {
+  return (
+    <Suspense fallback={<TableCardSkeleton />}>
+      <WorkersSectionContent
+        departmentId={departmentId}
+        postId={postId}
+      />
+    </Suspense>
   )
 }

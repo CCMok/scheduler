@@ -2,9 +2,10 @@ import QueryTab from '@/components/_general/tab/query-tab';
 import { BreadcrumbItem } from "@/libs/share/_general/models/breadcrumb-item";
 import { Tab } from "@/libs/share/_general/models/tab";
 import BreadcrumbHeaderLayout from './breadcrumb-header-layout';
+import { ReactNode } from 'react';
 
 type Props = {
-  title?: string;
+  title?: ReactNode;
   breadcrumbItems?: BreadcrumbItem[];
   tabs?: Tab[];
 }

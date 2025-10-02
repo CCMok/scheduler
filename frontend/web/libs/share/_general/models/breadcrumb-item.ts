@@ -1,4 +1,6 @@
+import { ReactNode } from "react";
+
 export type BreadcrumbItem = {
-  label: string;
+  label: ReactNode;
   href: string;
 }

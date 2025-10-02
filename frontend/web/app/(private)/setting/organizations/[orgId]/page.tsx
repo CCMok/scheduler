@@ -1,25 +1,11 @@
-import { getOrganizationsService } from "@/libs/server/organization/services/get-organizations-service";
-import UpdateOrganizationNameSection from "./_components/update-name/update-organization-name-section";
-import { notFound, redirect } from "next/navigation";
-import { Organization } from "@/external/prisma-generated";
-import { fetchData } from "@/libs/share/_general/utils/fetch";
+import { notFound } from "next/navigation";
 import { ParamProps } from "@/libs/share/_general/props/param-props";
 import { Param } from "@/libs/share/_general/enums/param";
 import IndividualSettingLayout from '@/components/_general/layout/setting/individual-setting-layout';
 import DepartmentsSection from "./_components/departments/departments-section";
 import { PATH } from "@/libs/share/_general/utils/path";
-
-const getOrganization = async (id: number): Promise<Organization | undefined> => {
-  const organizations = await fetchData(
-    async () => await getOrganizationsService({
-      where: { id },
-    }),
-    path => redirect(path),
-    [],
-  )
-
-  return organizations[0];
-}
+import OrganizationName from "@/components/organization/organization-name";
+import UpdateOrganizationNameSectionServer from "./_components/update-name/update-organization-name-section-server";
 
 type Props = ParamProps<{ [Param.ORG_ID]: string }>
 
@@ -30,12 +16,9 @@ export default async function OrganizationSettingPage({
   const id = Number(paramId);
   if (isNaN(id)) notFound();
 
-  const organization = await getOrganization(id);
-  if (!organization) notFound();
-
   return (
     <IndividualSettingLayout
-      title={organization.name}
+      title={<OrganizationName id={id} failNotFound />}
       breadcrumbItems={[
         {
           label: '組織',
@@ -46,7 +29,7 @@ export default async function OrganizationSettingPage({
         {
           value: 'info',
           label: '基本資料',
-          content: <UpdateOrganizationNameSection organization={organization} />,
+          content: <UpdateOrganizationNameSectionServer id={id} />,
         },
         {
           value: 'departments',

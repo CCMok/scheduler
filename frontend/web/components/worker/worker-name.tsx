@@ -1,0 +1,56 @@
+import { Worker } from "@/external/prisma-generated";
+import { Skeleton } from "@/external/shadcn/components/ui/skeleton";
+import { getWorkersService } from "@/libs/server/worker/services/get-workers-service";
+import { fetchData } from "@/libs/share/_general/utils/fetch";
+import { isNil } from "lodash";
+import { notFound, redirect } from "next/navigation";
+import { Suspense } from "react";
+
+const getWorker = async (id: number): Promise<Worker | undefined> => {
+  const workers = await fetchData(
+    async () => await getWorkersService({
+      where: { id },
+    }),
+    path => redirect(path),
+    [],
+  )
+
+  return workers[0];
+}
+
+export type Props = {
+  id?: number;
+  failNotFound?: boolean;
+}
+
+async function WorkerNameContent({
+  id,
+  failNotFound = false,
+}: Readonly<Props>) {
+  if (isNil(id)) {
+    if (failNotFound) notFound();
+    return '';
+  }
+
+  const worker = await getWorker(id);
+  if (!worker) {
+    if (failNotFound) notFound();
+    return '';
+  }
+
+  return worker.name;
+}
+
+export default function WorkerName({
+  id,
+  failNotFound,
+}: Readonly<Props>) {
+  return (
+    <Suspense fallback={<Skeleton className='h-4 w-20' />}>
+      <WorkerNameContent
+        id={id}
+        failNotFound={failNotFound}
+      />
+    </Suspense>
+  )
+}
