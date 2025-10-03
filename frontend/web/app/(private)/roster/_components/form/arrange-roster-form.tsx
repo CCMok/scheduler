@@ -13,8 +13,7 @@ import { getDefaultDepartmentIdInOrganizations, getDefaultOrganizationId } from 
 import { DEFAULT_DAYS } from "@/libs/share/roster/constants/roster-constant"
 import ConfirmDialog from '@/components/_general/dialog/confirm-dialog'
 import ArrangeRosterFormDependencyHandler from "./arrange-roster-form-dependency-handler"
-
-const LOCAL_STORAGE_KEY = 'arrange-roster-form'
+import { LocalStorageKey } from "@/libs/client/_general/enums/local-storage-key"
 
 export default function ArrangeRosterForm() {
   const isGenerated = useArrangeRosterStore(state => state.isGenerated);
@@ -39,20 +38,20 @@ export default function ArrangeRosterForm() {
     const subscription = form.subscribe({
       formState: { values: true },
       callback: ({ values }) => {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(values))
+        localStorage.setItem(LocalStorageKey.ARRANGE_ROSTER_FORM, JSON.stringify(values))
       },
     })
     return () => subscription()
   }, [form])
 
-  const rendered = useRef<boolean>(false)
+  const firstRendered = useRef<boolean>(false)
 
   useEffect(() => {
-    if (rendered.current) return
+    if (firstRendered.current) return
 
-    rendered.current = true
+    firstRendered.current = true
 
-    const localStorageValueString = localStorage.getItem(LOCAL_STORAGE_KEY)
+    const localStorageValueString = localStorage.getItem(LocalStorageKey.ARRANGE_ROSTER_FORM)
     if (!localStorageValueString) return
 
     const localStorageValue = JSON.parse(localStorageValueString)

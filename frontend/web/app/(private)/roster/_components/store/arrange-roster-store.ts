@@ -1,6 +1,7 @@
 import { createStore } from 'zustand/vanilla'
 import { Worker } from '@/external/prisma-generated'
 import { PostBaseSchedule } from '@/libs/share/roster/models/post-base-schedule'
+import { LocalStorageKey } from '@/libs/client/_general/enums/local-storage-key'
 
 export type ArrangeRosterState = {
   generatedScheduleDepartmentId?: number,
@@ -33,10 +34,16 @@ export const createArrangeRosterStore = (
   return createStore<ArrangeRosterStore>()(set => ({
     ...defaultInitState,
     ...partialInitState,
-    setGeneratedScheduleDepartmentId: generatedScheduleDepartmentId => set(() => ({ generatedScheduleDepartmentId })),
+    setGeneratedScheduleDepartmentId: generatedScheduleDepartmentId => set(() => {
+      localStorage.setItem(LocalStorageKey.ARRANGE_ROSTER_GENERATED_DEPARTMENT_ID, generatedScheduleDepartmentId.toString())
+      return { generatedScheduleDepartmentId }
+    }),
     setGeneratedScheduleWorkers: generatedScheduleWorkers => set(() => ({ generatedScheduleWorkers })),
     setInitialSchedules: initialSchedules => set(() => ({ initialSchedules })),
-    setModifiedSchedules: modifiedSchedules => set(() => ({ modifiedSchedules })),
+    setModifiedSchedules: modifiedSchedules => set(() => {
+      localStorage.setItem(LocalStorageKey.ARRANGE_ROSTER_SCHEDULES, JSON.stringify(modifiedSchedules))
+      return { modifiedSchedules }
+    }),
     setIsGenerated: isGenerated => set(() => ({ isGenerated })),
   }))
 }

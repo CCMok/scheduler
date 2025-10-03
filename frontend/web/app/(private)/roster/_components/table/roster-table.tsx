@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -32,7 +32,6 @@ import { format } from 'date-fns';
 
 export default function RosterTable() {
   const modifiedSchedules = useArrangeRosterStore(state => state.modifiedSchedules);
-  const isGenerated = useArrangeRosterStore(state => state.isGenerated);
   const setModifiedSchedules = useArrangeRosterStore(state => state.setModifiedSchedules);
 
   const sensors = useSensors(
@@ -69,8 +68,6 @@ export default function RosterTable() {
     const swappedSchedules = swapSchedule(modifiedSchedules, over.id, active.id)
     setModifiedSchedules(swappedSchedules);
   }
-
-  if (!isGenerated) return <></>;
 
   return (
     // DndContext generate div for drag and drop function, and tbody only accept tr children. So DndContext place outside of table
