@@ -37,10 +37,10 @@ export const createOffFilterColumns = (): ColumnDef<OffFilterRowData>[] => [
     cell: ({ row }) => (
       <CustomButton
         variant='secondary'
-        size='icon'
         onClick={() => row.original.onRemove(row.original.index)}
       >
         <Minus />
+        移除
       </CustomButton>
     ),
   },
