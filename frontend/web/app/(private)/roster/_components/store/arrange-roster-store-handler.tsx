@@ -20,31 +20,16 @@ export default function ArrangeRosterStoreHandler() {
   const firstRendered = useRef<boolean>(false)
 
   useEffect(() => {
-    if (firstRendered.current) return
-
-    firstRendered.current = true
-
-    const scheduleStorageString = localStorage.getItem(LocalStorageKey.ARRANGE_ROSTER_SCHEDULES)
-    if (!scheduleStorageString) return
-
-    const scheduleStorage = JSON.parse(scheduleStorageString)
-    if (!scheduleStorage.length) return
-    
-    const schedules = scheduleStorage.map((schedule: PostBaseSchedule) => ({
-      ...schedule,
-      arrangements: schedule.arrangements.map(arrangement => ({
-        ...arrangement,
-        day: new Date(arrangement.day),
-      })),
-    }))
-
-    const departmentIdStorageString = localStorage.getItem(LocalStorageKey.ARRANGE_ROSTER_GENERATED_DEPARTMENT_ID)
-    if (!departmentIdStorageString) return
-
-    const departmentId = Number(departmentIdStorageString)
-    if (!departmentId) return
-
     (async () => {
+      if (firstRendered.current) return
+      firstRendered.current = true
+  
+      const departmentIdStorageString = localStorage.getItem(LocalStorageKey.ARRANGE_ROSTER_GENERATED_DEPARTMENT_ID)
+      if (!departmentIdStorageString) return
+  
+      const departmentId = Number(departmentIdStorageString)
+      if (!departmentId) return
+
       const workers = await fetchData(
         async () => await getWorkersAction({
           where: { departmentId },
@@ -54,10 +39,38 @@ export default function ArrangeRosterStoreHandler() {
         [],
       )
   
+      const initialScheduleStorageString = localStorage.getItem(LocalStorageKey.ARRANGE_ROSTER_INITIAL_SCHEDULES)
+      if (!initialScheduleStorageString) return
+  
+      const initialScheduleStorage = JSON.parse(initialScheduleStorageString)
+      if (!initialScheduleStorage.length) return
+      
+      const initialSchedules = initialScheduleStorage.map((schedule: PostBaseSchedule) => ({
+        ...schedule,
+        arrangements: schedule.arrangements.map(arrangement => ({
+          ...arrangement,
+          day: new Date(arrangement.day),
+        })),
+      }))
+
+      const modifiedScheduleStorageString = localStorage.getItem(LocalStorageKey.ARRANGE_ROSTER_MODIFIED_SCHEDULES)
+      if (!modifiedScheduleStorageString) return
+  
+      const modifiedScheduleStorage = JSON.parse(modifiedScheduleStorageString)
+      if (!modifiedScheduleStorage.length) return
+      
+      const modifiedSchedules = modifiedScheduleStorage.map((schedule: PostBaseSchedule) => ({
+        ...schedule,
+        arrangements: schedule.arrangements.map(arrangement => ({
+          ...arrangement,
+          day: new Date(arrangement.day),
+        })),
+      }))
+  
       setGeneratedScheduleDepartmentId(departmentId)
       setGeneratedScheduleWorkers(workers)
-      setInitialSchedules(schedules)
-      setModifiedSchedules(schedules)
+      setInitialSchedules(initialSchedules)
+      setModifiedSchedules(modifiedSchedules)
       setIsGenerated(true)
     })()
   }, [setGeneratedScheduleDepartmentId, setGeneratedScheduleWorkers, setInitialSchedules, setModifiedSchedules, setIsGenerated])

@@ -39,9 +39,12 @@ export const createArrangeRosterStore = (
       return { generatedScheduleDepartmentId }
     }),
     setGeneratedScheduleWorkers: generatedScheduleWorkers => set(() => ({ generatedScheduleWorkers })),
-    setInitialSchedules: initialSchedules => set(() => ({ initialSchedules })),
+    setInitialSchedules: initialSchedules => set(() => {
+      localStorage.setItem(LocalStorageKey.ARRANGE_ROSTER_INITIAL_SCHEDULES, JSON.stringify(initialSchedules))
+      return { initialSchedules }
+    }),
     setModifiedSchedules: modifiedSchedules => set(() => {
-      localStorage.setItem(LocalStorageKey.ARRANGE_ROSTER_SCHEDULES, JSON.stringify(modifiedSchedules))
+      localStorage.setItem(LocalStorageKey.ARRANGE_ROSTER_MODIFIED_SCHEDULES, JSON.stringify(modifiedSchedules))
       return { modifiedSchedules }
     }),
     setIsGenerated: isGenerated => set(() => ({ isGenerated })),
