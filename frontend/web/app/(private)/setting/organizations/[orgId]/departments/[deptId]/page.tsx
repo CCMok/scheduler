@@ -1,6 +1,6 @@
 import { Param } from "@/libs/share/_general/enums/param"
 import { ParamProps } from "@/libs/share/_general/props/param-props"
-import IndividualSettingLayout from '@/components/_general/layout/setting/individual-setting-layout';
+import QueryTabLayout from '@/components/_general/layout/setting/query-tab-layout';
 import { notFound } from "next/navigation";
 import { PATH } from "@/libs/share/_general/utils/path";
 import PostsSequenceSection from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/posts/sequence/posts-sequence-section";
@@ -28,16 +28,25 @@ export default async function OrgDeptSettingPage({
   if (isNaN(deptId)) notFound();
 
   return (
-    <IndividualSettingLayout
-      title={<DepartmentName id={deptId} failNotFound />}
+    <QueryTabLayout
       breadcrumbItems={[
         {
+          key: 'setting',
+          label: '設定',
+        },
+        {
+          key: 'organizations',
           label: '組織',
           href: PATH.setting.organizations.base,
         },
         {
+          key: 'organization',
           label: <OrganizationName id={orgId} failNotFound />,
           href: PATH.setting.organizations.build(orgId),
+        },
+        {
+          key: 'department',
+          label: <DepartmentName id={deptId} failNotFound />,
         },
       ]}
       tabs={[

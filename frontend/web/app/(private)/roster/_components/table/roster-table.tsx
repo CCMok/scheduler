@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import {
   DndContext,
   closestCenter,

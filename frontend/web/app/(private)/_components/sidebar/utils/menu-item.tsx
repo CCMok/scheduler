@@ -1,5 +1,5 @@
 import { PATH } from "@/libs/share/_general/utils/path";
-import { Calendar, Home, Settings } from "lucide-react";
+import { Calendar, Settings } from "lucide-react";
 import { ReactNode } from "react";
 
 export type Icon = {

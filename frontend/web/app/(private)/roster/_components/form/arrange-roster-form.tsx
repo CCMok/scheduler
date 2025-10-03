@@ -48,7 +48,6 @@ export default function ArrangeRosterForm() {
 
   useEffect(() => {
     if (firstRendered.current) return
-
     firstRendered.current = true
 
     const localStorageValueString = localStorage.getItem(LocalStorageKey.ARRANGE_ROSTER_FORM)
@@ -72,7 +71,7 @@ export default function ArrangeRosterForm() {
     setTimeout(() => {
       setByPassDependencyReset(false)
     }, 0)
-  }, [form])
+  }, [form, setByPassDependencyReset])
 
   const onSubmit = async (input: ArrangeRosterFormInput) => {
     if (isGenerated) {

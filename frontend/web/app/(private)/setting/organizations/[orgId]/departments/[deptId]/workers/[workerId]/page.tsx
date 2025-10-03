@@ -1,7 +1,7 @@
 import { ParamProps } from "@/libs/share/_general/props/param-props";
 import { Param } from "@/libs/share/_general/enums/param";
 import { notFound } from "next/navigation";
-import IndividualSettingLayout from '@/components/_general/layout/setting/individual-setting-layout';
+import QueryTabLayout from '@/components/_general/layout/setting/query-tab-layout';
 import { PATH } from "@/libs/share/_general/utils/path";
 import PostsSection from "./_components/posts/posts-section";
 import DepartmentName from "@/components/department/department-name";
@@ -21,8 +21,8 @@ export default async function WorkerSettingPage({
 }: Readonly<Props>) {
   const awaitedParams = await params;
 
-  const id = Number(awaitedParams.workerId);
-  if (isNaN(id)) notFound();
+  const workerId = Number(awaitedParams.workerId);
+  if (isNaN(workerId)) notFound();
 
   const deptId = Number(awaitedParams.deptId);
   if (isNaN(deptId)) notFound();
@@ -31,34 +31,44 @@ export default async function WorkerSettingPage({
   if (isNaN(orgId)) notFound();
 
   return (
-    <IndividualSettingLayout
-      title={<WorkerName id={id} failNotFound />}
+    <QueryTabLayout
       breadcrumbItems={[
         {
+          key: 'setting',
+          label: '設定',
+        },
+        {
+          key: 'organizations',
           label: '組織',
           href: PATH.setting.organizations.base,
         },
         {
+          key: 'organization',
           label: <OrganizationName id={orgId} failNotFound />,
           href: PATH.setting.organizations.build(orgId),
         },
         {
+          key: 'department',
           label: <DepartmentName id={deptId} failNotFound />,
           href: PATH.setting.organizations.departments.build(orgId, deptId),
+        },
+        {
+          key: 'worker',
+          label: <WorkerName id={workerId} failNotFound />,
         },
       ]}
       tabs={[
         {
           value: 'info',
           label: '基本資料',
-          content: <UpdateWorkerNameSectionServer id={id} />,
+          content: <UpdateWorkerNameSectionServer id={workerId} />,
         },
         {
           value: 'posts',
           label: '職位',
           content: <PostsSection
             departmentId={deptId}
-            workerId={id}
+            workerId={workerId}
           />,
         },
       ]}

@@ -1,26 +1,22 @@
 import QueryTab from '@/components/_general/tab/query-tab';
 import { BreadcrumbItem } from "@/libs/share/_general/models/breadcrumb-item";
 import { Tab } from "@/libs/share/_general/models/tab";
-import BreadcrumbHeaderLayout from './breadcrumb-header-layout';
-import { ReactNode } from 'react';
+import SidebarInsetLayout from '../sidebar-inset/sidebar-inset-layout';
 
 type Props = {
-  title?: ReactNode;
   breadcrumbItems?: BreadcrumbItem[];
   tabs?: Tab[];
 }
 
-export default function IndividualSettingLayout({
-  title,
+export default function QueryTabLayout({
   breadcrumbItems,
   tabs,
 }: Readonly<Props>) {
   return (
-    <BreadcrumbHeaderLayout
+    <SidebarInsetLayout
       breadcrumbItems={breadcrumbItems}
-      current={title}
     >
       {tabs && <QueryTab tabs={tabs} />}
-    </BreadcrumbHeaderLayout>
+    </SidebarInsetLayout>
   )
 }
