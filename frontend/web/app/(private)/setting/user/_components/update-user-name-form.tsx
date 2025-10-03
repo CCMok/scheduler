@@ -30,7 +30,7 @@ export default function UpdateUserNameForm({
   const form = useForm({
     resolver: zodResolver(updateUserNameFormInputSchema),
     defaultValues: {
-      name: '',
+      name: userName,
     },
   })
 
@@ -78,7 +78,9 @@ export default function UpdateUserNameForm({
     })
 
     router.refresh()
-    form.reset();
+    form.reset({
+      name: input.name,
+    });
   }
 
   return (
@@ -100,7 +102,7 @@ export default function UpdateUserNameForm({
                   <FormControl>
                     <CustomInput
                       autoComplete='nickname'
-                      placeholder={userName || '用戶名稱'}
+                      placeholder={'用戶名稱'}
                       {...field}
                     />
                   </FormControl>
