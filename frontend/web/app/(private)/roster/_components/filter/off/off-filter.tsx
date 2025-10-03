@@ -45,22 +45,26 @@ export default function OffFilter() {
     getRowId: row => row.id,
   });
 
+  const AddButton = () => (
+    <CustomButton
+      variant='outline'
+      onClick={onClickAppend}
+    >
+      <Plus />新增
+    </CustomButton>
+  )
+
   return (
     <Card>
       <CardContent className='space-y-2'>
         <div className='flex items-center justify-between'>
           <span className='font-semibold'>請假</span>
-          <CustomButton
-            variant='outline'
-            onClick={onClickAppend}
-          >
-            <Plus />新增
-          </CustomButton>
+          <AddButton />
         </div>
         <CustomTable
           table={table}
           hasPagination={false}
-          noDataDisplay='新增請假人員'
+          noDataDisplay={<AddButton />}
         />
       </CardContent>
     </Card>
