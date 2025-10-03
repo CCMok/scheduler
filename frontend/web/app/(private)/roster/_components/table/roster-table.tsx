@@ -68,11 +68,11 @@ export default function RosterTable() {
       collisionDetection={closestCenter}
       onDragEnd={onDragEnd}
     >
-      <Table className='table-fixed'>
+      <Table>
         <TableCaption>此值班表由系統產生，可以拖放，或連按兩次編輯。</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>職位</TableHead>
+            <TableHead className='w-[100px]'>職位</TableHead>
             {days.map(day =>
               <TableHead key={day} className='text-center'>{format(day, 'yyyy-MM-dd')}</TableHead>
             )}

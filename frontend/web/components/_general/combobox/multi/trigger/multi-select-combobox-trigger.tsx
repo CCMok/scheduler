@@ -18,7 +18,7 @@ export default function MultiSelectComboboxTrigger<T>() {
       <FormControl>
         <CustomButton
           role='combobox'
-          className={cn("flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto min-w-(--input-width)")}
+          className={cn("flex w-(--input-width) p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto min-w-(--input-width)")}
         >
           {values.length
             ? <TriggerValueDisplay />
