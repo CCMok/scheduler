@@ -1,28 +1,27 @@
 'use client';
 
 import { useArrangeRosterStore } from "@/app/(private)/roster/_components/store/arrange-roster-store-provider";
-import { RotateCcw } from "lucide-react";
+import { BrushCleaning } from "lucide-react";
 import { AlertDialogTrigger } from "@/external/shadcn/components/ui/alert-dialog";
 import CustomButton from '@/components/_general/button/custom-button';
 import ConfirmDialog from '@/components/_general/dialog/confirm-dialog';
 
-export default function RosterTableResetButton() {
-  const initialSchedules = useArrangeRosterStore(state => state.initialSchedules);
-  const setModifiedSchedules = useArrangeRosterStore(state => state.setModifiedSchedules);
+export default function RosterTableCleanButton() {
+  const reset = useArrangeRosterStore(state => state.reset);
 
   const onContinue = () =>
-    setModifiedSchedules(initialSchedules)
+    reset()
 
   return (
     <ConfirmDialog
-      title='確定要重置值班表嗎?'
-      description='重置將會回復至系統產生的編排，沒有儲存的資料將會遺失，請確認是否繼續。'
+      title='確定要清除值班表嗎?'
+      description='清除將會清除所有編排，沒有儲存的資料將會遺失，請確認是否繼續。'
       onContinue={onContinue}
     >
       <AlertDialogTrigger asChild>
         <CustomButton variant='secondary'>
-          <RotateCcw />
-          重置
+          <BrushCleaning />
+          清除
         </CustomButton>
       </AlertDialogTrigger>
     </ConfirmDialog>

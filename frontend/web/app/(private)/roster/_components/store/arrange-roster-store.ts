@@ -17,6 +17,7 @@ export type ArrangeRosterActions = {
   setInitialSchedules: (initialSchedules: PostBaseSchedule[]) => void,
   setModifiedSchedules: (modifiedSchedules: PostBaseSchedule[]) => void,
   setIsGenerated: (isGenerated: boolean) => void,
+  reset: () => void,
 }
 
 export type ArrangeRosterStore = ArrangeRosterState & ArrangeRosterActions
@@ -48,5 +49,11 @@ export const createArrangeRosterStore = (
       return { modifiedSchedules }
     }),
     setIsGenerated: isGenerated => set(() => ({ isGenerated })),
+    reset: () => set(() => {
+      localStorage.removeItem(LocalStorageKey.ARRANGE_ROSTER_GENERATED_DEPARTMENT_ID)
+      localStorage.removeItem(LocalStorageKey.ARRANGE_ROSTER_INITIAL_SCHEDULES)
+      localStorage.removeItem(LocalStorageKey.ARRANGE_ROSTER_MODIFIED_SCHEDULES)
+      return defaultInitState
+    })
   }))
 }

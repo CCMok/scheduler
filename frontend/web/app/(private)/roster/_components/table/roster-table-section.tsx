@@ -4,6 +4,7 @@ import { useArrangeRosterStore } from '@/app/(private)/roster/_components/store/
 import RosterTable from './roster-table';
 import RosterTableSaveButton from './save-button/roster-table-save-button';
 import RosterTableResetButton from './roster-table-reset-button';
+import RosterTableCleanButton from './roster-table-clean-button';
 
 export default function RosterTableSection() {
   const isGenerated = useArrangeRosterStore(state => state.isGenerated);
@@ -14,6 +15,7 @@ export default function RosterTableSection() {
     <section>
       <RosterTable />
       <div className='flex justify-end mt-2 space-x-2'>
+        <RosterTableCleanButton />
         <RosterTableResetButton />
         <RosterTableSaveButton />
       </div>

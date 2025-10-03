@@ -1,7 +1,7 @@
 import { Badge } from "@/external/shadcn/components/ui/badge";
 import { MAX_DISPLAY_COUNT } from "@/libs/client/_general/constants/display-constant";
 import { WorkerConstraintWorkerWorker } from "@/libs/server/worker-constraint/models/worker-constraint-dao";
-import { BriefcaseBusiness } from "lucide-react";
+import { User } from "lucide-react";
 
 type Props = {
   workerConstraintWorkers: WorkerConstraintWorkerWorker[];
@@ -16,7 +16,7 @@ export default function WorkerConstraintTableWorker({
     <div className='space-x-1'>
       {displayWorkers.map(workerConstraintWorker => (
         <Badge key={workerConstraintWorker.id}>
-          <BriefcaseBusiness />
+          <User />
           {workerConstraintWorker.worker.name}
         </Badge>
       ))}
