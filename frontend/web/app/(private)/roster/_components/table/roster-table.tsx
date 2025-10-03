@@ -5,10 +5,11 @@ import {
   DndContext,
   closestCenter,
   KeyboardSensor,
-  PointerSensor,
   useSensor,
   useSensors,
   DragEndEvent,
+  TouchSensor,
+  MouseSensor,
 } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -35,7 +36,17 @@ export default function RosterTable() {
   const setModifiedSchedules = useArrangeRosterStore(state => state.setModifiedSchedules);
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 150,
+        tolerance: 8,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })

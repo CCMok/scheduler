@@ -37,7 +37,7 @@ export default function RosterTableSortableCell({
       ref={setNodeRef}
       style={style}
       className={cn(
-        'text-center cursor-grab touch-none',
+        'text-center cursor-grab',
         isDragging && 'opacity-50',
       )}
       {...attributes}
