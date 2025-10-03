@@ -31,9 +31,9 @@ export default function NewPasswordFormField<TFormData extends FieldValues = Fie
       name={name}
       render={({ field: { onBlur, ...rest } }) => (
         <CustomFormItem {...formItemProps}>
-          <FormControl>
-            <Tooltip open={isTooltipOpen}>
-              <TooltipTrigger asChild>
+          <Tooltip open={isTooltipOpen}>
+            <TooltipTrigger asChild>
+              <FormControl>
                 <CustomInput
                   type='password'
                   autoComplete='new-password'
@@ -46,19 +46,19 @@ export default function NewPasswordFormField<TFormData extends FieldValues = Fie
                   {...rest}
                   {...inputProps}
                 />
-              </TooltipTrigger>
-              <TooltipContent>
-                <ul className='list-decimal pl-4'>
-                  <li>最少{PASSWORD_MIN_LENGTH}個字符</li>
-                  <li>最多{PASSWORD_MAX_LENGTH}個字符</li>
-                  <li>大寫字母</li>
-                  <li>小寫字母</li>
-                  <li>數字</li>
-                  <li>特殊字符 (@$!%*?&)</li>
-                </ul>
-              </TooltipContent>
-            </Tooltip>
-          </FormControl>
+              </FormControl>
+            </TooltipTrigger>
+            <TooltipContent>
+              <ul className='list-decimal pl-4'>
+                <li>最少{PASSWORD_MIN_LENGTH}個字符</li>
+                <li>最多{PASSWORD_MAX_LENGTH}個字符</li>
+                <li>大寫字母</li>
+                <li>小寫字母</li>
+                <li>數字</li>
+                <li>特殊字符 (@$!%*?&)</li>
+              </ul>
+            </TooltipContent>
+          </Tooltip>
         </CustomFormItem>
       )}
     />
