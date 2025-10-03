@@ -68,7 +68,7 @@ export default function RosterTableSelectionCell({
   }
 
   return (
-    <TableCell ref={ref} {...props}>
+    <TableCell ref={ref} className='w-[100px]' {...props}>
       <ComboBox
         value={arrangement.worker?.id.toString() ?? ''}
         options={generatedScheduleWorkers}
