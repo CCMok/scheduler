@@ -2,27 +2,19 @@
 
 import { Card, CardContent } from "@/external/shadcn/components/ui/card"
 import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
-import { Plus } from "lucide-react";
 import { useFieldArray, useFormContext } from "react-hook-form"
-import CustomButton from '@/components/_general/button/custom-button';
-import { useArrangeRosterFilterStore } from "@/app/(private)/roster/_components/filter/store/arrange-roster-filter-store-provider";
 import useTable from '@/components/_general/table/use-table';
 import CustomTable from '@/components/_general/table/custom-table';
 import { createOffFilterColumns } from './off-filter-table-column';
 import { useMemo, useCallback } from 'react';
+import OffFilterAddButton from "./off-filter-add-button";
 
 export default function OffFilter() {
   const { control } = useFormContext<ArrangeRosterFormInput>();
-  const workers = useArrangeRosterFilterStore(state => state.workers);
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'offs',
-  })
-
-  const onClickAppend = () => append({
-    workerId: workers.length ? workers[0].id.toString() : '',
-    days: [],
   })
 
   const onClickRemove = useCallback((index: number) => remove(index), [remove])
@@ -45,26 +37,17 @@ export default function OffFilter() {
     getRowId: row => row.id,
   });
 
-  const AddButton = () => (
-    <CustomButton
-      variant='outline'
-      onClick={onClickAppend}
-    >
-      <Plus />新增
-    </CustomButton>
-  )
-
   return (
     <Card>
       <CardContent className='space-y-2'>
         <div className='flex items-center justify-between'>
           <span className='font-semibold'>請假</span>
-          <AddButton />
+          <OffFilterAddButton onAppend={append} />
         </div>
         <CustomTable
           table={table}
           hasPagination={false}
-          noDataDisplay={<AddButton />}
+          noDataDisplay={<OffFilterAddButton onAppend={append} />}
         />
       </CardContent>
     </Card>
