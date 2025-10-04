@@ -12,6 +12,7 @@ import FormSubmitButton from '@/components/_general/form/form-submit-button';
 import CustomInput from '@/components/_general/input/custom-input';
 import { REDIRECT_PRIVATE_PATH } from '@/libs/share/_general/utils/path';
 import { handleServiceResponse } from '@/libs/share/_general/utils/service-response-handler';
+import { LocalStorageKey } from '@/libs/client/_general/enums/local-storage-key';
 
 const inputClassName = 'w-full'
 
@@ -34,6 +35,12 @@ export default function LoginForm() {
       form.setError('root', { type: uiResponse.message.title, message: uiResponse.message.content })
       return;
     }
+
+    // Remove user specific item
+    localStorage.removeItem(LocalStorageKey.ARRANGE_ROSTER_FORM)
+    localStorage.removeItem(LocalStorageKey.ARRANGE_ROSTER_INITIAL_SCHEDULES)
+    localStorage.removeItem(LocalStorageKey.ARRANGE_ROSTER_MODIFIED_SCHEDULES)
+    localStorage.removeItem(LocalStorageKey.ARRANGE_ROSTER_GENERATED_DEPARTMENT_ID)
 
     router.push(REDIRECT_PRIVATE_PATH)
   }
