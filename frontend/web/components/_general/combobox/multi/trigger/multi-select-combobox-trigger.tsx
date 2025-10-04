@@ -6,7 +6,7 @@ import { PopoverTrigger } from "@/external/shadcn/components/ui/popover";
 import { useMultiSelectComboboxContext } from "../multi-select-combobox-context";
 import TriggerEmptyDisplay from "./trigger-empty-display";
 import TriggerValueDisplay from "./trigger-value-display";
-import CustomButton from '@/components/_general/button/custom-button';
+import PlainButton from "@/components/_general/button/plain-button";
 
 export default function MultiSelectComboboxTrigger<T>() {
   const {
@@ -16,7 +16,7 @@ export default function MultiSelectComboboxTrigger<T>() {
   return (
     <PopoverTrigger asChild>
       <FormControl>
-        <CustomButton
+        <PlainButton
           role='combobox'
           className={cn("flex w-(--input-width) p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto min-w-(--input-width)")}
         >
@@ -24,7 +24,7 @@ export default function MultiSelectComboboxTrigger<T>() {
             ? <TriggerValueDisplay />
             : <TriggerEmptyDisplay />
           }
-        </CustomButton>
+        </PlainButton>
       </FormControl>
     </PopoverTrigger>
   )
