@@ -18,8 +18,10 @@ export default function LoadingButton({
       disabled={isLoading}
       {...props}
     >
-      {isLoading ? <Loader2 className='animate-spin' /> : icon}
-      {children}
+      <>
+        {isLoading ? <Loader2 className='animate-spin' /> : icon}
+        {children}
+      </>
     </CustomButton>
   )
 }
