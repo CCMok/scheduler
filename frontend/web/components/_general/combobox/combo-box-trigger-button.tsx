@@ -1,9 +1,9 @@
 import { ComponentProps } from "react"
 import { cn } from "@/external/shadcn/libs/utils"
 import { ChevronDown } from "lucide-react"
-import CustomButton from "../button/custom-button"
+import PlainButton from "../button/plain-button"
 
-type Props = Exclude<ComponentProps<typeof CustomButton>, 'children'> & {
+type Props = Exclude<ComponentProps<typeof PlainButton>, 'children'> & {
   value?: string,
   display: string,
 }
@@ -14,7 +14,7 @@ export default function ComboBoxTriggerButton({
   ...props
 }: Readonly<Props>) {
   return (
-    <CustomButton
+    <PlainButton
       variant='outline'
       role='comobox'
       className={cn(
@@ -23,8 +23,10 @@ export default function ComboBoxTriggerButton({
       )}
       {...props}
     >
+      <>
       {display}
       <ChevronDown className="opacity-50" />
-    </CustomButton>
+      </>
+    </PlainButton>
   )
 }

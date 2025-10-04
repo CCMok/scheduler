@@ -14,8 +14,10 @@ export default async function RosterPage() {
     ]}>
       <ArrangeRosterStoreProvider>
         <ArrangeRosterStoreHandler />
-        <RosterFilterSection />
-        <RosterTableSection />
+        <div className="space-y-4">
+          <RosterFilterSection />
+          <RosterTableSection />
+        </div>
       </ArrangeRosterStoreProvider>
     </SidebarInsetLayout>
   )
