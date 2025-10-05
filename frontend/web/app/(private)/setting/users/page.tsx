@@ -20,7 +20,9 @@ export default async function UsersPage() {
       ]}
     >
       <CustomCard>
-        <UserFilter />
+        <Suspense>
+          <UserFilter />
+        </Suspense>
         <Suspense fallback={<TableSkeleton />}>
           <UserTableServer />
         </Suspense>
