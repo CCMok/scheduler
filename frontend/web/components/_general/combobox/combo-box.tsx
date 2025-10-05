@@ -70,8 +70,8 @@ export default function ComboBox<T>({
                   <CustomCommandItem
                     key={itemValue}
                     value={displayName}
-                    onSelect={() => {
-                      onValueChange(itemValue)
+                    onSelect={selectValue => {
+                      onValueChange(value === itemValue ? '' : itemValue)
                       setIsOpen(false)
                     }}
                   >

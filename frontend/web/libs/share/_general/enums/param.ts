@@ -5,4 +5,6 @@ export enum Param {
   POST_ID = 'postId',
   WORKER_ID = 'workerId',
   NAME = 'name',
+  EMAIL = 'email',
+  ROLE_NAME = 'roleName',
 }

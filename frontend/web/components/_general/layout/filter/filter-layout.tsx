@@ -11,7 +11,7 @@ export default function FilterLayout({
 }: Readonly<Props>) {
   return (
     <div className='flex items-end gap-2'>
-      <div className='flex-1 flex gap-4'>
+      <div className='flex-1 flex gap-4 flex-wrap'>
         {children}
       </div>
       <div className='flex gap-2'>

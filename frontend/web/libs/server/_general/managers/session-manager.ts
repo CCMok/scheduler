@@ -1,6 +1,6 @@
 import 'server-only'
 import { issueToken, TokenPayload, verifyToken } from "./jwt-manager";
-import { UserRole } from "../../user/models/user-models";
+import { UserRole } from "../../user/models/user-dao";
 import { SessionPayload } from "../models/session-payload";
 import { deleteCookie, getCookie, setCookie } from './cookie-manager';
 
