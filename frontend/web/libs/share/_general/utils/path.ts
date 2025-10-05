@@ -4,7 +4,7 @@ const enum PathSegment {
   DASHBOARD = 'dashboard',
   ROSTER = 'roster',
   SETTING = 'setting',
-  USER = 'user',
+  USERS = 'users',
   ORGANIZATION = 'organization',
   ORGANIZATIONS = 'organizations',
   DEPARTMENT = 'department',
@@ -13,6 +13,7 @@ const enum PathSegment {
   POSTS = 'posts',
   WORKER = 'worker',
   WORKERS = 'workers',
+  GENERAL = 'general',
 }
 
 export const PATH = {
@@ -23,7 +24,7 @@ export const PATH = {
   roster: `/${PathSegment.ROSTER}`,
 
   setting: {
-    user: `/${PathSegment.SETTING}/${PathSegment.USER}`,
+    general: `/${PathSegment.SETTING}/${PathSegment.GENERAL}`,
     organizations: {
       base: `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}`,
       build: (orgId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${orgId}`,
@@ -33,6 +34,7 @@ export const PATH = {
         workers: (orgId: string | number, deptId: string | number, workerId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${orgId}/${PathSegment.DEPARTMENTS}/${deptId}/${PathSegment.WORKERS}/${workerId}`,
       },
     },
+    users: `/${PathSegment.SETTING}/${PathSegment.USERS}`,
   }
 } as const
 

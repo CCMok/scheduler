@@ -21,11 +21,6 @@ export type IconMenuItem = MenuItem & Icon
 export type MainItem = IconMenuItem | IconParentItem
 
 export const MENU_ITEMS: MainItem[] = [
-  // {
-  //   title: "主頁",
-  //   icon: <Home />,
-  //   url: PATH.dashboard,
-  // },
   {
     title: "值班表",
     icon: <Calendar />,
@@ -36,12 +31,16 @@ export const MENU_ITEMS: MainItem[] = [
     icon: <Settings />,
     children: [
       {
-        title: '用戶',
-        url: PATH.setting.user,
+        title: '一般',
+        url: PATH.setting.general,
       },
       {
         title: '組織',
         url: PATH.setting.organizations.base,
+      },
+      {
+        title: '用戶',
+        url: PATH.setting.users,
       },
     ],
   },

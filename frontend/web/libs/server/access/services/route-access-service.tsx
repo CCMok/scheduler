@@ -9,7 +9,7 @@ const ROLE_ACCESS_RULES: Map<Role, string[]> = new Map([
     PATH.home,
     PATH.dashboard,
     PATH.roster,
-    PATH.setting.user,
+    PATH.setting.general,
     PATH.setting.organizations.base,
     PATH.setting.organizations.build('*'),
     PATH.setting.organizations.departments.build('*', '*'),
@@ -20,7 +20,7 @@ const ROLE_ACCESS_RULES: Map<Role, string[]> = new Map([
     PATH.home,
     PATH.dashboard,
     PATH.roster,
-    PATH.setting.user,
+    PATH.setting.general,
   ]],
 ]);
 

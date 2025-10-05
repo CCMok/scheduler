@@ -17,8 +17,8 @@ export default async function UserSettingPage() {
           label: '設定',
         },
         {
-          key: 'user',
-          label: '用戶',
+          key: 'general',
+          label: '一般',
         },
       ]}
     >
