@@ -1,6 +1,6 @@
 'use client'
 
-import CustomButton from '@/components/_general/button/custom-button'
+import PlainButton from '@/components/_general/button/plain-button'
 import CustomFormItem from '@/components/_general/form/custom-form-item'
 import { Calendar } from "@/external/shadcn/components/ui/calendar"
 import { FormControl, FormField } from "@/external/shadcn/components/ui/form"
@@ -23,7 +23,7 @@ export default function DaysFormField() {
             <Popover>
               <PopoverTrigger asChild>
                 <FormControl>
-                  <CustomButton
+                  <PlainButton
                     variant={"outline"}
                     className={cn(
                       "w-(--input-width)",
@@ -36,7 +36,7 @@ export default function DaysFormField() {
                       <span>選擇</span>
                     )}
                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                  </CustomButton>
+                  </PlainButton>
                 </FormControl>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
