@@ -3,6 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
 import OrganizationTableRowAction from "./organization-table-row-action";
 import { Role } from "@/libs/share/_general/enums/role";
+import InlineEditableCell from "@/components/_general/table/inline-editable-cell";
 
 export enum OrganizationTableId {
   NAME = 'name',
@@ -17,6 +18,9 @@ export const getColumns = (role?: Role): ColumnDef<Organization>[] => [
         title="組織名稱"
         column={column}
       />
+    ),
+    cell: ({ row }) => (
+      <InlineEditableCell value={row.original.name} />
     ),
   },
   {
