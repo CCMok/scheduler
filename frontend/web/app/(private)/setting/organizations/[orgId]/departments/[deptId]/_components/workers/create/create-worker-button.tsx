@@ -10,7 +10,6 @@ import { createWorkerAction } from "@/libs/server/worker/actions/create-worker-a
 import { Param } from '@/libs/share/_general/enums/param';
 import { useParams, useRouter } from 'next/navigation';
 import { Id } from '@/libs/server/_general/models/id';
-import { PATH } from '@/libs/share/_general/utils/path';
 
 export default function CreateWorkerButton() {
   const form = useForm({
@@ -38,8 +37,8 @@ export default function CreateWorkerButton() {
     })
   }
 
-  const onSuccess = (id: Id) => {
-    router.push(PATH.setting.organizations.departments.workers(orgId, deptId, id))
+  const onSuccess = () => {
+    router.refresh()
   }
 
   return (

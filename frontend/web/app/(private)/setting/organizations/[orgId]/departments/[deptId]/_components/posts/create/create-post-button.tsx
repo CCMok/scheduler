@@ -8,7 +8,6 @@ import CreatePostFields from "./create-post-fields";
 import { ServiceResponse } from "@/libs/share/_general/models/service-response";
 import { createPostAction } from "@/libs/server/post/actions/create-post-action";
 import { useParams, useRouter } from "next/navigation";
-import { PATH } from '@/libs/share/_general/utils/path';
 import { Param } from '@/libs/share/_general/enums/param';
 import { Id } from '@/libs/server/_general/models/id';
 
@@ -38,8 +37,8 @@ export default function CreatePostButton() {
     })
   }
 
-  const onSuccess = (id: Id) => {
-    router.push(PATH.setting.organizations.departments.posts(orgId, deptId, id))
+  const onSuccess = () => {
+    router.refresh()
   }
 
   return (

@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { ServiceResponse } from "@/libs/share/_general/models/service-response";
 import { useParams, useRouter } from "next/navigation";
-import { PATH } from '@/libs/share/_general/utils/path';
 import { Param } from '@/libs/share/_general/enums/param';
 import { Id } from '@/libs/server/_general/models/id';
 import { CreateDepartmentFormInput, createDepartmentFormInputSchema } from '@/libs/client/department/models/create-department-form-input';
@@ -37,8 +36,8 @@ export default function CreateDepartmentButton() {
     })
   }
 
-  const onSuccess = (id: Id) => {
-    router.push(PATH.setting.organizations.departments.build(orgId, id))
+  const onSuccess = () => {
+    router.refresh()
   }
 
   return (

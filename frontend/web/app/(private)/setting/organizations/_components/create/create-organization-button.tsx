@@ -3,7 +3,6 @@
 import CreateDialog from '@/components/_general/dialog/create-dialog';
 import { CreateOrganizationFormInput, createOrganizationFormInputSchema } from '@/libs/client/organization/models/create-organization-form-input';
 import { Id } from '@/libs/server/_general/models/id';
-import { PATH } from '@/libs/share/_general/utils/path';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -27,8 +26,8 @@ export default function CreateOrganizationButton() {
     })
   }
 
-  const onSuccess = (id: Id) => {
-    router.push(PATH.setting.organizations.build(id))
+  const onSuccess = () => {
+    router.refresh()
   }
 
   return (
