@@ -49,7 +49,7 @@ async function PostsSectionContent({
   const assignablePosts = departmentPosts.filter(post => !workerPosts.some(workerPost => workerPost.id === post.id));
 
   return (
-    <CustomCard title="職位">
+    <CustomCard>
       <PostFilter button={<AssignPostDialog posts={assignablePosts} />} />
       <WorkerPostTable
         posts={workerPosts}
