@@ -30,18 +30,9 @@ export default function UserTable({
       desc: false,
     }],
     defaultColumnFilters: [
-      {
-        id: UserTableId.EMAIL,
-        value: email ?? '',
-      },
-      {
-        id: UserTableId.NAME,
-        value: name ?? '',
-      },
-      {
-        id: UserTableId.ROLE_NAME,
-        value: roleName ?? '',
-      }
+      ...(email ? [{ id: UserTableId.EMAIL, value: email }] : []),
+      ...(name ? [{ id: UserTableId.NAME, value: name }] : []),
+      ...(roleName ? [{ id: UserTableId.ROLE_NAME, value: roleName }] : []),
     ],
   })
 

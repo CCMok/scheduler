@@ -30,10 +30,9 @@ export default function OrganizationTable({
       id: OrganizationTableId.NAME,
       desc: false,
     }],
-    defaultColumnFilters: [{
-      id: OrganizationTableId.NAME,
-      value: name ?? '',
-    }],
+    defaultColumnFilters: [
+      ...(name ? [{ id: OrganizationTableId.NAME, value: name }] : []),
+    ],
   })
 
   useEffect(() => {

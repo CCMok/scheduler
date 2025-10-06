@@ -1,5 +1,5 @@
 import FilterLayout from '@/components/_general/layout/filter/filter-layout';
-import OrganizationNameQueryInput from "./organization-name-query-input";
+import OrganizationNameQueryInput from "../../../../../../components/organization/organization-name-query-input";
 import { ReactNode } from 'react';
 
 type Props = {

@@ -5,7 +5,6 @@ import { WorkersPostWorkerCount } from "@/libs/server/worker/models/worker-dao";
 import { useEffect } from "react";
 import { useSearchParams } from 'next/navigation';
 import { Param } from '@/libs/share/_general/enums/param';
-import { isNil } from 'lodash';
 import { ColumnDef } from '@tanstack/react-table';
 import { WorkerTableId } from './workers-post-count-table-column';
 import CustomTable from '../_general/table/custom-table';
@@ -16,9 +15,12 @@ type Props = {
 }
 
 export default function WorkerPostsCountTable({
-  data =[],
+  data = [],
   columns = [],
 }: Readonly<Props>) {
+  const searchParams = useSearchParams();
+  const name = searchParams.get(Param.NAME);
+
   const table = useTable({
     data,
     columns,
@@ -26,15 +28,13 @@ export default function WorkerPostsCountTable({
       id: WorkerTableId.NAME,
       desc: false,
     }],
+    defaultColumnFilters: [
+      ...(name ? [{ id: WorkerTableId.NAME, value: name }] : []),
+    ],
   })
 
-  const searchParams = useSearchParams();
-  const name = searchParams.get(Param.NAME);
-
   useEffect(() => {
-    if (!isNil(name)) {
-      table.getColumn(WorkerTableId.NAME)?.setFilterValue(name);
-    }
+    table.getColumn(WorkerTableId.NAME)?.setFilterValue(name);
   }, [name, table])
 
   return (

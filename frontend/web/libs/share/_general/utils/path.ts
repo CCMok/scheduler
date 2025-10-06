@@ -34,7 +34,10 @@ export const PATH = {
         workers: (orgId: string | number, deptId: string | number, workerId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${orgId}/${PathSegment.DEPARTMENTS}/${deptId}/${PathSegment.WORKERS}/${workerId}`,
       },
     },
-    users: `/${PathSegment.SETTING}/${PathSegment.USERS}`,
+    users: {
+      base: `/${PathSegment.SETTING}/${PathSegment.USERS}`,
+      build: (userId: string | number) => `/${PathSegment.SETTING}/${PathSegment.USERS}/${userId}`,
+    },
   }
 } as const
 

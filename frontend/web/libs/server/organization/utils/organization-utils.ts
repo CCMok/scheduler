@@ -27,6 +27,7 @@ export const getMaxHistoryCount = async (deptId: number): Promise<number | undef
 
 export const getOrganizationQuery = async (request: GetOrganizationsRequest): Promise<Prisma.OrganizationFindManyArgs> => {
   const id = await getOrgIdFilter(request.where?.id);
+  const userOrganizationWhereClause = getUserOrganizationWhereClause(request);
   const orderBy = getOrderByClause(request);
 
   return {
@@ -34,9 +35,21 @@ export const getOrganizationQuery = async (request: GetOrganizationsRequest): Pr
       id,
       name: request.where?.name,
       maxHistoryCount: request.where?.maxHistoryCount,
+      ...userOrganizationWhereClause,
     },
     orderBy,
     take: request.take,
+  }
+}
+
+const getUserOrganizationWhereClause = (request: GetOrganizationsRequest): Prisma.OrganizationWhereInput => {
+  if (isNil(request.where?.userId)) return {};
+  return {
+    userOrganizations: {
+      some: {
+        userId: request.where.userId,
+      },
+    },
   }
 }
 

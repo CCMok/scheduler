@@ -7,6 +7,7 @@ const whereSchema = z.object({
   id: idSchema.optional(),
   name: z.string().optional(),
   maxHistoryCount: z.number().optional(),
+  userId: idSchema.optional(),
 })
 
 export const organizationOrderByFieldSchema = z.enum([

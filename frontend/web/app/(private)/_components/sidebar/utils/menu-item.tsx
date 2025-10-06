@@ -40,7 +40,7 @@ export const MENU_ITEMS: MainItem[] = [
       },
       {
         title: '用戶',
-        url: PATH.setting.users,
+        url: PATH.setting.users.base,
       },
     ],
   },

@@ -17,7 +17,7 @@ export default function SidebarInsetLayout({
         <CustomBreadcrumb {...props} />
       </header>
       <Separator />
-      <main className='p-4 h-full'>
+      <main className='p-4 flex-1 overflow-auto'>
         {children}
       </main>
     </>

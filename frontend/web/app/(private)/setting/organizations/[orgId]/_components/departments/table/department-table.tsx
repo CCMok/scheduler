@@ -6,7 +6,6 @@ import { DepartmentChildrenCount } from '@/libs/server/department/models/departm
 import { useSearchParams } from 'next/navigation';
 import { Param } from '@/libs/share/_general/enums/param';
 import { useEffect } from 'react';
-import { isNil } from 'lodash';
 import CustomTable from '@/components/_general/table/custom-table';
 
 type Props = {
@@ -16,6 +15,9 @@ type Props = {
 export default function DepartmentTable({
   departments,
 }: Readonly<Props>) {
+  const searchParams = useSearchParams();
+  const name = searchParams.get(Param.NAME);
+
   const table = useTable({
     data: departments,
     columns,
@@ -23,15 +25,13 @@ export default function DepartmentTable({
       id: DepartmentTableId.NAME,
       desc: false,
     }],
+    defaultColumnFilters: [
+      ...(name ? [{ id: DepartmentTableId.NAME, value: name }] : []),
+    ],
   })
 
-  const searchParams = useSearchParams();
-  const name = searchParams.get(Param.NAME);
-
   useEffect(() => {
-    if (!isNil(name)) {
-      table.getColumn(DepartmentTableId.NAME)?.setFilterValue(name);
-    }
+    table.getColumn(DepartmentTableId.NAME)?.setFilterValue(name);
   }, [name, table])
 
   return (
