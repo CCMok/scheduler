@@ -19,7 +19,6 @@ const getRole = async (): Promise<Role | undefined> => {
 
 export default async function OrganizationsPage() {
   const role = await getRole();
-  const button = role === Role.SYSTEM_ADMIN ? <CreateOrganizationButton /> : undefined;
 
   return (
     <SidebarInsetLayout
@@ -35,7 +34,7 @@ export default async function OrganizationsPage() {
       ]}
     >
       <CustomCard>
-        <OrganizationFilter button={button} />
+        <OrganizationFilter button={<CreateOrganizationButton />} />
         <Suspense fallback={<TableSkeleton />}>
           <OrganizationTableServer role={role} />
         </Suspense>

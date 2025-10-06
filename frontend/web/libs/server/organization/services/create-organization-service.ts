@@ -9,12 +9,20 @@ import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runti
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { ServiceMessage } from '../../../share/_general/enums/service-message';
 import { Id } from '../../_general/models/id';
+import { getSession } from '../../_general/managers/session-manager';
+import { Role } from '@/libs/share/_general/enums/role';
+import { SessionPayload } from '../../_general/models/session-payload';
 
 export const createOrganizationService = async (request: CreateOrganizationRequest): Promise<ServiceResponse<Id>> =>
   await serviceWrapper(async () => {
     const parsedRequest = createOrganizationRequestSchema.parse(request);
 
-    const executeResponse = await execute(parsedRequest);
+    const session = await getSession();
+    if (!session) return {
+      status: ServiceResponseStatus.UNAUTHORIZED,
+    }
+
+    const executeResponse = await execute(parsedRequest, session);
     if (!executeResponse.isSuccess) {
       return handleQueryError(executeResponse.error)
     }
@@ -25,12 +33,25 @@ export const createOrganizationService = async (request: CreateOrganizationReque
     }
   })
 
-const execute = async (request: CreateOrganizationRequest) =>
+const execute = async (request: CreateOrganizationRequest, session: SessionPayload) =>
   await tryCatchQuery(async () =>
-    await prisma.organization.create({
-      data: {
-        name: request.name,
+    await prisma.$transaction(async tx => {
+      const organization = await prisma.organization.create({
+        data: {
+          name: request.name,
+        }
+      })
+
+      if (session.roleEnum !== Role.SYSTEM_ADMIN) {
+        await tx.userOrganization.create({
+          data: {
+            userId: session.userId,
+            organizationId: organization.id,
+          }
+        })
       }
+
+      return organization;
     })
   )
 
