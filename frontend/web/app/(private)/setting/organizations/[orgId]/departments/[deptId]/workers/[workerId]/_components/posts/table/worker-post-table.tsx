@@ -2,7 +2,7 @@
 
 import { PostsPostWorkersCount } from '@/libs/server/post/models/post-dao';
 import PostWorkersCountTable from '@/components/post/post-workers-count-table';
-import { getActionColumn, nameColumn, workerCountColumn } from "@/components/post/post-workers-count-table-column";
+import { getActionColumn, getNameColumn, workerCountColumn } from "@/components/post/post-workers-count-table-column";
 import WorkerPostTableRowAction from "./worker-post-table-row-action";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -11,7 +11,7 @@ const actionColumn = getActionColumn(({ row }) => (
 ))
 
 const columns: ColumnDef<PostsPostWorkersCount>[] = [
-  nameColumn,
+  getNameColumn(false),
   workerCountColumn,
   actionColumn,
 ]

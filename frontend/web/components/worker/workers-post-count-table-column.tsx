@@ -1,6 +1,7 @@
 import { CellContext, ColumnDef, ColumnDefTemplate } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
 import { WorkersPostWorkerCount } from "@/libs/server/worker/models/worker-dao";
+import WorkerNameCell from "./worker-name-cell";
 
 export enum WorkerTableId {
   NAME = 'name',
@@ -8,12 +9,19 @@ export enum WorkerTableId {
   ACTIONS = 'actions',
 }
 
-export const nameColumn: ColumnDef<WorkersPostWorkerCount> =  {
+export const getNameColumn = (isEditable: boolean): ColumnDef<WorkersPostWorkerCount> => ({
   accessorKey: WorkerTableId.NAME,
   header: ({ column }) => (
     <TableSortableHeader title="人員名稱" column={column} />
   ),
-}
+  ...(isEditable
+    ? {
+      cell: ({ row }) => (
+        <WorkerNameCell id={row.original.id} name={row.original.name} />
+      ),
+    }
+    : {}),
+})
 
 export const postCountColumn: ColumnDef<WorkersPostWorkerCount> = {
   id: WorkerTableId.POST_COUNT,

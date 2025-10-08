@@ -6,7 +6,7 @@ import InlineEditableControl from "@/components/_general/table/inline-editable-c
 import { Form, FormControl, FormField } from "@/external/shadcn/components/ui/form";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { UpdateNameFormInput, updateNameFormInputSchema } from "@/libs/client/setting/models/update-name-form-input";
-import { updateOrganizationNameAction } from "@/libs/server/organization/actions/update-organization-name-action";
+import { updateWorkerNameAction } from "@/libs/server/worker/actions/update-worker-name-action";
 import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,7 +19,7 @@ type Props = {
   name: string;
 }
 
-export default function OrganizationNameCell({
+export default function WorkerNameCell({
   id,
   name,
 }: Readonly<Props>) {
@@ -38,7 +38,7 @@ export default function OrganizationNameCell({
       return
     }
 
-    const response = await updateOrganizationNameAction({
+    const response = await updateWorkerNameAction({
       id,
       name: input.name,
     })
@@ -52,7 +52,7 @@ export default function OrganizationNameCell({
       return
     }
 
-    toast.success('更改組織名稱' + UiMessageTitle.SUCCESS, {
+    toast.success('更改人員名稱' + UiMessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
     })
 

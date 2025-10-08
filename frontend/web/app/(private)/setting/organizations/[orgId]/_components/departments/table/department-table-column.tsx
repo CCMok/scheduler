@@ -3,6 +3,7 @@ import TableSortableHeader from '@/components/_general/table/table-sortable-head
 import { DepartmentChildrenCount } from '@/libs/server/department/models/department-dao';
 import DepartmentTableRowAction from "@/app/(private)/setting/organizations/[orgId]/_components/departments/table/department-table-row-action";
 import { PATH } from "@/libs/share/_general/utils/path";
+import DepartmentNameCell from "./department-name-cell";
 
 export enum DepartmentTableId {
   NAME = 'name',
@@ -16,6 +17,9 @@ export const columns: ColumnDef<DepartmentChildrenCount>[] = [
     accessorKey: DepartmentTableId.NAME,
     header: ({ column }) => (
       <TableSortableHeader title="部門名稱" column={column} />
+    ),
+    cell: ({ row }) => (
+      <DepartmentNameCell id={row.original.id} name={row.original.name} />
     ),
   },
   {
