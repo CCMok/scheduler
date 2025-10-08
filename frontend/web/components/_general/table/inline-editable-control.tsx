@@ -1,11 +1,6 @@
 'use client'
 
-import { useState } from "react";
-import CustomInput from "../input/custom-input";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-
-// TODO: handle mobile scroll
+import { ReactNode, useState } from "react";
 
 type ViewCellProps = {
   value?: string;
@@ -28,30 +23,14 @@ const ViewCell = ({
   )
 }
 
-type EditCellProps = {
-
-}
-
-const EditCell = ({
-
-}) => {
-  // const form = useForm({
-  //   resolver: zodResolver(organizationNameFormInputSchema)
-  // })
-
-  return (
-    <CustomInput
-      value={'Editing'}
-    />
-  )
-}
-
 type Props = {
   value?: string;
+  renderInput?: (close: () => void) => ReactNode;
 }
 
-export default function InlineEditableCell({
+export default function InlineEditableControl({
   value,
+  renderInput,
 }: Readonly<Props>) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -64,5 +43,5 @@ export default function InlineEditableCell({
     )
   }
 
-  return <EditCell />
+  return renderInput ? renderInput(() => setIsEditing(false)) : <></>
 }
