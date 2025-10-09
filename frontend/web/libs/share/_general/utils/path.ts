@@ -14,6 +14,9 @@ const enum PathSegment {
   WORKER = 'worker',
   WORKERS = 'workers',
   GENERAL = 'general',
+
+  // function
+  NEW = 'new',
 }
 
 export const PATH = {
@@ -33,6 +36,7 @@ export const PATH = {
         posts: (orgId: string | number, deptId: string | number, postId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${orgId}/${PathSegment.DEPARTMENTS}/${deptId}/${PathSegment.POSTS}/${postId}`,
         workers: (orgId: string | number, deptId: string | number, workerId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${orgId}/${PathSegment.DEPARTMENTS}/${deptId}/${PathSegment.WORKERS}/${workerId}`,
       },
+      new: `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${PathSegment.NEW}`,
     },
     users: {
       base: `/${PathSegment.SETTING}/${PathSegment.USERS}`,
