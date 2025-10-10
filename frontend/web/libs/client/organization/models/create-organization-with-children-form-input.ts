@@ -3,26 +3,33 @@ import { UiMessageContent } from "../../../share/_general/enums/ui-message";
 import { ServiceMessage } from "@/libs/share/_general/enums/service-message";
 
 export const postFormInputSchema = z.object({
+  tempId: z.string(),
   name: z.string().min(1, UiMessageContent.REQUIRED),
 })
 
 export type PostFormInput = z.infer<typeof postFormInputSchema>
 
 export const workerFormInputSchema = z.object({
+  tempId: z.string(),
   name: z.string().min(1, UiMessageContent.REQUIRED),
 })
 
 export type WorkerFormInput = z.infer<typeof workerFormInputSchema>
+
+export const postWorkerFormInputSchema = z.object({
+  postTempId: z.string(),
+  postName: z.string().min(1, UiMessageContent.REQUIRED),
+  workerTempIds: z.array(z.string()),
+})
+
+export type PostWorkerFormInput = z.infer<typeof postWorkerFormInputSchema>
 
 export const createOrganizationWithChildrenFormInputSchema = z.object({
   name: z.string().min(1, UiMessageContent.REQUIRED),
   departmentName: z.string().min(1, UiMessageContent.REQUIRED),
   posts: z.array(postFormInputSchema),
   workers: z.array(workerFormInputSchema),
-  postWorkers: z.array(z.object({
-    postName: z.string().min(1, UiMessageContent.REQUIRED),
-    workerName: z.string().min(1, UiMessageContent.REQUIRED),
-  })),
+  postWorkers: z.array(postWorkerFormInputSchema),
 }).refine(
   data => {
     const names = data.posts.map(post => post.name);

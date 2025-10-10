@@ -31,7 +31,7 @@ type Props = {
   onClickNext: () => void;
 }
 
-export default function OrganizationBasicInfoSection({
+export default function BasicInfoSection({
   onClickNext,
 }: Readonly<Props>) {
   const { trigger, getValues } = useFormContext<CreateOrganizationWithChildrenFormInput>()

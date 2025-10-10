@@ -11,7 +11,10 @@ type Props = {
 export default function WorkerAddButton({
   onAppend,
 }: Readonly<Props>) {
-  const onClick = () => onAppend({ name: '' })
+  const onClick = () => onAppend({
+    tempId: crypto.randomUUID(),
+    name: '',
+  })
 
   return (
     <CustomButton

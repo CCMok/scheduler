@@ -36,7 +36,7 @@ export const createOrganizationService = async (request: CreateOrganizationReque
 const execute = async (request: CreateOrganizationRequest, session: SessionPayload) =>
   await tryCatchQuery(async () =>
     await prisma.$transaction(async tx => {
-      const organization = await prisma.organization.create({
+      const organization = await tx.organization.create({
         data: {
           name: request.name,
         }

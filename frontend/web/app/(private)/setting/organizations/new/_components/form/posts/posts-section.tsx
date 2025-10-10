@@ -19,7 +19,7 @@ type Props = {
   onClickPrevious: () => void;
 }
 
-export default function CreateOrganizationDepartments({
+export default function PostsSection({
   onClickNext,
   onClickPrevious,
 }: Readonly<Props>) {
@@ -61,6 +61,11 @@ export default function CreateOrganizationDepartments({
         description: errors.posts.message,
       })
     }
+    
+    console.error(errors)
+    toast.error(UiMessageTitle.SYSTEM_ERROR, {
+      ...SONNER_DEFAULT_OPTIONS,
+    })
   }
 
   return (
