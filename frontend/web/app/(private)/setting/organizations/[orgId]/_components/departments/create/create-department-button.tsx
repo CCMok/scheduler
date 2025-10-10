@@ -1,26 +1,13 @@
 'use client'
 
-import CreateDialog from '@/components/_general/dialog/create-dialog';
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Param } from '@/libs/share/_general/enums/param';
-import { Id } from '@/libs/server/_general/models/id';
-import { CreateDepartmentFormInput, createDepartmentFormInputSchema } from '@/libs/client/department/models/create-department-form-input';
-import CreateDepartmentFields from './create-department-fields';
-import { createDepartmentAction } from '@/libs/server/department/actions/create-department-action';
+import CustomButton from '@/components/_general/button/custom-button';
+import CustomLink from '@/components/_general/link/custom-link';
+import { Plus } from 'lucide-react';
+import { PATH } from '@/libs/share/_general/utils/path';
 
 export default function CreateDepartmentButton() {
-  const form = useForm({
-    resolver: zodResolver(createDepartmentFormInputSchema),
-    defaultValues: {
-      name: '',
-    },
-  })
-
-  const router = useRouter();
-
   const params = useParams();
   const orgId = Number(params[Param.ORG_ID]);
 
@@ -29,25 +16,12 @@ export default function CreateDepartmentButton() {
     return <></>
   }
 
-  const submit = async (input: CreateDepartmentFormInput): Promise<ServiceResponse<Id>> => {
-    return await createDepartmentAction({
-      organizationId: orgId,
-      name: input.name,
-    })
-  }
-
-  const onSuccess = () => {
-    router.refresh()
-  }
-
   return (
-    <CreateDialog
-      entityName="部門"
-      form={form}
-      submit={submit}
-      onSuccess={onSuccess}
-    >
-      <CreateDepartmentFields />
-    </CreateDialog>
+    <CustomButton asChild>
+      <CustomLink href={PATH.setting.organizations.departments.new(orgId)}>
+        <Plus />
+        新增
+      </CustomLink>
+    </CustomButton>
   )
 }

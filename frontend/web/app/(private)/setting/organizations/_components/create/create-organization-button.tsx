@@ -1,5 +1,3 @@
-'use client'
-
 import CustomButton from '@/components/_general/button/custom-button';
 import CustomLink from '@/components/_general/link/custom-link';
 import { PATH } from '@/libs/share/_general/utils/path';

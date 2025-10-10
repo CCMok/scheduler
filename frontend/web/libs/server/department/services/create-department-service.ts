@@ -2,7 +2,7 @@ import 'server-only';
 import { ServiceResponse } from "@/libs/share/_general/models/service-response";
 import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import { serviceWrapper } from '../../_general/services/general-service';
-import { CreateDepartmentRequest, createDepartmentRequestSchema } from '../models/create-department-request';
+import { CreateDepartmentRequest, createDepartmentRequestSchema } from '../models/old-create-department-request';
 import prisma from '../../_general/managers/database-manager';
 import { getPrismaErrorTarget, tryCatchQuery } from '../../_general/utils/database-utils';
 import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runtime/library';

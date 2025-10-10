@@ -15,6 +15,7 @@ const ROLE_ACCESS_RULES: Map<Role, string[]> = new Map([
     PATH.setting.organizations.departments.build('*', '*'),
     PATH.setting.organizations.departments.posts('*', '*', '*'),
     PATH.setting.organizations.departments.workers('*', '*', '*'),
+    PATH.setting.organizations.departments.new('*'),
     PATH.setting.organizations.new,
   ]],
   [Role.OPERATOR, [
