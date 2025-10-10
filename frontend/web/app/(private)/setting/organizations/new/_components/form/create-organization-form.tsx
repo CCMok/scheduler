@@ -19,7 +19,6 @@ import { handleServiceResponse } from "@/libs/share/_general/utils/service-respo
 import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
-// TODO: exit page can prompt confirm?
 
 const createRequest = (input: CreateOrganizationFormInput): CreateOrganizationRequest => {
   const posts: PostRequest[] = input.posts.map(post => ({
