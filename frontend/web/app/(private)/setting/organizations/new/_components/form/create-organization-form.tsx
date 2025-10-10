@@ -13,14 +13,47 @@ import PostWorkerSection from "./post-worker/post-worker-section";
 import DependencyHandler from "./dependency-handler";
 import { CreateOrganizationWithChildrenRequest, PostRequest, PostWorkerRequest, WorkerRequest } from "@/libs/server/organization/models/create-organization-with-children-request";
 import { createOrganizationWithChildrenAction } from "@/libs/server/organization/actions/create-organization-with-children-action";
+import { useRouter } from "next/navigation";
+import { PATH } from "@/libs/share/_general/utils/path";
+import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
+import { toast } from "sonner";
+import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
+import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 // TODO: remove create dialog
 // TODO: exit page can prompt confirm?
+
+const createRequest = (input: CreateOrganizationWithChildrenFormInput): CreateOrganizationWithChildrenRequest => {
+  const posts: PostRequest[] = input.posts.map(post => ({
+    name: post.name,
+  }))
+
+  const workers: WorkerRequest[] = input.workers.map(worker => ({
+    name: worker.name,
+  }))
+
+  const postWorkers: PostWorkerRequest[] = input.postWorkers.map(postWorker => ({
+    postName: postWorker.postName,
+    workerNames: postWorker.workerTempIds.map(workerTempId =>
+      input.workers.find(worker => worker.tempId === workerTempId)?.name ?? ''
+    ),
+  }))
+
+  return {
+    name: input.name,
+    departmentName: input.departmentName,
+    posts,
+    workers,
+    postWorkers,
+  }
+}
 
 export default function CreateOrganizationForm() {
   const form = useForm({
     resolver: zodResolver(createOrganizationWithChildrenFormInputSchema),
     defaultValues: CREATE_ORGANIATION_DEFAULT,
   })
+
+  const router = useRouter();
 
   const [step, setStep] = useState(0)
 
@@ -48,30 +81,23 @@ export default function CreateOrganizationForm() {
   }
 
   const onSubmit = async (input: CreateOrganizationWithChildrenFormInput) => {
-    const posts: PostRequest[] = input.posts.map(post => ({
-      name: post.name,
-    }))
+    const request = createRequest(input);
+    const response = await createOrganizationWithChildrenAction(request)
 
-    const workers: WorkerRequest[] = input.workers.map(worker => ({
-      name: worker.name,
-    }))
-
-    const postWorkers: PostWorkerRequest[] = input.postWorkers.map(postWorker => ({
-      postName: postWorker.postName,
-      workerNames: postWorker.workerTempIds.map(workerTempId =>
-        input.workers.find(worker => worker.tempId === workerTempId)?.name ?? ''
-      ),
-    }))
-
-    const request: CreateOrganizationWithChildrenRequest = {
-      name: input.name,
-      departmentName: input.departmentName,
-      posts,
-      workers,
-      postWorkers,
+    const uiResponse = handleServiceResponse(response, path => router.push(path));
+    if (!uiResponse.isSuccess) {
+      toast.error(uiResponse.message.title, {
+        ...SONNER_DEFAULT_OPTIONS,
+        description: uiResponse.message.content,
+      })
+      return
     }
 
-    await createOrganizationWithChildrenAction(request)
+    toast.success('新增組織' + UiMessageTitle.SUCCESS, {
+      ...SONNER_DEFAULT_OPTIONS,
+    })
+
+    router.push(PATH.setting.organizations.base)
   }
 
   return (
