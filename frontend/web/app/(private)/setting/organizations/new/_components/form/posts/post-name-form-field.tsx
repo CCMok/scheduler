@@ -3,7 +3,7 @@
 import CustomFormItem from '@/components/_general/form/custom-form-item';
 import { FormControl, FormField } from "@/external/shadcn/components/ui/form";
 import { useFormContext } from "react-hook-form"
-import { CreateOrganizationWithChildrenFormInput } from "@/libs/client/organization/models/create-organization-with-children-form-input";
+import { CreateOrganizationFormInput } from "@/libs/client/organization/models/create-organization-form-input";
 import CustomInput from '@/components/_general/input/custom-input';
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
 export default function PostNameFormField({
   index
 }: Readonly<Props>) {
-  const { control } = useFormContext<CreateOrganizationWithChildrenFormInput>();
+  const { control } = useFormContext<CreateOrganizationFormInput>();
 
   return (
     <FormField

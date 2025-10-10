@@ -1,4 +1,4 @@
-import { CreateOrganizationWithChildrenFormInput } from "@/libs/client/organization/models/create-organization-with-children-form-input"
+import { CreateOrganizationFormInput } from "@/libs/client/organization/models/create-organization-form-input"
 
 export const DEFAULT_POSTS = [
   { tempId: crypto.randomUUID(), name: 'Host' },
@@ -29,7 +29,7 @@ export const DEFAULT_WORKERS = [
   { tempId: crypto.randomUUID(), name: 'Hanji' },
 ]
 
-export const CREATE_ORGANIATION_DEFAULT: CreateOrganizationWithChildrenFormInput = {
+export const CREATE_ORGANIATION_DEFAULT: CreateOrganizationFormInput = {
   name: 'Eldia Ltd.',
   departmentName: 'Survey Department',
   posts: DEFAULT_POSTS,

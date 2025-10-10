@@ -6,7 +6,7 @@ import FormSubmitButton from "@/components/_general/form/form-submit-button";
 import { Save } from "lucide-react";
 import { useMemo } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { CreateOrganizationWithChildrenFormInput } from "@/libs/client/organization/models/create-organization-with-children-form-input";
+import { CreateOrganizationFormInput } from "@/libs/client/organization/models/create-organization-form-input";
 import { columns, PostWorkerTableData } from "./post-worker-table-column";
 import useTable from "@/components/_general/table/use-table";
 import CustomTable from "@/components/_general/table/custom-table";
@@ -18,7 +18,7 @@ type Props = {
 export default function PostWorkerSection({
   onClickPrevious,
 }: Readonly<Props>) {
-  const { control } = useFormContext<CreateOrganizationWithChildrenFormInput>();
+  const { control } = useFormContext<CreateOrganizationFormInput>();
   const { fields } = useFieldArray({
     control,
     name: 'postWorkers',

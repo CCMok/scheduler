@@ -2,7 +2,7 @@
 
 import NextButton from "@/components/_general/button/next-button";
 import CustomCard from "@/components/_general/card/custom-card";
-import { CreateOrganizationWithChildrenFormInput } from "@/libs/client/organization/models/create-organization-with-children-form-input";
+import { CreateOrganizationFormInput } from "@/libs/client/organization/models/create-organization-form-input";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import BackButton from "@/components/_general/button/back-button";
 import useTable from "@/components/_general/table/use-table";
@@ -23,7 +23,7 @@ export default function PostsSection({
   onClickNext,
   onClickPrevious,
 }: Readonly<Props>) {
-  const { trigger, control, formState: { errors } } = useFormContext<CreateOrganizationWithChildrenFormInput>()
+  const { trigger, control, formState: { errors } } = useFormContext<CreateOrganizationFormInput>()
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'posts',

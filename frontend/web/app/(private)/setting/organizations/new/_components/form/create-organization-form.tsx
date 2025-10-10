@@ -1,6 +1,6 @@
 'use client'
 
-import { CreateOrganizationWithChildrenFormInput, createOrganizationWithChildrenFormInputSchema } from "@/libs/client/organization/models/create-organization-with-children-form-input";
+import { CreateOrganizationFormInput, createOrganizationFormInputSchema } from "@/libs/client/organization/models/create-organization-form-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { CREATE_ORGANIATION_DEFAULT } from "./create-organization-default-value";
@@ -11,18 +11,17 @@ import PostsSection from "./posts/posts-section";
 import WorkersSection from "./workers/workers-section";
 import PostWorkerSection from "./post-worker/post-worker-section";
 import DependencyHandler from "./dependency-handler";
-import { CreateOrganizationWithChildrenRequest, PostRequest, PostWorkerRequest, WorkerRequest } from "@/libs/server/organization/models/create-organization-with-children-request";
-import { createOrganizationWithChildrenAction } from "@/libs/server/organization/actions/create-organization-with-children-action";
+import { CreateOrganizationRequest, PostRequest, PostWorkerRequest, WorkerRequest } from "@/libs/server/organization/models/create-organization-request";
+import { createOrganizationAction } from "@/libs/server/organization/actions/create-organization-action";
 import { useRouter } from "next/navigation";
 import { PATH } from "@/libs/share/_general/utils/path";
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
-// TODO: remove create dialog
 // TODO: exit page can prompt confirm?
 
-const createRequest = (input: CreateOrganizationWithChildrenFormInput): CreateOrganizationWithChildrenRequest => {
+const createRequest = (input: CreateOrganizationFormInput): CreateOrganizationRequest => {
   const posts: PostRequest[] = input.posts.map(post => ({
     name: post.name,
   }))
@@ -49,7 +48,7 @@ const createRequest = (input: CreateOrganizationWithChildrenFormInput): CreateOr
 
 export default function CreateOrganizationForm() {
   const form = useForm({
-    resolver: zodResolver(createOrganizationWithChildrenFormInputSchema),
+    resolver: zodResolver(createOrganizationFormInputSchema),
     defaultValues: CREATE_ORGANIATION_DEFAULT,
   })
 
@@ -80,9 +79,9 @@ export default function CreateOrganizationForm() {
     }
   }
 
-  const onSubmit = async (input: CreateOrganizationWithChildrenFormInput) => {
+  const onSubmit = async (input: CreateOrganizationFormInput) => {
     const request = createRequest(input);
-    const response = await createOrganizationWithChildrenAction(request)
+    const response = await createOrganizationAction(request)
 
     const uiResponse = handleServiceResponse(response, path => router.push(path));
     if (!uiResponse.isSuccess) {

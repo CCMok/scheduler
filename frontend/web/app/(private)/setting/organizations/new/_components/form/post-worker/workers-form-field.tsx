@@ -1,6 +1,6 @@
 'use client'
 
-import { CreateOrganizationWithChildrenFormInput } from "@/libs/client/organization/models/create-organization-with-children-form-input";
+import { CreateOrganizationFormInput } from "@/libs/client/organization/models/create-organization-form-input";
 import { useFormContext, useWatch } from "react-hook-form";
 import { DEFAULT_WORKERS } from "../create-organization-default-value";
 import { FormField } from "@/external/shadcn/components/ui/form";
@@ -14,7 +14,7 @@ type Props = {
 export default function WorkersFormField({
   index,
 }: Readonly<Props>) {
-  const { control, setValue } = useFormContext<CreateOrganizationWithChildrenFormInput>();
+  const { control, setValue } = useFormContext<CreateOrganizationFormInput>();
 
   const workers = useWatch({
     control,

@@ -1,12 +1,12 @@
 'use client'
 
-import { CreateOrganizationWithChildrenFormInput, PostWorkerFormInput } from "@/libs/client/organization/models/create-organization-with-children-form-input"
+import { CreateOrganizationFormInput, PostWorkerFormInput } from "@/libs/client/organization/models/create-organization-form-input"
 import { useFormContext, useWatch } from "react-hook-form"
 import { DEFAULT_POSTS, DEFAULT_WORKERS } from "./create-organization-default-value"
 import { useEffect } from "react"
 
 const useHandlePosts = () => {
-  const { control, getValues, setValue, resetField } = useFormContext<CreateOrganizationWithChildrenFormInput>()
+  const { control, getValues, setValue, resetField } = useFormContext<CreateOrganizationFormInput>()
 
   const posts = useWatch({
     control,
@@ -49,7 +49,7 @@ const useHandlePosts = () => {
 }
 
 const useHandleWorkers = () => {
-  const { control, getValues, setValue, resetField } = useFormContext<CreateOrganizationWithChildrenFormInput>()
+  const { control, getValues, setValue, resetField } = useFormContext<CreateOrganizationFormInput>()
 
   const workers = useWatch({
     control,

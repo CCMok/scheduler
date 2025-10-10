@@ -2,10 +2,10 @@ import CustomFormItem from '@/components/_general/form/custom-form-item';
 import CustomInput from '@/components/_general/input/custom-input';
 import { FormField, FormControl } from "@/external/shadcn/components/ui/form";
 import { useFormContext } from "react-hook-form";
-import { CreateOrganizationWithChildrenFormInput } from '@/libs/client/organization/models/create-organization-with-children-form-input';
+import { CreateOrganizationFormInput } from '@/libs/client/organization/models/create-organization-form-input';
 
 export default function OrganizationNameFormField() {
-  const { control } = useFormContext<CreateOrganizationWithChildrenFormInput>()
+  const { control } = useFormContext<CreateOrganizationFormInput>()
 
   return (
     <FormField

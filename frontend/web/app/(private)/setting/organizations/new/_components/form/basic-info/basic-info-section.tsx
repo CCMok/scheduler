@@ -2,7 +2,7 @@
 
 import NextButton from "@/components/_general/button/next-button";
 import CustomCard from "@/components/_general/card/custom-card";
-import { CreateOrganizationWithChildrenFormInput } from "@/libs/client/organization/models/create-organization-with-children-form-input";
+import { CreateOrganizationFormInput } from "@/libs/client/organization/models/create-organization-form-input";
 import { useFormContext } from "react-hook-form";
 import OrganizationNameFormField from "./organization-name-form-field";
 import DepartmentNameFormField from "./department-name-form-field";
@@ -34,7 +34,7 @@ type Props = {
 export default function BasicInfoSection({
   onClickNext,
 }: Readonly<Props>) {
-  const { trigger, getValues } = useFormContext<CreateOrganizationWithChildrenFormInput>()
+  const { trigger, getValues } = useFormContext<CreateOrganizationFormInput>()
 
   const router = useRouter();
 
