@@ -7,10 +7,6 @@ import { CREATE_ORGANIATION_DEFAULT } from "./create-organization-default-value"
 import { useState } from "react";
 import { Form } from "@/external/shadcn/components/ui/form";
 import BasicInfoSection from "./basic-info/basic-info-section";
-import PostsSection from "./posts/posts-section";
-import WorkersSection from "./workers/workers-section";
-import PostWorkerSection from "./post-worker/post-worker-section";
-import DependencyHandler from "./dependency-handler";
 import { CreateOrganizationRequest } from "@/libs/server/organization/models/create-organization-request";
 import { createOrganizationAction } from "@/libs/server/organization/actions/create-organization-action";
 import { useRouter } from "next/navigation";
@@ -20,22 +16,14 @@ import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { PostRequest, PostWorkerRequest, WorkerRequest } from "@/libs/server/department/models/create-department-request";
+import { createPostsRequest, createPostWorkersRequest, createWorkersRequest } from "../../../[orgId]/departments/new/_components/create-department-request-utils";
+import DependencyHandler from "../../../[orgId]/departments/new/_components/form/dependency-handler";
+import { CreateDepartmentStepContent } from "../../../[orgId]/departments/new/_components/form/create-department-step-content";
 
 const createRequest = (input: CreateOrganizationFormInput): CreateOrganizationRequest => {
-  const posts: PostRequest[] = input.posts.map(post => ({
-    name: post.name,
-  }))
-
-  const workers: WorkerRequest[] = input.workers.map(worker => ({
-    name: worker.name,
-  }))
-
-  const postWorkers: PostWorkerRequest[] = input.postWorkers.map(postWorker => ({
-    postName: postWorker.postName,
-    workerNames: postWorker.workerTempIds.map(workerTempId =>
-      input.workers.find(worker => worker.tempId === workerTempId)?.name ?? ''
-    ),
-  }))
+  const posts: PostRequest[] = createPostsRequest(input.posts)
+  const workers: WorkerRequest[] = createWorkersRequest(input.workers)
+  const postWorkers: PostWorkerRequest[] = createPostWorkersRequest(input.postWorkers, input.workers)
 
   return {
     name: input.name,
@@ -55,29 +43,6 @@ export default function CreateOrganizationForm() {
   const router = useRouter();
 
   const [step, setStep] = useState(0)
-
-  const getStepContent = (step: number) => {
-    switch (step) {
-      case 0:
-        return <BasicInfoSection onClickNext={() => setStep(step => step + 1)} />
-      case 1:
-        return <PostsSection
-          onClickNext={() => setStep(step => step + 1)}
-          onClickPrevious={() => setStep(step => step - 1)}
-        />
-      case 2:
-        return <WorkersSection
-          onClickNext={() => setStep(step => step + 1)}
-          onClickPrevious={() => setStep(step => step - 1)}
-        />
-      case 3:
-        return <PostWorkerSection
-          onClickPrevious={() => setStep(step => step - 1)}
-        />
-      default:
-        return <></>
-    }
-  }
 
   const onSubmit = async (input: CreateOrganizationFormInput) => {
     const request = createRequest(input);
@@ -103,7 +68,11 @@ export default function CreateOrganizationForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <DependencyHandler />
-        {getStepContent(step)}
+        <CreateDepartmentStepContent
+          step={step}
+          setStep={setStep}
+          basicInfoSection={<BasicInfoSection onClickNext={() => setStep(step => step + 1)} />}
+        />
       </form>
     </Form>
   )

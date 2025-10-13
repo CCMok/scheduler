@@ -29,8 +29,7 @@ export const DEFAULT_WORKERS = [
   { tempId: crypto.randomUUID(), name: 'Hanji' },
 ]
 
-export const CREATE_DEPARTMENT_DEFAULT: CreateDepartmentFormInput = {
-  name: 'Survey Department',
+export const CREATE_DEPARTMENT_DEFAULT_BASE = {
   posts: DEFAULT_POSTS,
   workers: DEFAULT_WORKERS,
   postWorkers: DEFAULT_POSTS.map(post => ({
@@ -38,4 +37,9 @@ export const CREATE_DEPARTMENT_DEFAULT: CreateDepartmentFormInput = {
     postName: post.name,
     workerTempIds: [],
   })),
+}
+
+export const CREATE_DEPARTMENT_DEFAULT: CreateDepartmentFormInput = {
+  ...CREATE_DEPARTMENT_DEFAULT_BASE,
+  name: 'Survey Department',
 }

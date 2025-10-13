@@ -6,9 +6,6 @@ import { CREATE_DEPARTMENT_DEFAULT } from "./create-department-default-value";
 import { useState } from "react";
 import { Form } from "@/external/shadcn/components/ui/form";
 import BasicInfoSection from "./basic-info/basic-info-section";
-import PostsSection from "./posts/posts-section";
-import WorkersSection from "./workers/workers-section";
-import PostWorkerSection from "./post-worker/post-worker-section";
 import DependencyHandler from "./dependency-handler";
 import { useParams, useRouter } from "next/navigation";
 import { createDepartmentFormInputSchema, CreateDepartmentFormInput } from "@/libs/client/department/models/create-department-form-input";
@@ -21,22 +18,13 @@ import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-
 import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { PATH } from "@/libs/share/_general/utils/path";
 import { OrganizationPageTabId } from "../../../../tab-id";
+import { createPostsRequest, createPostWorkersRequest, createWorkersRequest } from "../create-department-request-utils";
+import { CreateDepartmentStepContent } from "./create-department-step-content";
 
 const createRequest = (input: CreateDepartmentFormInput, organizationId: number): CreateDepartmentRequest => {
-  const posts: PostRequest[] = input.posts.map(post => ({
-    name: post.name,
-  }))
-
-  const workers: WorkerRequest[] = input.workers.map(worker => ({
-    name: worker.name,
-  }))
-
-  const postWorkers: PostWorkerRequest[] = input.postWorkers.map(postWorker => ({
-    postName: postWorker.postName,
-    workerNames: postWorker.workerTempIds.map(workerTempId =>
-      input.workers.find(worker => worker.tempId === workerTempId)?.name ?? ''
-    ),
-  }))
+  const posts: PostRequest[] = createPostsRequest(input.posts)
+  const workers: WorkerRequest[] = createWorkersRequest(input.workers)
+  const postWorkers: PostWorkerRequest[] = createPostWorkersRequest(input.postWorkers, input.workers)
 
   return {
     organizationId,
@@ -59,29 +47,6 @@ export default function CreateDepartmentForm() {
   const organizationId = Number(params[Param.ORG_ID]);
 
   const [step, setStep] = useState(0)
-
-  const getStepContent = (step: number) => {
-    switch (step) {
-      case 0:
-        return <BasicInfoSection onClickNext={() => setStep(step => step + 1)} />
-      case 1:
-        return <PostsSection
-          onClickNext={() => setStep(step => step + 1)}
-          onClickPrevious={() => setStep(step => step - 1)}
-        />
-      case 2:
-        return <WorkersSection
-          onClickNext={() => setStep(step => step + 1)}
-          onClickPrevious={() => setStep(step => step - 1)}
-        />
-      case 3:
-        return <PostWorkerSection
-          onClickPrevious={() => setStep(step => step - 1)}
-        />
-      default:
-        return <></>
-    }
-  }
 
   const onSubmit = async (input: CreateDepartmentFormInput) => {
     if (isNaN(organizationId)) {
@@ -112,7 +77,11 @@ export default function CreateDepartmentForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <DependencyHandler />
-        {getStepContent(step)}
+        <CreateDepartmentStepContent
+          step={step}
+          setStep={setStep}
+          basicInfoSection={<BasicInfoSection onClickNext={() => setStep(step => step + 1)} />}
+        />
       </form>
     </Form>
   )
