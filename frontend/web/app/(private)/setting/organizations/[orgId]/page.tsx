@@ -6,6 +6,7 @@ import DepartmentsSection from "./_components/departments/departments-section";
 import { PATH } from "@/libs/share/_general/utils/path";
 import OrganizationName from "@/components/organization/organization-name";
 import UpdateOrganizationNameSectionServer from "./_components/update-name/update-organization-name-section-server";
+import { OrganizationPageTabId } from "./tab-id";
 
 type Props = ParamProps<{ [Param.ORG_ID]: string }>
 
@@ -35,12 +36,12 @@ export default async function OrganizationSettingPage({
       ]}
       tabs={[
         {
-          value: 'info',
+          value: OrganizationPageTabId.INFO,
           label: '基本資料',
           content: <UpdateOrganizationNameSectionServer id={id} />,
         },
         {
-          value: 'departments',
+          value: OrganizationPageTabId.DEPARTMENTS,
           label: '部門',
           content: <DepartmentsSection orgId={id} />,
         },

@@ -11,11 +11,19 @@ import WorkersSection from "./workers/workers-section";
 import PostWorkerSection from "./post-worker/post-worker-section";
 import DependencyHandler from "./dependency-handler";
 import { PostRequest, PostWorkerRequest, WorkerRequest } from "@/libs/server/organization/models/create-organization-request";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { createDepartmentFormInputSchema, CreateDepartmentFormInput } from "@/libs/client/department/models/create-department-form-input";
 import { CreateDepartmentRequest } from "@/libs/server/department/models/create-department-request";
+import { createDepartmentAction } from "@/libs/server/department/actions/create-department-action";
+import { Param } from "@/libs/share/_general/enums/param";
+import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
+import { toast } from "sonner";
+import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
+import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
+import { PATH } from "@/libs/share/_general/utils/path";
+import { OrganizationPageTabId } from "../../../../tab-id";
 
-const createRequest = (input: CreateDepartmentFormInput): CreateDepartmentRequest => {
+const createRequest = (input: CreateDepartmentFormInput, organizationId: number): CreateDepartmentRequest => {
   const posts: PostRequest[] = input.posts.map(post => ({
     name: post.name,
   }))
@@ -32,6 +40,7 @@ const createRequest = (input: CreateDepartmentFormInput): CreateDepartmentReques
   }))
 
   return {
+    organizationId,
     name: input.name,
     posts,
     workers,
@@ -46,6 +55,9 @@ export default function CreateDepartmentForm() {
   })
 
   const router = useRouter();
+
+  const params = useParams()
+  const organizationId = Number(params[Param.ORG_ID]);
 
   const [step, setStep] = useState(0)
 
@@ -71,25 +83,30 @@ export default function CreateDepartmentForm() {
         return <></>
     }
   }
-// TODO
+
   const onSubmit = async (input: CreateDepartmentFormInput) => {
-    // const request = createRequest(input);
-    // const response = await createOrganizationAction(request)
+    if (isNaN(organizationId)) {
+      console.error(`organizationId is not found. organizationId: ${organizationId}`)
+      return
+    }
 
-    // const uiResponse = handleServiceResponse(response, path => router.push(path));
-    // if (!uiResponse.isSuccess) {
-    //   toast.error(uiResponse.message.title, {
-    //     ...SONNER_DEFAULT_OPTIONS,
-    //     description: uiResponse.message.content,
-    //   })
-    //   return
-    // }
+    const request = createRequest(input, organizationId);
+    const response = await createDepartmentAction(request)
 
-    // toast.success('新增組織' + UiMessageTitle.SUCCESS, {
-    //   ...SONNER_DEFAULT_OPTIONS,
-    // })
+    const uiResponse = handleServiceResponse(response, path => router.push(path));
+    if (!uiResponse.isSuccess) {
+      toast.error(uiResponse.message.title, {
+        ...SONNER_DEFAULT_OPTIONS,
+        description: uiResponse.message.content,
+      })
+      return
+    }
 
-    // router.push(PATH.setting.organizations.base)
+    toast.success('新增部門' + UiMessageTitle.SUCCESS, {
+      ...SONNER_DEFAULT_OPTIONS,
+    })
+
+    router.push(`${PATH.setting.organizations.build(organizationId)}?${Param.TAB}=${OrganizationPageTabId.DEPARTMENTS}`)
   }
 
   return (

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { idSchema } from "../../_general/models/id";
 
 export const postRequestSchema = z.object({
   name: z.string().min(1),
@@ -20,6 +21,7 @@ export const postWorkerRequestSchema = z.object({
 export type PostWorkerRequest = z.infer<typeof postWorkerRequestSchema>
 
 export const createDepartmentRequestSchema = z.object({
+  organizationId: idSchema,
   name: z.string().min(1),
   posts: z.array(postRequestSchema),
   workers: z.array(workerRequestSchema),

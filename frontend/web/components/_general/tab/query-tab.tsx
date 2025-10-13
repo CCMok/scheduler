@@ -4,8 +4,7 @@ import { Tab } from "@/libs/share/_general/models/tab";
 import CustomTab from "./custom-tab";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { isNil } from "lodash";
-
-const SEARCH_PARAM_NAME = 'tab';
+import { Param } from "@/libs/share/_general/enums/param";
 
 const getValue = (input: string | null, tabs: Tab[]): string | undefined => {
   if (isNil(input)) return tabs[0]?.value
@@ -26,11 +25,11 @@ export default function QueryTab({
   const router = useRouter();
   const pathname = usePathname();
 
-  const value = getValue(searchParams.get(SEARCH_PARAM_NAME), tabs)
+  const value = getValue(searchParams.get(Param.TAB), tabs)
 
   const onValueChange = (value: string) => {
     const params = new URLSearchParams(); // remove other params when change tab
-    params.set(SEARCH_PARAM_NAME, value);
+    params.set(Param.TAB, value);
     const paramString = params.toString();
     if (isPushRoute) {
       router.push(`${pathname}?${paramString}`)
