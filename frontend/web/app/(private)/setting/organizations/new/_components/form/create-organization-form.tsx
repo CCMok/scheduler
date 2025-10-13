@@ -11,7 +11,7 @@ import PostsSection from "./posts/posts-section";
 import WorkersSection from "./workers/workers-section";
 import PostWorkerSection from "./post-worker/post-worker-section";
 import DependencyHandler from "./dependency-handler";
-import { CreateOrganizationRequest, PostRequest, PostWorkerRequest, WorkerRequest } from "@/libs/server/organization/models/create-organization-request";
+import { CreateOrganizationRequest } from "@/libs/server/organization/models/create-organization-request";
 import { createOrganizationAction } from "@/libs/server/organization/actions/create-organization-action";
 import { useRouter } from "next/navigation";
 import { PATH } from "@/libs/share/_general/utils/path";
@@ -19,6 +19,7 @@ import { handleServiceResponse } from "@/libs/share/_general/utils/service-respo
 import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
+import { PostRequest, PostWorkerRequest, WorkerRequest } from "@/libs/server/department/models/create-department-request";
 
 const createRequest = (input: CreateOrganizationFormInput): CreateOrganizationRequest => {
   const posts: PostRequest[] = input.posts.map(post => ({

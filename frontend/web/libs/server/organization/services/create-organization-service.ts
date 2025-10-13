@@ -11,9 +11,9 @@ import { Id } from '../../_general/models/id';
 import { getSession } from '../../_general/managers/session-manager';
 import { Role } from '@/libs/share/_general/enums/role';
 import { SessionPayload } from '../../_general/models/session-payload';
-import { CreateOrganizationRequest, createOrganizationRequestSchema, PostWorkerRequest } from '../models/create-organization-request';
+import { CreateOrganizationRequest, createOrganizationRequestSchema } from '../models/create-organization-request';
 import { Transaction } from '../../_general/models/prisma-transaction';
-import { DepartmentWorkersPosts } from '../../department/models/department-dao';
+import { createPostsClause, createPostWorkers } from '../../department/services/create-department-service';
 
 export const createOrganizationService = async (request: CreateOrganizationRequest): Promise<ServiceResponse<Id>> =>
   await serviceWrapper(async () => {
@@ -46,6 +46,8 @@ const execute = async (request: CreateOrganizationRequest, session: SessionPaylo
   )
 
 const createOrganization = async (tx: Transaction, request: CreateOrganizationRequest) => {
+  const postsClause = createPostsClause(request.posts);
+
   return await tx.organization.create({
     data: {
       name: request.name,
@@ -53,12 +55,7 @@ const createOrganization = async (tx: Transaction, request: CreateOrganizationRe
         create: [
           {
             name: request.departmentName,
-            posts: {
-              create: request.posts.map((post, index) => ({
-                name: post.name,
-                displayPosition: index,
-              })),
-            },
+            posts: postsClause,
             workers: {
               create: request.workers,
             },
@@ -77,42 +74,9 @@ const createOrganization = async (tx: Transaction, request: CreateOrganizationRe
   })
 }
 
-const createPostWorkers = async (tx: Transaction, department: DepartmentWorkersPosts, postWorkerRequests: PostWorkerRequest[]) => {
-  const postWorkers: { postId: number, workerId: number }[] = [];
-
-  for (const postWorker of postWorkerRequests) {
-    if (!postWorker.workerNames.length) continue;
-
-    const post = department.posts.find(post => post.name === postWorker.postName);
-    if (!post) {
-      console.log('Post not found. name: ', postWorker.postName)
-      continue;
-    }
-
-    for (const workerName of postWorker.workerNames) {
-      const worker = department.workers.find(worker => worker.name === workerName);
-      if (!worker) {
-        console.log('Worker not found. name: ', workerName)
-        continue;
-      }
-
-      postWorkers.push({
-        postId: post.id,
-        workerId: worker.id,
-      })
-    }
-  }
-
-  if (postWorkers.length > 0) {
-    await tx.postWorker.createMany({
-      data: postWorkers,
-    })
-  }
-}
-
 const createUserOrganization = async (tx: Transaction, session: SessionPayload, organizationId: number) => {
   if (session.roleEnum === Role.SYSTEM_ADMIN) return
-  
+
   await tx.userOrganization.create({
     data: {
       userId: session.userId,

@@ -20,12 +20,17 @@ export const postWorkerRequestSchema = z.object({
 
 export type PostWorkerRequest = z.infer<typeof postWorkerRequestSchema>
 
-export const createDepartmentRequestSchema = z.object({
-  organizationId: idSchema,
-  name: z.string().min(1),
+export const relatedRequestSchema = z.object({
   posts: z.array(postRequestSchema),
   workers: z.array(workerRequestSchema),
   postWorkers: z.array(postWorkerRequestSchema),
 })
+
+export type RelatedRequest = z.infer<typeof relatedRequestSchema>
+
+export const createDepartmentRequestSchema = z.object({
+  organizationId: idSchema,
+  name: z.string().min(1),
+}).merge(relatedRequestSchema)
 
 export type CreateDepartmentRequest = z.infer<typeof createDepartmentRequestSchema>

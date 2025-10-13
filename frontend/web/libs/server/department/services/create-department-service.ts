@@ -2,7 +2,7 @@ import 'server-only';
 import { ServiceResponse } from "@/libs/share/_general/models/service-response";
 import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import { serviceWrapper } from '../../_general/services/general-service';
-import { CreateDepartmentRequest, createDepartmentRequestSchema, PostWorkerRequest } from '../models/create-department-request';
+import { CreateDepartmentRequest, createDepartmentRequestSchema, PostRequest, PostWorkerRequest } from '../models/create-department-request';
 import prisma from '../../_general/managers/database-manager';
 import { getPrismaErrorTarget, tryCatchQuery } from '../../_general/utils/database-utils';
 import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runtime/library';
@@ -12,6 +12,7 @@ import { checkOrgIdAccess } from '../../access/utils/data-access-utils';
 import { Id } from '../../_general/models/id';
 import { Transaction } from '../../_general/models/prisma-transaction';
 import { DepartmentWorkersPosts } from '../models/department-dao';
+import { Prisma } from '@/external/prisma-generated';
 
 export const createDepartmentService = async (request: CreateDepartmentRequest): Promise<ServiceResponse<Id>> =>
   await serviceWrapper(async () => {
@@ -49,16 +50,13 @@ const execute = async (request: CreateDepartmentRequest) =>
   )
 
 const createDepartment = async (tx: Transaction, request: CreateDepartmentRequest) => {
+  const postsClause = createPostsClause(request.posts);
+
   return await tx.department.create({
     data: {
       organizationId: request.organizationId,
       name: request.name,
-      posts: {
-        create: request.posts.map((post, index) => ({
-          name: post.name,
-          displayPosition: index,
-        })),
-      },
+      posts: postsClause,
       workers: {
         create: request.workers,
       },
@@ -70,7 +68,16 @@ const createDepartment = async (tx: Transaction, request: CreateDepartmentReques
   })
 }
 
-const createPostWorkers = async (tx: Transaction, department: DepartmentWorkersPosts, postWorkerRequests: PostWorkerRequest[]) => {
+export const createPostsClause = (requests: PostRequest[]): Prisma.PostCreateNestedManyWithoutDepartmentInput => {
+  return {
+    create: requests.map((post, index) => ({
+      name: post.name,
+      displayPosition: index,
+    })),
+  }
+}
+
+export const createPostWorkers = async (tx: Transaction, department: DepartmentWorkersPosts, postWorkerRequests: PostWorkerRequest[]) => {
   const postWorkers: { postId: number, workerId: number }[] = [];
 
   for (const postWorker of postWorkerRequests) {

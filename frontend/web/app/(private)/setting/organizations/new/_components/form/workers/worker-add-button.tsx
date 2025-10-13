@@ -1,7 +1,7 @@
 'use client'
 
 import CustomButton from '@/components/_general/button/custom-button';
-import { WorkerFormInput } from '@/libs/client/organization/models/create-organization-form-input';
+import { WorkerFormInput } from '@/libs/client/department/models/create-department-form-input';
 import { Plus } from 'lucide-react';
 
 type Props = {

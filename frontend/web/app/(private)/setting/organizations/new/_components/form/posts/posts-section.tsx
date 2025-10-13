@@ -23,7 +23,7 @@ export default function PostsSection({
   onClickNext,
   onClickPrevious,
 }: Readonly<Props>) {
-  const { trigger, control, formState: { errors } } = useFormContext<CreateOrganizationFormInput>()
+  const { trigger, control, getFieldState } = useFormContext<CreateOrganizationFormInput>()
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'posts',
@@ -53,18 +53,17 @@ export default function PostsSection({
       return
     }
 
-    if (errors.posts) {
-      if (errors.posts instanceof Array) return
-
-      toast.error(UiMessageTitle.INPUT_ERROR, {
+    const { error } = getFieldState('posts');
+    if (!error) {
+      toast.error(UiMessageTitle.SYSTEM_ERROR, {
         ...SONNER_DEFAULT_OPTIONS,
-        description: errors.posts.message,
       })
+      return
     }
-    
-    console.error(errors)
-    toast.error(UiMessageTitle.SYSTEM_ERROR, {
+
+    toast.error(UiMessageTitle.INPUT_ERROR, {
       ...SONNER_DEFAULT_OPTIONS,
+      description: error.message,
     })
   }
 

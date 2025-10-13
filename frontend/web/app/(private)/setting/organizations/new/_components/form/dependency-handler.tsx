@@ -1,9 +1,10 @@
 'use client'
 
-import { CreateOrganizationFormInput, PostWorkerFormInput } from "@/libs/client/organization/models/create-organization-form-input"
+import { CreateOrganizationFormInput } from "@/libs/client/organization/models/create-organization-form-input"
 import { useFormContext, useWatch } from "react-hook-form"
 import { DEFAULT_POSTS, DEFAULT_WORKERS } from "./create-organization-default-value"
 import { useEffect } from "react"
+import { PostWorkerFormInput } from "@/libs/client/department/models/create-department-form-input"
 
 const useHandlePosts = () => {
   const { control, getValues, setValue, resetField } = useFormContext<CreateOrganizationFormInput>()

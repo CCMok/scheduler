@@ -1,12 +1,12 @@
 'use client'
 
-import { CreateOrganizationFormInput, PostWorkerFormInput } from "@/libs/client/organization/models/create-organization-form-input"
 import { useFormContext, useWatch } from "react-hook-form"
 import { DEFAULT_POSTS, DEFAULT_WORKERS } from "./create-department-default-value"
 import { useEffect } from "react"
+import { CreateDepartmentFormInput, PostWorkerFormInput } from "@/libs/client/department/models/create-department-form-input"
 
 const useHandlePosts = () => {
-  const { control, getValues, setValue, resetField } = useFormContext<CreateOrganizationFormInput>()
+  const { control, getValues, setValue, resetField } = useFormContext<CreateDepartmentFormInput>()
 
   const posts = useWatch({
     control,
@@ -49,7 +49,7 @@ const useHandlePosts = () => {
 }
 
 const useHandleWorkers = () => {
-  const { control, getValues, setValue, resetField } = useFormContext<CreateOrganizationFormInput>()
+  const { control, getValues, setValue, resetField } = useFormContext<CreateDepartmentFormInput>()
 
   const workers = useWatch({
     control,

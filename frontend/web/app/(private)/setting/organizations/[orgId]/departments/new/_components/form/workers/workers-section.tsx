@@ -23,7 +23,7 @@ export default function WorkersSection({
   onClickNext,
   onClickPrevious,
 }: Readonly<Props>) {
-  const { trigger, control, formState: { errors } } = useFormContext<CreateDepartmentFormInput>()
+  const { trigger, control, getFieldState } = useFormContext<CreateDepartmentFormInput>()
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'workers',
@@ -53,18 +53,17 @@ export default function WorkersSection({
       return
     }
 
-    if (errors.workers) {
-      if (errors.workers instanceof Array) return
-
-      toast.error(UiMessageTitle.INPUT_ERROR, {
+    const { error } = getFieldState('workers');
+    if (!error) {
+      toast.error(UiMessageTitle.SYSTEM_ERROR, {
         ...SONNER_DEFAULT_OPTIONS,
-        description: errors.workers.message,
       })
+      return
     }
 
-    console.error(errors)
-    toast.error(UiMessageTitle.SYSTEM_ERROR, {
+    toast.error(UiMessageTitle.INPUT_ERROR, {
       ...SONNER_DEFAULT_OPTIONS,
+      description: error.message,
     })
   }
 
