@@ -2,6 +2,7 @@ import CustomCard from "@/components/_general/card/custom-card";
 import SidebarInsetLayout from "@/components/_general/layout/sidebar-inset/sidebar-inset-layout";
 import TableSkeleton from "@/components/_general/skeleton/table-skeleton";
 import { Suspense } from "react";
+import RosterHistoryTableServer from "./_components/table/roster-history-table-server";
 
 export default function RosterHistoryPage() {
   return (
@@ -16,9 +17,10 @@ export default function RosterHistoryPage() {
       },
     ]}>
       <CustomCard>
+        {/* TODO */}
         {/* <OrganizationFilter button={<CreateOrganizationButton />} /> */}
         <Suspense fallback={<TableSkeleton />}>
-          {/* <OrganizationTableServer role={role} /> */}
+          <RosterHistoryTableServer />
         </Suspense>
       </CustomCard>
     </SidebarInsetLayout>
