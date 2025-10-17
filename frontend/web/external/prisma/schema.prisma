@@ -29,14 +29,15 @@ model RoleAudit {
 }
 
 model User {
-  id                Int                @id @default(autoincrement())
-  email             String             @unique
-  password          String
-  name              String?
-  roleId            Int                @map("role_id")
-  role              Role               @relation(fields: [roleId], references: [id])
-  userOrganizations UserOrganization[]
-  rosterHistories   RosterHistory[]
+  id                     Int                @id @default(autoincrement())
+  email                  String             @unique
+  password               String
+  name                   String?
+  roleId                 Int                @map("role_id")
+  role                   Role               @relation(fields: [roleId], references: [id])
+  userOrganizations      UserOrganization[]
+  createdRosterHistories RosterHistory[]    @relation("CreatedBy")
+  updatedRosterHistories RosterHistory[]    @relation("UpdatedBy")
 
   @@index([roleId])
   @@map("user")
@@ -352,12 +353,16 @@ model RosterHistory {
   departmentId           Int                     @map("department_id")
   createdAt              DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)
   createdByUserId        Int                     @map("created_by_user_id")
+  updatedAt              DateTime?               @map("updated_at") @db.Timestamptz(3)
+  updatedByUserId        Int?                    @map("updated_by_user_id")
   department             Department              @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-  createdByUser          User                    @relation(fields: [createdByUserId], references: [id])
+  createdByUser          User                    @relation("CreatedBy", fields: [createdByUserId], references: [id])
+  updatedByUser          User?                   @relation("UpdatedBy", fields: [updatedByUserId], references: [id])
   rosterHistorySchedules RosterHistorySchedule[]
 
   @@index([departmentId])
   @@index([createdByUserId])
+  @@index([updatedByUserId])
   @@map("roster_history")
 }
 
@@ -369,6 +374,8 @@ model RosterHistoryAudit {
   departmentId    Int?      @map("department_id")
   createdAt       DateTime? @map("created_at") @db.Timestamptz(3)
   createdByUserId Int?      @map("created_by_user_id")
+  updatedAt       DateTime? @map("updated_at") @db.Timestamptz(3)
+  updatedByUserId Int?      @map("updated_by_user_id")
 
   @@map("roster_history_audit")
 }
