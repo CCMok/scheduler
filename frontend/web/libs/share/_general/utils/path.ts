@@ -17,6 +17,7 @@ const enum PathSegment {
 
   // function
   NEW = 'new',
+  HISTORY = 'history',
 }
 
 export const PATH = {
@@ -24,7 +25,10 @@ export const PATH = {
   login: `/${PathSegment.LOGIN}`,
   register: `/${PathSegment.REGISTER}`,
   dashboard: `/${PathSegment.DASHBOARD}`,
-  roster: `/${PathSegment.ROSTER}`,
+  roster: {
+    arrange: `/${PathSegment.ROSTER}/${PathSegment.NEW}`,
+    history: `/${PathSegment.ROSTER}/${PathSegment.HISTORY}`,
+  },
 
   setting: {
     general: `/${PathSegment.SETTING}/${PathSegment.GENERAL}`,
@@ -47,6 +51,6 @@ export const PATH = {
 } as const
 
 export const REDIRECT_PUBLIC_PATH = PATH.login;
-export const REDIRECT_PRIVATE_PATH = PATH.roster;
+export const REDIRECT_PRIVATE_PATH = PATH.roster.arrange;
 
 export const EXCLUDE_HOME_PUBLIC_PATHS = [PATH.login, PATH.register];

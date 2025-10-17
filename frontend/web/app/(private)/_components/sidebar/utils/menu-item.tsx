@@ -24,7 +24,16 @@ export const MENU_ITEMS: MainItem[] = [
   {
     title: "值班表",
     icon: <Calendar />,
-    url: PATH.roster,
+    children: [
+      {
+        title: '編排',
+        url: PATH.roster.arrange,
+      },
+      {
+        title: '紀錄',
+        url: PATH.roster.history,
+      },
+    ],
   },
   {
     title: "設定",
