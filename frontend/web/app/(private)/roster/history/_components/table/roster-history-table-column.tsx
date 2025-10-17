@@ -43,6 +43,23 @@ export const columns: ColumnDef<RosterHistoryRelated>[] = [
     cell: ({ row }) => (
       <span>{format(row.original.createdAt, 'yyyy-MM-dd HH:mm:ss')}</span>
     ),
+    filterFn: (row, _, filterValue: { from?: string; to?: string }) => {
+      const rowDate = new Date(row.original.createdAt);
+      
+      if (filterValue.from) {
+        const fromDate = new Date(filterValue.from);
+        fromDate.setHours(0, 0, 0, 0); // Start of day
+        if (rowDate < fromDate) return false;
+      }
+      
+      if (filterValue.to) {
+        const toDate = new Date(filterValue.to);
+        toDate.setHours(23, 59, 59, 999); // End of day
+        if (rowDate > toDate) return false;
+      }
+      
+      return true;
+    },
   },
   {
     id: RosterHistoryTableId.CREATED_BY,

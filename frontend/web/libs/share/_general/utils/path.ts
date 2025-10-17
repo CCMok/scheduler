@@ -26,7 +26,7 @@ export const PATH = {
   register: `/${PathSegment.REGISTER}`,
   dashboard: `/${PathSegment.DASHBOARD}`,
   roster: {
-    arrange: `/${PathSegment.ROSTER}/${PathSegment.NEW}`,
+    new: `/${PathSegment.ROSTER}/${PathSegment.NEW}`,
     history: `/${PathSegment.ROSTER}/${PathSegment.HISTORY}`,
   },
 
@@ -51,6 +51,6 @@ export const PATH = {
 } as const
 
 export const REDIRECT_PUBLIC_PATH = PATH.login;
-export const REDIRECT_PRIVATE_PATH = PATH.roster.arrange;
+export const REDIRECT_PRIVATE_PATH = PATH.roster.new;
 
 export const EXCLUDE_HOME_PUBLIC_PATHS = [PATH.login, PATH.register];

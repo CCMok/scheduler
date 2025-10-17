@@ -8,6 +8,10 @@ export enum Param {
   NAME = 'name',
   EMAIL = 'email',
   ROLE_NAME = 'roleName',
+  ORGANIZATION_NAME = 'organizationName',
+  DEPARTMENT_NAME = 'departmentName',
+  CREATE_DATE_FROM = 'createDateFrom',
+  CREATE_DATE_TO = 'createDateTo',
 
   // function
   TAB = 'tab',

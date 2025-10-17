@@ -27,7 +27,7 @@ export const MENU_ITEMS: MainItem[] = [
     children: [
       {
         title: '編排',
-        url: PATH.roster.arrange,
+        url: PATH.roster.new,
       },
       {
         title: '紀錄',
