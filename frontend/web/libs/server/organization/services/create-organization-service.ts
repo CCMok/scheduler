@@ -14,6 +14,7 @@ import { SessionPayload } from '../../_general/models/session-payload';
 import { CreateOrganizationRequest, createOrganizationRequestSchema } from '../models/create-organization-request';
 import { Transaction } from '../../_general/models/prisma-transaction';
 import { createPostsClause, createPostWorkers } from '../../department/services/create-department-service';
+import { DEFAULT_MAX_HISTORY_COUNT } from '../../_general/constants/organization-constant';
 
 export const createOrganizationService = async (request: CreateOrganizationRequest): Promise<ServiceResponse<Id>> =>
   await serviceWrapper(async () => {
@@ -51,6 +52,7 @@ const createOrganization = async (tx: Transaction, request: CreateOrganizationRe
   return await tx.organization.create({
     data: {
       name: request.name,
+      maxHistoryCount: DEFAULT_MAX_HISTORY_COUNT,
       departments: {
         create: [
           {

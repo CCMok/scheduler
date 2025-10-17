@@ -1,0 +1,1 @@
+export const DEFAULT_MAX_HISTORY_COUNT = 5;
