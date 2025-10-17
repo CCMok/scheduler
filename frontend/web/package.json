@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build",
     "seed-organization": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" external/prisma/seed/seed-organization.ts",
     "seed-system": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" external/prisma/seed/seed-system.ts"
   },
