@@ -2,6 +2,7 @@ import { Post } from "@/external/prisma-generated";
 import { RosterHistoryScheduleRelated } from "@/libs/server/roster/models/roster-history-dao";
 import { DayBaseSchedule } from "@/libs/share/roster/models/day-base-schedule";
 import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule";
+import { compareAsc } from "date-fns";
 
 export const dayBaseToPostBaseSchedule = (dayBaseSchedules: DayBaseSchedule[]): PostBaseSchedule[] => {
   const postBaseSchedules: PostBaseSchedule[] = [];
@@ -59,7 +60,7 @@ const findOrCreateDayBaseSchedule = (
   schedules: DayBaseSchedule[],
   day: Date,
 ): DayBaseSchedule => {
-  let schedule = schedules.find(schedule => schedule.day === day);
+  let schedule = schedules.find(schedule => compareAsc(schedule.day, day) === 0);
   if (schedule) return schedule;
 
   schedule = { day, arrangements: [] };

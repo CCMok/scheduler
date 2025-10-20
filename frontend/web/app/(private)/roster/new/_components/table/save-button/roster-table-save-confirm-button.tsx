@@ -2,7 +2,7 @@
 
 import LoadingButton from '@/components/_general/button/loading-button';
 import { createRosterHistoryAction } from "@/libs/server/roster/actions/create-roster-history-action";
-import { CreateRosterHistoryRequest, CreateScheduleRequest } from "@/libs/server/roster/models/create-roster-request";
+import { CreateRosterHistoryRequest, CreateScheduleRequest } from "@/libs/server/roster/models/create-roster-history-request";
 import { Dispatch, SetStateAction, useState } from "react";
 import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule";
 import { postBaseToDayBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils";

@@ -1,7 +1,7 @@
 "use client";
 
 import RosterTable from './roster-table';
-import RosterTableSaveButton from './save-button/roster-table-save-button';
+import RosterTableSaveAlertDialog from './save-button/roster-table-save-alert-dialog';
 import RosterTableResetButton from './roster-table-reset-button';
 import RosterTableCleanButton from './roster-table-clean-button';
 import { useArrangeRosterStore } from '../store/arrange-roster-store-provider';
@@ -17,7 +17,7 @@ export default function RosterTableSection() {
       <div className='flex justify-end mt-2 space-x-2'>
         <RosterTableCleanButton />
         <RosterTableResetButton description='重置將會回復至系統產生的編排，沒有儲存的資料將會遺失，請確認是否繼續。' />
-        <RosterTableSaveButton />
+        <RosterTableSaveAlertDialog />
       </div>
     </section>
   );

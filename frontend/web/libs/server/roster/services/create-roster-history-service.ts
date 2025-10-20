@@ -1,5 +1,5 @@
 import 'server-only'
-import { CreateRosterHistoryRequest, createRosterHistoryRequestSchema } from '../models/create-roster-request'
+import { CreateRosterHistoryRequest, createRosterHistoryRequestSchema } from '../models/create-roster-history-request'
 import { ServiceResponse } from '@/libs/share/_general/models/service-response'
 import { ServiceResponseStatus } from '../../../share/_general/enums/service-response-status'
 import prisma from '../../_general/managers/database-manager'
