@@ -31,7 +31,7 @@ export const MENU_ITEMS: MainItem[] = [
       },
       {
         title: '紀錄',
-        url: PATH.roster.history,
+        url: PATH.roster.histories.base,
       },
     ],
   },

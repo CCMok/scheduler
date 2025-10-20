@@ -31,8 +31,7 @@ export default function RosterHistoryTableRowAction({
   return (
     <>
       <ContextMenu>
-        {/* TODO */}
-        {/* <UpdateDropdownMenuItem href={PATH.setting.organizations.build(id)} /> */}
+        <UpdateDropdownMenuItem href={PATH.roster.histories.build(id)} />
         <DeleteDropdownMenuItem onClick={() => setIsOpenDeleteDialog(true)} />
       </ContextMenu>
       <DeleteDialog

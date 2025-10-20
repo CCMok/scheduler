@@ -19,7 +19,9 @@ export default function RosterHistoryPage() {
       },
     ]}>
       <CustomCard>
-        <RosterHistoryFilter button={<CreateRosterButton />} />
+        <Suspense>
+          <RosterHistoryFilter button={<CreateRosterButton />} />
+        </Suspense>
         <Suspense fallback={<TableSkeleton />}>
           <RosterHistoryTableServer />
         </Suspense>

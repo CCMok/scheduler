@@ -17,7 +17,7 @@ const enum PathSegment {
 
   // function
   NEW = 'new',
-  HISTORY = 'history',
+  HISTORIES = 'histories',
 }
 
 export const PATH = {
@@ -27,7 +27,10 @@ export const PATH = {
   dashboard: `/${PathSegment.DASHBOARD}`,
   roster: {
     new: `/${PathSegment.ROSTER}/${PathSegment.NEW}`,
-    history: `/${PathSegment.ROSTER}/${PathSegment.HISTORY}`,
+    histories: {
+      base: `/${PathSegment.ROSTER}/${PathSegment.HISTORIES}`,
+      build: (rosterHistoryId: string | number) => `/${PathSegment.ROSTER}/${PathSegment.HISTORIES}/${rosterHistoryId}`,
+    },
   },
 
   setting: {
