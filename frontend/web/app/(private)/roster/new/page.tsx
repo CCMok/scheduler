@@ -16,7 +16,7 @@ export default async function RosterNewPage() {
         label: '編排',
       },
     ]}>
-      <ArrangeRosterStoreProvider>
+      <ArrangeRosterStoreProvider initState={{ saveState: true }}>
         <ArrangeRosterStoreHandler />
         <div className="space-y-4">
           <RosterFilterSection />

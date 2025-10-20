@@ -16,7 +16,7 @@ export default function RosterTableSection() {
       <RosterTable />
       <div className='flex justify-end mt-2 space-x-2'>
         <RosterTableCleanButton />
-        <RosterTableResetButton />
+        <RosterTableResetButton description='重置將會回復至系統產生的編排，沒有儲存的資料將會遺失，請確認是否繼續。' />
         <RosterTableSaveButton />
       </div>
     </section>

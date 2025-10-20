@@ -9,6 +9,7 @@ export type ArrangeRosterState = {
   initialSchedules: PostBaseSchedule[],
   modifiedSchedules: PostBaseSchedule[],
   isGenerated: boolean,
+  saveState: boolean,
 }
 
 export type ArrangeRosterActions = {
@@ -22,11 +23,12 @@ export type ArrangeRosterActions = {
 
 export type ArrangeRosterStore = ArrangeRosterState & ArrangeRosterActions
 
-export const defaultInitState: ArrangeRosterState = { 
+export const defaultInitState: ArrangeRosterState = {
   generatedScheduleWorkers: [],
   initialSchedules: [],
   modifiedSchedules: [],
   isGenerated: false,
+  saveState: false,
 }
 
 export const createArrangeRosterStore = (
@@ -35,24 +37,32 @@ export const createArrangeRosterStore = (
   return createStore<ArrangeRosterStore>()(set => ({
     ...defaultInitState,
     ...partialInitState,
-    setGeneratedScheduleDepartmentId: generatedScheduleDepartmentId => set(() => {
-      localStorage.setItem(LocalStorageKey.ARRANGE_ROSTER_GENERATED_DEPARTMENT_ID, generatedScheduleDepartmentId.toString())
+    setGeneratedScheduleDepartmentId: generatedScheduleDepartmentId => set(state => {
+      if (state.saveState) {
+        localStorage.setItem(LocalStorageKey.ARRANGE_ROSTER_GENERATED_DEPARTMENT_ID, generatedScheduleDepartmentId.toString())
+      }
       return { generatedScheduleDepartmentId }
     }),
     setGeneratedScheduleWorkers: generatedScheduleWorkers => set(() => ({ generatedScheduleWorkers })),
-    setInitialSchedules: initialSchedules => set(() => {
-      localStorage.setItem(LocalStorageKey.ARRANGE_ROSTER_INITIAL_SCHEDULES, JSON.stringify(initialSchedules))
+    setInitialSchedules: initialSchedules => set(state => {
+      if (state.saveState) {
+        localStorage.setItem(LocalStorageKey.ARRANGE_ROSTER_INITIAL_SCHEDULES, JSON.stringify(initialSchedules))
+      }
       return { initialSchedules }
     }),
-    setModifiedSchedules: modifiedSchedules => set(() => {
-      localStorage.setItem(LocalStorageKey.ARRANGE_ROSTER_MODIFIED_SCHEDULES, JSON.stringify(modifiedSchedules))
+    setModifiedSchedules: modifiedSchedules => set(state => {
+      if (state.saveState) {
+        localStorage.setItem(LocalStorageKey.ARRANGE_ROSTER_MODIFIED_SCHEDULES, JSON.stringify(modifiedSchedules))
+      }
       return { modifiedSchedules }
     }),
     setIsGenerated: isGenerated => set(() => ({ isGenerated })),
-    reset: () => set(() => {
-      localStorage.removeItem(LocalStorageKey.ARRANGE_ROSTER_GENERATED_DEPARTMENT_ID)
-      localStorage.removeItem(LocalStorageKey.ARRANGE_ROSTER_INITIAL_SCHEDULES)
-      localStorage.removeItem(LocalStorageKey.ARRANGE_ROSTER_MODIFIED_SCHEDULES)
+    reset: () => set(state => {
+      if (state.saveState) {
+        localStorage.removeItem(LocalStorageKey.ARRANGE_ROSTER_GENERATED_DEPARTMENT_ID)
+        localStorage.removeItem(LocalStorageKey.ARRANGE_ROSTER_INITIAL_SCHEDULES)
+        localStorage.removeItem(LocalStorageKey.ARRANGE_ROSTER_MODIFIED_SCHEDULES)
+      }
       return defaultInitState
     })
   }))

@@ -11,6 +11,7 @@ import { isNil } from "lodash";
 import { Worker } from '@/external/prisma-generated'
 import { getWorkersService } from "@/libs/server/worker/services/get-workers-service";
 import RosterTableClientContainer from "./roster-table-client-container";
+import RosterTableResetButton from "../../../new/_components/table/roster-table-reset-button";
 
 const getRosterHistorySchedules = async (rosterHistoryId: number): Promise<RosterHistoryScheduleRelated[]> => {
   return await fetchData(
@@ -74,6 +75,11 @@ const RosterTableServerContent = async ({
       }}
     >
       <RosterTableClientContainer />
+      <div className='flex justify-end mt-2 space-x-2'>
+        <RosterTableResetButton description="沒有儲存的資料將會遺失，請確認是否繼續。" />
+        {/* TODO */}
+        {/* <RosterTableSaveButton /> */} 
+      </div>
     </ArrangeRosterStoreProvider>
   )
 }
