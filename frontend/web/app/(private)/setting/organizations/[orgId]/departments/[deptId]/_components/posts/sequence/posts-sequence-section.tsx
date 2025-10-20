@@ -37,10 +37,10 @@ async function PostsSequenceSectionContent({
       posts,
     }}>
       <div className='space-y-2'>
+        <PostSequenceTableContainer />
         <div className='flex justify-end'>
           <PostSaveButton />
         </div>
-        <PostSequenceTableContainer />
       </div>
     </PostSequenceStoreProvider>
   )

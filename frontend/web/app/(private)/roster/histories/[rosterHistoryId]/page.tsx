@@ -5,6 +5,7 @@ import { PATH } from "@/libs/share/_general/utils/path"
 import { notFound } from "next/navigation"
 import RosterHistoryName from "./_components/roster-history-name"
 import RosterTableServer from "./_components/roster-table-server"
+import CustomCard from "@/components/_general/card/custom-card"
 
 type Props = ParamProps<{ [Param.ROSTER_HISTORY_ID]: string }>
 
@@ -31,7 +32,9 @@ export default async function RosterHistoryPage({
         label: <RosterHistoryName id={id} />
       },
     ]}>
-      <RosterTableServer rosterHistoryId={id} />
+      <CustomCard>
+        <RosterTableServer rosterHistoryId={id} />
+      </CustomCard>
     </SidebarInsetLayout>
   )
 }
