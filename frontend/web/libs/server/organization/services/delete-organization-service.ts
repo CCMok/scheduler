@@ -26,7 +26,7 @@ const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => 
   const pass = await checkOrgIdAccess(id);
   if (!pass) return {
     status: ServiceResponseStatus.BAD_REQUEST,
-    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '部門'),
+    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '組織'),
   }
 }
 
