@@ -1,4 +1,5 @@
 import { Post } from "@/external/prisma-generated";
+import { RosterHistoryScheduleRelated } from "@/libs/server/roster/models/roster-history-dao";
 import { DayBaseSchedule } from "@/libs/share/roster/models/day-base-schedule";
 import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule";
 
@@ -65,3 +66,13 @@ const findOrCreateDayBaseSchedule = (
   schedules.push(schedule);
   return schedule;
 };
+
+export const rosterHistorySchedulesToDayBaseSchedule = (rosterHistorySchedules: RosterHistoryScheduleRelated[]): DayBaseSchedule[] =>
+  rosterHistorySchedules.map(rosterHistorySchedule => ({
+    day: rosterHistorySchedule.day,
+    arrangements: rosterHistorySchedule.rosterHistoryScheduleArrangements.map(rosterHistoryScheduleArrangement => ({
+      id: rosterHistoryScheduleArrangement.id,
+      post: rosterHistoryScheduleArrangement.post,
+      worker: rosterHistoryScheduleArrangement.worker ?? undefined,
+    })),
+  }))

@@ -6,7 +6,7 @@ import RosterHistoryTable from "./roster-history-table";
 
 const getRosterHistories = async (): Promise<RosterHistoryRelated[]> => {
   return await fetchData(
-    async () => await getRosterHistoriesService(),
+    async () => await getRosterHistoriesService({}),
     path => redirect(path),
     [],
   )

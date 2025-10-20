@@ -14,7 +14,7 @@ export default function RosterHistoryPage() {
         label: '值班表',
       },
       {
-        key: 'history',
+        key: 'histories',
         label: '紀錄',
       },
     ]}>

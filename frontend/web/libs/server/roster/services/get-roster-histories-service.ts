@@ -9,15 +9,18 @@ import { getSession } from '../../_general/managers/session-manager';
 import { SessionPayload } from '../../_general/models/session-payload';
 import { Role } from '@/libs/share/_general/enums/role';
 import { Prisma } from '@/external/prisma-generated';
+import { GetRosterHistoriesRequest, getRosterHistoriesRequestSchema } from '../models/get-roster-histories-request';
 
-export const getRosterHistoriesService = cache(async (): Promise<ServiceResponse<RosterHistoryRelated[]>> =>
+export const getRosterHistoriesService = cache(async (request: GetRosterHistoriesRequest): Promise<ServiceResponse<RosterHistoryRelated[]>> =>
   await serviceWrapper<RosterHistoryRelated[]>(async () => {
+    const parsedRequest = getRosterHistoriesRequestSchema.parse(request)
+
     const session = await getSession();
     if (!session) return {
       status: ServiceResponseStatus.UNAUTHORIZED,
     }
 
-    const entities = await findEntities(session);
+    const entities = await findEntities(session, parsedRequest);
 
     return {
       status: ServiceResponseStatus.OK,
@@ -25,10 +28,11 @@ export const getRosterHistoriesService = cache(async (): Promise<ServiceResponse
     }
   }))
 
-const findEntities = async (session: SessionPayload): Promise<RosterHistoryRelated[]> => { 
+const findEntities = async (session: SessionPayload, request: GetRosterHistoriesRequest): Promise<RosterHistoryRelated[]> => { 
   const userOrganizationWhereClause = getOrganizationWhereClause(session);
   return await prisma.rosterHistory.findMany({
     where: {
+      id: request.where?.id,
       department: {
         organization: {
           ...userOrganizationWhereClause,

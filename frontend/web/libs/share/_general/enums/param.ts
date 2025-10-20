@@ -5,6 +5,7 @@ export enum Param {
   POST_ID = 'postId',
   WORKER_ID = 'workerId',
   USER_ID = 'userId',
+  ROSTER_HISTORY_ID = 'rosterHistoryId',
   NAME = 'name',
   EMAIL = 'email',
   ROLE_NAME = 'roleName',
