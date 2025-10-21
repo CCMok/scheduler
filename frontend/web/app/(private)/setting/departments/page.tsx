@@ -21,7 +21,9 @@ export default function DepartmentSettingPage() {
       ]}
     >
       <CustomCard>
-        <DepartmentFilter button={<CreateDepartmentButtonServer />}/>
+        <Suspense>
+          <DepartmentFilter button={<CreateDepartmentButtonServer />} />
+        </Suspense>
         <Suspense fallback={<TableSkeleton />}>
           <DepartmentTableServer />
         </Suspense>
