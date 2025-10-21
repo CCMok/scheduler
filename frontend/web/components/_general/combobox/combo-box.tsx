@@ -17,6 +17,7 @@ type Props<T> = {
   getDisplayName: (option: T) => string,
   isFormField?: boolean,
   defaultIsOpen?: boolean,
+  avoidCollisions?: boolean,
 }
 
 export default function ComboBox<T>({
@@ -27,6 +28,7 @@ export default function ComboBox<T>({
   getDisplayName,
   isFormField = false,
   defaultIsOpen = false,
+  avoidCollisions = false,
 }: Readonly<Props<T>>) {
   const [isOpen, setIsOpen] = useState(defaultIsOpen)
 
@@ -53,7 +55,7 @@ export default function ComboBox<T>({
           />
         }
       </PopoverTrigger>
-      <PopoverContent className="w-(--input-width) p-0" data-popover-content>
+      <PopoverContent className="w-(--input-width) p-0" data-popover-content avoidCollisions={avoidCollisions}>
         <Command>
           <CommandInput
             placeholder="搜尋..."
