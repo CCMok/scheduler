@@ -18,7 +18,7 @@ export default function RosterTableExportXLSXButton() {
       return;
     }
     await exportToXLSX(modifiedSchedules, '值班表');
-    toast.success('已匯出 XLSX 檔案', {
+    toast.success('已匯出值班表', {
       ...SONNER_DEFAULT_OPTIONS,
     });
   };
