@@ -46,6 +46,7 @@ export const PATH = {
       },
       new: `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${PathSegment.NEW}`,
     },
+    departments: `/${PathSegment.SETTING}/${PathSegment.DEPARTMENTS}`,
     users: {
       base: `/${PathSegment.SETTING}/${PathSegment.USERS}`,
       build: (userId: string | number) => `/${PathSegment.SETTING}/${PathSegment.USERS}/${userId}`,

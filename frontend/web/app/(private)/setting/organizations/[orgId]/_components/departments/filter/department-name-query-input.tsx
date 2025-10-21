@@ -6,7 +6,13 @@ import DebounceInput from '@/components/_general/input/debounce-input';
 import { DEFAULT_SEARCH_PLACEHOLDER } from "@/libs/client/_general/constants/input-constant";
 import { Param } from '@/libs/share/_general/enums/param';
 
-export default function DepartmentNameQueryInput() {
+type Props = {
+  paramName?: string;
+}
+
+export default function DepartmentNameQueryInput({
+  paramName = Param.NAME,
+}: Readonly<Props>) {
   return (
     <LabelInput label="部門名稱">
       <QueryInputWrapper
@@ -17,7 +23,7 @@ export default function DepartmentNameQueryInput() {
             placeholder={DEFAULT_SEARCH_PLACEHOLDER}
           />
         )}
-        paramName={Param.NAME}
+        paramName={paramName}
       />
     </LabelInput>
   )

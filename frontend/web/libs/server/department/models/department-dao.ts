@@ -22,3 +22,8 @@ export type DepartmentChildrenCount = Department & Count<{
   workers: number;
   posts: number;
 }>
+
+export type DepartmentOrganizationChildrenCount = DepartmentOrganization & Count<{
+  workers: number;
+  posts: number;
+}>

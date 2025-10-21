@@ -48,6 +48,10 @@ export const MENU_ITEMS: MainItem[] = [
         url: PATH.setting.organizations.base,
       },
       {
+        title: '部門',
+        url: PATH.setting.departments,
+      },
+      {
         title: '用戶',
         url: PATH.setting.users.base,
       },
