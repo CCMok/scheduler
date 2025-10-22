@@ -5,7 +5,7 @@ from routers import roster_router, health_router
 from config.global_config import get_setting
 
 app = FastAPI(
-    version='0.2.0',
+    version='0.3.0',
     title='SCH',
     summary='Scheduler System - Scheduler Module',
 )
