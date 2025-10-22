@@ -28,7 +28,7 @@ export default function ComboBox<T>({
   getDisplayName,
   isFormField = false,
   defaultIsOpen = false,
-  avoidCollisions = false,
+  avoidCollisions = true,
 }: Readonly<Props<T>>) {
   const [isOpen, setIsOpen] = useState(defaultIsOpen)
 
