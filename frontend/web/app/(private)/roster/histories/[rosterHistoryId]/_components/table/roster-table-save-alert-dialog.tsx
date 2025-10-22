@@ -12,7 +12,7 @@ import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule"
 import { UpdateRosterHistoryRequest } from "@/libs/server/roster/models/update-roster-history-request";
 import { postBaseToDayBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils";
 import { CreateScheduleRequest } from "@/libs/server/roster/models/create-roster-history-request";
-import { useArrangeRosterStore } from "../../../new/_components/store/arrange-roster-store-provider";
+import { useArrangeRosterStore } from "../../../../new/_components/store/arrange-roster-store-provider";
 import { updateRosterHistoryAction } from "@/libs/server/roster/actions/update-roster-history-action";
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { useRouter } from "next/navigation";

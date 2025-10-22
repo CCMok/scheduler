@@ -5,15 +5,18 @@ import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import { getRosterHistorySchedulesService } from "@/libs/server/roster/services/get-roster-history-schedules-service";
 import { dayBaseToPostBaseSchedule, rosterHistorySchedulesToDayBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils";
-import { ArrangeRosterStoreProvider } from "../../../new/_components/store/arrange-roster-store-provider";
+import { ArrangeRosterStoreProvider } from "../../../../new/_components/store/arrange-roster-store-provider";
 import { getRosterHistoriesService } from "@/libs/server/roster/services/get-roster-histories-service";
 import { isNil } from "lodash";
 import { Worker } from '@/external/prisma-generated'
 import { getWorkersService } from "@/libs/server/worker/services/get-workers-service";
 import RosterTableClientContainer from "./roster-table-client-container";
-import RosterTableResetButton from "../../../new/_components/table/roster-table-reset-button";
+import RosterTableResetButton from "../../../../new/_components/table/roster-table-reset-button";
 import RosterTableSaveAlertDialog from "./roster-table-save-alert-dialog";
-import RosterTableExportXLSXButton from "../../../new/_components/table/roster-table-export-xlsx-button";
+import RosterTableExportXLSXButton from "../../../../new/_components/table/roster-table-export-xlsx-button";
+import CustomCard from "@/components/_general/card/custom-card";
+import { DepartmentOrganization } from "@/libs/server/department/models/department-dao";
+import { getDepartmentsOrganizationService } from "@/libs/server/department/services/get-departments-organization-service";
 
 const getRosterHistorySchedules = async (rosterHistoryId: number): Promise<RosterHistoryScheduleRelated[]> => {
   return await fetchData(
@@ -47,6 +50,17 @@ const getWorkers = async (departmentId: number): Promise<Worker[]> => {
   )
 }
 
+const getDepartment = async (departmentId: number): Promise<DepartmentOrganization | undefined> => {
+  const department = await fetchData(
+    async () => await getDepartmentsOrganizationService({
+      where: { id: departmentId },
+    }),
+    path => redirect(path),
+    [],
+  )
+  return department[0]
+}
+
 type Props = {
   rosterHistoryId: number;
 }
@@ -55,13 +69,18 @@ const RosterTableServerContent = async ({
   rosterHistoryId,
 }: Readonly<Props>) => {
   const [rosterHistorySchedules, departmentId] = await Promise.all([
-    getRosterHistorySchedules(rosterHistoryId), 
+    getRosterHistorySchedules(rosterHistoryId),
     getDepartmentId(rosterHistoryId),
   ])
 
   if (!rosterHistorySchedules || isNil(departmentId)) return notFound()
 
-  const workers = await getWorkers(departmentId)
+  const [department, workers] = await Promise.all([
+    getDepartment(departmentId),
+    getWorkers(departmentId),
+  ])
+
+  if (!department) return notFound()
 
   const dayBaseSchedules = rosterHistorySchedulesToDayBaseSchedule(rosterHistorySchedules);
   const postBaseSchedules = dayBaseToPostBaseSchedule(dayBaseSchedules);
@@ -76,17 +95,21 @@ const RosterTableServerContent = async ({
         isGenerated: true,
       }}
     >
-      <RosterTableClientContainer />
-      <div className='flex justify-end mt-2 space-x-2'>
-        <RosterTableResetButton description="沒有儲存的資料將會遺失，請確認是否繼續。" />
-        <RosterTableExportXLSXButton />
-        <RosterTableSaveAlertDialog rosterHistoryId={rosterHistoryId} /> 
-      </div>
+      <CustomCard
+        title={`${department.organization.name} - ${department.name}`}
+      >
+        <RosterTableClientContainer />
+        <div className='flex justify-end space-x-2'>
+          <RosterTableResetButton description="沒有儲存的資料將會遺失，請確認是否繼續。" />
+          <RosterTableExportXLSXButton />
+          <RosterTableSaveAlertDialog rosterHistoryId={rosterHistoryId} />
+        </div>
+      </CustomCard>
     </ArrangeRosterStoreProvider>
   )
 }
 
-export default function RosterTableServer({
+export default function RosterTableSection({
   rosterHistoryId,
 }: Readonly<Props>) {
   return (

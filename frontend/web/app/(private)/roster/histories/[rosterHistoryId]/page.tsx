@@ -3,9 +3,8 @@ import { Param } from "@/libs/share/_general/enums/param"
 import { ParamProps } from "@/libs/share/_general/props/param-props"
 import { PATH } from "@/libs/share/_general/utils/path"
 import { notFound } from "next/navigation"
-import RosterHistoryName from "./_components/roster-history-name"
-import RosterTableServer from "./_components/roster-table-server"
-import CustomCard from "@/components/_general/card/custom-card"
+import RosterHistoryName from "./_components/table/roster-history-name"
+import RosterTableSection from "./_components/table/roster-table-section"
 
 type Props = ParamProps<{ [Param.ROSTER_HISTORY_ID]: string }>
 
@@ -32,9 +31,7 @@ export default async function RosterHistoryPage({
         label: <RosterHistoryName id={id} />
       },
     ]}>
-      <CustomCard>
-        <RosterTableServer rosterHistoryId={id} />
-      </CustomCard>
+      <RosterTableSection rosterHistoryId={id} />
     </SidebarInsetLayout>
   )
 }

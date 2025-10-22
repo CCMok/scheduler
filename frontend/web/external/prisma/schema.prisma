@@ -166,6 +166,7 @@ model Worker {
   postWorkers                       PostWorker[]
   workerConstraintWorkers           WorkerConstraintWorker[]
   rosterHistoryScheduleArrangements RosterHistoryScheduleArrangement[]
+  rosterHistoryOffWorkers           RosterHistoryOffWorker[]
 
   // Unique index defined at migration 20250812063939
   @@index([departmentId])
@@ -349,16 +350,17 @@ model WorkerConstraintWorkerAudit {
 }
 
 model RosterHistory {
-  id                     Int                     @id @default(autoincrement())
-  departmentId           Int                     @map("department_id")
-  createdAt              DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)
-  createdByUserId        Int                     @map("created_by_user_id")
-  updatedAt              DateTime?               @map("updated_at") @db.Timestamptz(3)
-  updatedByUserId        Int?                    @map("updated_by_user_id")
-  department             Department              @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-  createdByUser          User                    @relation("CreatedBy", fields: [createdByUserId], references: [id])
-  updatedByUser          User?                   @relation("UpdatedBy", fields: [updatedByUserId], references: [id])
-  rosterHistorySchedules RosterHistorySchedule[]
+  id                      Int                      @id @default(autoincrement())
+  departmentId            Int                      @map("department_id")
+  createdAt               DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdByUserId         Int                      @map("created_by_user_id")
+  updatedAt               DateTime?                @map("updated_at") @db.Timestamptz(3)
+  updatedByUserId         Int?                     @map("updated_by_user_id")
+  department              Department               @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  createdByUser           User                     @relation("CreatedBy", fields: [createdByUserId], references: [id])
+  updatedByUser           User?                    @relation("UpdatedBy", fields: [updatedByUserId], references: [id])
+  rosterHistorySchedules  RosterHistorySchedule[]
+  rosterHistoryOffWorkers RosterHistoryOffWorker[]
 
   @@index([departmentId])
   @@index([createdByUserId])
@@ -427,4 +429,49 @@ model RosterHistoryScheduleArrangementAudit {
   workerId                Int?     @map("worker_id")
 
   @@map("roster_history_schedule_arrangement_audit")
+}
+
+model RosterHistoryOffWorker {
+  id                         Int                         @id @default(autoincrement())
+  rosterHistoryId            Int                         @map("roster_history_id")
+  workerId                   Int                         @map("worker_id")
+  rosterHistory              RosterHistory               @relation(fields: [rosterHistoryId], references: [id], onDelete: Cascade)
+  worker                     Worker                      @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  RosterHistoryOffWorkerDays RosterHistoryOffWorkerDay[]
+
+  @@index([rosterHistoryId])
+  @@index([workerId])
+  @@map("roster_history_off_worker")
+}
+
+model RosterHistoryOffWorkerAudit {
+  auditId         Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp  DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction     String   @map("audit_action")
+  id              Int?
+  rosterHistoryId Int?     @map("roster_history_id")
+  workerId        Int?     @map("worker_id")
+
+  @@map("roster_history_off_worker_audit")
+}
+
+model RosterHistoryOffWorkerDay {
+  id                       Int                    @id @default(autoincrement())
+  rosterHistoryOffWorkerId Int                    @map("roster_history_off_worker_id")
+  day                      DateTime               @db.Timestamptz(3)
+  RosterHistoryOffWorker   RosterHistoryOffWorker @relation(fields: [rosterHistoryOffWorkerId], references: [id], onDelete: Cascade)
+
+  @@index([rosterHistoryOffWorkerId])
+  @@map("roster_history_off_worker_day")
+}
+
+model RosterHistoryOffWorkerDayAudit {
+  auditId                  Int       @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp           DateTime  @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction              String    @map("audit_action")
+  id                       Int?
+  rosterHistoryOffWorkerId Int?      @map("roster_history_off_worker_id")
+  day                      DateTime? @db.Timestamptz(3)
+
+  @@map("roster_history_off_worker_day_audit")
 }
