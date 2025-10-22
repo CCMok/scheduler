@@ -437,7 +437,7 @@ model RosterHistoryOffWorker {
   workerId                   Int                         @map("worker_id")
   rosterHistory              RosterHistory               @relation(fields: [rosterHistoryId], references: [id], onDelete: Cascade)
   worker                     Worker                      @relation(fields: [workerId], references: [id], onDelete: Cascade)
-  RosterHistoryOffWorkerDays RosterHistoryOffWorkerDay[]
+  rosterHistoryOffWorkerDays RosterHistoryOffWorkerDay[]
 
   @@index([rosterHistoryId])
   @@index([workerId])
@@ -459,7 +459,7 @@ model RosterHistoryOffWorkerDay {
   id                       Int                    @id @default(autoincrement())
   rosterHistoryOffWorkerId Int                    @map("roster_history_off_worker_id")
   day                      DateTime               @db.Timestamptz(3)
-  RosterHistoryOffWorker   RosterHistoryOffWorker @relation(fields: [rosterHistoryOffWorkerId], references: [id], onDelete: Cascade)
+  rosterHistoryOffWorker   RosterHistoryOffWorker @relation(fields: [rosterHistoryOffWorkerId], references: [id], onDelete: Cascade)
 
   @@index([rosterHistoryOffWorkerId])
   @@map("roster_history_off_worker_day")

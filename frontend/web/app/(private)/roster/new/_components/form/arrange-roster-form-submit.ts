@@ -20,6 +20,7 @@ export default function useArrangeRosterFormSubmit({
   // Cannot useFormContext, this hook directly used by form component
   const setGeneratedScheduleDepartmentId = useArrangeRosterStore(state => state.setGeneratedScheduleDepartmentId);
   const setGeneratedScheduleWorkers = useArrangeRosterStore(state => state.setGeneratedScheduleWorkers);
+  const setGeneratedScheduleOffs = useArrangeRosterStore(state => state.setGeneratedScheduleOffs);
   const setInitialSchedules = useArrangeRosterStore(state => state.setInitialSchedules);
   const setIsGenerated = useArrangeRosterStore(state => state.setIsGenerated);
   const setModifiedSchedules = useArrangeRosterStore(state => state.setModifiedSchedules);
@@ -42,6 +43,7 @@ export default function useArrangeRosterFormSubmit({
 
     setGeneratedScheduleDepartmentId(Number(input.departmentId))
     setGeneratedScheduleWorkers(workers)
+    setGeneratedScheduleOffs(input.offs)
 
     const schedules = dayBaseToPostBaseSchedule(uiResponse.data)
     setInitialSchedules(schedules)

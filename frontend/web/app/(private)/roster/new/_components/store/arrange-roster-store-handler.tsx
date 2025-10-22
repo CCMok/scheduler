@@ -12,6 +12,7 @@ import { getPostsAction } from "@/libs/server/post/actions/get-posts-action"
 export default function ArrangeRosterStoreHandler() {
   const setGeneratedScheduleDepartmentId = useArrangeRosterStore(state => state.setGeneratedScheduleDepartmentId)
   const setGeneratedScheduleWorkers = useArrangeRosterStore(state => state.setGeneratedScheduleWorkers)
+  const setGeneratedScheduleOffs = useArrangeRosterStore(state => state.setGeneratedScheduleOffs)
   const setInitialSchedules = useArrangeRosterStore(state => state.setInitialSchedules)
   const setModifiedSchedules = useArrangeRosterStore(state => state.setModifiedSchedules)
   const setIsGenerated = useArrangeRosterStore(state => state.setIsGenerated)
@@ -84,8 +85,14 @@ export default function ArrangeRosterStoreHandler() {
         })),
       }))
 
+      const offsStorageString = localStorage.getItem(LocalStorageKey.ARRANGE_ROSTER_GENERATED_OFFS)
+      if (!offsStorageString) return
+
+      const offs = JSON.parse(offsStorageString)
+
       setGeneratedScheduleDepartmentId(departmentId)
       setGeneratedScheduleWorkers(workers)
+      setGeneratedScheduleOffs(offs)
       setInitialSchedules(initialSchedules)
       setModifiedSchedules(modifiedSchedules)
       setIsGenerated(true)

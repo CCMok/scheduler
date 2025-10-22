@@ -15,9 +15,15 @@ export const createScheduleRequestSchema = z.object({
 
 export type CreateScheduleRequest = z.infer<typeof createScheduleRequestSchema>;
 
+export const offRequestSchema = z.object({
+  workerId: idSchema,
+  days: z.date().array(),
+})
+
 export const createRosterHistoryRequestSchema = z.object({
   departmentId: idSchema,
   schedules: createScheduleRequestSchema.array(),
+  offs: offRequestSchema.array(),
 })
 
 export type CreateRosterHistoryRequest = z.infer<typeof createRosterHistoryRequestSchema>;

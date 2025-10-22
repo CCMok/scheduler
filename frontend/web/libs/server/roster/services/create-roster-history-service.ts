@@ -53,6 +53,16 @@ const createHisotry = async (tx: Transaction, request: CreateRosterHistoryReques
           },
         })),
       },
+      rosterHistoryOffWorkers: {
+        create: request.offs.map(off => ({
+          workerId: off.workerId,
+          rosterHistoryOffWorkerDays: {
+            create: off.days.map(day => ({
+              day,
+            })),
+          },
+        })),
+      },
     },
   })
 }

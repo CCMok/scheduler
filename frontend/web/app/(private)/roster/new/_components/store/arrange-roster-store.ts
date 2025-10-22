@@ -2,10 +2,12 @@ import { createStore } from 'zustand/vanilla'
 import { Worker } from '@/external/prisma-generated'
 import { PostBaseSchedule } from '@/libs/share/roster/models/post-base-schedule'
 import { LocalStorageKey } from '@/libs/client/_general/enums/local-storage-key'
+import { OffFormInput } from '@/libs/client/roster/models/roster-filter-form-input'
 
 export type ArrangeRosterState = {
   generatedScheduleDepartmentId?: number,
   generatedScheduleWorkers: Worker[],
+  generatedScheduleOffs: OffFormInput[],
   initialSchedules: PostBaseSchedule[],
   modifiedSchedules: PostBaseSchedule[],
   isGenerated: boolean,
@@ -15,6 +17,7 @@ export type ArrangeRosterState = {
 export type ArrangeRosterActions = {
   setGeneratedScheduleDepartmentId: (generatedScheduleDepartmentId: number) => void,
   setGeneratedScheduleWorkers: (generatedScheduleWorkers: Worker[]) => void,
+  setGeneratedScheduleOffs: (generatedScheduleOffs: OffFormInput[]) => void,
   setInitialSchedules: (initialSchedules: PostBaseSchedule[]) => void,
   setModifiedSchedules: (modifiedSchedules: PostBaseSchedule[]) => void,
   setIsGenerated: (isGenerated: boolean) => void,
@@ -25,6 +28,7 @@ export type ArrangeRosterStore = ArrangeRosterState & ArrangeRosterActions
 
 export const defaultInitState: ArrangeRosterState = {
   generatedScheduleWorkers: [],
+  generatedScheduleOffs: [],
   initialSchedules: [],
   modifiedSchedules: [],
   isGenerated: false,
@@ -44,6 +48,12 @@ export const createArrangeRosterStore = (
       return { generatedScheduleDepartmentId }
     }),
     setGeneratedScheduleWorkers: generatedScheduleWorkers => set(() => ({ generatedScheduleWorkers })),
+    setGeneratedScheduleOffs: generatedScheduleOffs => set(state => {
+      if (state.saveState) {
+        localStorage.setItem(LocalStorageKey.ARRANGE_ROSTER_GENERATED_OFFS, JSON.stringify(generatedScheduleOffs))
+      }
+      return { generatedScheduleOffs }
+    }),
     setInitialSchedules: initialSchedules => set(state => {
       if (state.saveState) {
         localStorage.setItem(LocalStorageKey.ARRANGE_ROSTER_INITIAL_SCHEDULES, JSON.stringify(initialSchedules))
@@ -60,6 +70,7 @@ export const createArrangeRosterStore = (
     reset: () => set(state => {
       if (state.saveState) {
         localStorage.removeItem(LocalStorageKey.ARRANGE_ROSTER_GENERATED_DEPARTMENT_ID)
+        localStorage.removeItem(LocalStorageKey.ARRANGE_ROSTER_GENERATED_OFFS)
         localStorage.removeItem(LocalStorageKey.ARRANGE_ROSTER_INITIAL_SCHEDULES)
         localStorage.removeItem(LocalStorageKey.ARRANGE_ROSTER_MODIFIED_SCHEDULES)
       }

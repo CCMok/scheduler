@@ -14,8 +14,14 @@ import { handleServiceResponse } from "@/libs/share/_general/utils/service-respo
 import { useRouter } from "next/navigation";
 import { useArrangeRosterStore } from '../../store/arrange-roster-store-provider';
 import { useMaxHistoryCountStore } from './store/max-history-count-store-provider';
+import { OffFormInput } from '@/libs/client/roster/models/roster-filter-form-input';
+import { OffRequest } from '@/libs/server/roster/models/arrange/arrange-roster-request';
 
-const getSaveRosterRequest = (departmentId: number, postBaseSchedules: PostBaseSchedule[]): CreateRosterHistoryRequest => {
+const getSaveRosterRequest = (
+  departmentId: number,
+  postBaseSchedules: PostBaseSchedule[],
+  offs: OffFormInput[],
+): CreateRosterHistoryRequest => {
   const dayBaseSchedules = postBaseToDayBaseSchedule(postBaseSchedules)
 
   const scheduleRequests: CreateScheduleRequest[] = dayBaseSchedules.map(schedule => ({
@@ -26,9 +32,15 @@ const getSaveRosterRequest = (departmentId: number, postBaseSchedules: PostBaseS
     })),
   }))
 
+  const offRequests: OffRequest[] = offs.map(off => ({
+    workerId: Number(off.workerId),
+    days: off.days.map(day => new Date(day)),
+  }))
+
   return {
     departmentId,
     schedules: scheduleRequests,
+    offs: offRequests,
   }
 }
 
@@ -40,6 +52,7 @@ export default function RosterTableSaveConfirmButton({
   setIsAlertDialogOpen,
 }: Readonly<Props>) {
   const generatedScheduleDepartmentId = useArrangeRosterStore(state => state.generatedScheduleDepartmentId);
+  const generatedScheduleOffs = useArrangeRosterStore(state => state.generatedScheduleOffs);
   const modifiedSchedules = useArrangeRosterStore(state => state.modifiedSchedules);
   const setInitialSchedules = useArrangeRosterStore(state => state.setInitialSchedules);
 
@@ -66,7 +79,7 @@ export default function RosterTableSaveConfirmButton({
       return;
     }
 
-    const request = getSaveRosterRequest(generatedScheduleDepartmentId, modifiedSchedules);
+    const request = getSaveRosterRequest(generatedScheduleDepartmentId, modifiedSchedules, generatedScheduleOffs);
     const response = await createRosterHistoryAction(request);
 
     const uiResponse = handleServiceResponse(response, path => router.push(path))
