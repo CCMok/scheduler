@@ -9,15 +9,20 @@ import { toast } from "sonner";
 import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule";
-import { UpdateRosterHistoryRequest } from "@/libs/server/roster/models/update-roster-history-request";
+import { CreateOffWorkerRequest, UpdateRosterHistoryRequest } from "@/libs/server/roster/models/update-roster-history-request";
 import { postBaseToDayBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils";
 import { CreateScheduleRequest } from "@/libs/server/roster/models/create-roster-history-request";
 import { useArrangeRosterStore } from "../../../../new/_components/store/arrange-roster-store-provider";
 import { updateRosterHistoryAction } from "@/libs/server/roster/actions/update-roster-history-action";
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { useRouter } from "next/navigation";
+import { OffFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
 
-const getSaveRosterRequest = (rosterHistoryId: number, postBaseSchedules: PostBaseSchedule[]): UpdateRosterHistoryRequest => {
+const getSaveRosterRequest = (
+  rosterHistoryId: number, 
+  postBaseSchedules: PostBaseSchedule[],
+  offFormInputs: OffFormInput[]
+): UpdateRosterHistoryRequest => {
   const dayBaseSchedules = postBaseToDayBaseSchedule(postBaseSchedules)
 
   const scheduleRequests: CreateScheduleRequest[] = dayBaseSchedules.map(schedule => ({
@@ -28,9 +33,15 @@ const getSaveRosterRequest = (rosterHistoryId: number, postBaseSchedules: PostBa
     })),
   }))
 
+  const offWorkerRequests: CreateOffWorkerRequest[] = offFormInputs.map(off => ({
+    workerId: Number(off.workerId),
+    days: off.days.map(day => new Date(day)),
+  }))
+
   return {
     id: rosterHistoryId,
     schedules: scheduleRequests,
+    offWorkers: offWorkerRequests,
   }
 }
 
@@ -46,6 +57,7 @@ export default function RosterTableSaveAlertDialog({
   
   const modifiedSchedules = useArrangeRosterStore(state => state.modifiedSchedules);
   const setInitialSchedules = useArrangeRosterStore(state => state.setInitialSchedules);
+  const generatedScheduleOffs = useArrangeRosterStore(state => state.generatedScheduleOffs);
 
   const router = useRouter()
 
@@ -57,7 +69,7 @@ export default function RosterTableSaveAlertDialog({
   }
 
   const saveRoster = async () => {
-    const request = getSaveRosterRequest(rosterHistoryId, modifiedSchedules);
+    const request = getSaveRosterRequest(rosterHistoryId, modifiedSchedules, generatedScheduleOffs);
     const response = await updateRosterHistoryAction(request);
 
     const uiResponse = handleServiceResponse(response, path => router.push(path))

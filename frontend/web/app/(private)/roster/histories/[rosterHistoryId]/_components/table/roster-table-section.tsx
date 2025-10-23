@@ -1,5 +1,5 @@
 import TableSkeleton from "@/components/_general/skeleton/table-skeleton";
-import { RosterHistoryScheduleRelated } from "@/libs/server/roster/models/roster-history-dao";
+import { RosterHistoryOffWorkerRelated, RosterHistoryScheduleRelated } from "@/libs/server/roster/models/roster-history-dao";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -17,10 +17,23 @@ import RosterTableExportXLSXButton from "../../../../new/_components/table/roste
 import CustomCard from "@/components/_general/card/custom-card";
 import { DepartmentOrganization } from "@/libs/server/department/models/department-dao";
 import { getDepartmentsOrganizationService } from "@/libs/server/department/services/get-departments-organization-service";
+import { getRosterHistoryOffWorkersService } from "@/libs/server/roster/services/get-roster-history-off-workers-service";
+import { OffFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
+import RosterTableFilterSection from "../filter/roster-table-filter-section";
 
 const getRosterHistorySchedules = async (rosterHistoryId: number): Promise<RosterHistoryScheduleRelated[]> => {
   return await fetchData(
     async () => await getRosterHistorySchedulesService({
+      where: { rosterHistoryId },
+    }),
+    path => redirect(path),
+    [],
+  )
+}
+
+const getRosterHistoryOffWorkers = async (rosterHistoryId: number): Promise<RosterHistoryOffWorkerRelated[]> => {
+  return await fetchData(
+    async () => await getRosterHistoryOffWorkersService({
       where: { rosterHistoryId },
     }),
     path => redirect(path),
@@ -61,6 +74,12 @@ const getDepartment = async (departmentId: number): Promise<DepartmentOrganizati
   return department[0]
 }
 
+const offWorkersToOffFormInputs = (offWorkers: RosterHistoryOffWorkerRelated[]): OffFormInput[] =>
+  offWorkers.map(offWorker => ({
+    workerId: offWorker.workerId.toString(),
+    days: offWorker.rosterHistoryOffWorkerDays.map(day => day.day.toISOString()),
+  }))
+
 type Props = {
   rosterHistoryId: number;
 }
@@ -68,12 +87,15 @@ type Props = {
 const RosterTableServerContent = async ({
   rosterHistoryId,
 }: Readonly<Props>) => {
-  const [rosterHistorySchedules, departmentId] = await Promise.all([
+  const [rosterHistorySchedules, rosterHistoryOffWorkers, departmentId] = await Promise.all([
     getRosterHistorySchedules(rosterHistoryId),
+    getRosterHistoryOffWorkers(rosterHistoryId),
     getDepartmentId(rosterHistoryId),
   ])
 
-  if (!rosterHistorySchedules || isNil(departmentId)) return notFound()
+  const offFormInputs = offWorkersToOffFormInputs(rosterHistoryOffWorkers)
+
+  if (isNil(departmentId)) return notFound()
 
   const [department, workers] = await Promise.all([
     getDepartment(departmentId),
@@ -90,21 +112,25 @@ const RosterTableServerContent = async ({
       initState={{
         generatedScheduleDepartmentId: departmentId,
         generatedScheduleWorkers: workers,
+        generatedScheduleOffs: offFormInputs,
         initialSchedules: postBaseSchedules,
         modifiedSchedules: postBaseSchedules,
         isGenerated: true,
       }}
     >
-      <CustomCard
-        title={`${department.organization.name} - ${department.name}`}
-      >
-        <RosterTableClientContainer />
-        <div className='flex justify-end space-x-2'>
-          <RosterTableResetButton description="沒有儲存的資料將會遺失，請確認是否繼續。" />
-          <RosterTableExportXLSXButton />
-          <RosterTableSaveAlertDialog rosterHistoryId={rosterHistoryId} />
-        </div>
-      </CustomCard>
+      <div className='space-y-4'>
+        <RosterTableFilterSection />
+        <CustomCard
+          title={`${department.organization.name} - ${department.name}`}
+        >
+          <RosterTableClientContainer />
+          <div className='flex justify-end space-x-2'>
+            <RosterTableResetButton description="沒有儲存的資料將會遺失，請確認是否繼續。" />
+            <RosterTableExportXLSXButton />
+            <RosterTableSaveAlertDialog rosterHistoryId={rosterHistoryId} />
+          </div>
+        </CustomCard>
+      </div>
     </ArrangeRosterStoreProvider>
   )
 }

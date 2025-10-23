@@ -29,6 +29,8 @@ const execute = async (request: UpdateRosterHistoryRequest, userId: number): Pro
     await updateHisotry(tx, request, userId)
     await deleteOldSchedules(tx, request.id)
     await createNewSchedules(tx, request)
+    await deleteOldOffWorkers(tx, request.id)
+    await createNewOffWorkers(tx, request)
   })
 }
 
@@ -60,6 +62,32 @@ const createNewSchedules = async (tx: Transaction, request: UpdateRosterHistoryR
           create: schedule.arrangements.map(arrangement => ({
             postId: arrangement.postId,
             workerId: arrangement.workerId,
+          })),
+        },
+      },
+    })
+  }
+}
+
+const deleteOldOffWorkers = async (tx: Transaction, rosterHistoryId: number): Promise<void> => {
+  await tx.rosterHistoryOffWorker.deleteMany({
+    where: {
+      rosterHistoryId,
+    },
+  })
+}
+
+const createNewOffWorkers = async (tx: Transaction, request: UpdateRosterHistoryRequest): Promise<void> => {
+  if (!request.offWorkers || request.offWorkers.length === 0) return;
+  
+  for (const offWorker of request.offWorkers) {
+    await tx.rosterHistoryOffWorker.create({
+      data: {
+        rosterHistoryId: request.id,
+        workerId: offWorker.workerId,
+        rosterHistoryOffWorkerDays: {
+          create: offWorker.days.map(day => ({
+            day,
           })),
         },
       },
