@@ -10,21 +10,52 @@ import { useCreateRosterFilterStore } from "./store/create-roster-filter-store-p
 import { getWorkersAction } from "@/libs/server/worker/actions/get-workers-action";
 import { isNil } from "lodash";
 import { compareAsc, isEqual } from "date-fns";
+import { LocalStorageKey } from "@/libs/client/_general/enums/local-storage-key";
 
 export default function CreateRosterFormDependencyHandler() {
-  const { watch, getValues, setValue } = useFormContext<CreateRosterFilterFormInput>();
+  const { watch, getValues, setValue, reset, subscribe } = useFormContext<CreateRosterFilterFormInput>();
 
   const setDepartments = useCreateRosterFilterStore(state => state.setDepartments);
   const setWorkers = useCreateRosterFilterStore(state => state.setWorkers);
 
   const router = useRouter();
 
+  const watched = watch();
   const organizationId = watch(CreateRosterFilterKey.ORGANIZATION_ID);
   const departmentId = watch(CreateRosterFilterKey.DEPARTMENT_ID);
   const days = watch(CreateRosterFilterKey.DAYS);
 
+  const initLoadRef = useRef<boolean>(true);
   const prevDepartmentIdRef = useRef<number | undefined>(undefined);
   const prevDaysRef = useRef<Date[] | undefined>(undefined);
+// TODO: Fix bug: when org not 1st, refresh cannot see off
+  // LocalStorage
+  useEffect(() => {
+    if (!initLoadRef.current) {
+      console.log('set local storage', watched)
+      localStorage.setItem(LocalStorageKey.CREATE_ROSTER_FILTER_FORM, JSON.stringify(watched))
+      return;
+    }
+
+    const stored = localStorage.getItem(LocalStorageKey.CREATE_ROSTER_FILTER_FORM);
+    if (stored) {
+      const parsedStored = JSON.parse(stored);
+
+      const formInput: CreateRosterFilterFormInput = {
+        ...parsedStored,
+        days: parsedStored.days.map((day: string) => new Date(day)),
+        offs: parsedStored.offs.map((off: any) => ({
+          ...off,
+          days: off.days.map((day: string) => new Date(day)),
+        })),
+      }
+  
+      console.log('get local storage and reset', formInput)
+      reset(formInput, { keepDefaultValues: true })
+    }
+    
+    initLoadRef.current = false;
+  }, [reset, watched])
 
   // Organization change
   useEffect(() => {
@@ -43,6 +74,7 @@ export default function CreateRosterFormDependencyHandler() {
       setDepartments(departments);
 
       if (departments.length) {
+        console.log('set department id', departments[0].id)
         setValue(CreateRosterFilterKey.DEPARTMENT_ID, departments[0].id);
       }
     })()
@@ -67,6 +99,7 @@ export default function CreateRosterFormDependencyHandler() {
       setWorkers(workers);
 
       if (prevDepartmentIdRef.current !== undefined && prevDepartmentIdRef.current !== departmentId) {
+        console.log('set offs to empty array')
         setValue(CreateRosterFilterKey.OFFS, []);
       }
 
@@ -80,12 +113,13 @@ export default function CreateRosterFormDependencyHandler() {
       const offs = getValues(CreateRosterFilterKey.OFFS);
 
       const isDayExist = (offDay: Date) => days.some(day => isEqual(offDay, day));
-      
+
       const newOffs: OffFormInput[] = offs.map(off => ({
         ...off,
         days: off.days.filter(isDayExist).toSorted(compareAsc)
       }))
 
+      console.log('set offs', newOffs)
       setValue(CreateRosterFilterKey.OFFS, newOffs)
     }
 
