@@ -18,7 +18,7 @@ export const columns: ColumnDef<DepartmentOrganizationChildrenCount>[] = [
     id: DepartmentTableId.ORGANIZATION_NAME,
     accessorFn: row => row.organization.name,
     header: ({ column }) => (
-      <TableSortableHeader title="組織名稱" column={column} />
+      <TableSortableHeader title="機構名稱" column={column} />
     ),
   },
   {

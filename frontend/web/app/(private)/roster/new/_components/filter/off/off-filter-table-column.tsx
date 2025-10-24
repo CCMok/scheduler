@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
-import WorkerIdFormField from "./worker-id-form-field";
-import OffDaysFormField from "./off-days-form-field";
+import OffWorkerIdFormField from "./off-worker-id-field";
+import OffDaysField from "./off-days-field";
 import CustomButton from '@/components/_general/button/custom-button';
 import { Minus } from "lucide-react";
 
@@ -16,19 +16,19 @@ type OffFilterRowData = {
   onRemove: (index: number) => void;
 };
 
-export const createOffFilterColumns = (): ColumnDef<OffFilterRowData>[] => [
+export const columns: ColumnDef<OffFilterRowData>[] = [
   {
     id: OffFilterTableId.WORKER,
     header: '人員',
     cell: ({ row }) => (
-      <WorkerIdFormField index={row.original.index} />
+      <OffWorkerIdFormField index={row.original.index} />
     ),
   },
   {
     id: OffFilterTableId.OFF_DAYS,
     header: '缺席日',
     cell: ({ row }) => (
-      <OffDaysFormField index={row.original.index} />
+      <OffDaysField index={row.original.index} />
     ),
   },
   {

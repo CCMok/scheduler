@@ -13,7 +13,7 @@ export const columns: ColumnDef<Organization>[] = [
     accessorKey: UserOrganizationTableId.NAME,
     header: ({ column }) => (
       <TableSortableHeader
-        title="組織名稱"
+        title="機構名稱"
         column={column}
       />
     ),

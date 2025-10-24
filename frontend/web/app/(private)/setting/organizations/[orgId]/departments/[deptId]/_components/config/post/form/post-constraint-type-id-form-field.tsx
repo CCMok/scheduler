@@ -27,7 +27,7 @@ export default function PostConstraintTypeIdFormField({
             options={postConstraintTypes}
             getValue={option => option.id.toString()}
             getDisplayName={option => option.name}
-            onValueChange={value => setValue('postConstraintTypeId', value)}
+            onValueChange={value => setValue('postConstraintTypeId', value || '')}
             isFormField
           />
         </CustomFormItem>

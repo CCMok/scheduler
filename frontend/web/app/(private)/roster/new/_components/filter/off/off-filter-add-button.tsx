@@ -1,21 +1,21 @@
 'use client'
 
 import CustomButton from '@/components/_general/button/custom-button';
-import { OffFormInput } from '@/libs/client/roster/models/roster-filter-form-input';
 import { Plus } from 'lucide-react';
-import { useArrangeRosterFilterStore } from '../store/arrange-roster-filter-store-provider';
+import { useCreateRosterFilterStore } from '../store/create-roster-filter-store-provider';
+import { OffFormInput } from '../create-roster-form-input';
 
 type Props = {
-  onAppend: (value: OffFormInput) => void;
+  append: (value: OffFormInput) => void;
 }
 
 export default function OffFilterAddButton({
-  onAppend,
+  append,
 }: Readonly<Props>) {
-  const workers = useArrangeRosterFilterStore(state => state.workers);
+  const workers = useCreateRosterFilterStore(state => state.workers);
 
-  const onClick = () => onAppend({
-    workerId: workers.length ? workers[0].id.toString() : '',
+  const onClick = () => append({
+    workerId: workers[0]?.id,
     days: [],
   })
 

@@ -1,37 +1,32 @@
 'use client'
 
-import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filter-form-input"
 import { useFieldArray, useFormContext } from "react-hook-form"
 import useTable from '@/components/_general/table/use-table';
 import CustomTable from '@/components/_general/table/custom-table';
-import { createOffFilterColumns } from './off-filter-table-column';
-import { useMemo, useCallback } from 'react';
+import { columns } from './off-filter-table-column';
+import { useMemo } from 'react';
 import OffFilterAddButton from "./off-filter-add-button";
-import CustomCard from "@/components/_general/card/custom-card";
+import { CreateRosterFilterFormInput, CreateRosterFilterKey } from "../create-roster-form-input";
 
 export default function OffFilter() {
-  const { control } = useFormContext<ArrangeRosterFormInput>();
+  const { control } = useFormContext<CreateRosterFilterFormInput>();
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'offs',
+    name: CreateRosterFilterKey.OFFS,
   })
 
-  const onClickRemove = useCallback((index: number) => remove(index), [remove])
-
-  const columns = useMemo(() => createOffFilterColumns(), []);
-
-  const tableData = useMemo(() =>
+  const data = useMemo(() =>
     fields.map((item, index) => ({
       id: item.id,
       index,
-      onRemove: onClickRemove,
+      onRemove: (index: number) => remove(index),
     })),
-    [fields, onClickRemove]
+    [fields, remove]
   );
 
   const table = useTable({
-    data: tableData,
+    data,
     columns,
     defaultSorting: [],
     getRowId: row => row.id,
@@ -39,17 +34,15 @@ export default function OffFilter() {
   });
 
   return (
-    <CustomCard>
-      <div className='space-y-2'>
-        <div className='flex items-center justify-between'>
-          <span className='font-semibold'>請假</span>
-          <OffFilterAddButton onAppend={append} />
-        </div>
-        <CustomTable
-          table={table}
-          noDataDisplay={<OffFilterAddButton onAppend={append} />}
-        />
+    <div className='space-y-2'>
+      <div className='flex items-center justify-between'>
+        <span className='font-semibold'>請假</span>
+        <OffFilterAddButton append={append} />
       </div>
-    </CustomCard>
+      <CustomTable
+        table={table}
+        noDataDisplay={<OffFilterAddButton append={append} />}
+      />
+    </div>
   )
 }

@@ -52,7 +52,7 @@ export default function OrganizationNameCell({
       return
     }
 
-    toast.success('更改組織名稱' + UiMessageTitle.SUCCESS, {
+    toast.success('更改機構名稱' + UiMessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
     })
 

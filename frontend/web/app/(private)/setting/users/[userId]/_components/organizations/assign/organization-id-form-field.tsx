@@ -21,7 +21,7 @@ export default function OrganizationIdFormField({
       control={control}
       name='organizationId'
       render={({ field }) => (
-        <CustomFormItem label='組織'>
+        <CustomFormItem label='機構'>
           <ComboBox
             value={field.value}
             options={organizations}

@@ -1,7 +1,7 @@
 'use client'
 
 import ComboBox from '@/components/_general/combobox/combo-box';
-import { useArrangeRosterStore } from '../../../../new/_components/store/arrange-roster-store-provider';
+import { useArrangeRosterStore } from '../../../../newOld/_components/store/arrange-roster-store-provider';
 
 type Props = {
   index: number;
@@ -16,10 +16,10 @@ export default function WorkerIdField({
 
   const value = generatedScheduleOffs[index]?.workerId || '';
 
-  const handleValueChange = (newValue: string) => {
+  const handleValueChange = (newValue: string | undefined) => {
     const newOffs = [...generatedScheduleOffs];
     if (newOffs[index]) {
-      newOffs[index] = { ...newOffs[index], workerId: newValue };
+      newOffs[index] = { ...newOffs[index], workerId: newValue || '' };
       setGeneratedScheduleOffs(newOffs);
     }
   };

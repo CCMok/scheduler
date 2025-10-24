@@ -41,7 +41,7 @@ export default async function UserSettingPage({
         },
         {
           value: 'organizations',
-          label: '組織',
+          label: '機構',
           content: <UserOrganizationsSection id={id} />,
         },
       ]}

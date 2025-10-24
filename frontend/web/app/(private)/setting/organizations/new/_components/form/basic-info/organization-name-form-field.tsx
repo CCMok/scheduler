@@ -12,7 +12,7 @@ export default function OrganizationNameFormField() {
       control={control}
       name="name"
       render={({ field }) => (
-        <CustomFormItem label='組織名稱'>
+        <CustomFormItem label='機構名稱'>
           <FormControl>
             <CustomInput
               {...field}

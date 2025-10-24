@@ -29,7 +29,7 @@ export default async function OrganizationsPage() {
         },
         {
           key: 'organizations',
-          label: '組織',
+          label: '機構',
         },
       ]}
     >

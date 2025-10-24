@@ -14,7 +14,7 @@ export default function OrganizationNameQueryInput({
   paramName = Param.NAME,
 }: Readonly<Props>) {
   return (
-    <LabelInput label="組織名稱">
+    <LabelInput label="機構名稱">
       <QueryInputWrapper
         render={(value, onValueChange) => (
           <DebounceInput

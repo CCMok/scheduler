@@ -5,22 +5,24 @@ import { FormControl } from "@/external/shadcn/components/ui/form"
 import { Popover, PopoverContent, PopoverTrigger } from "@/external/shadcn/components/ui/popover"
 import { cn } from "@/external/shadcn/libs/utils"
 import { Check } from "lucide-react"
-import { useMemo, useState } from "react"
+import { Key, useMemo, useState } from "react"
 import CustomCommandItem from "../command/custom-command-item"
 import ComboBoxTriggerButton from "./combo-box-trigger-button"
+import { isNil } from "lodash"
 
-type Props<T> = {
-  value: string,
-  onValueChange: (value: string) => void,
+type Props<T, V extends Key> = {
+  value: V,
+  onValueChange: (value: V | undefined) => void,
   options: T[],
-  getValue: (option: T) => string,
+  getValue: (option: T) => V,
   getDisplayName: (option: T) => string,
   isFormField?: boolean,
   defaultIsOpen?: boolean,
   avoidCollisions?: boolean,
+  isOptional?: boolean,
 }
 
-export default function ComboBox<T>({
+export default function ComboBox<T, V extends Key>({
   value,
   onValueChange,
   options,
@@ -29,11 +31,12 @@ export default function ComboBox<T>({
   isFormField = false,
   defaultIsOpen = false,
   avoidCollisions = true,
-}: Readonly<Props<T>>) {
+  isOptional = true,
+}: Readonly<Props<T, V>>) {
   const [isOpen, setIsOpen] = useState(defaultIsOpen)
 
   const selectedItemDisplay = useMemo(() => {
-    if (!value) return '選擇';
+    if (isNil(value)) return '選擇';
     const option = options.find(option => getValue(option) === value)
     return option ? getDisplayName(option) : '';
   }, [value, options, getValue, getDisplayName])
@@ -73,7 +76,16 @@ export default function ComboBox<T>({
                     key={itemValue}
                     value={displayName}
                     onSelect={() => {
-                      onValueChange(value === itemValue ? '' : itemValue)
+                      if (isOptional) {
+                        if (value === itemValue) {
+                          onValueChange(undefined)
+                        } else {
+                          onValueChange(itemValue)
+                        }
+                      } else if (value !== itemValue) {
+                        onValueChange(itemValue)
+                      }
+
                       setIsOpen(false)
                     }}
                   >

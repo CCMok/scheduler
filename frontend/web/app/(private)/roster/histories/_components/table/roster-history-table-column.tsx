@@ -18,7 +18,7 @@ export const columns: ColumnDef<RosterHistoryRelated>[] = [
     accessorFn: row => row.department.organization.name,
     header: ({ column }) => (
       <TableSortableHeader
-        title="組織名稱"
+        title="機構名稱"
         column={column}
       />
     ),

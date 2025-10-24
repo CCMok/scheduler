@@ -22,7 +22,7 @@ export default function RoleIdQueryInput({
             options={roles}
             getValue={option => option.name}
             getDisplayName={option => option.name}
-            onValueChange={value => onValueChange(value)}
+            onValueChange={value => onValueChange(value || '')}
           />
         )}
         paramName={Param.ROLE_NAME}

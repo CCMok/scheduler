@@ -25,7 +25,7 @@ export default function UpdateOrganizationNameSection({
 
   return (
     <UpdateNameLayout
-      entityName="組織"
+      entityName="機構"
       originalName={organization.name}
       submit={submit}
     />

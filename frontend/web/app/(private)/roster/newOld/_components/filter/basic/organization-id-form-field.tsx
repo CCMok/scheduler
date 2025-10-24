@@ -7,23 +7,23 @@ import { ArrangeRosterFormInput } from "@/libs/client/roster/models/roster-filte
 import { useFormContext } from "react-hook-form"
 import { useArrangeRosterFilterStore } from '../store/arrange-roster-filter-store-provider'
 
-export default function DepartmentIdFormField() {
+export default function OrganizationIdFormField() {
   const { control, setValue } = useFormContext<ArrangeRosterFormInput>();
-
-  const departments = useArrangeRosterFilterStore(state => state.departments);
-
+  
+  const organizations = useArrangeRosterFilterStore(state => state.organizations);
+  
   return (
     <FormField
       control={control}
-      name='departmentId'
+      name='organizationId'
       render={({ field }) => (
-        <CustomFormItem label='部門'>
+        <CustomFormItem label='機構'>
           <ComboBox
             value={field.value}
-            options={departments}
+            options={organizations}
             getValue={option => option.id.toString()}
             getDisplayName={option => option.name}
-            onValueChange={value => setValue('departmentId', value)}
+            onValueChange={value => setValue('organizationId', value || '')}
             isFormField
           />
         </CustomFormItem>

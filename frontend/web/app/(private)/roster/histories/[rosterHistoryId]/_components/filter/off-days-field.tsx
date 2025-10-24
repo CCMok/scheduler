@@ -1,7 +1,7 @@
 'use client'
 
 import MultiSelectCombobox from '@/components/_general/combobox/multi/multi-select-combobox';
-import { useArrangeRosterStore } from '../../../../new/_components/store/arrange-roster-store-provider';
+import { useArrangeRosterStore } from '../../../../newOld/_components/store/arrange-roster-store-provider';
 import { useMemo } from 'react';
 import { format } from 'date-fns';
 

@@ -60,11 +60,11 @@ export default function AssignOrganizationDialog({
       form={form}
       submit={submit}
       onSuccess={onSuccess}
-      title={'指派組織'}
+      title={'指派機構'}
       renderTrigger={onClick => (
         <CustomButton onClick={onClick}>
           <UserRoundPlus />
-          指派組織
+          指派機構
         </CustomButton>
       )}
     >

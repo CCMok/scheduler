@@ -14,7 +14,7 @@ export const deleteUserOrganizationService = async (request: DeleteUserOrganizat
     const canAccess = await checkOrgIdAccess(parsedRequest.organizationId);
     if (!canAccess) return {
       status: ServiceResponseStatus.BAD_REQUEST,
-      message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '組織'),
+      message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '機構'),
     };
 
     await execute(parsedRequest)

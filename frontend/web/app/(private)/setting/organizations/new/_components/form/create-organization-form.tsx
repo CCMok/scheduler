@@ -57,7 +57,7 @@ export default function CreateOrganizationForm() {
       return
     }
 
-    toast.success('新增組織' + UiMessageTitle.SUCCESS, {
+    toast.success('新增機構' + UiMessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
     })
 

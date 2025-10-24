@@ -39,7 +39,7 @@ export default async function WorkerSettingPage({
         },
         {
           key: 'organizations',
-          label: '組織',
+          label: '機構',
           href: PATH.setting.organizations.base,
         },
         {

@@ -52,8 +52,8 @@ export default function RosterTableSelectionCell({
     return () => document.removeEventListener('mousedown', onClickDocument);
   }, [onClickDocument])
 
-  const onValueChange = (value: string) => {
-    const newWorker = generatedScheduleWorkers.find(worker => worker.id.toString() === value)
+  const onValueChange = (value: string | undefined) => {
+    const newWorker = value ? generatedScheduleWorkers.find(worker => worker.id.toString() === value) : undefined;
 
     const newSchedules = modifiedSchedules.map(schedule => ({
       ...schedule,

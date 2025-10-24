@@ -41,7 +41,7 @@ export default function OrganizationTableRowAction({
       {canDelete && <DeleteDialog
         isOpen={isOpenDeleteDialog}
         setIsOpen={setIsOpenDeleteDialog}
-        entityName="組織"
+        entityName="機構"
         displayName={name}
         submit={submitDelete}
       />}

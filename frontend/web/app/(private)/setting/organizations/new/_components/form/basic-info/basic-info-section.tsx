@@ -46,7 +46,7 @@ export default function BasicInfoSection({
     if (isExist) {
       toast.error(UiMessageTitle.INPUT_ERROR, {
         ...SONNER_DEFAULT_OPTIONS,
-        description: ServiceMessage.FOUND.replaceAll('{0}', '組織名稱'),
+        description: ServiceMessage.FOUND.replaceAll('{0}', '機構名稱'),
       })
       return
     }

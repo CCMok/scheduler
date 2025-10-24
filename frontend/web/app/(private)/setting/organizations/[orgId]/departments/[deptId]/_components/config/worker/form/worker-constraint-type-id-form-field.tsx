@@ -27,7 +27,7 @@ export default function WorkerConstraintTypeIdFormField({
             options={workerConstraintTypes}
             getValue={option => option.id.toString()}
             getDisplayName={option => option.name}
-            onValueChange={value => setValue('workerConstraintTypeId', value)}
+            onValueChange={value => setValue('workerConstraintTypeId', value || '')}
             isFormField
           />
         </CustomFormItem>

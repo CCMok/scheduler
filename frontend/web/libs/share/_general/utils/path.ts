@@ -26,7 +26,8 @@ export const PATH = {
   register: `/${PathSegment.REGISTER}`,
   dashboard: `/${PathSegment.DASHBOARD}`,
   roster: {
-    new: `/${PathSegment.ROSTER}/${PathSegment.NEW}`,
+    new: `/${PathSegment.ROSTER}/${PathSegment.NEW}`,  // TODO: remove
+    newOld: `/${PathSegment.ROSTER}/${PathSegment.NEW}Old`,
     histories: {
       base: `/${PathSegment.ROSTER}/${PathSegment.HISTORIES}`,
       build: (rosterHistoryId: string | number) => `/${PathSegment.ROSTER}/${PathSegment.HISTORIES}/${rosterHistoryId}`,

@@ -23,3 +23,14 @@ const findEntities = async (request: GetOrganizationsRequest): Promise<Organizat
   const query = await getOrganizationQuery(request);
   return await prisma.organization.findMany(query);
 }
+
+export const getAllOrganizationsService = cache(async (): Promise<ServiceResponse<Organization[]>> => 
+  await serviceWrapper(async () => {
+    const entities = await findEntities({});
+
+    return {
+      status: ServiceResponseStatus.OK,
+      data: entities,
+    }
+  })
+)

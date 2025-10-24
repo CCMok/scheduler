@@ -40,7 +40,7 @@ export default function CreateDepartmentButton({
         </CustomButton>
       }
     >
-      <Label>組織</Label>
+      <Label>機構</Label>
       <ComboBox
         value={organizationId?.toString() ?? ''}
         options={organizations}

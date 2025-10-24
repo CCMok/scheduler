@@ -17,7 +17,7 @@ export const createUserOrganizationService = async (request: CreateUserOrganizat
     const canAccess = await checkOrgIdAccess(parsedRequest.organizationId)
     if (!canAccess) return {
       status: ServiceResponseStatus.BAD_REQUEST,
-      message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '組織'),
+      message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '機構'),
     };
 
     const executeResponse = await execute(parsedRequest);
@@ -48,7 +48,7 @@ const handleQueryError = (error: PrismaClientKnownRequestError): ServiceResponse
     if (target?.includes('user_id') && target.includes('organization_id')) {
       return {
         status: ServiceResponseStatus.BAD_REQUEST,
-        message: ServiceMessage.FOUND.replaceAll('{0}', '用戶組織'),
+        message: ServiceMessage.FOUND.replaceAll('{0}', '用戶機構'),
       }
     }
   }
