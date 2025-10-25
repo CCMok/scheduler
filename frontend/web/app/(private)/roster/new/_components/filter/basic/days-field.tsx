@@ -15,7 +15,10 @@ export default function DaysField() {
         <CustomFormItem label='日期'>
           <MultiPopupCalendar
             selected={field.value}
-            onSelect={field.onChange}
+            onSelect={dates => {
+              field.onChange(dates);
+              field.onBlur();
+            }}
           />
         </CustomFormItem>
       )}

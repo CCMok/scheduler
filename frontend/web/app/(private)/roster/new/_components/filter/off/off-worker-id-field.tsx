@@ -28,7 +28,10 @@ export default function OffWorkerIdFormField({
             options={workers}
             getValue={option => option.id}
             getDisplayName={option => option.name}
-            onValueChange={field.onChange}
+            onValueChange={value => {
+              field.onChange(value);
+              field.onBlur();
+            }}
             isFormField
             isOptional={false}
           />

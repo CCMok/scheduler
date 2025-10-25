@@ -32,7 +32,10 @@ export default function OffDaysField({
             options={days.toSorted(compareAsc)}
             getValue={option => option.toISOString()}
             getDisplayName={option => format(option, 'yyyy-MM-dd')}
-            onValueChange={value => setValue(`${CreateRosterFilterKey.OFFS}.${index}.${CreateRosterFilterKey.DAYS}`, value.map(day => new Date(day)))}
+            onValueChange={value => {
+              field.onChange(value.map(day => new Date(day)));
+              field.onBlur();
+            }}
             badgeVariant="inverted"
           />
         </CustomFormItem>

@@ -26,7 +26,9 @@ const findEntities = async (request: GetOrganizationsRequest): Promise<Organizat
 
 export const getAllOrganizationsService = cache(async (): Promise<ServiceResponse<Organization[]>> => 
   await serviceWrapper(async () => {
-    const entities = await findEntities({});
+    const entities = await findEntities({
+      orderBys: [{ field: 'name' }],
+    });
 
     return {
       status: ServiceResponseStatus.OK,
