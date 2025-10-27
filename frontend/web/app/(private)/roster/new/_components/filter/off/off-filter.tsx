@@ -1,6 +1,6 @@
 'use client'
 
-import { useFieldArray, useFormContext } from "react-hook-form"
+import { useFieldArray, UseFieldArrayReturn, useFormContext, useWatch } from "react-hook-form"
 import useTable from '@/components/_general/table/use-table';
 import CustomTable from '@/components/_general/table/custom-table';
 import { columns } from './off-filter-table-column';
@@ -8,22 +8,37 @@ import { useMemo } from 'react';
 import OffFilterAddButton from "./off-filter-add-button";
 import { CreateRosterFilterFormInput, CreateRosterFilterKey } from "../create-roster-form-input";
 
-export default function OffFilter() {
-  const { control } = useFormContext<CreateRosterFilterFormInput>();
+type Props = {
+  offFieldArray: UseFieldArrayReturn<CreateRosterFilterFormInput, CreateRosterFilterKey.OFFS, "id">;
+}
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: CreateRosterFilterKey.OFFS,
-  })
+export default function OffFilter({ 
+  offFieldArray,
+}: Readonly<Props>) {
+  // const { control } = useFormContext<CreateRosterFilterFormInput>();
 
-  const data = useMemo(() =>
-    fields.map((item, index) => ({
+  // const { fields, append, remove } = useFieldArray({
+  //   control,
+  //   name: CreateRosterFilterKey.OFFS,
+  // })
+
+  // const offs = useWatch({
+  //   control,
+  //   name: CreateRosterFilterKey.OFFS,
+  // })
+  // console.log('offs', offs)
+  const { fields, append, remove } = offFieldArray;
+
+  const data = useMemo(() => {
+    return fields.map((item, index) => ({
       id: item.id,
       index,
       onRemove: (index: number) => remove(index),
-    })),
+    })) },
     [fields, remove]
   );
+
+  console.log('data', data)
 
   const table = useTable({
     data,

@@ -14,7 +14,7 @@ type Props = {
 export default function OffDaysField({
   index
 }: Readonly<Props>) {
-  const { control, setValue } = useFormContext<CreateRosterFilterFormInput>();
+  const { control } = useFormContext<CreateRosterFilterFormInput>();
 
   const days = useWatch({
     control,

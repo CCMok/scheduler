@@ -24,3 +24,15 @@ export enum CreateRosterFilterKey {
   OFFS = 'offs',
   WORKER_ID = 'workerId',
 }
+
+export const createRosterFilterFormInputStorageSchema = z.object({
+  organizationId: z.number().optional(),
+  departmentId: z.number().optional(),
+  days: z.string().array().optional(),
+  offs: z.object({
+    workerId: z.number().optional(),
+    days: z.string().array().optional(),
+  }).array().optional(),
+})
+
+export type CreateRosterFilterFormInputStorage = z.infer<typeof createRosterFilterFormInputStorageSchema>;
