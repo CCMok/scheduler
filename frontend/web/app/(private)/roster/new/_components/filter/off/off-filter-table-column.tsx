@@ -10,7 +10,7 @@ export enum OffFilterTableId {
   ACTIONS = 'actions',
 }
 
-type OffFilterRowData = {
+export type OffFilterRowData = {
   id: string;
   index: number;
   onRemove: (index: number) => void;

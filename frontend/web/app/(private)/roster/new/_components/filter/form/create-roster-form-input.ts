@@ -30,8 +30,8 @@ export const createRosterFilterFormInputStorageSchema = z.object({
   departmentId: z.number().optional(),
   days: z.string().array().optional(),
   offs: z.object({
-    workerId: z.number().optional(),
-    days: z.string().array().optional(),
+    workerId: z.number(),
+    days: z.string().array(),
   }).array().optional(),
 })
 
