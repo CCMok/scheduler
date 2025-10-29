@@ -11,6 +11,7 @@ import { Organization } from "@/external/prisma-generated"
 import { CreateRosterFilterStoreProvider } from "./store/create-roster-filter-store-provider"
 import CreateRosterFormDependencyHandler from "./form/create-roster-form-dependency-handler"
 import { useMemo } from "react"
+import CreateRosterFilterButtonSection from "./button/create-roster-filter-button-section"
 
 type Props = {
   organizations: Organization[];
@@ -54,6 +55,7 @@ export default function CreateRosterFilter({
               onAppend={offsFieldArray.append}
               onRemove={offsFieldArray.remove}
             />
+            <CreateRosterFilterButtonSection />
           </CustomCard>
         </form>
       </Form>
