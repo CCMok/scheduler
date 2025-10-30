@@ -5,7 +5,7 @@ import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import { getRosterHistorySchedulesService } from "@/libs/server/roster/services/get-roster-history-schedules-service";
 import { dayBaseToPostBaseSchedule, rosterHistorySchedulesToDayBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils";
-import { ArrangeRosterStoreProvider } from "../../../../newOld/_components/store/arrange-roster-store-provider";
+import { ArrangeRosterStoreProvider } from "../../../../new/_components/store/create-roster-store-provider";
 import { getRosterHistoriesService } from "@/libs/server/roster/services/get-roster-histories-service";
 import { isNil } from "lodash";
 import { Worker } from '@/external/prisma-generated'

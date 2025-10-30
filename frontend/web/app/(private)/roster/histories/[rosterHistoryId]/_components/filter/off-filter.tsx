@@ -6,7 +6,7 @@ import { createOffFilterColumns } from './off-filter-table-column';
 import { useMemo, useCallback } from 'react';
 import OffFilterAddButton from "./off-filter-add-button";
 import CustomCard from "@/components/_general/card/custom-card";
-import { useArrangeRosterStore } from "@/app/(private)/roster/newOld/_components/store/arrange-roster-store-provider";
+import { useArrangeRosterStore } from "@/app/(private)/roster/new/_components/store/create-roster-store-provider";
 import { OffFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
 
 export default function OffFilter() {

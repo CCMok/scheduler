@@ -3,7 +3,7 @@
 import CustomButton from '@/components/_general/button/custom-button';
 import { OffFormInput } from '@/libs/client/roster/models/roster-filter-form-input';
 import { Plus } from 'lucide-react';
-import { useArrangeRosterStore } from '../../../../newOld/_components/store/arrange-roster-store-provider';
+import { useArrangeRosterStore } from '../../../../new/_components/store/create-roster-store-provider';
 
 type Props = {
   onAppend: (value: OffFormInput) => void;

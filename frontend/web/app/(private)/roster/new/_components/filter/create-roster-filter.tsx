@@ -8,11 +8,11 @@ import CustomCard from "@/components/_general/card/custom-card"
 import OffFilter from "./off/off-filter"
 import BasicFilter from "./basic/basic-filter"
 import { Organization } from "@/external/prisma-generated"
-import { CreateRosterFilterStoreProvider } from "./store/create-roster-filter-store-provider"
 import CreateRosterFormDependencyHandler from "./form/create-roster-form-dependency-handler"
 import { useMemo } from "react"
 import CreateRosterFilterButtonSection from "./button/create-roster-filter-button-section"
 import FormRootMessage from "@/components/_general/form/form-root-message"
+import useCreateRosterFormSubmit from "./form/use-create-roster-form-submit"
 
 type Props = {
   organizations: Organization[];
@@ -38,30 +38,29 @@ export default function CreateRosterFilter({
     name: CreateRosterFilterKey.OFFS,
   })
 
-  const onSubmit = (input: CreateRosterFilterFormInput) => {
-    console.log(input)
-  }
+  const { submit } = useCreateRosterFormSubmit({ setError: form.setError })
+
+  const onSubmit = async (input: CreateRosterFilterFormInput) =>
+    await submit(input)
 
   return (
-    <CreateRosterFilterStoreProvider initState={{ organizations }}>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CreateRosterFormDependencyHandler
-            defaultValues={defaultValues}
-            onOffsReplace={offsFieldArray.replace}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <CreateRosterFormDependencyHandler
+          defaultValues={defaultValues}
+          onOffsReplace={offsFieldArray.replace}
+        />
+        <CustomCard>
+          <BasicFilter />
+          <OffFilter
+            fields={offsFieldArray.fields}
+            onAppend={offsFieldArray.append}
+            onRemove={offsFieldArray.remove}
           />
-          <CustomCard>
-            <BasicFilter />
-            <OffFilter
-              fields={offsFieldArray.fields}
-              onAppend={offsFieldArray.append}
-              onRemove={offsFieldArray.remove}
-            />
-            <CreateRosterFilterButtonSection />
-            <FormRootMessage />
-          </CustomCard>
-        </form>
-      </Form>
-    </CreateRosterFilterStoreProvider>
+          <CreateRosterFilterButtonSection />
+          <FormRootMessage />
+        </CustomCard>
+      </form>
+    </Form>
   )
 }

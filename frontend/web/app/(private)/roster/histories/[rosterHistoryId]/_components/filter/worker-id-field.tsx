@@ -1,7 +1,7 @@
 'use client'
 
 import ComboBox from '@/components/_general/combobox/combo-box';
-import { useArrangeRosterStore } from '../../../../newOld/_components/store/arrange-roster-store-provider';
+import { useArrangeRosterStore } from '../../../../new/_components/store/create-roster-store-provider';
 
 type Props = {
   index: number;

@@ -5,6 +5,7 @@ import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { Organization } from "@/external/prisma-generated";
 import { Suspense } from "react";
 import InputCardSkeleton from "@/components/_general/skeleton/input-card-skeleton";
+import { CreateRosterFilterStoreProvider } from "./store/create-roster-filter-store-provider";
 
 const getOrganizations = async (): Promise<Organization[]> =>
   await fetchData(
@@ -16,7 +17,9 @@ const getOrganizations = async (): Promise<Organization[]> =>
 const CreateRosterFilterServerContent = async () => {
   const organizations = await getOrganizations();
   return (
-    <CreateRosterFilter organizations={organizations} />
+    <CreateRosterFilterStoreProvider initState={{ organizations }}>
+      <CreateRosterFilter organizations={organizations} />
+    </CreateRosterFilterStoreProvider>
   )
 }
 
