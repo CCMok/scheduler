@@ -46,7 +46,7 @@ export default function OffFilter() {
     <CustomCard>
       <div className='space-y-2'>
         <div className='flex items-center justify-between'>
-          <span className='font-semibold'>請假</span>
+          <span className='font-semibold'>請假 / 不排班時段</span>
           <OffFilterAddButton onAppend={append} />
         </div>
         <CustomTable
