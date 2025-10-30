@@ -6,12 +6,12 @@ import { createOffFilterColumns } from './off-filter-table-column';
 import { useMemo, useCallback } from 'react';
 import OffFilterAddButton from "./off-filter-add-button";
 import CustomCard from "@/components/_general/card/custom-card";
-import { useArrangeRosterStore } from "@/app/(private)/roster/new/_components/store/create-roster-store-provider";
-import { OffFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
+import { useCreateRosterStore } from "@/app/(private)/roster/new/_components/store/create-roster-store-provider";
+import { OffFormInput } from '@/app/(private)/roster/new/_components/filter/form/create-roster-form-input';
 
 export default function OffFilter() {
-  const generatedScheduleOffs = useArrangeRosterStore(state => state.generatedScheduleOffs);
-  const setGeneratedScheduleOffs = useArrangeRosterStore(state => state.setGeneratedScheduleOffs);
+  const generatedScheduleOffs = useCreateRosterStore(state => state.generatedScheduleOffs);
+  const setGeneratedScheduleOffs = useCreateRosterStore(state => state.setGeneratedScheduleOffs);
 
   const onClickRemove = useCallback((index: number) => {
     const newOffs = generatedScheduleOffs.filter((_, i) => i !== index);

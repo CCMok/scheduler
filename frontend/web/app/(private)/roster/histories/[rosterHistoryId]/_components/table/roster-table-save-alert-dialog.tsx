@@ -12,11 +12,11 @@ import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule"
 import { CreateOffWorkerRequest, UpdateRosterHistoryRequest } from "@/libs/server/roster/models/update-roster-history-request";
 import { postBaseToDayBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils";
 import { CreateScheduleRequest } from "@/libs/server/roster/models/create-roster-history-request";
-import { useArrangeRosterStore } from "../../../../new/_components/store/create-roster-store-provider";
+import { useCreateRosterStore } from "../../../../new/_components/store/create-roster-store-provider";
 import { updateRosterHistoryAction } from "@/libs/server/roster/actions/update-roster-history-action";
 import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { useRouter } from "next/navigation";
-import { OffFormInput } from "@/libs/client/roster/models/roster-filter-form-input";
+import { OffFormInput } from "@/app/(private)/roster/new/_components/filter/form/create-roster-form-input";
 
 const getSaveRosterRequest = (
   rosterHistoryId: number, 
@@ -55,9 +55,9 @@ export default function RosterTableSaveAlertDialog({
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false)
   
-  const modifiedSchedules = useArrangeRosterStore(state => state.modifiedSchedules);
-  const setInitialSchedules = useArrangeRosterStore(state => state.setInitialSchedules);
-  const generatedScheduleOffs = useArrangeRosterStore(state => state.generatedScheduleOffs);
+  const modifiedSchedules = useCreateRosterStore(state => state.modifiedSchedules);
+  const setInitialSchedules = useCreateRosterStore(state => state.setInitialSchedules);
+  const generatedScheduleOffs = useCreateRosterStore(state => state.generatedScheduleOffs);
 
   const router = useRouter()
 

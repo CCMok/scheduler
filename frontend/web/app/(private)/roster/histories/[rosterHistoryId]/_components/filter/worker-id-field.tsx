@@ -1,7 +1,7 @@
 'use client'
 
 import ComboBox from '@/components/_general/combobox/combo-box';
-import { useArrangeRosterStore } from '../../../../new/_components/store/create-roster-store-provider';
+import { useCreateRosterStore } from '../../../../new/_components/store/create-roster-store-provider';
 
 type Props = {
   index: number;
@@ -10,16 +10,16 @@ type Props = {
 export default function WorkerIdField({
   index
 }: Readonly<Props>) {
-  const workers = useArrangeRosterStore(state => state.generatedScheduleWorkers);
-  const generatedScheduleOffs = useArrangeRosterStore(state => state.generatedScheduleOffs);
-  const setGeneratedScheduleOffs = useArrangeRosterStore(state => state.setGeneratedScheduleOffs);
+  const workers = useCreateRosterStore(state => state.generatedScheduleWorkers);
+  const generatedScheduleOffs = useCreateRosterStore(state => state.generatedScheduleOffs);
+  const setGeneratedScheduleOffs = useCreateRosterStore(state => state.setGeneratedScheduleOffs);
 
-  const value = generatedScheduleOffs[index]?.workerId || '';
+  const value = generatedScheduleOffs[index]?.workerId ?? 0;
 
-  const handleValueChange = (newValue: string | undefined) => {
+  const handleValueChange = (newValue: number | undefined) => {
     const newOffs = [...generatedScheduleOffs];
     if (newOffs[index]) {
-      newOffs[index] = { ...newOffs[index], workerId: newValue || '' };
+      newOffs[index] = { ...newOffs[index], workerId: newValue ?? 0 };
       setGeneratedScheduleOffs(newOffs);
     }
   };
@@ -28,7 +28,7 @@ export default function WorkerIdField({
     <ComboBox
       value={value}
       options={workers}
-      getValue={option => option.id.toString()}
+      getValue={option => option.id}
       getDisplayName={option => option.name}
       onValueChange={handleValueChange}
     />
