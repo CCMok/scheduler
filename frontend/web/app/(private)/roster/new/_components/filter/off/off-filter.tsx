@@ -39,7 +39,7 @@ export default function OffFilter({
   return (
     <div className='space-y-2'>
       <div className='flex items-center justify-between'>
-        <span className='font-semibold'>請假</span>
+        <span className='text-sm font-medium'>請假 / 不排班時段</span>
         <OffFilterAddButton onAppend={onAppend} />
       </div>
       <CustomTable

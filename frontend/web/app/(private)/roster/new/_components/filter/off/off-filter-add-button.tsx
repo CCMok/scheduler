@@ -3,7 +3,9 @@
 import CustomButton from '@/components/_general/button/custom-button';
 import { Plus } from 'lucide-react';
 import { useCreateRosterFilterStore } from '../store/create-roster-filter-store-provider';
-import { OffFormInput } from '../form/create-roster-form-input';
+import { CreateRosterFilterFormInput, CreateRosterFilterKey, OffFormInput } from '../form/create-roster-form-input';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { useMemo } from 'react';
 
 type Props = {
   onAppend: (value: OffFormInput) => void;
@@ -12,10 +14,23 @@ type Props = {
 export default function OffFilterAddButton({
   onAppend,
 }: Readonly<Props>) {
+  const { control } = useFormContext<CreateRosterFilterFormInput>();
+
+  const offs = useWatch({
+    control,
+    name: CreateRosterFilterKey.OFFS,
+  })
+
   const workers = useCreateRosterFilterStore(state => state.workers);
 
+  const firstWorker = useMemo(() => 
+    workers.find(worker => 
+      !offs.some(off => off.workerId === worker.id)
+    )
+  , [workers, offs])
+
   const onClick = () => onAppend({
-    workerId: workers[0]?.id,
+    workerId: firstWorker?.id ?? 0,
     days: [],
   })
 
@@ -23,6 +38,7 @@ export default function OffFilterAddButton({
     <CustomButton
       variant='outline'
       onClick={onClick}
+      disabled={!firstWorker}
     >
       <Plus />新增
     </CustomButton>

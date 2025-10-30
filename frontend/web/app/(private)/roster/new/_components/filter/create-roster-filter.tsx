@@ -12,6 +12,7 @@ import { CreateRosterFilterStoreProvider } from "./store/create-roster-filter-st
 import CreateRosterFormDependencyHandler from "./form/create-roster-form-dependency-handler"
 import { useMemo } from "react"
 import CreateRosterFilterButtonSection from "./button/create-roster-filter-button-section"
+import FormRootMessage from "@/components/_general/form/form-root-message"
 
 type Props = {
   organizations: Organization[];
@@ -38,6 +39,7 @@ export default function CreateRosterFilter({
   })
 
   const onSubmit = (input: CreateRosterFilterFormInput) => {
+    console.log(input)
   }
 
   return (
@@ -56,6 +58,7 @@ export default function CreateRosterFilter({
               onRemove={offsFieldArray.remove}
             />
             <CreateRosterFilterButtonSection />
+            <FormRootMessage />
           </CustomCard>
         </form>
       </Form>

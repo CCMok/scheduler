@@ -3,9 +3,10 @@
 import ComboBox from '@/components/_general/combobox/combo-box';
 import CustomFormItem from '@/components/_general/form/custom-form-item';
 import { FormField } from "@/external/shadcn/components/ui/form";
-import { useFormContext } from "react-hook-form"
+import { useFormContext, useWatch } from "react-hook-form"
 import { CreateRosterFilterFormInput, CreateRosterFilterKey } from "../form/create-roster-form-input";
 import { useCreateRosterFilterStore } from "../store/create-roster-filter-store-provider";
+import { useMemo } from 'react';
 
 type Props = {
   index: number;
@@ -17,6 +18,19 @@ export default function OffWorkerIdFormField({
   const { control } = useFormContext<CreateRosterFilterFormInput>();
   const workers = useCreateRosterFilterStore(state => state.workers);
 
+  const offs = useWatch({
+    control,
+    name: CreateRosterFilterKey.OFFS,
+  })
+
+  const options = useMemo(() =>
+    workers.filter(worker =>
+      !offs.some((off, offIndex) => (
+        offIndex !== index
+        && off.workerId === worker.id
+      ))
+    ), [workers, offs])
+
   return (
     <FormField
       control={control}
@@ -25,7 +39,7 @@ export default function OffWorkerIdFormField({
         <CustomFormItem>
           <ComboBox
             value={field.value}
-            options={workers}
+            options={options}
             getValue={option => option.id}
             getDisplayName={option => option.name}
             onValueChange={value => {
