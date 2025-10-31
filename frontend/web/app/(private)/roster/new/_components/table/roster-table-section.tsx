@@ -5,8 +5,11 @@ import RosterTableResetButton from './roster-table-reset-button';
 import RosterTableCleanButton from './roster-table-clean-button';
 import { useCreateRosterStore } from '../store/create-roster-store-provider';
 import RosterTableExportXLSXButton from './roster-table-export-xlsx-button';
-import RosterTable from '@/components/roster/table/roster-table';
 import { useMemo } from 'react';
+import dynamic from "next/dynamic";
+
+// Fix dnd hydration mismatch
+const RosterTable = dynamic(() => import('@/components/roster/table/roster-table'), { ssr: false })
 
 export default function RosterTableSection() {
   const isGenerated = useCreateRosterStore(state => state.isGenerated);
