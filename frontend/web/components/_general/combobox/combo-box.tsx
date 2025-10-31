@@ -11,7 +11,7 @@ import ComboBoxTriggerButton from "./combo-box-trigger-button"
 import { isNil } from "lodash"
 
 type Props<T, V extends Key> = {
-  value: V,
+  value: V | undefined,
   onValueChange: (value: V | undefined) => void,
   options: T[],
   getValue: (option: T) => V,

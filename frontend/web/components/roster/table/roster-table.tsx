@@ -5,13 +5,23 @@ import RosterTableHeader from "./roster-table-header";
 import { closestCenter, DndContext, DragEndEvent, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { rectSwappingStrategy, SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { swapSchedule } from "@/app/(private)/roster/new/_components/table/roster-table-utils";
+import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule";
+import { useMemo } from "react";
+import RosterTableRow from "./roster-table-row";
+import { Worker } from "@/external/prisma-generated";
 
 type Props = {
   days: Date[];
+  schedules: PostBaseSchedule[];
+  setSchedules: (schedules: PostBaseSchedule[]) => void;
+  workers: Worker[];
 }
 
 export default function RosterTable({
   days,
+  schedules,
+  setSchedules,
+  workers,
 }: Readonly<Props>) {
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -30,15 +40,25 @@ export default function RosterTable({
     })
   );
 
-  const ids: number[] = []; // TODO
+  const ids: number[] = useMemo(() => {
+    return schedules.flatMap(schedule =>
+      schedule.arrangements.map(arrangement => arrangement.id)
+    )
+  }, [schedules])
 
   const onDragEnd = (event: DragEndEvent) => {
     const { over, active } = event;
     if (!over || !active || active.id === over.id) return;
 
-    // TODO
-    // const swappedSchedules = swapSchedule(modifiedSchedules, over.id, active.id)
-    // setModifiedSchedules(swappedSchedules);
+    const swappedSchedules = swapSchedule(schedules, over.id, active.id)
+    setSchedules(swappedSchedules);
+  }
+
+  const setSchedule = (schedule: PostBaseSchedule) => {
+    const newSchedules = schedules.map(oldSchedule => ({
+      ...(oldSchedule.post.id === schedule.post.id ? schedule : oldSchedule),
+    }))
+    setSchedules(newSchedules);
   }
 
   return (
@@ -53,8 +73,14 @@ export default function RosterTable({
         <RosterTableHeader days={days} />
         <TableBody>
           <SortableContext items={ids} strategy={rectSwappingStrategy}>
-            {/* TODO */}
-            <></>
+            {schedules.map(schedule => (
+              <RosterTableRow
+                key={schedule.post.id}
+                schedule={schedule}
+                setSchedule={setSchedule}
+                workers={workers}
+              />
+            ))}
           </SortableContext>
         </TableBody>
       </Table>

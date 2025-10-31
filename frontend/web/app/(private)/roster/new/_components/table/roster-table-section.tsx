@@ -11,6 +11,8 @@ import { useMemo } from 'react';
 export default function RosterTableSection() {
   const isGenerated = useCreateRosterStore(state => state.isGenerated);
   const modifiedSchedules = useCreateRosterStore(state => state.modifiedSchedules);
+  const setModifiedSchedules = useCreateRosterStore(state => state.setModifiedSchedules);
+  const generatedScheduleWorkers = useCreateRosterStore(state => state.generatedScheduleWorkers);
 
   const days = useMemo(() => {
     return modifiedSchedules.length ? modifiedSchedules[0].arrangements.map(arrangement => arrangement.day) : []
@@ -22,6 +24,9 @@ export default function RosterTableSection() {
     <section>
       <RosterTable
         days={days}
+        schedules={modifiedSchedules}
+        setSchedules={setModifiedSchedules}
+        workers={generatedScheduleWorkers}
       />
       <div className='flex justify-end mt-2 space-x-2'>
         <RosterTableCleanButton />
