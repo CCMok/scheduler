@@ -14,7 +14,6 @@ import RosterTableClientContainer from "./roster-table-client-container";
 import RosterTableResetButton from "../../../../new/_components/table/roster-table-reset-button";
 import RosterTableSaveAlertDialog from "./roster-table-save-alert-dialog";
 import RosterTableExportXLSXButton from "../../../../new/_components/table/roster-table-export-xlsx-button";
-import CustomCard from "@/components/_general/card/custom-card";
 import { DepartmentOrganization } from "@/libs/server/department/models/department-dao";
 import { getDepartmentsOrganizationService } from "@/libs/server/department/services/get-departments-organization-service";
 import { getRosterHistoryOffWorkersService } from "@/libs/server/roster/services/get-roster-history-off-workers-service";
@@ -120,16 +119,12 @@ const RosterTableServerContent = async ({
     >
       <div className='space-y-4'>
         <RosterTableFilterSection />
-        <CustomCard
-          title={`${department.organization.name} - ${department.name}`}
-        >
-          <RosterTableClientContainer />
-          <div className='flex justify-end space-x-2'>
-            <RosterTableResetButton description="沒有儲存的資料將會遺失，請確認是否繼續。" />
-            <RosterTableExportXLSXButton />
-            <RosterTableSaveAlertDialog rosterHistoryId={rosterHistoryId} />
-          </div>
-        </CustomCard>
+        <RosterTableClientContainer />
+        <div className='flex justify-end space-x-2'>
+          <RosterTableResetButton description="沒有儲存的資料將會遺失，請確認是否繼續。" />
+          <RosterTableExportXLSXButton />
+          <RosterTableSaveAlertDialog rosterHistoryId={rosterHistoryId} />
+        </div>
       </div>
     </CreateRosterStoreProvider>
   )

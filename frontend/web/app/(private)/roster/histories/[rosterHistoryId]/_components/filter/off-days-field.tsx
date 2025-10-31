@@ -2,7 +2,7 @@
 
 import MultiSelectCombobox from '@/components/_general/combobox/multi/multi-select-combobox';
 import { useMemo } from 'react';
-import { compareAsc, format } from 'date-fns';
+import { format } from 'date-fns';
 import { useCreateRosterStore } from '@/app/(private)/roster/new/_components/store/create-roster-store-provider';
 
 type Props = {
@@ -17,15 +17,11 @@ export default function OffDaysField({
   const setGeneratedScheduleOffs = useCreateRosterStore(state => state.setGeneratedScheduleOffs);
 
   const offDays = useMemo(() => {
-    const uniqueDays = new Set<Date>();
-    for (const schedule of initialSchedules) {
-      for (const arrangement of schedule.arrangements) {
-        uniqueDays.add(arrangement.day);
-      }
-    }
+    if (!initialSchedules.length) return [];
     
-    return Array.from(uniqueDays)
-      .sort(compareAsc)
+    const days = initialSchedules[0].arrangements.map(arrangement => arrangement.day);
+
+    return days
       .map(day => ({
         value: day,
         name: format(day, 'yyyy/MM/dd'),
