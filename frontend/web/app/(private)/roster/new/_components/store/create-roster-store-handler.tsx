@@ -97,7 +97,7 @@ export default function CreateRosterStoreHandler() {
       setModifiedSchedules(modifiedSchedules)
       setIsGenerated(true)
     })()
-  }, [setGeneratedScheduleDepartmentId, setGeneratedScheduleWorkers, setInitialSchedules, setModifiedSchedules, setIsGenerated, router])
+  }, [setGeneratedScheduleDepartmentId, setGeneratedScheduleWorkers, setGeneratedScheduleOffs, setInitialSchedules, setModifiedSchedules, setIsGenerated, router])
 
   return <></>
 }

@@ -29,7 +29,7 @@ export default function OffWorkerIdFormField({
         offIndex !== index
         && off.workerId === worker.id
       ))
-    ), [workers, offs])
+    ), [workers, offs, index])
 
   return (
     <FormField
