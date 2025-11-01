@@ -6,9 +6,9 @@ import { Prisma } from '@/external/prisma-generated';
 import { GetUsersRequest, getUsersRequestSchema } from '../models/get-users-role-request';
 import { serviceWrapper } from '../../_general/services/general-service';
 import { cache } from 'react';
-import { UserExcludePasswordRole } from '../models/user-dao';
+import { UserExcludePasswordWithRole } from '../models/user-dao';
 
-export const getUsersRoleService = cache(async (request: GetUsersRequest): Promise<ServiceResponse<UserExcludePasswordRole[]>> =>
+export const getUsersRoleService = cache(async (request: GetUsersRequest): Promise<ServiceResponse<UserExcludePasswordWithRole[]>> =>
   await serviceWrapper(async () => {
     const parsedRequest = getUsersRequestSchema.parse(request);
     const entities = await findEntities(parsedRequest);
@@ -19,7 +19,7 @@ export const getUsersRoleService = cache(async (request: GetUsersRequest): Promi
     };
   }))
 
-const findEntities = async (request: GetUsersRequest): Promise<UserExcludePasswordRole[]> => {
+const findEntities = async (request: GetUsersRequest): Promise<UserExcludePasswordWithRole[]> => {
   const orderBy = getOrderByClause(request);
 
   return await prisma.user.findMany({

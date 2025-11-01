@@ -1,7 +1,7 @@
 import { Role, User } from "@/external/prisma-generated";
 
-export type UserRole = User & { role: Role }
+export type UserWithRole = User & { role: Role }
 
 export type UserExcludePassword = Omit<User, 'password'>
 
-export type UserExcludePasswordRole = UserExcludePassword & { role: Role }
+export type UserExcludePasswordWithRole = UserExcludePassword & { role: Role }

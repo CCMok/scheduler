@@ -1,6 +1,6 @@
 import 'server-only'
 import { issueToken, TokenPayload, verifyToken } from "./jwt-manager";
-import { UserRole } from "../../user/models/user-dao";
+import { UserWithRole } from "../../user/models/user-dao";
 import { SessionPayload } from "../models/session-payload";
 import { deleteCookie, getCookie, setCookie } from './cookie-manager';
 
@@ -8,7 +8,7 @@ import { deleteCookie, getCookie, setCookie } from './cookie-manager';
 const sessionExpirationTime = '1d';
 const cookieName = 'token';
 
-export const setSession = async (userRole: UserRole): Promise<void> => {
+export const setSession = async (userRole: UserWithRole): Promise<void> => {
   const sessionPayload = getSessionPayloadFromUserRole(userRole);
   await issueTokenSetCookie(sessionPayload)
 }
@@ -36,7 +36,7 @@ const issueTokenSetCookie = async (tokenPayload: TokenPayload): Promise<void> =>
   await setCookie(cookieName, token);
 }
 
-const getSessionPayloadFromUserRole = (userRole: UserRole): SessionPayload => {
+const getSessionPayloadFromUserRole = (userRole: UserWithRole): SessionPayload => {
   return {
     userId: userRole.id,
     email: userRole.email,

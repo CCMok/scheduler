@@ -5,14 +5,14 @@ import { Form, FormControl, FormField } from '@/external/shadcn/components/ui/fo
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import CustomFormItem from '@/components/_general/form/custom-form-item';
-import FormRootMessage from '@/components/_general/form/form-root-message';
 import { loginAction } from '@/libs/server/login/actions/login-action';
 import { useRouter } from 'next/navigation';
 import FormSubmitButton from '@/components/_general/form/form-submit-button';
 import CustomInput from '@/components/_general/input/custom-input';
 import { REDIRECT_PRIVATE_PATH } from '@/libs/share/_general/utils/path';
-import { handleServiceResponse } from '@/libs/share/_general/utils/service-response-handler';
 import { CLEANABLE_LOCAL_STORAGE_KEYS } from '@/libs/client/_general/enums/local-storage-key';
+import { handleCudResponse } from '@/libs/server/_general/utils/response-utils';
+import { isNil } from 'lodash';
 
 const inputClassName = 'w-full'
 
@@ -29,12 +29,9 @@ export default function LoginForm() {
 
   const onSubmit = async (input: LoginFormInput) => {
     const response = await loginAction(input)
-
-    const uiResponse = handleServiceResponse(response, path => router.push(path));
-    if (!uiResponse.isSuccess) {
-      form.setError('root', { type: uiResponse.message.title, message: uiResponse.message.content })
-      return;
-    }
+    
+    const data = handleCudResponse(response, router.push)
+    if (isNil(data)) return;
 
     // Remove user specific item
     for (const key of CLEANABLE_LOCAL_STORAGE_KEYS) {
@@ -85,8 +82,6 @@ export default function LoginForm() {
         />
 
         <FormSubmitButton className={inputClassName}>登入</FormSubmitButton>
-
-        <FormRootMessage />
       </form>
     </Form >
   )

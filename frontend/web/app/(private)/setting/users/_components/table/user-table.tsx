@@ -6,10 +6,10 @@ import { useSearchParams } from "next/navigation";
 import useTable from '@/components/_general/table/use-table';
 import { Param } from "@/libs/share/_general/enums/param";
 import CustomTable from "@/components/_general/table/custom-table";
-import { UserExcludePasswordRole } from "@/libs/server/user/models/user-dao";
+import { UserExcludePasswordWithRole } from "@/libs/server/user/models/user-dao";
 
 type Props = {
-  users: UserExcludePasswordRole[];
+  users: UserExcludePasswordWithRole[];
 }
 
 export default function UserTable({

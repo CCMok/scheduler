@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
 import UserTableRowAction from "./user-table-row-action";
-import { UserExcludePasswordRole } from "@/libs/server/user/models/user-dao";
+import { UserExcludePasswordWithRole } from "@/libs/server/user/models/user-dao";
 
 export enum UserTableId {
   EMAIL = 'email',
@@ -10,7 +10,7 @@ export enum UserTableId {
   ROLE_NAME = 'roleName',
 }
 
-export const getColumns = (): ColumnDef<UserExcludePasswordRole>[] => [
+export const getColumns = (): ColumnDef<UserExcludePasswordWithRole>[] => [
   {
     accessorKey: UserTableId.EMAIL,
     header: ({ column }) => (

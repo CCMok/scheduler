@@ -1,12 +1,12 @@
 import { Skeleton } from "@/external/shadcn/components/ui/skeleton";
-import { UserExcludePasswordRole } from "@/libs/server/user/models/user-dao";
+import { UserExcludePasswordWithRole } from "@/libs/server/user/models/user-dao";
 import { getUsersRoleService } from "@/libs/server/user/services/get-users-role-service";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { isNil } from "lodash";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
-const getUser = async (id: number): Promise<UserExcludePasswordRole | undefined> => {
+const getUser = async (id: number): Promise<UserExcludePasswordWithRole | undefined> => {
   const users = await fetchData(
     async () => await getUsersRoleService({
       where: { id },

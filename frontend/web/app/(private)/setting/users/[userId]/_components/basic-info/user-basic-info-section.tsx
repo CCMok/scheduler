@@ -2,12 +2,12 @@ import CustomCard from "@/components/_general/card/custom-card";
 import { Suspense } from "react";
 import InputCardSkeleton from "@/components/_general/skeleton/input-card-skeleton";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
-import { UserExcludePasswordRole } from "@/libs/server/user/models/user-dao";
+import { UserExcludePasswordWithRole } from "@/libs/server/user/models/user-dao";
 import { getUsersRoleService } from "@/libs/server/user/services/get-users-role-service";
 import { notFound, redirect } from "next/navigation";
 import UserViewOnlyField from "./user-view-only-field";
 
-const getUser = async (id: number): Promise<UserExcludePasswordRole | undefined> => {
+const getUser = async (id: number): Promise<UserExcludePasswordWithRole | undefined> => {
   const users = await fetchData(
     async () => await getUsersRoleService({
       where: { id },
