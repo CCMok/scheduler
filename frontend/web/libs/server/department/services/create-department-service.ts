@@ -10,14 +10,13 @@ import { DepartmentWorkersPosts } from '../models/department-dao';
 import { Prisma } from '@/external/prisma-generated';
 import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
 import { tryCatch } from '../../_general/services/try-catch-wrapper';
-import { getSession } from '../../_general/managers/session-manager';
-import { getAccessibleOrganization } from '../../organization/utils/accessible-organization-utils';
+import { checkCanAccessOrganization } from '../../organization/utils/access-organization-utils';
 import { MessageContent } from '../../_general/enums/message';
 
 export const createDepartmentService = tryCatch(async (request: CreateDepartmentRequest): Promise<ServiceResponse<Id>> => {
   const parsedRequest = createDepartmentRequestSchema.parse(request);
 
-  const canAccess = await checkCanAccess(parsedRequest.organizationId);
+  const canAccess = await checkCanAccessOrganization(parsedRequest.organizationId);
   if (!canAccess) return {
     status: ServiceResponseStatus.BAD_REQUEST,
     message: MessageContent.NOT_FOUND.replaceAll('{0}', '機構'),
@@ -33,16 +32,6 @@ export const createDepartmentService = tryCatch(async (request: CreateDepartment
     data: executeResponse.data.id,
   }
 })
-
-const checkCanAccess = async (organizationId: number): Promise<boolean> => {
-  const session = await getSession();
-  if (!session) return false;
-
-  const response = await getAccessibleOrganization(session.userId, session.roleEnum);
-  if (response.accessAll) return true;
-
-  return response.ids.includes(organizationId);
-}
 
 const execute = async (request: CreateDepartmentRequest) =>
   await tryCatchQuery(async () =>

@@ -5,8 +5,7 @@ import ContextMenu from '@/components/_general/dropdown/context-menu';
 import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdown-menu-item';
 import UpdateDropdownMenuItem from '@/components/_general/dropdown/update-dropdown-menu-item';
 import { deleteDepartmentAction } from '@/libs/server/department/actions/delete-department-action';
-import { ServiceResponseStatus } from '@/libs/share/_general/enums/service-response-status';
-import { ServiceResponse } from '@/libs/share/_general/models/service-response';
+import { ServiceResponse } from '@/libs/server/_general/models/service-response';
 import { isNil } from 'lodash';
 import { useState } from 'react';
 
@@ -23,9 +22,10 @@ export default function DepartmentTableRowAction({
 }: Readonly<Props>) {
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState(false);
 
+  if (isNil(id)) return <></>;
+
   const submitDelete = async (): Promise<ServiceResponse> => {
-    if (isNil(id)) return { status: ServiceResponseStatus.INTERNAL_ERROR };
-    return await deleteDepartmentAction({ id });
+    return await deleteDepartmentAction(id);
   }
 
   return (

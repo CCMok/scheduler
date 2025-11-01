@@ -6,17 +6,20 @@ import { AccessibleResponse } from '../models/accessible-response';
 import prisma from '../../_general/managers/database-manager';
 import { Prisma } from '@/external/prisma-generated';
 
-export const getAccessibleOrganization = cache(async (
-  userId: number,
-  role: Role,
-): Promise<AccessibleResponse> => {
-  if (role === Role.SYSTEM_ADMIN) {
+const getAccessibleOrganization = cache(async (): Promise<AccessibleResponse> => {
+  const session = await getSession();
+  if (!session) return {
+    accessAll: false,
+    ids: [],
+  };
+
+  if (session.roleEnum === Role.SYSTEM_ADMIN) {
     return {
       accessAll: true,
     }
   }
 
-  const userOrganizations = await findOrganizations(userId);
+  const userOrganizations = await findOrganizations(session.userId);
 
   return {
     accessAll: false,
@@ -38,11 +41,8 @@ const findOrganizations = async (userId: number): Promise<{ organizationId: numb
   })
 }
 
-export const getAccessibleDepartment = cache(async (
-  userId: number,
-  role: Role,
-): Promise<AccessibleResponse> => {
-  const response = await getAccessibleOrganization(userId, role);
+const getAccessibleDepartment = cache(async (): Promise<AccessibleResponse> => {
+  const response = await getAccessibleOrganization();
   if (response.accessAll) return response;
 
   const departments = await findDepartments(response.ids);
@@ -68,14 +68,23 @@ const findDepartments = async (
   })
 }
 
-export const filterAccessibleOrganization = async <T>(
+export const checkCanAccessOrganization = async (id: number): Promise<boolean> => {
+  const accessibleOrganization = await getAccessibleOrganization();
+  if (accessibleOrganization.accessAll) return true;
+  return accessibleOrganization.ids.includes(id);
+}
+
+export const checkCanAccessDepartment = async (id: number): Promise<boolean> => {
+  const accessibleDepartment = await getAccessibleDepartment();
+  if (accessibleDepartment.accessAll) return true;
+  return accessibleDepartment.ids.includes(id);
+}
+
+export const filterAccessibleOrganizations = async <T>(
   entities: T[],
   getOrganizationId: (entity: T) => number,
 ): Promise<T[]> => {
-  const session = await getSession()
-  if (!session) return []
-
-  const accessibleOrganization = await getAccessibleOrganization(session.userId, session.roleEnum);
+  const accessibleOrganization = await getAccessibleOrganization();
 
   const filteredEntities = entities.filter(entity => {
     if (accessibleOrganization.accessAll) return true

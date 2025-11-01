@@ -4,7 +4,7 @@ import { ServiceResponse, ServiceResponseStatus } from "../../_general/models/se
 import { Department, Prisma } from "@/external/prisma-generated";
 import { tryCatch } from "../../_general/services/try-catch-wrapper";
 import prisma from "../../_general/managers/database-manager";
-import { filterAccessibleOrganization } from '../../organization/utils/accessible-organization-utils';
+import { filterAccessibleOrganizations } from '../../organization/utils/access-organization-utils';
 
 export const getDepartmentsService = cache(tryCatch(async (
   id?: number,
@@ -12,7 +12,7 @@ export const getDepartmentsService = cache(tryCatch(async (
   organizationId?: number,
 ): Promise<ServiceResponse<Department[]>> => {
   const entities = await findEntities(id, name, organizationId);
-  const filteredEntities = await filterAccessibleOrganization(entities, entity => entity.organizationId)
+  const filteredEntities = await filterAccessibleOrganizations(entities, entity => entity.organizationId)
   return {
     status: ServiceResponseStatus.OK,
     data: filteredEntities,

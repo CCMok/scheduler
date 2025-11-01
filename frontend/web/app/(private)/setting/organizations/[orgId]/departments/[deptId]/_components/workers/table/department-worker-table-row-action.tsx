@@ -7,7 +7,7 @@ import { Param } from '@/libs/share/_general/enums/param';
 import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import ContextMenu from '@/components/_general/dropdown/context-menu';
-import DeleteDialog from '@/components/_general/dialog/delete-dialog';
+import DeleteDialog from '@/components/_general/dialog/old-delete-dialog';
 import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdown-menu-item';
 import UpdateDropdownMenuItem from '@/components/_general/dropdown/update-dropdown-menu-item';
 
