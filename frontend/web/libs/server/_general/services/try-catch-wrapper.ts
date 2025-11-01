@@ -2,10 +2,10 @@ import { DynamicServerError } from "next/dist/client/components/hooks-server-con
 import { ServiceResponse, ServiceResponseStatus } from "../models/service-response";
 import { ZodError } from "zod";
 
-export const tryCatch = <T>(
-  callback: (...args: any[]) => (ServiceResponse<T> | Promise<ServiceResponse<T>>),
+export const tryCatch = <T, F extends any[]>(
+  callback: (...args: F) => (ServiceResponse<T> | Promise<ServiceResponse<T>>),
 ): (...args: Parameters<typeof callback>) => ReturnType<typeof callback> =>
-  async (...args: Parameters<typeof callback>) => {
+  async (...args) => {
     try {
       return await callback(...args)
     } catch (error) {

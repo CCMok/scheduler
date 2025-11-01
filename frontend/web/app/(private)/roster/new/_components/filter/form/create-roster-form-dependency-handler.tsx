@@ -11,6 +11,7 @@ import { useCreateRosterFilterStore } from "../store/create-roster-filter-store-
 import { LocalStorageKey } from "@/libs/client/_general/enums/local-storage-key"
 import { getWorkersAction } from "@/libs/server/worker/actions/get-workers-action"
 import { compareAsc, isEqual } from "date-fns"
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils"
 
 type Props = {
   defaultValues: Partial<CreateRosterFilterFormInput>;
@@ -31,17 +32,10 @@ export default function CreateRosterFormDependencyHandler({
 
   const isInitialRenderRef = useRef<boolean>(true);
 
-  const fetchDepartments = useCallback(
-    async (organizationId: number) => await fetchData(
-      async () => await getDepartmentsAction({
-        where: { organizationId },
-        orderBys: [{ field: 'name' }],
-      }),
-      router.push,
-      [],
-    ),
-    [router],
-  )
+  const fetchDepartments = useCallback(async (organizationId: number) => {
+    const response = await getDepartmentsAction(undefined, undefined, organizationId)
+    return handleGetResponse(response, router.push, [])
+  }, [router])
 
   const fetchWorkers = useCallback(
     async (departmentId: number) => await fetchData(

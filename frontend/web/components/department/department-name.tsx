@@ -1,21 +1,17 @@
 import { Department } from "@/external/prisma-generated";
 import { Skeleton } from "@/external/shadcn/components/ui/skeleton";
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
-import { fetchData } from "@/libs/share/_general/utils/fetch";
+import { filterAccessibleOrganization } from "@/libs/server/organization/utils/accessible-organization-utils";
 import { isNil } from "lodash";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
 const getDepartment = async (id: number): Promise<Department | undefined> => {
-  const departments = await fetchData(
-    async () => await getDepartmentsService({
-      where: { id },
-    }),
-    path => redirect(path),
-    [],
-  )
-
-  return departments[0];
+  const entitiesResponse = await getDepartmentsService(id)
+  const entities = handleGetResponse(entitiesResponse, redirect, [])
+  const filteredEntities = await filterAccessibleOrganization(entities, entity => entity.organizationId)
+  return filteredEntities[0]
 }
 
 export type Props = {
@@ -29,13 +25,13 @@ async function DepartmentNameContent({
 }: Readonly<Props>) {
   if (isNil(id)) {
     if (failNotFound) notFound();
-    return '';
+    return null; // Return null instead of '' to fix hydration error
   }
 
   const department = await getDepartment(id);
   if (!department) {
     if (failNotFound) notFound();
-    return '';
+    return null; // Return null instead of '' to fix hydration error
   }
 
   return department.name;

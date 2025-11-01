@@ -11,19 +11,13 @@ import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { ServiceMessage } from "@/libs/share/_general/enums/service-message";
-import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { getDepartmentsAction } from "@/libs/server/department/actions/get-departments-action";
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 
 const isDepartmentNameExist = async (name: string, router: AppRouterInstance): Promise<boolean> => {
-  const departments = await fetchData(
-    async () => await getDepartmentsAction({
-      where: { name },
-    }),
-    path => router.push(path),
-    [],
-  )
-
-  return departments.length > 0;
+  const response = await getDepartmentsAction(undefined, name)
+  const departments = handleGetResponse(response, router.push, [])
+  return departments.length > 0
 }
 
 type Props = {
