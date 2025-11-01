@@ -2,14 +2,14 @@ import { cache } from "react";
 import { tryCatch } from "../../_general/services/try-catch-wrapper";
 import { Role } from "@/libs/share/_general/enums/role";
 import { ServiceResponse, ServiceResponseStatus } from "../../_general/models/service-response";
-import { AccessibleOrganization } from "../models/accessible-organization";
-import { Prisma, UserOrganization } from "@/external/prisma-generated";
+import { AccessibleResponse } from "../models/accessible-response";
+import { Prisma } from "@/external/prisma-generated";
 import prisma from "../../_general/managers/database-manager";
 
 export const getAccessibleOrganizationService = cache(tryCatch(async (
   userId: number,
   role: Role,
-): Promise<ServiceResponse<AccessibleOrganization>> => {
+): Promise<ServiceResponse<AccessibleResponse>> => {
   if (role === Role.SYSTEM_ADMIN) {
     return {
       status: ServiceResponseStatus.OK,

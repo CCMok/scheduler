@@ -2,7 +2,6 @@ import { Department } from "@/external/prisma-generated";
 import { Skeleton } from "@/external/shadcn/components/ui/skeleton";
 import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
-import { filterAccessibleOrganization } from "@/libs/server/organization/utils/accessible-organization-utils";
 import { isNil } from "lodash";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -10,8 +9,7 @@ import { Suspense } from "react";
 const getDepartment = async (id: number): Promise<Department | undefined> => {
   const entitiesResponse = await getDepartmentsService(id)
   const entities = handleGetResponse(entitiesResponse, redirect, [])
-  const filteredEntities = await filterAccessibleOrganization(entities, entity => entity.organizationId)
-  return filteredEntities[0]
+  return entities[0]
 }
 
 export type Props = {

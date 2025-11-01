@@ -1,43 +1,47 @@
 import 'server-only';
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
-import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
-import { serviceWrapper } from '../../_general/services/general-service';
 import { CreateDepartmentRequest, createDepartmentRequestSchema, PostRequest, PostWorkerRequest } from '../models/create-department-request';
 import prisma from '../../_general/managers/database-manager';
 import { getPrismaErrorTarget, tryCatchQuery } from '../../_general/utils/database-utils';
 import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runtime/library';
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
-import { ServiceMessage } from '../../../share/_general/enums/service-message';
-import { checkOrgIdAccess } from '../../access/utils/data-access-utils';
 import { Id } from '../../_general/models/id';
 import { Transaction } from '../../_general/models/prisma-transaction';
 import { DepartmentWorkersPosts } from '../models/department-dao';
 import { Prisma } from '@/external/prisma-generated';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { getSession } from '../../_general/managers/session-manager';
+import { getAccessibleOrganization } from '../../organization/utils/accessible-organization-utils';
+import { MessageContent } from '../../_general/enums/message';
 
-export const createDepartmentService = async (request: CreateDepartmentRequest): Promise<ServiceResponse<Id>> =>
-  await serviceWrapper(async () => {
-    const parsedRequest = createDepartmentRequestSchema.parse(request);
+export const createDepartmentService = tryCatch(async (request: CreateDepartmentRequest): Promise<ServiceResponse<Id>> => {
+  const parsedRequest = createDepartmentRequestSchema.parse(request);
 
-    const checkAccessResponse = await checkAccess(parsedRequest.organizationId);
-    if (checkAccessResponse) return checkAccessResponse;
-
-    const executeResponse = await execute(parsedRequest);
-    if (!executeResponse.isSuccess) {
-      return handleQueryError(executeResponse.error)
-    }
-
-    return {
-      status: ServiceResponseStatus.OK,
-      data: executeResponse.data.id,
-    }
-  })
-
-const checkAccess = async (organizationId: number): Promise<ServiceResponse<Id> | undefined> => {
-  const pass = await checkOrgIdAccess(organizationId);
-  if (!pass) return {
+  const canAccess = await checkCanAccess(parsedRequest.organizationId);
+  if (!canAccess) return {
     status: ServiceResponseStatus.BAD_REQUEST,
-    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '機構'),
+    message: MessageContent.NOT_FOUND.replaceAll('{0}', '機構'),
   }
+
+  const executeResponse = await execute(parsedRequest);
+  if (!executeResponse.isSuccess) {
+    return handleQueryError(executeResponse.error)
+  }
+
+  return {
+    status: ServiceResponseStatus.OK,
+    data: executeResponse.data.id,
+  }
+})
+
+const checkCanAccess = async (organizationId: number): Promise<boolean> => {
+  const session = await getSession();
+  if (!session) return false;
+
+  const response = await getAccessibleOrganization(session.userId, session.roleEnum);
+  if (response.accessAll) return true;
+
+  return response.ids.includes(organizationId);
 }
 
 const execute = async (request: CreateDepartmentRequest) =>
@@ -117,7 +121,7 @@ const handleQueryError = (error: PrismaClientKnownRequestError): ServiceResponse
     if (target?.includes('name')) {
       return {
         status: ServiceResponseStatus.BAD_REQUEST,
-        message: ServiceMessage.ALREADY_USED.replaceAll('{0}', '名稱'),
+        message: MessageContent.ALREADY_USED.replaceAll('{0}', '名稱'),
       }
     }
   }

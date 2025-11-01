@@ -27,6 +27,12 @@ export const handleGetResponse = <T>(
   return defaultValue;
 }
 
+/**
+ * 
+ * @param response 
+ * @param onRoute 
+ * @returns Return data if success, otherwise undefined
+ */
 export const handleCudResponse = <T>(
   response: ServiceResponse<T>,
   onRoute: (path: string) => void,

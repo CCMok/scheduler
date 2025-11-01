@@ -12,14 +12,15 @@ import { createDepartmentFormInputSchema, CreateDepartmentFormInput } from "@/li
 import { CreateDepartmentRequest, PostRequest, PostWorkerRequest, WorkerRequest } from "@/libs/server/department/models/create-department-request";
 import { createDepartmentAction } from "@/libs/server/department/actions/create-department-action";
 import { Param } from "@/libs/share/_general/enums/param";
-import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
-import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { PATH } from "@/libs/share/_general/utils/path";
 import { OrganizationPageTabId } from "../../../../tab-id";
 import { createPostsRequest, createPostWorkersRequest, createWorkersRequest } from "../create-department-request-utils";
 import { CreateDepartmentStepContent } from "./create-department-step-content";
+import { handleCudResponse } from "@/libs/server/_general/utils/response-utils";
+import { isNil } from "lodash";
+import { MessageTitle } from "@/libs/server/_general/enums/message";
 
 const createRequest = (input: CreateDepartmentFormInput, organizationId: number): CreateDepartmentRequest => {
   const posts: PostRequest[] = createPostsRequest(input.posts)
@@ -57,16 +58,10 @@ export default function CreateDepartmentForm() {
     const request = createRequest(input, organizationId);
     const response = await createDepartmentAction(request)
 
-    const uiResponse = handleServiceResponse(response, path => router.push(path));
-    if (!uiResponse.isSuccess) {
-      toast.error(uiResponse.message.title, {
-        ...SONNER_DEFAULT_OPTIONS,
-        description: uiResponse.message.content,
-      })
-      return
-    }
+    const departmentId = handleCudResponse(response, router.push)
+    if (isNil(departmentId)) return;
 
-    toast.success('新增部門' + UiMessageTitle.SUCCESS, {
+    toast.success('新增部門' + MessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
     })
 

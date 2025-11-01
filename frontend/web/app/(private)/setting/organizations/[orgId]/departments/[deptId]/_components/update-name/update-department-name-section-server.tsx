@@ -5,13 +5,11 @@ import UpdateDepartmentNameSection from "./update-department-name-section"
 import { Suspense } from "react"
 import InputCardSkeleton from "@/components/_general/skeleton/input-card-skeleton"
 import { handleGetResponse } from "@/libs/server/_general/utils/response-utils"
-import { filterAccessibleOrganization } from "@/libs/server/organization/utils/accessible-organization-utils"
 
 const getDepartment = async (id: number): Promise<Department | undefined> => {
   const entitiesResponse = await getDepartmentsService(id);
   const entities = handleGetResponse(entitiesResponse, redirect, [])
-  const filteredEntities = await filterAccessibleOrganization(entities, entity => entity.organizationId)
-  return filteredEntities[0]
+  return entities[0]
 }
 
 type Props = {

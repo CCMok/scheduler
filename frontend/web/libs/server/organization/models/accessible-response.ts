@@ -7,4 +7,4 @@ export type LimitAccessResponse = {
   ids: number[];
 }
 
-export type AccessibleOrganization = AccessAllResponse | LimitAccessResponse;
+export type AccessibleResponse = AccessAllResponse | LimitAccessResponse;
