@@ -1,37 +1,29 @@
 import 'server-only';
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
-import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
-import { serviceWrapper } from '../../_general/services/general-service';
-import { DeleteOrganizationRequest, deleteOrganizationRequestSchema } from '../models/delete-organization-request';
 import prisma from '../../_general/managers/database-manager';
-import { ServiceMessage } from '@/libs/share/_general/enums/service-message';
-import { checkOrgIdAccess } from '../../access/utils/data-access-utils';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
+import { checkCanAccessOrganization } from '../utils/access-organization-utils';
+import { MessageContent } from '../../_general/enums/message';
 
-export const deleteOrganizationService = async (request: DeleteOrganizationRequest): Promise<ServiceResponse> =>
-  await serviceWrapper(async () => {
-    const parsedRequest = deleteOrganizationRequestSchema.parse(request)
-
-    const checkAccessResponse = await checkAccess(parsedRequest.id);
-    if (checkAccessResponse) return checkAccessResponse;
-
-    await execute(parsedRequest)
-
-    return {
-      status: ServiceResponseStatus.OK,
-      data: {},
-    }
-  })
-
-const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => {
-  const pass = await checkOrgIdAccess(id);
-  if (!pass) return {
+export const deleteOrganizationService = tryCatch(async (
+  id: number,
+): Promise<ServiceResponse> => {
+  const canAccess = await checkCanAccessOrganization(id)
+  if (!canAccess) return {
     status: ServiceResponseStatus.BAD_REQUEST,
-    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '機構'),
+    message: MessageContent.NOT_FOUND.replaceAll('{0}', '機構'),
   }
-}
 
-const execute = async (request: DeleteOrganizationRequest): Promise<void> => {
+  await execute(id)
+
+  return {
+    status: ServiceResponseStatus.OK,
+    data: {},
+  }
+})
+
+const execute = async (id: number): Promise<void> => {
   await prisma.organization.delete({
-    where: { id: request.id },
+    where: { id },
   })
 }

@@ -6,11 +6,9 @@ import UpdateDropdownMenuItem from '@/components/_general/dropdown/update-dropdo
 import { Role } from '@/libs/share/_general/enums/role';
 import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdown-menu-item';
 import { useState } from 'react';
-import DeleteDialog from '@/components/_general/dialog/old-delete-dialog';
-import { isNil } from 'lodash';
+import DeleteDialog from '@/components/_general/dialog/delete-dialog';
 import { deleteOrganizationAction } from '@/libs/server/organization/actions/delete-organization-action';
-import { ServiceResponse } from '@/libs/share/_general/models/service-response';
-import { ServiceResponseStatus } from '@/libs/share/_general/enums/service-response-status';
+import { ServiceResponse } from '@/libs/server/_general/models/service-response';
 
 type Props = {
   id: number;
@@ -28,8 +26,7 @@ export default function OrganizationTableRowAction({
   const canDelete = role === Role.SYSTEM_ADMIN;
 
   const submitDelete = async (): Promise<ServiceResponse> => {
-    if (isNil(id)) return { status: ServiceResponseStatus.INTERNAL_ERROR };
-    return await deleteOrganizationAction({ id });
+    return await deleteOrganizationAction(id);
   }
 
   return (
