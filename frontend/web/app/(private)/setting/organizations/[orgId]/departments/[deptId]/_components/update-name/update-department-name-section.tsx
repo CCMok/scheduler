@@ -3,9 +3,9 @@
 import { Department } from "@/external/prisma-generated"
 import UpdateNameLayout from '@/components/_general/layout/update-name/update-name-layout'
 import { UpdateNameFormInput } from "@/libs/client/setting/models/update-name-form-input"
-import { ServiceResponse } from "@/libs/share/_general/models/service-response"
 import { UpdateDepartmentNameRequest } from "@/libs/server/department/models/update-department-name-request"
 import { updateDepartmentNameAction } from "@/libs/server/department/actions/update-department-name-action"
+import { ServiceResponse } from "@/libs/server/_general/models/service-response"
 
 type Props = {
   department: Department;

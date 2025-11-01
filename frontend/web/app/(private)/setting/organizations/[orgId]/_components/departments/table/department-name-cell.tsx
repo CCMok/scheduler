@@ -6,10 +6,11 @@ import InlineEditableControl from "@/components/_general/table/inline-editable-c
 import { Form, FormControl, FormField } from "@/external/shadcn/components/ui/form";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { UpdateNameFormInput, updateNameFormInputSchema } from "@/libs/client/setting/models/update-name-form-input";
+import { MessageTitle } from "@/libs/server/_general/enums/message";
+import { handleCudResponse } from "@/libs/server/_general/utils/response-utils";
 import { updateDepartmentNameAction } from "@/libs/server/department/actions/update-department-name-action";
-import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
-import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { isNil } from "lodash";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -43,16 +44,10 @@ export default function DepartmentNameCell({
       name: input.name,
     })
 
-    const uiResponse = handleServiceResponse(response, path => router.push(path));
-    if (!uiResponse.isSuccess) {
-      toast.error(uiResponse.message.title, {
-        ...SONNER_DEFAULT_OPTIONS,
-        description: uiResponse.message.content,
-      })
-      return
-    }
+    const data = handleCudResponse(response, router.push)
+    if (isNil(data)) return;
 
-    toast.success('更改部門名稱' + UiMessageTitle.SUCCESS, {
+    toast.success('更改部門名稱' + MessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
     })
 

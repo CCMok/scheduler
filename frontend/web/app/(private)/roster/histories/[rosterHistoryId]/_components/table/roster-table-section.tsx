@@ -14,8 +14,6 @@ import RosterTableClientContainer from "./roster-table-client-container";
 import RosterTableResetButton from "../../../../new/_components/table/roster-table-reset-button";
 import RosterTableSaveAlertDialog from "./roster-table-save-alert-dialog";
 import RosterTableExportXLSXButton from "../../../../new/_components/table/roster-table-export-xlsx-button";
-import { DepartmentOrganization } from "@/libs/server/department/models/department-dao";
-import { getDepartmentsOrganizationService } from "@/libs/server/department/services/get-departments-organization-service";
 import { getRosterHistoryOffWorkersService } from "@/libs/server/roster/services/get-roster-history-off-workers-service";
 import RosterTableFilterSection from "../filter/roster-table-filter-section";
 import { OffFormInput } from "@/app/(private)/roster/new/_components/filter/form/create-roster-form-input";
@@ -62,17 +60,6 @@ const getWorkers = async (departmentId: number): Promise<Worker[]> => {
   )
 }
 
-const getDepartment = async (departmentId: number): Promise<DepartmentOrganization | undefined> => {
-  const department = await fetchData(
-    async () => await getDepartmentsOrganizationService({
-      where: { id: departmentId },
-    }),
-    path => redirect(path),
-    [],
-  )
-  return department[0]
-}
-
 const offWorkersToOffFormInputs = (offWorkers: RosterHistoryOffWorkerRelated[]): OffFormInput[] =>
   offWorkers.map(offWorker => ({
     workerId: offWorker.workerId,
@@ -96,12 +83,7 @@ const RosterTableServerContent = async ({
 
   if (isNil(departmentId)) return notFound()
 
-  const [department, workers] = await Promise.all([
-    getDepartment(departmentId),
-    getWorkers(departmentId),
-  ])
-
-  if (!department) return notFound()
+  const workers = await getWorkers(departmentId)
 
   const dayBaseSchedules = rosterHistorySchedulesToDayBaseSchedule(rosterHistorySchedules);
   const postBaseSchedules = dayBaseToPostBaseSchedule(dayBaseSchedules);

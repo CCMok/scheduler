@@ -6,7 +6,7 @@ import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runti
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
 import { Id } from '../../_general/models/id';
 import { Transaction } from '../../_general/models/prisma-transaction';
-import { DepartmentWorkersPosts } from '../models/department-dao';
+import { DepartmentWithWorkersPosts } from '../models/department-dao';
 import { Prisma } from '@/external/prisma-generated';
 import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
 import { tryCatch } from '../../_general/services/try-catch-wrapper';
@@ -70,7 +70,7 @@ export const createPostsClause = (requests: PostRequest[]): Prisma.PostCreateNes
   }
 }
 
-export const createPostWorkers = async (tx: Transaction, department: DepartmentWorkersPosts, postWorkerRequests: PostWorkerRequest[]) => {
+export const createPostWorkers = async (tx: Transaction, department: DepartmentWithWorkersPosts, postWorkerRequests: PostWorkerRequest[]) => {
   const postWorkers: { postId: number, workerId: number }[] = [];
 
   for (const postWorker of postWorkerRequests) {

@@ -1,9 +1,9 @@
 import { Post, RosterHistory, RosterHistoryOffWorker, RosterHistoryOffWorkerDay, RosterHistorySchedule, RosterHistoryScheduleArrangement, Worker } from "@/external/prisma-generated";
-import { DepartmentOrganization } from "../../department/models/department-dao";
+import { DepartmentWithOrganization } from "../../department/models/department-dao";
 import { UserExcludePassword } from "../../user/models/user-dao";
 
 export type RosterHistoryRelated = RosterHistory & {
-  department: DepartmentOrganization;
+  department: DepartmentWithOrganization;
   createdByUser: UserExcludePassword;
 }
 

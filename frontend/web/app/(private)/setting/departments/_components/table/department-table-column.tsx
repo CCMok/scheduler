@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
-import { DepartmentOrganizationChildrenCount } from '@/libs/server/department/models/department-dao';
+import { DepartmentWithOrganizationChildrenCount } from '@/libs/server/department/models/department-dao';
 import DepartmentTableRowAction from "@/app/(private)/setting/organizations/[orgId]/_components/departments/table/department-table-row-action";
 import { PATH } from "@/libs/share/_general/utils/path";
 import DepartmentNameCell from "../../../organizations/[orgId]/_components/departments/table/department-name-cell";
@@ -13,7 +13,7 @@ export enum DepartmentTableId {
   ACTIONS = 'actions',
 }
 
-export const columns: ColumnDef<DepartmentOrganizationChildrenCount>[] = [
+export const columns: ColumnDef<DepartmentWithOrganizationChildrenCount>[] = [
   {
     id: DepartmentTableId.ORGANIZATION_NAME,
     accessorFn: row => row.organization.name,

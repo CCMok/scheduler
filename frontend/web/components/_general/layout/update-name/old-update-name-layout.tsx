@@ -5,19 +5,18 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import FormSubmitButton from '@/components/_general/form/form-submit-button'
 import { Save } from "lucide-react"
+import { UiMessageContent, UiMessageTitle } from "@/libs/share/_general/enums/ui-message"
 import FormRootMessage from '@/components/_general/form/form-root-message'
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant"
+import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler"
 import ConfirmDialog from '@/components/_general/dialog/confirm-dialog'
 import { useState } from "react"
 import { UpdateNameFormInput, updateNameFormInputSchema } from "@/libs/client/setting/models/update-name-form-input"
+import { ServiceResponse } from "@/libs/share/_general/models/service-response"
 import NameField from "./name-field"
 import CustomCard from "../../card/custom-card"
-import { ServiceResponse } from "@/libs/server/_general/models/service-response"
-import { MessageContent, MessageTitle } from "@/libs/server/_general/enums/message"
-import { handleCudResponse } from "@/libs/server/_general/utils/response-utils"
-import { isNil } from "lodash"
 
 type Props = {
   entityName: string;
@@ -51,8 +50,8 @@ export default function UpdateNameLayout({
     if (originalName !== input.name) return true;
 
     form.setError('name', {
-      type: MessageTitle.INPUT_ERROR,
-      message: MessageContent.NOT_MATCH.replaceAll('{0}', '原本名稱')
+      type: UiMessageTitle.INPUT_ERROR,
+      message: UiMessageContent.NOT_MATCH.replaceAll('{0}', '原本名稱')
     });
 
     return false;
@@ -61,11 +60,15 @@ export default function UpdateNameLayout({
   const onConfirm = async () => {
     const response = await submit(form.getValues())
 
-    const data = handleCudResponse(response, router.push)
-    if (isNil(data)) return;
+    const uiResponse = handleServiceResponse(response, path => router.push(path))
+    if (!uiResponse.isSuccess) {
+      form.setError('root', { type: uiResponse.message.title, message: uiResponse.message.content })
+      return
+    }
 
-    toast.success(`更改${entityName}名稱` + MessageTitle.SUCCESS, {
+    toast.success(UiMessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
+      description: `已更改${entityName}名稱`,
     })
 
     router.refresh();

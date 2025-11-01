@@ -1,41 +1,36 @@
 import 'server-only'
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
 import { UpdateDepartmentNameRequest, updateDepartmentNameRequestSchema } from "../models/update-department-name-request";
-import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import prisma from "../../_general/managers/database-manager";
-import { ServiceMessage } from "../../../share/_general/enums/service-message";
 import { DataBaseQueryResponse } from "../../_general/models/database-query-response";
 import { PrismaErrorCode } from "../../_general/enums/prisma-error-code";
 import { getPrismaErrorTarget, tryCatchQuery } from "../../_general/utils/database-utils";
 import { PrismaClientKnownRequestError } from "@/external/prisma-generated/runtime/library";
-import { serviceWrapper } from '../../_general/services/general-service';
-import { checkDeptIdAccess } from '../../access/utils/data-access-utils';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
+import { checkCanAccessDepartment } from '../../organization/utils/access-organization-utils';
+import { MessageContent } from '../../_general/enums/message';
 
-export const updateDepartmentNameService = async (request: UpdateDepartmentNameRequest): Promise<ServiceResponse> =>
-  await serviceWrapper<{}>(async () => {
-    const parsedRequest = updateDepartmentNameRequestSchema.parse(request)
+export const updateDepartmentNameService = tryCatch(async (
+  request: UpdateDepartmentNameRequest,
+): Promise<ServiceResponse> => {
+  const parsedRequest = updateDepartmentNameRequestSchema.parse(request)
 
-    const checkAccessResponse = await checkAccess(parsedRequest.id);
-    if (checkAccessResponse) return checkAccessResponse;
-
-    const executeResponse = await execute(parsedRequest)
-    if (!executeResponse.isSuccess) {
-      return handleQueryError(executeResponse.error)
-    }
-
-    return {
-      status: ServiceResponseStatus.OK,
-      data: {},
-    }
-  })
-
-const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => {
-  const pass = await checkDeptIdAccess(id);
-  if (!pass) return {
+  const canAccess = await checkCanAccessDepartment(parsedRequest.id)
+  if (!canAccess) return {
     status: ServiceResponseStatus.BAD_REQUEST,
-    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '部門'),
+    message: MessageContent.NOT_FOUND.replaceAll('{0}', '部門'),
   }
-}
+
+  const executeResponse = await execute(parsedRequest)
+  if (!executeResponse.isSuccess) {
+    return handleQueryError(executeResponse.error)
+  }
+
+  return {
+    status: ServiceResponseStatus.OK,
+    data: {},
+  }
+})
 
 const execute = async (request: UpdateDepartmentNameRequest): Promise<DataBaseQueryResponse> =>
   await tryCatchQuery(async () =>
@@ -52,7 +47,7 @@ const handleQueryError = (error: PrismaClientKnownRequestError): ServiceResponse
     if (target?.includes('name')) {
       return {
         status: ServiceResponseStatus.BAD_REQUEST,
-        message: ServiceMessage.ALREADY_USED.replaceAll('{0}', '名稱'),
+        message: MessageContent.ALREADY_USED.replaceAll('{0}', '名稱'),
       }
     }
   }

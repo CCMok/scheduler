@@ -28,9 +28,6 @@ export const handleGetResponse = <T>(
 }
 
 /**
- * 
- * @param response 
- * @param onRoute 
  * @returns Return data if success, otherwise undefined
  */
 export const handleCudResponse = <T>(
@@ -51,7 +48,7 @@ export const handleCudResponse = <T>(
       break;
     case ServiceResponseStatus.INTERNAL_ERROR:
       console.error(`Error response status: ${response.status}. Message: ${response.message}`);
-      toast.error(MessageTitle.SYSTEM_ERROR, {
+      toast.error(MessageTitle.INTERNAL_ERROR, {
         ...SONNER_DEFAULT_OPTIONS,
         description: response.message,
       })

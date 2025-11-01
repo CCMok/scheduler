@@ -4,7 +4,7 @@ import { ArrangeRosterRequest, arrangeRosterRequestSchema } from "../models/arra
 import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from "../models/arrange/sch-arrange-roster-response";
 import { Arrangement, DayBaseSchedule } from '../../../share/roster/models/day-base-schedule';
-import { DepartmentWorkersPosts } from '../../department/models/department-dao';
+import { DepartmentWithWorkersPosts } from '../../department/models/department-dao';
 import { isNil } from 'lodash';
 import { Worker } from '@/external/prisma-generated';
 import prisma from '../../_general/managers/database-manager';
@@ -74,7 +74,7 @@ export const getDepartmentWorkersPosts = async (id: number) => {
   })
 }
 
-const checkRequest = (request: ArrangeRosterRequest, department: DepartmentWorkersPosts): boolean => {
+const checkRequest = (request: ArrangeRosterRequest, department: DepartmentWithWorkersPosts): boolean => {
   for (const off of request.offs) {
     const isWorkerExist = department.workers.some(worker => worker.id === off.workerId)
     if (!isWorkerExist) {
@@ -119,7 +119,7 @@ const parseSchResponse = (responseJson: any): SchArrangeRosterResponse | undefin
   return parseResult.data;
 }
 
-const mapSchedules = async (schResponse: SchArrangeRosterResponse, department: DepartmentWorkersPosts): Promise<DayBaseSchedule[] | undefined> => {
+const mapSchedules = async (schResponse: SchArrangeRosterResponse, department: DepartmentWithWorkersPosts): Promise<DayBaseSchedule[] | undefined> => {
   const schedules: DayBaseSchedule[] = [];
 
   let arrangementId = 0;
