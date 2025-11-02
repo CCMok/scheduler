@@ -3,7 +3,7 @@
 import ContextMenu from '@/components/_general/dropdown/context-menu';
 import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdown-menu-item';
 import { useState } from 'react';
-import RemoveAssignmentDialog from '@/components/_general/dialog/remove-assignment-dialog';
+import RemoveAssignmentDialog from '@/components/_general/dialog/old-remove-assignment-dialog';
 import { useParams } from 'next/navigation';
 import { Param } from '@/libs/share/_general/enums/param';
 import { deleteUserOrganizationAction } from '@/libs/server/user-organization/actions/delete-user-organization-action';

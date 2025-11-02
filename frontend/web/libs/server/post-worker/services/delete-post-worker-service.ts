@@ -1,58 +1,43 @@
 import 'server-only';
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
-import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
-import { serviceWrapper } from '../../_general/services/general-service';
 import prisma from '../../_general/managers/database-manager';
 import { DeletePostWorkerRequest, deletePostWorkerRequestSchema } from '../models/delete-post-worker-request';
-import { ServiceMessage } from '@/libs/share/_general/enums/service-message';
-import { checkPostIdAccess, checkWorkerIdAccess } from '../../access/utils/data-access-utils';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
+import { checkCanAccessPost, checkCanAccessWorker } from '../../organization/utils/access-organization-utils';
+import { MessageContent } from '../../_general/enums/message';
 
-export const deletePostWorkerService = async (request: DeletePostWorkerRequest): Promise<ServiceResponse> =>
-  await serviceWrapper(async () => {
-    const parsedRequest = deletePostWorkerRequestSchema.parse(request)
+export const deletePostWorkerService = tryCatch(async (
+  request: DeletePostWorkerRequest,
+): Promise<ServiceResponse> => {
+  const parsedRequest = deletePostWorkerRequestSchema.parse(request)
 
-    const checkAccessResponse = await checkAccess(parsedRequest);
-    if (checkAccessResponse) return checkAccessResponse;
-
-    await execute(parsedRequest)
-
-    return {
-      status: ServiceResponseStatus.OK,
-      data: {},
-    }
-  })
-
-  const checkAccess = async (request: DeletePostWorkerRequest): Promise<ServiceResponse | undefined> => {
-    const postAccessResponse = await checkPostAccess(request.postId);
-    if (postAccessResponse) return postAccessResponse;
-    
-    const workerAccessResponse = await checkWorkerAccess(request.workerId);
-    if (workerAccessResponse) return workerAccessResponse;
-  }
-  
-  const checkPostAccess = async (postId: number): Promise<ServiceResponse | undefined> => {
-    const pass = await checkPostIdAccess(postId);
-    if (!pass) return {
-      status: ServiceResponseStatus.BAD_REQUEST,
-      message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '職位'),
-    }
-  }
-  
-  const checkWorkerAccess = async (workerId: number): Promise<ServiceResponse | undefined> => {
-    const pass = await checkWorkerIdAccess(workerId);
-    if (!pass) return {
-      status: ServiceResponseStatus.BAD_REQUEST,
-      message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '人員'),
-    }
+  const canAccessPost = await checkCanAccessPost(parsedRequest.postId);
+  if (!canAccessPost) return {
+    status: ServiceResponseStatus.BAD_REQUEST,
+    message: MessageContent.NOT_FOUND.replaceAll('{0}', '職位'),
   }
 
-  const execute = async (request: DeletePostWorkerRequest): Promise<void> => {
-    await prisma.postWorker.delete({
-      where: {
-        postId_workerId: {
-          postId: request.postId,
-          workerId: request.workerId,
-        },
+  const canAccessWorker = await checkCanAccessWorker(parsedRequest.workerId);
+  if (!canAccessWorker) return {
+    status: ServiceResponseStatus.BAD_REQUEST,
+    message: MessageContent.NOT_FOUND.replaceAll('{0}', '人員'),
+  }
+
+  await execute(parsedRequest);
+
+  return {
+    status: ServiceResponseStatus.OK,
+    data: {},
+  }
+})
+
+const execute = async (request: DeletePostWorkerRequest): Promise<void> => {
+  await prisma.postWorker.delete({
+    where: {
+      postId_workerId: {
+        postId: request.postId,
+        workerId: request.workerId,
       },
-    })
-  }
+    },
+  })
+}

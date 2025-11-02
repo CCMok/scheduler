@@ -97,6 +97,34 @@ const findPosts = async (
   })
 }
 
+const getAccessibleWorker = cache(async (): Promise<AccessibleResponse> => {
+  const response = await getAccessibleDepartment();
+  if (response.accessAll) return response;
+
+  const workers = await findWorkers(response.ids);
+
+  return {
+    accessAll: false,
+    ids: workers.map(d => d.id),
+  }
+})
+
+const findWorkers = async (
+  departmentIds: number[]
+): Promise<{ id: number }[]> => {
+  return await prisma.worker.findMany({
+    select: {
+      id: true,
+    },
+    where: {
+      departmentId: { in: departmentIds },
+    },
+    orderBy: {
+      name: Prisma.SortOrder.asc,
+    },
+  })
+}
+
 export const checkCanAccessOrganization = cache(async (id: number): Promise<boolean> => {
   const accessibleOrganization = await getAccessibleOrganization();
   if (accessibleOrganization.accessAll) return true;
@@ -113,6 +141,12 @@ export const checkCanAccessPost = cache(async (id: number): Promise<boolean> => 
   const accessiblePost = await getAccessiblePost();
   if (accessiblePost.accessAll) return true;
   return accessiblePost.ids.includes(id);
+})
+
+export const checkCanAccessWorker = cache(async (id: number): Promise<boolean> => {
+  const accessibleWorker = await getAccessibleWorker();
+  if (accessibleWorker.accessAll) return true;
+  return accessibleWorker.ids.includes(id);
 })
 
 export const filterAccessibleOrganizations = async <T>(

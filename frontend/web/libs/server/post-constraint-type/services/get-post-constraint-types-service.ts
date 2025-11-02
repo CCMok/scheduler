@@ -1,30 +1,35 @@
 import 'server-only'
-import { ServiceResponseStatus } from '@/libs/share/_general/enums/service-response-status';
-import { ServiceResponse } from '@/libs/share/_general/models/service-response';
 import prisma from '../../_general/managers/database-manager';
-import { serviceWrapper } from '../../_general/services/general-service';
 import { cache } from 'react';
-import { GetPostConstraintTypesRequest, getPostConstraintTypesRequestSchema } from '../models/get-post-constraint-types-request';
-import { PostConstraintType } from '@/external/prisma-generated';
+import { PostConstraintType, Prisma } from '@/external/prisma-generated';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
 
-export const getPostConstraintTypesService = cache(async (request: GetPostConstraintTypesRequest): Promise<ServiceResponse<PostConstraintType[]>> =>
-  await serviceWrapper(async () => {
-    const parsedRequest = getPostConstraintTypesRequestSchema.parse(request);
-    const entities = await findEntities(parsedRequest);
+export const getPostConstraintTypesService = cache(tryCatch(async (
+  id?: number,
+  name?: string,
+  enumValue?: number,
+): Promise<ServiceResponse<PostConstraintType[]>> => {
+  const entities = await findEntities(id, name, enumValue);
+  return {
+    status: ServiceResponseStatus.OK,
+    data: entities,
+  }
+}))
 
-    return {
-      status: ServiceResponseStatus.OK,
-      data: entities,
-    }
-  }))
-
-const findEntities = async (request: GetPostConstraintTypesRequest): Promise<PostConstraintType[]> => {
+const findEntities = async (
+  id?: number,
+  name?: string,
+  enumValue?: number,
+): Promise<PostConstraintType[]> => {
   return await prisma.postConstraintType.findMany({
     where: {
-      id: request.where?.id,
-      name: request.where?.name,
-      enum: request.where?.enum,
+      id,
+      name,
+      enum: enumValue,
     },
-    take: request.take,
+    orderBy: {
+      name: Prisma.SortOrder.asc,
+    },
   })
 }

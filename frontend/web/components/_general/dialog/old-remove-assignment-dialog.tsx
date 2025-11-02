@@ -1,7 +1,7 @@
 'use client';
 
-import { ServiceResponse } from '@/libs/server/_general/models/service-response';
-import ServiceHandleDialog from './cud-service-handle-dialog';
+import { ServiceResponse } from '@/libs/share/_general/models/service-response';
+import ServiceHandleDialog from './old-service-handle-dialog';
 
 type Props<R = object> = {
   isOpen?: boolean;

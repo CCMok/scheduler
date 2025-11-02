@@ -1,11 +1,10 @@
 'use client'
 
 import CustomButton from "@/components/_general/button/custom-button";
-import FormDialog from "@/components/_general/dialog/old-form-dialog";
+import FormDialog from "@/components/_general/dialog/form-dialog";
 import { createPostWorkerAction } from "@/libs/server/post-worker/actions/create-post-worker-action";
 import { Param } from "@/libs/share/_general/enums/param";
-import { ServiceResponseStatus } from "@/libs/share/_general/enums/service-response-status";
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
+import { ServiceResponse, ServiceResponseStatus } from "@/libs/server/_general/models/service-response";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserRoundPlus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";

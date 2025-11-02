@@ -1,6 +1,5 @@
 import CustomCard from "@/components/_general/card/custom-card";
 import PostConstraintTable from "./post-constraint-table";
-import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { getPostConstraintsWithChildService } from "@/libs/server/post-constraint/services/get-post-constraints-with-child-service";
 import { redirect } from "next/navigation";
 import { PostConstraintWithChild } from "@/libs/server/post-constraint/models/post-constraint-dao";
@@ -18,11 +17,8 @@ const getPostConstraints = async (departmentId: number): Promise<PostConstraintW
 }
 
 const getPostConstraintTypes = async (): Promise<PostConstraintType[]> => {
-  return await fetchData(
-    async () => getPostConstraintTypesService({}),
-    path => redirect(path),
-    [],
-  )
+  const response = await getPostConstraintTypesService()
+  return handleGetResponse(response, redirect, [])
 }
 
 const getPosts = async (departmentId: number): Promise<Post[]> => {

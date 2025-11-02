@@ -1,6 +1,6 @@
 'use client'
 
-import { ServiceResponse } from '@/libs/share/_general/models/service-response';
+import { ServiceResponse } from '@/libs/server/_general/models/service-response';
 import { useParams } from 'next/navigation';
 import { Param } from '@/libs/share/_general/enums/param';
 import { deletePostWorkerAction } from '@/libs/server/post-worker/actions/delete-post-worker-action';
