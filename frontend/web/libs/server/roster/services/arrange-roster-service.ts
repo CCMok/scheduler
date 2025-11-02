@@ -1,7 +1,5 @@
 import 'server-only'
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
 import { ArrangeRosterRequest, arrangeRosterRequestSchema } from "../models/arrange/arrange-roster-request";
-import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from "../models/arrange/sch-arrange-roster-response";
 import { Arrangement, DayBaseSchedule } from '../../../share/roster/models/day-base-schedule';
 import { DepartmentWithWorkersPosts } from '../../department/models/department-dao';
@@ -10,55 +8,47 @@ import { Worker } from '@/external/prisma-generated';
 import prisma from '../../_general/managers/database-manager';
 import { ApiHeaderKey, ContentType } from '../../_general/enums/api-header';
 import { SCH_API_KEY } from '../../_general/constants/sch-constant';
-import { serviceWrapper } from '../../_general/services/general-service';
-import { ServiceMessage } from '@/libs/share/_general/enums/service-message';
-import { checkDeptIdAccess } from '../../access/utils/data-access-utils';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
+import { checkCanAccessDepartment } from '../../organization/utils/access-organization-utils';
+import { MessageContent } from '../../_general/enums/message';
 
-export const arrangeRosterService = async (request: ArrangeRosterRequest): Promise<ServiceResponse<DayBaseSchedule[]>> =>
-  await serviceWrapper<DayBaseSchedule[]>(async () => {
-    const parsedRequest = arrangeRosterRequestSchema.parse(request);
+export const arrangeRosterService = tryCatch(async (
+  request: ArrangeRosterRequest,
+): Promise<ServiceResponse<DayBaseSchedule[]>> => {
+  const parsedRequest = arrangeRosterRequestSchema.parse(request);
 
-    const checkAccessResponse = await checkAccess(parsedRequest.departmentId);
-    if (checkAccessResponse) return checkAccessResponse;
-
-    const department = await getDepartmentWorkersPosts(parsedRequest.departmentId);
-    if (!department) return {
-      status: ServiceResponseStatus.BAD_REQUEST,
-    }
-
-    const isRequestValid = checkRequest(parsedRequest, department);
-    if (!isRequestValid) return {
-      status: ServiceResponseStatus.BAD_REQUEST,
-    }
-
-    const responseJson = await sendArrangeRosterRequest(parsedRequest);
-    if (!responseJson) return {
-      status: ServiceResponseStatus.INTERNAL_ERROR
-    }
-
-    const schResponse = parseSchResponse(responseJson)
-    if (!schResponse) return {
-      status: ServiceResponseStatus.INTERNAL_ERROR
-    }
-
-    const schedules = await mapSchedules(schResponse, department)
-    if (!schedules) return {
-      status: ServiceResponseStatus.INTERNAL_ERROR
-    }
-
-    return {
-      status: ServiceResponseStatus.OK,
-      data: schedules,
-    }
-  })
-
-const checkAccess = async (departmentId: number): Promise<ServiceResponse<DayBaseSchedule[]> | undefined> => {
-  const pass = await checkDeptIdAccess(departmentId);
-  if (!pass) return {
+  const canAccess = await checkCanAccessDepartment(parsedRequest.departmentId);
+  if (!canAccess) return {
     status: ServiceResponseStatus.BAD_REQUEST,
-    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '部門'),
+    message: MessageContent.NOT_FOUND.replaceAll('{0}', '部門'),
   }
-}
+
+  const responseJson = await sendArrangeRosterRequest(parsedRequest);
+  if (!responseJson) return {
+    status: ServiceResponseStatus.INTERNAL_ERROR,
+  }
+
+  const schResponse = parseSchResponse(responseJson)
+  if (!schResponse) return {
+    status: ServiceResponseStatus.INTERNAL_ERROR,
+  }
+
+  const department = await getDepartmentWorkersPosts(parsedRequest.departmentId);
+  if (!department) return {
+    status: ServiceResponseStatus.INTERNAL_ERROR,
+  }
+
+  const schedules = await mapSchedules(schResponse, department)
+  if (!schedules) return {
+    status: ServiceResponseStatus.INTERNAL_ERROR
+  }
+
+  return {
+    status: ServiceResponseStatus.OK,
+    data: schedules,
+  }
+})
 
 export const getDepartmentWorkersPosts = async (id: number) => {
   return await prisma.department.findUnique({
@@ -72,18 +62,6 @@ export const getDepartmentWorkersPosts = async (id: number) => {
       },
     },
   })
-}
-
-const checkRequest = (request: ArrangeRosterRequest, department: DepartmentWithWorkersPosts): boolean => {
-  for (const off of request.offs) {
-    const isWorkerExist = department.workers.some(worker => worker.id === off.workerId)
-    if (!isWorkerExist) {
-      console.warn(`WorkerId not found in department. workerId=${off.workerId}, departmentId=${request.departmentId}`)
-      return false;
-    }
-  }
-
-  return true;
 }
 
 const sendArrangeRosterRequest = async (request: ArrangeRosterRequest): Promise<any> => {
