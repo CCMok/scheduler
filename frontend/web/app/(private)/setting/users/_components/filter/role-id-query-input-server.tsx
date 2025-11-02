@@ -3,17 +3,12 @@ import { Role } from '@/external/prisma-generated';
 import { Suspense } from 'react';
 import InputSkeleton from '@/components/_general/skeleton/input-skeleton';
 import { getRolesService } from '@/libs/server/role/services/get-roles-service';
-import { fetchData } from '@/libs/share/_general/utils/fetch';
 import { redirect } from 'next/navigation';
+import { handleGetResponse } from '@/libs/server/_general/utils/response-utils';
 
 const getRoles = async (): Promise<Role[]> => {
-  return await fetchData(
-    async () => getRolesService({
-      orderBys: [{ field: 'enum' }],
-    }),
-    path => redirect(path),
-    [],
-  )
+  const response = await getRolesService();
+  return handleGetResponse(response, redirect, [])
 }
 
 const RoleIdQueryInputContent = async () => {

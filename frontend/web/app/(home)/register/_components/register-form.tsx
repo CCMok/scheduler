@@ -11,12 +11,13 @@ import CustomInput from '@/components/_general/input/custom-input';
 import { RegisterFormInput, registerFormInputSchema } from '@/libs/client/register/models/register-form-input';
 import { registerAction } from '@/libs/server/register/actions/register-action';
 import { toast } from "sonner";
-import { UiMessageTitle } from '@/libs/share/_general/enums/ui-message';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
 import { RegisterRequest } from '@/libs/server/register/models/register-request';
 import { REDIRECT_PRIVATE_PATH } from '@/libs/share/_general/utils/path';
-import { handleServiceResponse } from '@/libs/share/_general/utils/service-response-handler';
 import NewPasswordFormField from '@/components/_general/form/new-password-form-field';
+import { handleCudResponse } from '@/libs/server/_general/utils/response-utils';
+import { isNil } from 'lodash';
+import { MessageTitle } from '@/libs/server/_general/enums/message';
 
 const inputClassName = 'w-full'
 
@@ -41,14 +42,10 @@ export default function RegisterForm() {
     }
 
     const response = await registerAction(request)
+    const data = handleCudResponse(response, router.push)
+    if (isNil(data)) return;
 
-    const uiResponse = handleServiceResponse(response, path => router.push(path));
-    if (!uiResponse.isSuccess) {
-      form.setError('root', { type: uiResponse.message.title, message: uiResponse.message.content })
-      return
-    }
-
-    toast.success('註冊' + UiMessageTitle.SUCCESS, {
+    toast.success('註冊' + MessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
       description: '編排您第一個值班表吧！',
     })

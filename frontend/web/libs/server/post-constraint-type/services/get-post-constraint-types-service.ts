@@ -29,7 +29,7 @@ const findEntities = async (
       enum: enumValue,
     },
     orderBy: {
-      name: Prisma.SortOrder.asc,
+      enum: Prisma.SortOrder.asc,
     },
   })
 }
