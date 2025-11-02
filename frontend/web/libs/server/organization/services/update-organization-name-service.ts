@@ -1,7 +1,6 @@
 import 'server-only'
 import { UpdateOrganizationNameRequest, updateOrganizationNameRequestSchema } from "../models/update-organization-name-request";
 import prisma from "../../_general/managers/database-manager";
-import { ServiceMessage } from "../../../share/_general/enums/service-message";
 import { DataBaseQueryResponse } from "../../_general/models/database-query-response";
 import { PrismaErrorCode } from "../../_general/enums/prisma-error-code";
 import { getPrismaErrorTarget, tryCatchQuery } from "../../_general/utils/database-utils";
@@ -48,7 +47,7 @@ const handleQueryError = (error: PrismaClientKnownRequestError): ServiceResponse
     if (target?.includes('name')) {
       return {
         status: ServiceResponseStatus.BAD_REQUEST,
-        message: ServiceMessage.ALREADY_USED.replaceAll('{0}', '名稱'),
+        message: MessageContent.ALREADY_USED.replaceAll('{0}', '名稱'),
       }
     }
   }

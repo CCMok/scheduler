@@ -1,6 +1,6 @@
 'use client'
 
-import CreateDialog from '@/components/_general/dialog/create-dialog';
+import CreateDialog from '@/components/_general/dialog/old-create-dialog';
 import { CreateWorkerFormInput, createWorkerFormInputSchema } from "@/libs/client/worker/models/create-worker-form-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";

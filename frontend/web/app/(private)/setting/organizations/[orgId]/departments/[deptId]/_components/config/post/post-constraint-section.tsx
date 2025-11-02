@@ -10,6 +10,7 @@ import { getPostsService } from "@/libs/server/post/services/get-posts-service";
 import CreatePostConstraintButton from "./create/create-post-constraint-button";
 import { Suspense } from "react";
 import TableSkeleton from "@/components/_general/skeleton/table-skeleton";
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 
 const getPostConstraints = async (departmentId: number): Promise<PostConstraintPosts[]> => {
   return await fetchData(
@@ -30,14 +31,8 @@ const getPostConstraintTypes = async (): Promise<PostConstraintType[]> => {
 }
 
 const getPosts = async (departmentId: number): Promise<Post[]> => {
-  return await fetchData(
-    async () => getPostsService({
-      where: { departmentId },
-      orderBys: [{ field: 'name' }],
-    }),
-    path => redirect(path),
-    [],
-  )
+  const response = await getPostsService(undefined, departmentId)
+  return handleGetResponse(response, redirect, [])
 }
 
 type Props = {

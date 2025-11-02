@@ -1,6 +1,6 @@
 import { Post } from "@/external/prisma-generated";
 import { Count } from "../../_general/models/count";
 
-export type PostsPostWorkersCount = Post & Count<{
+export type PostWithPostWorkersCount = Post & Count<{
   postWorkers: number;
 }>

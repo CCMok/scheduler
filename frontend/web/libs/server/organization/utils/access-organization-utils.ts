@@ -46,6 +46,7 @@ const getAccessibleDepartment = cache(async (): Promise<AccessibleResponse> => {
   if (response.accessAll) return response;
 
   const departments = await findDepartments(response.ids);
+
   return {
     accessAll: false,
     ids: departments.map(d => d.id),
@@ -68,17 +69,51 @@ const findDepartments = async (
   })
 }
 
-export const checkCanAccessOrganization = async (id: number): Promise<boolean> => {
+const getAccessiblePost = cache(async (): Promise<AccessibleResponse> => {
+  const response = await getAccessibleDepartment();
+  if (response.accessAll) return response;
+
+  const posts = await findPosts(response.ids);
+
+  return {
+    accessAll: false,
+    ids: posts.map(d => d.id),
+  }
+})
+
+const findPosts = async (
+  departmentIds: number[]
+): Promise<{ id: number }[]> => {
+  return await prisma.post.findMany({
+    select: {
+      id: true,
+    },
+    where: {
+      departmentId: { in: departmentIds },
+    },
+    orderBy: {
+      name: Prisma.SortOrder.asc,
+    },
+  })
+}
+
+export const checkCanAccessOrganization = cache(async (id: number): Promise<boolean> => {
   const accessibleOrganization = await getAccessibleOrganization();
   if (accessibleOrganization.accessAll) return true;
   return accessibleOrganization.ids.includes(id);
-}
+})
 
-export const checkCanAccessDepartment = async (id: number): Promise<boolean> => {
+export const checkCanAccessDepartment = cache(async (id: number): Promise<boolean> => {
   const accessibleDepartment = await getAccessibleDepartment();
   if (accessibleDepartment.accessAll) return true;
   return accessibleDepartment.ids.includes(id);
-}
+})
+
+export const checkCanAccessPost = cache(async (id: number): Promise<boolean> => {
+  const accessiblePost = await getAccessiblePost();
+  if (accessiblePost.accessAll) return true;
+  return accessiblePost.ids.includes(id);
+})
 
 export const filterAccessibleOrganizations = async <T>(
   entities: T[],
@@ -86,10 +121,27 @@ export const filterAccessibleOrganizations = async <T>(
 ): Promise<T[]> => {
   const accessibleOrganization = await getAccessibleOrganization();
 
+  if (accessibleOrganization.accessAll) return entities;
+
   const filteredEntities = entities.filter(entity => {
-    if (accessibleOrganization.accessAll) return true
-    const organzationId = getOrganizationId(entity)
-    return accessibleOrganization.ids.includes(organzationId)
+    const organizationId = getOrganizationId(entity)
+    return accessibleOrganization.ids.includes(organizationId)
+  })
+
+  return filteredEntities
+}
+
+export const filterAccessibleDepartments = async <T>(
+  entities: T[],
+  getDepartmentId: (entity: T) => number,
+): Promise<T[]> => {
+  const accessibleDepartment = await getAccessibleDepartment()
+
+  if (accessibleDepartment.accessAll) return entities;
+
+  const filteredEntities = entities.filter(entity => {
+    const departmentId = getDepartmentId(entity)
+    return accessibleDepartment.ids.includes(departmentId)
   })
 
   return filteredEntities

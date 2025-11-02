@@ -8,6 +8,7 @@ import { fetchData } from "@/libs/share/_general/utils/fetch"
 import { getWorkersAction } from "@/libs/server/worker/actions/get-workers-action"
 import { useRouter } from "next/navigation"
 import { getPostsAction } from "@/libs/server/post/actions/get-posts-action"
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils"
 
 export default function CreateRosterStoreHandler() {
   const setGeneratedScheduleDepartmentId = useCreateRosterStore(state => state.setGeneratedScheduleDepartmentId)
@@ -41,13 +42,8 @@ export default function CreateRosterStoreHandler() {
         [],
       )
 
-      const posts = await fetchData(
-        async () => await getPostsAction({
-          where: { departmentId },
-        }),
-        path => router.push(path),
-        [],
-      )
+      const response = await getPostsAction(undefined, departmentId)
+      const posts = handleGetResponse(response, router.push, [])
 
       const initialScheduleStorageString = localStorage.getItem(LocalStorageKey.CREATE_ROSTER_INITIAL_SCHEDULES)
       if (!initialScheduleStorageString) return

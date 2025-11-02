@@ -1,6 +1,6 @@
 'use client'
 
-import { PostsPostWorkersCount } from '@/libs/server/post/models/post-dao';
+import { PostWithPostWorkersCount } from '@/libs/server/post/models/post-dao';
 import PostWorkersCountTable from '@/components/post/post-workers-count-table';
 import { getActionColumn, getNameColumn, workerCountColumn } from "@/components/post/post-workers-count-table-column";
 import WorkerPostTableRowAction from "./worker-post-table-row-action";
@@ -10,14 +10,14 @@ const actionColumn = getActionColumn(({ row }) => (
   <WorkerPostTableRowAction id={row.original.id} name={row.original.name} />
 ))
 
-const columns: ColumnDef<PostsPostWorkersCount>[] = [
+const columns: ColumnDef<PostWithPostWorkersCount>[] = [
   getNameColumn(false),
   workerCountColumn,
   actionColumn,
 ]
 
 type Props = {
-  posts: PostsPostWorkersCount[];
+  posts: PostWithPostWorkersCount[];
 }
 
 export default function WorkerPostTable({

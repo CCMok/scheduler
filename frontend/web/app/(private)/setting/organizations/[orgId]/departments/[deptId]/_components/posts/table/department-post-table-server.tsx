@@ -1,17 +1,12 @@
-import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
-import { PostsPostWorkersCount } from "@/libs/server/post/models/post-dao";
-import { getPostWorkersCountService } from "@/libs/server/post/services/get-post-workers-count-service";
+import { PostWithPostWorkersCount } from "@/libs/server/post/models/post-dao";
+import { getPostsWithPostWorkersCountService } from "@/libs/server/post/services/get-posts-with-post-workers-count-service";
 import DepartmentPostTable from "./department-post-table";
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 
-const getPostWorkersCount = async (deptId: number): Promise<PostsPostWorkersCount[]> => {
-  return await fetchData(
-    async () => await getPostWorkersCountService({
-      where: { departmentId: deptId },
-    }),
-    path => redirect(path),
-    [],
-  )
+const getPostWorkersCount = async (departmentId: number): Promise<PostWithPostWorkersCount[]> => {
+  const response = await getPostsWithPostWorkersCountService(undefined, departmentId)
+  return handleGetResponse(response, redirect, [])
 }
 
 type Props = {

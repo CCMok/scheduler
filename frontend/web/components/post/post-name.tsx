@@ -1,21 +1,15 @@
 import { Post } from "@/external/prisma-generated";
 import { Skeleton } from "@/external/shadcn/components/ui/skeleton";
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 import { getPostsService } from "@/libs/server/post/services/get-posts-service";
-import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { isNil } from "lodash";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
 const getPost = async (id: number): Promise<Post | undefined> => {
-  const posts = await fetchData(
-    async () => await getPostsService({
-      where: { id },
-    }),
-    path => redirect(path),
-    [],
-  )
-
-  return posts[0];
+  const response = await getPostsService(id)
+  const data = handleGetResponse(response, redirect, [])
+  return data[0]
 }
 
 export type Props = {

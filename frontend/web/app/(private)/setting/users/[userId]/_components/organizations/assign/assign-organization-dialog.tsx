@@ -1,7 +1,7 @@
 'use client'
 
 import CustomButton from "@/components/_general/button/custom-button";
-import FormDialog from "@/components/_general/dialog/form-dialog";
+import FormDialog from "@/components/_general/dialog/old-form-dialog";
 import { UserRoundPlus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Organization } from "@/external/prisma-generated";

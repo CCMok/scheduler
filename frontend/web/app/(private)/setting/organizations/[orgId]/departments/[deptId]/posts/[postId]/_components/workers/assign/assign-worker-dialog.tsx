@@ -1,7 +1,7 @@
 'use client'
 
 import CustomButton from "@/components/_general/button/custom-button";
-import FormDialog from "@/components/_general/dialog/form-dialog";
+import FormDialog from "@/components/_general/dialog/old-form-dialog";
 import { CreatePostWorkerFormInput, createPostWorkerFormInputSchema } from "@/libs/client/post-worker/models/create-post-worker-form-input";
 import { createPostWorkerAction } from "@/libs/server/post-worker/actions/create-post-worker-action";
 import { Param } from "@/libs/share/_general/enums/param";

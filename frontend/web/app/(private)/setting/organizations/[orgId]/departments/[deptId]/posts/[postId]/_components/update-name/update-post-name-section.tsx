@@ -1,9 +1,9 @@
 'use client'
 
 import { Post } from "@/external/prisma-generated"
-import UpdateNameLayout from '@/components/_general/layout/update-name/old-update-name-layout'
+import UpdateNameLayout from '@/components/_general/layout/update-name/update-name-layout'
 import { UpdateNameFormInput } from "@/libs/client/setting/models/update-name-form-input"
-import { ServiceResponse } from "@/libs/share/_general/models/service-response"
+import { ServiceResponse } from "@/libs/server/_general/models/service-response"
 import { UpdatePostNameRequest } from "@/libs/server/post/models/update-post-name-request"
 import { updatePostNameAction } from "@/libs/server/post/actions/update-post-name-action"
 

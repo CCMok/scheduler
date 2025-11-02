@@ -1,49 +1,54 @@
 import 'server-only';
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
-import { GetPostsRequest, getPostsRequestSchema } from "../models/get-posts-request";
-import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import prisma from "../../_general/managers/database-manager";
 import { Post, Prisma } from '@/external/prisma-generated';
-import { serviceWrapper } from '../../_general/services/general-service';
-import { getDeptIdFilter } from '../../access/utils/data-access-utils';
 import { cache } from 'react';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
+import { filterAccessibleDepartments } from '../../organization/utils/access-organization-utils';
 
-export const getPostsService = cache(async (request: GetPostsRequest): Promise<ServiceResponse<Post[]>> =>
-  await serviceWrapper(async () => {
-    const parsedRequest = getPostsRequestSchema.parse(request);
-    const entities = await findEntities(parsedRequest);
+export const getPostsService = cache(tryCatch(async (
+  id?: number,
+  departmentId?: number,
+  name?: string,
+  orderByDisplayPosition?: boolean,
+): Promise<ServiceResponse<Post[]>> => {
+  const entities = await findEntities(id, departmentId, name, orderByDisplayPosition);
+  const filteredEntities = await filterAccessibleDepartments(entities, entity => entity.departmentId)
 
-    return {
-      status: ServiceResponseStatus.OK,
-      data: entities,
-    };
-  }))
+  return {
+    status: ServiceResponseStatus.OK,
+    data: filteredEntities,
+  }
+}))
 
-const findEntities = async (request: GetPostsRequest): Promise<Post[]> => {
-  const departmentId = await getDeptIdFilter(request.where?.departmentId);
-  const isDeleted = request.where?.isDeleted ?? false;
-  const orderBy = getOrderByClause(request);
-
+const findEntities = async (
+  id?: number,
+  departmentId?: number,
+  name?: string,
+  orderByDisplayPosition?: boolean,
+): Promise<Post[]> => {
+  const orderBy = getOrderByClause(orderByDisplayPosition);
   return await prisma.post.findMany({
     where: {
-      id: request.where?.id,
+      id,
       departmentId,
-      name: request.where?.name,
-      isDeleted,
+      name,
+      isDeleted: false,
     },
     orderBy,
-    take: request.take,
   })
 }
 
-const getOrderByClause = (request: GetPostsRequest) => {
-  const orderBy: Prisma.PostOrderByWithRelationInput = {};
-
-  if (!request.orderBys) return orderBy;
-
-  for (const requestOrderBy of request.orderBys) {
-    orderBy[requestOrderBy.field] = requestOrderBy.direction ?? Prisma.SortOrder.asc;
+const getOrderByClause = (
+  orderByDisplayPosition?: boolean
+): Prisma.PostOrderByWithRelationInput => {
+  if (orderByDisplayPosition) {
+    return {
+      displayPosition: Prisma.SortOrder.asc,
+    }
   }
 
-  return orderBy;
+  return {
+    name: Prisma.SortOrder.asc,
+  }
 }

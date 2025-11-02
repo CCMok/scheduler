@@ -5,21 +5,20 @@ import CustomDialog from "./custom-dialog";
 import FormSubmitButton from "../form/form-submit-button";
 import { Form } from "@/external/shadcn/components/ui/form";
 import { FieldValues, UseFormReturn } from "react-hook-form";
-import { ServiceResponse } from "@/libs/server/_general/models/service-response";
+import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
+import { ServiceResponse } from "@/libs/share/_general/models/service-response";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
+import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { ChildrenProps } from "@/libs/share/_general/props/children-props";
-import { handleCudResponse } from "@/libs/server/_general/utils/response-utils";
-import { MessageTitle } from "@/libs/server/_general/enums/message";
-import { isNil } from "lodash";
 
 type Props<T extends FieldValues = FieldValues, R = object> = ChildrenProps & {
   form?: UseFormReturn<T>;
   submit?: (input: T) => Promise<ServiceResponse<R>>;
   onSuccess?: (data: R) => (void | Promise<void>);
   title?: string;
-  renderTrigger?: (onClick: () => (void | Promise<void>)) => ReactNode;
+  renderTrigger?: (onClick: () => (void | Promise<void>)) =>ReactNode;
   isOpen?: boolean;
   setIsOpen?: (isOpen: boolean) => void;
 }
@@ -28,7 +27,7 @@ export default function FormDialog<T extends FieldValues = FieldValues, R = obje
   children,
   form,
   submit,
-  onSuccess,
+  onSuccess,  
   title = '',
   renderTrigger,
   isOpen,
@@ -49,16 +48,22 @@ export default function FormDialog<T extends FieldValues = FieldValues, R = obje
     if (!submit) return
 
     const response = await submit(input);
-    const data = handleCudResponse(response, router.push)
-    if (isNil(data)) return;
+    const uiResponse = handleServiceResponse(response, path => router.push(path));
+    if (!uiResponse.isSuccess) {
+      toast.error(uiResponse.message.title, {
+        ...SONNER_DEFAULT_OPTIONS,
+        description: uiResponse.message.content,
+      })
+      return
+    }
 
-    toast.success(title + MessageTitle.SUCCESS, {
+    toast.success(title + UiMessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
     })
 
     setIsOpenFinal(false)
 
-    await onSuccess?.(data);
+    await onSuccess?.(uiResponse.data);
   }
 
   if (!form) return <></>

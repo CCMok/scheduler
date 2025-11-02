@@ -5,7 +5,7 @@ import { CreatePostFormInput, createPostFormInputSchema } from "@/libs/client/po
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import CreatePostFields from "./create-post-fields";
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
+import { ServiceResponse } from "@/libs/server/_general/models/service-response";
 import { createPostAction } from "@/libs/server/post/actions/create-post-action";
 import { useParams, useRouter } from "next/navigation";
 import { Param } from '@/libs/share/_general/enums/param';

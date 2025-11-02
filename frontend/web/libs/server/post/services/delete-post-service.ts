@@ -1,46 +1,38 @@
 import 'server-only';
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
-import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
-import { serviceWrapper } from '../../_general/services/general-service';
-import { DeletePostRequest, deletePostRequestSchema } from '../models/delete-post-request';
 import prisma from '../../_general/managers/database-manager';
-import { ServiceMessage } from '@/libs/share/_general/enums/service-message';
-import { checkPostIdAccess } from '../../access/utils/data-access-utils';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { checkCanAccessPost } from '../../organization/utils/access-organization-utils';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
+import { MessageContent } from '../../_general/enums/message';
 
-export const deletePostService = async (request: DeletePostRequest): Promise<ServiceResponse> =>
-  await serviceWrapper(async () => {
-    const parsedRequest = deletePostRequestSchema.parse(request)
-
-    const checkAccessResponse = await checkAccess(parsedRequest.postId);
-    if (checkAccessResponse) return checkAccessResponse;
-
-    await execute(parsedRequest)
-
-    return {
-      status: ServiceResponseStatus.OK,
-      data: {},
-    }
-  })
-
-const checkAccess = async (postId: number): Promise<ServiceResponse | undefined> => {
-  const pass = await checkPostIdAccess(postId);
-  if (!pass) return {
+export const deletePostService = tryCatch(async (
+  id: number,
+): Promise<ServiceResponse> => {
+  const canAccess = await checkCanAccessPost(id)
+  if (!canAccess) return {
     status: ServiceResponseStatus.BAD_REQUEST,
-    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '職位'),
+    message: MessageContent.NOT_FOUND.replaceAll('{0}', '職位'),
   }
-}
 
-const execute = async (request: DeletePostRequest): Promise<void> => {
+  await execute(id)
+
+  return {
+    status: ServiceResponseStatus.OK,
+    data: {},
+  }
+})
+
+const execute = async (id: number): Promise<void> => {
   await prisma.$transaction([
     prisma.post.update({
-      where: { id: request.postId },
+      where: { id },
       data: { isDeleted: true },
     }),
     prisma.postWorker.deleteMany({
-      where: { postId: request.postId },
+      where: { postId: id },
     }),
     prisma.postConstraintPost.deleteMany({
-      where: { postId: request.postId },
+      where: { postId: id },
     }),
   ])
 }

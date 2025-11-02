@@ -4,12 +4,13 @@ import LoadingButton from '@/components/_general/button/loading-button';
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { updatePostSequenceAction } from "@/libs/server/post/actions/update-post-sequence-action";
 import { UpdatePostSequenceRequest } from "@/libs/server/post/models/update-post-sequence-request";
-import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
-import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { usePostSequenceStore } from "../store/post-sequence-store-provider";
+import { handleCudResponse } from '@/libs/server/_general/utils/response-utils';
+import { isNil } from 'lodash';
+import { MessageTitle } from '@/libs/server/_general/enums/message';
 
 type Props = {
   setIsAlertDialogOpen: (isAlertDialogOpen: boolean) => void;
@@ -30,19 +31,11 @@ export default function PostSequenceConfirmSaveButton({
     }
 
     const response = await updatePostSequenceAction(request);
+    const data = handleCudResponse(response, router.push)
+    if (isNil(data)) return;
 
-    const uiResponse = handleServiceResponse(response, path => router.push(path))
-    if (!uiResponse.isSuccess) {
-      toast.error(uiResponse.message.title, {
-        ...SONNER_DEFAULT_OPTIONS,
-        description: uiResponse.message.content,
-      })
-      return
-    }
-
-    toast.success(UiMessageTitle.SUCCESS, {
+    toast.success('更新職位順序' + MessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
-      description: '已儲存職位順序',
     })
 
     setIsAlertDialogOpen(false);

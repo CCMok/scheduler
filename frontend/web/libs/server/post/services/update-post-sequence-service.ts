@@ -1,34 +1,31 @@
 import 'server-only';
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
-import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
-import { serviceWrapper } from '../../_general/services/general-service';
 import { UpdatePostSequenceRequest, updatePostSequenceRequestSchema } from '../models/update-post-sequence-request';
-import { ServiceMessage } from '@/libs/share/_general/enums/service-message';
 import prisma from '../../_general/managers/database-manager';
-import { checkPostIdsAccess } from '../../access/utils/data-access-utils';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
+import { checkCanAccessPost } from '../../organization/utils/access-organization-utils';
+import { MessageContent } from '../../_general/enums/message';
 
-export const updatePostSequenceService = async (request: UpdatePostSequenceRequest): Promise<ServiceResponse> =>
-  await serviceWrapper(async () => {
-    const parsedRequest = updatePostSequenceRequestSchema.parse(request);
+export const updatePostSequenceService = tryCatch(async (
+  request: UpdatePostSequenceRequest,
+): Promise<ServiceResponse> => {
+  const parsedRequest = updatePostSequenceRequestSchema.parse(request);
 
-    const checkResponse = await checkAccess(parsedRequest.postIds)
-    if (checkResponse && checkResponse.status !== ServiceResponseStatus.OK) return checkResponse;
-
-    await execute(parsedRequest.postIds)
-
-    return {
-      status: ServiceResponseStatus.OK,
-      data: {},
+  for (const postId of parsedRequest.postIds) {
+    const canAccess = await checkCanAccessPost(postId);
+    if (!canAccess) return {
+      status: ServiceResponseStatus.BAD_REQUEST,
+      message: MessageContent.NOT_FOUND.replaceAll('{0}', '職位'),
     }
-  })
-
-const checkAccess = async (postIds: number[]): Promise<ServiceResponse | undefined> => {
-  const pass = await checkPostIdsAccess(postIds);
-  if (!pass) return {
-    status: ServiceResponseStatus.BAD_REQUEST,
-    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '職位'),
   }
-}
+
+  await execute(parsedRequest.postIds)
+
+  return {
+    status: ServiceResponseStatus.OK,
+    data: {},
+  }
+})
 
 const execute = async (postIds: number[]): Promise<void> => {
   await prisma.$transaction(

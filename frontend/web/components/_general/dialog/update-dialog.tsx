@@ -2,7 +2,7 @@
 
 import { ComponentProps } from "react";
 import { FieldValues } from "react-hook-form";
-import FormDialog from "./form-dialog";
+import FormDialog from "./old-form-dialog";
 
 type Props<T extends FieldValues = FieldValues, R = object> = 
   Omit<ComponentProps<typeof FormDialog<T, R>>, 'title'> & {

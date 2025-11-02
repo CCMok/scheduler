@@ -1,7 +1,7 @@
 'use client'
 
 import { PATH } from '@/libs/share/_general/utils/path';
-import { ServiceResponse } from '@/libs/share/_general/models/service-response';
+import { ServiceResponse } from '@/libs/server/_general/models/service-response';
 import { deletePostAction } from '@/libs/server/post/actions/delete-post-action';
 import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
@@ -9,7 +9,7 @@ import { Param } from '@/libs/share/_general/enums/param';
 import ContextMenu from '@/components/_general/dropdown/context-menu';
 import UpdateDropdownMenuItem from '@/components/_general/dropdown/update-dropdown-menu-item';
 import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdown-menu-item';
-import DeleteDialog from '@/components/_general/dialog/old-delete-dialog';
+import DeleteDialog from '@/components/_general/dialog/delete-dialog';
 
 type Props = {
   id: number;
@@ -32,7 +32,7 @@ export default function DepartmentPostTableRowAction({
   }, [deptId, orgId, id])
 
   const submitDelete = async (): Promise<ServiceResponse> => {
-    return await deletePostAction({ postId: id });
+    return await deletePostAction(id);
   }
 
   return (
