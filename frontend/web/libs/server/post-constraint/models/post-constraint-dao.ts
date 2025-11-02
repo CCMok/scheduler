@@ -4,11 +4,11 @@ export type PostConstraintDao = Omit<PostConstraint, 'weighting'> & {
   weighting: number;
 }
 
-export type PostConstraintPosts = PostConstraintDao & {
-  postConstraintPosts: PostConstraintPostPost[];
+export type PostConstraintWithChild = PostConstraintDao & {
   postConstraintType: PostConstraintType;
+  postConstraintPosts: PostConstraintPostWithPost[];
 }
 
-export type PostConstraintPostPost = PostConstraintPost & {
+export type PostConstraintPostWithPost = PostConstraintPost & {
   post: Post;
 }

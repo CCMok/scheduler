@@ -1,41 +1,38 @@
 import 'server-only'
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
 import { UpdatePostConstraintRequest, updatePostConstraintRequestSchema } from "../models/update-post-constraint-request";
-import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import prisma from "../../_general/managers/database-manager";
-import { ServiceMessage } from "../../../share/_general/enums/service-message";;
-import { serviceWrapper } from '../../_general/services/general-service';
-import { checkDeptIdAccess } from '../../access/utils/data-access-utils';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { checkCanAccessDepartment } from '../../organization/utils/access-organization-utils';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
+import { MessageContent } from '../../_general/enums/message';
 
-export const updatePostConstraintService = async (request: UpdatePostConstraintRequest): Promise<ServiceResponse> =>
-  await serviceWrapper<{}>(async () => {
-    const parsedRequest = updatePostConstraintRequestSchema.parse(request)
+export const updatePostConstraintService = tryCatch(async (
+  request: UpdatePostConstraintRequest,
+): Promise<ServiceResponse> => {
+  const parsedRequest = updatePostConstraintRequestSchema.parse(request)
+  
+  const canAccess = await checkAccess(parsedRequest.id)
+  if (!canAccess) return {
+    status: ServiceResponseStatus.BAD_REQUEST,
+    message: MessageContent.NOT_FOUND.replaceAll('{0}', '職位條件'),  
+  }
 
-    const checkAccessResponse = await checkAccess(parsedRequest.id);
-    if (checkAccessResponse) return checkAccessResponse;
+  await execute(parsedRequest)
 
-    await execute(parsedRequest)
+  return {
+    status: ServiceResponseStatus.OK,
+    data: {},
+  }
+})
 
-    return {
-      status: ServiceResponseStatus.OK,
-      data: {},
-    }
-  })
-
-const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => {
+const checkAccess = async (id: number): Promise<boolean> => {
   const postConstraint = await prisma.postConstraint.findUnique({
+    select: { departmentId: true },
     where: { id },
   })
-  if (!postConstraint) return {
-    status: ServiceResponseStatus.BAD_REQUEST,
-    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '職位條件'),
-  }
-  
-  const pass = await checkDeptIdAccess(postConstraint.departmentId);
-  if (!pass) return {
-    status: ServiceResponseStatus.BAD_REQUEST,
-    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '部門'),
-  }
+  if (!postConstraint) return false
+
+  return await checkCanAccessDepartment(postConstraint.departmentId);
 }
 
 const execute = async (request: UpdatePostConstraintRequest): Promise<void> => {

@@ -1,5 +1,5 @@
 import TableSortableHeader from "@/components/_general/table/table-sortable-header";
-import { PostConstraintPosts } from "@/libs/server/post-constraint/models/post-constraint-dao";
+import { PostConstraintWithChild } from "@/libs/server/post-constraint/models/post-constraint-dao";
 import { ColumnDef } from "@tanstack/react-table";
 import PostConstraintTablePost from "./post-constraint-table-post";
 import PostConstraintTableRowAction from "./post-constraint-table-row-action";
@@ -12,7 +12,7 @@ export enum PostConstraintTableId {
   ACTIONS = 'actions',
 }
 
-export const getColumns = (postConstraintTypes: PostConstraintType[], posts: Post[]): ColumnDef<PostConstraintPosts>[] => [
+export const getColumns = (postConstraintTypes: PostConstraintType[], posts: Post[]): ColumnDef<PostConstraintWithChild>[] => [
   {
     id: PostConstraintTableId.CONSTRAINT_TYPE,
     accessorFn: row => row.postConstraintType.name,

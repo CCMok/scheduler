@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import CreateUpdatePostConstraintFields from "../form/create-update-post-constraint-fields";
 import { PostConstraintType, Post } from "@/external/prisma-generated";
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
+import { ServiceResponse } from "@/libs/server/_general/models/service-response";
 import { updatePostConstraintAction } from "@/libs/server/post-constraint/actions/update-post-constraint-action";
 import { useRouter } from "next/navigation";
 

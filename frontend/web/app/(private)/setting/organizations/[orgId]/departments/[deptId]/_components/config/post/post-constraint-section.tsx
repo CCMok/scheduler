@@ -1,9 +1,9 @@
 import CustomCard from "@/components/_general/card/custom-card";
 import PostConstraintTable from "./post-constraint-table";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
-import { getPostConstraintPostsService } from "@/libs/server/post-constraint/services/get-post-constraints-posts-service";
+import { getPostConstraintsWithChildService } from "@/libs/server/post-constraint/services/get-post-constraints-with-child-service";
 import { redirect } from "next/navigation";
-import { PostConstraintPosts } from "@/libs/server/post-constraint/models/post-constraint-dao";
+import { PostConstraintWithChild } from "@/libs/server/post-constraint/models/post-constraint-dao";
 import { PostConstraintType, Post } from "@/external/prisma-generated";
 import { getPostConstraintTypesService } from "@/libs/server/post-constraint-type/services/get-post-constraint-types-service";
 import { getPostsService } from "@/libs/server/post/services/get-posts-service";
@@ -12,14 +12,9 @@ import { Suspense } from "react";
 import TableSkeleton from "@/components/_general/skeleton/table-skeleton";
 import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 
-const getPostConstraints = async (departmentId: number): Promise<PostConstraintPosts[]> => {
-  return await fetchData(
-    async () => getPostConstraintPostsService({
-      where: { departmentId },
-    }),
-    path => redirect(path),
-    [],
-  )
+const getPostConstraints = async (departmentId: number): Promise<PostConstraintWithChild[]> => {
+  const response = await getPostConstraintsWithChildService(undefined, departmentId)
+  return handleGetResponse(response, redirect, [])
 }
 
 const getPostConstraintTypes = async (): Promise<PostConstraintType[]> => {

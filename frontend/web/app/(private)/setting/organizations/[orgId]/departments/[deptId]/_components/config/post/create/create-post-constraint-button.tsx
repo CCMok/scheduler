@@ -1,9 +1,9 @@
 'use client'
 
-import CreateDialog from '@/components/_general/dialog/old-create-dialog';
+import CreateDialog from '@/components/_general/dialog/create-dialog';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
+import { ServiceResponse } from "@/libs/server/_general/models/service-response";
 import { useRouter } from "next/navigation";
 import { Id } from '@/libs/server/_general/models/id';
 import { CreateUpdatePostConstraintFormInput, createUpdatePostConstraintFormInputSchema } from '@/libs/client/post-constraint/models/create-update-post-constraint-form-input';

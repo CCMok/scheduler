@@ -1,6 +1,6 @@
 'use client'
 
-import UpdateDialog from "@/components/_general/dialog/update-dialog";
+import UpdateDialog from "@/components/_general/dialog/old-update-dialog";
 import { CreateUpdateWorkerConstraintFormInput, createUpdateWorkerConstraintFormInputSchema } from "@/libs/client/worker-constraint/models/create-update-worker-constraint-form-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
