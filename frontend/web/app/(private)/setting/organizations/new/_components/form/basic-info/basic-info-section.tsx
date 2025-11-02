@@ -7,24 +7,18 @@ import { useFormContext } from "react-hook-form";
 import OrganizationNameFormField from "./organization-name-form-field";
 import DepartmentNameFormField from "./department-name-form-field";
 import { getOrganizationsAction } from "@/libs/server/organization/actions/get-organizations-action";
-import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { useRouter } from "next/navigation";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { ServiceMessage } from "@/libs/share/_general/enums/service-message";
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 
 const isOrganizationNameExist = async (name: string, router: AppRouterInstance): Promise<boolean> => {
-  const organizations = await fetchData(
-    async () => await getOrganizationsAction({
-      where: { name },
-    }),
-    path => router.push(path),
-    [],
-  )
-
-  return organizations.length > 0;
+  const response = await getOrganizationsAction(undefined, name)
+  const organizations = handleGetResponse(response, router.push, [])
+  return organizations.length > 0
 }
 
 type Props = {

@@ -1,21 +1,15 @@
 import { Organization } from "@/external/prisma-generated";
 import { Skeleton } from "@/external/shadcn/components/ui/skeleton";
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 import { getOrganizationsService } from "@/libs/server/organization/services/get-organizations-service";
-import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { isNil } from "lodash";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
 const getOrganization = async (id: number): Promise<Organization | undefined> => {
-  const organizations = await fetchData(
-    async () => await getOrganizationsService({
-      where: { id },
-    }),
-    path => redirect(path),
-    [],
-  )
-
-  return organizations[0];
+  const response = await getOrganizationsService(id)
+  const organizations = handleGetResponse(response, redirect, [])
+  return organizations[0]
 }
 
 export type Props = {

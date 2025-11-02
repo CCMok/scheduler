@@ -1,30 +1,22 @@
 import CustomCard from "@/components/_general/card/custom-card";
 import { Organization } from "@/external/prisma-generated";
 import { getOrganizationsService } from "@/libs/server/organization/services/get-organizations-service";
-import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import UserOrganizationTable from "./table/user-organization-table";
 import TableCardSkeleton from "@/components/_general/skeleton/table-card-skeleton";
 import UserOrganizationFilter from "./filter/user-organization-filter";
 import AssignOrganizationDialog from "./assign/assign-organization-dialog";
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 
 const getUserOrganizations = async (userId: number): Promise<Organization[]> => {
-  return await fetchData(
-    async () => await getOrganizationsService({
-      where: { userId },
-    }),
-    path => redirect(path),
-    [],
-  )
+  const response = await getOrganizationsService(undefined, undefined, userId)
+  return handleGetResponse(response, redirect, [])
 }
 
 const getOrganizations = async (): Promise<Organization[]> => {
-  return await fetchData(
-    async () => await getOrganizationsService({}),
-    path => redirect(path),
-    [],
-  )
+  const response = await getOrganizationsService()
+  return handleGetResponse(response, redirect, [])
 }
 
 type Props = {
@@ -39,7 +31,9 @@ const UserOrganizationTableContent = async ({
     getOrganizations(),
   ])
 
-  const assignableOrganizations = organizations.filter(organization => !userOrganizations.some(userOrganization => userOrganization.id === organization.id));
+  const assignableOrganizations = organizations.filter(organization =>
+    !userOrganizations.some(userOrganization => userOrganization.id === organization.id)
+  );
 
   return (
     <CustomCard>

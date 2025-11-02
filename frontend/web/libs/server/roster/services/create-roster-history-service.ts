@@ -6,8 +6,8 @@ import prisma from '../../_general/managers/database-manager'
 import { getSession } from '../../_general/managers/session-manager'
 import { Transaction } from '../../_general/models/prisma-transaction'
 import { isNil } from 'lodash'
-import { getMaxHistoryCount } from '../../organization/utils/organization-utils'
 import { serviceWrapper } from '../../_general/services/general-service'
+import { Organization } from '@/external/prisma-generated'
 
 export const createRosterHistoryService = async (request: CreateRosterHistoryRequest): Promise<ServiceResponse> =>
   await serviceWrapper<{}>(async () => {
@@ -30,10 +30,10 @@ const execute = async (request: CreateRosterHistoryRequest, userId: number): Pro
   await prisma.$transaction(async tx => {
     await createHisotry(tx, request, userId)
 
-    const maxHistoryCount = await getMaxHistoryCount(request.departmentId)
-    if (isNil(maxHistoryCount)) return;
+    const organization = await getOrganizationMaxHistoryCount(tx, request.departmentId)
+    if (isNil(organization?.maxHistoryCount)) return;
 
-    await deleteExcessHistory(tx, request.departmentId, maxHistoryCount)
+    await deleteExcessHistory(tx, request.departmentId, organization.maxHistoryCount)
   })
 }
 
@@ -62,6 +62,18 @@ const createHisotry = async (tx: Transaction, request: CreateRosterHistoryReques
             })),
           },
         })),
+      },
+    },
+  })
+}
+
+const getOrganizationMaxHistoryCount = async (tx: Transaction, departmentId: number): Promise<Organization | null> => {
+  return await tx.organization.findFirst({
+    where: {
+      departments: {
+        some: {
+          id: departmentId,
+        },
       },
     },
   })

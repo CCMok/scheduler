@@ -8,11 +8,10 @@ import RosterTableSaveConfirmDescription from "./roster-table-save-confirm-descr
 import RosterTableSaveConfirmButton from "./roster-table-save-confirm-button";
 import { isNil } from "lodash";
 import { useRouter } from "next/navigation";
-import { GetMaxHistoryCountRequest } from "@/libs/server/organization/models/get-max-history-count-request";
-import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { getMaxHistoryCountAction } from "@/libs/server/organization/actions/get-max-history-count-action";
 import { MaxHistoryCountStoreProvider, useMaxHistoryCountStore } from "./store/max-history-count-store-provider";
 import { useCreateRosterStore } from "../../store/create-roster-store-provider";
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 
 function RosterTableSaveAlertDialog() {
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
@@ -28,17 +27,10 @@ function RosterTableSaveAlertDialog() {
   const fetchMaxHistoryCount = useCallback(async (): Promise<void> => {
     if (isNil(generatedScheduleDepartmentId)) return;
 
-    const request: GetMaxHistoryCountRequest = {
-      departmentId: generatedScheduleDepartmentId,
-    }
+    const response = await getMaxHistoryCountAction(generatedScheduleDepartmentId)
+    const data = handleGetResponse(response, router.push, undefined)
 
-    const maxHistoryCount = await fetchData(
-      async () => await getMaxHistoryCountAction(request),
-      path => router.push(path),
-      undefined,
-    )
-
-    setMaxHistoryCount(maxHistoryCount)
+    setMaxHistoryCount(data)
   }, [generatedScheduleDepartmentId, router, setMaxHistoryCount])
 
   const onDialogOpen = useCallback(async (): Promise<void> => {
