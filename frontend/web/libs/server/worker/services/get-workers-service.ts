@@ -1,48 +1,39 @@
 import 'server-only';
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
-import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import prisma from "../../_general/managers/database-manager";
 import { Prisma, Worker } from '@/external/prisma-generated';
-import { GetWorkersRequest, getWorkersRequestSchema } from '../models/get-workers-request';
-import { serviceWrapper } from '../../_general/services/general-service';
-import { getDeptIdFilter } from '../../access/utils/data-access-utils';
 import { cache } from 'react';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
+import { filterAccessibleDepartments } from '../../organization/utils/access-organization-utils';
 
-export const getWorkersService = cache(async (request: GetWorkersRequest): Promise<ServiceResponse<Worker[]>> =>
-  await serviceWrapper(async () => {
-    const parsedRequest = getWorkersRequestSchema.parse(request);
-    const entities = await findEntities(parsedRequest);
+export const getWorkersService = cache(tryCatch(async (
+  id?: number,
+  departmentId?: number,
+  name?: string,
+): Promise<ServiceResponse<Worker[]>> => {
+  const entities = await findEntities(id, departmentId, name);
+  const filteredEntities = await filterAccessibleDepartments(entities, entity => entity.departmentId)
 
-    return {
-      status: ServiceResponseStatus.OK,
-      data: entities,
-    };
-  }))
+  return {
+    status: ServiceResponseStatus.OK,
+    data: filteredEntities,
+  }
+}))
 
-const findEntities = async (request: GetWorkersRequest): Promise<Worker[]> => {
-  const departmentId = await getDeptIdFilter(request.where?.departmentId);
-  const orderBy = getOrderByClause(request);
-
+const findEntities = async (
+  id?: number,
+  departmentId?: number,
+  name?: string,
+): Promise<Worker[]> => {
   return await prisma.worker.findMany({
     where: {
-      id: request.where?.id,
+      id,
       departmentId,
-      name: request.where?.name,
-      isDeleted: request.where?.isDeleted ?? false,
+      name,
+      isDeleted: false,
     },
-    orderBy,
-    take: request.take,
-  });
-}
-
-const getOrderByClause = (request: GetWorkersRequest) => {
-  const orderBy: Prisma.WorkerOrderByWithRelationInput = {};
-
-  if (!request.orderBys) return orderBy;
-
-  for (const requestOrderBy of request.orderBys) {
-    orderBy[requestOrderBy.field] = requestOrderBy.direction ?? Prisma.SortOrder.asc;
-  }
-
-  return orderBy;
+    orderBy: {
+      name: Prisma.SortOrder.asc,
+    },
+  })
 }

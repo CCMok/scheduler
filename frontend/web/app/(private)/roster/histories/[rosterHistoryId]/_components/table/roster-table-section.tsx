@@ -1,6 +1,5 @@
 import TableSkeleton from "@/components/_general/skeleton/table-skeleton";
 import { RosterHistoryOffWorkerWithDays, RosterHistoryScheduleWithRelated } from "@/libs/server/roster/models/roster-history-dao";
-import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import { getRosterHistorySchedulesWithRelatedService } from "@/libs/server/roster/services/get-roster-history-schedules-service";
@@ -36,13 +35,8 @@ const getDepartmentId = async (rosterHistoryId: number): Promise<number | undefi
 }
 
 const getWorkers = async (departmentId: number): Promise<Worker[]> => {
-  return await fetchData(
-    async () => await getWorkersService({
-      where: { departmentId },
-    }),
-    path => redirect(path),
-    [],
-  )
+  const response = await getWorkersService(undefined, departmentId)
+  return handleGetResponse(response, redirect, [])
 }
 
 const offWorkersToOffFormInputs = (offWorkers: RosterHistoryOffWorkerWithDays[]): OffFormInput[] =>

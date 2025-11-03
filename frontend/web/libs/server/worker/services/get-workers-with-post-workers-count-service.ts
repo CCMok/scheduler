@@ -1,20 +1,20 @@
 import 'server-only'
 import prisma from '../../_general/managers/database-manager';
-import { PostWithPostWorkersCount } from '../models/post-dao';
-import { Prisma } from '@/external/prisma-generated';
+import { WorkerWithPostWorkersCount } from '../models/worker-dao';
 import { isNil } from 'lodash';
+import { Prisma } from '@/external/prisma-generated';
 import { cache } from 'react';
 import { tryCatch } from '../../_general/services/try-catch-wrapper';
 import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
 import { filterAccessibleDepartments } from '../../organization/utils/access-organization-utils';
 
-export const getPostsWithPostWorkersCountService = cache(tryCatch(async (
+export const getWorkersWithPostWorkersCountService = cache(tryCatch(async (
   id?: number,
   departmentId?: number,
   name?: string,
-  workerId?: number,
-): Promise<ServiceResponse<PostWithPostWorkersCount[]>> => {
-  const entities = await findEntities(id, departmentId, name, workerId);
+  postId?: number,
+): Promise<ServiceResponse<WorkerWithPostWorkersCount[]>> => {
+  const entities = await findEntities(id, departmentId, name, postId);
   const filteredEntities = await filterAccessibleDepartments(entities, entity => entity.departmentId)
 
   return {
@@ -27,11 +27,11 @@ const findEntities = async (
   id?: number,
   departmentId?: number,
   name?: string,
-  workerId?: number,
-): Promise<PostWithPostWorkersCount[]> => {
-  const postWorkerWhereClause = getPostWorkersWhereClause(workerId);
+  postId?: number,
+): Promise<WorkerWithPostWorkersCount[]> => {
+  const postWorkerWhereClause = getPostWorkersWhereClause(postId);
 
-  return await prisma.post.findMany({
+  return await prisma.worker.findMany({
     where: {
       id,
       departmentId,
@@ -46,17 +46,17 @@ const findEntities = async (
     },
     orderBy: {
       name: Prisma.SortOrder.asc,
-    }
+    },
   })
 }
 
-const getPostWorkersWhereClause = (workerId?: number): Prisma.PostWhereInput => {
-  if (isNil(workerId)) return {};
+const getPostWorkersWhereClause = (postId?: number): Prisma.WorkerWhereInput => {
+  if (isNil(postId)) return {};
   return {
     postWorkers: {
       some: {
-        workerId,
-        worker: {
+        postId,
+        post: {
           isDeleted: false,
         },
       },

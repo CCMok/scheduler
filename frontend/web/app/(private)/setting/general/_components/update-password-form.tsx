@@ -15,11 +15,12 @@ import { Save } from 'lucide-react';
 import { useState } from 'react';
 import ConfirmDialog from '@/components/_general/dialog/confirm-dialog';
 import { toast } from 'sonner';
-import { UiMessageTitle } from '@/libs/share/_general/enums/ui-message';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
 import { UpdatePasswordRequest } from '@/libs/server/user/models/update-password-request';
 import { updatePasswordAction } from '@/libs/server/user/actions/update-password-action';
-import { handleServiceResponse } from '@/libs/share/_general/utils/service-response-handler';
+import { handleCudResponse } from '@/libs/server/_general/utils/response-utils';
+import { isNil } from 'lodash';
+import { MessageTitle } from '@/libs/server/_general/enums/message';
 
 export default function UpdatePasswordForm() {
   const form = useForm({
@@ -45,15 +46,12 @@ export default function UpdatePasswordForm() {
     }
 
     const response = await updatePasswordAction(request)
-    const uiResponse = handleServiceResponse(response, path => router.push(path))
-    if (!uiResponse.isSuccess) {
-      form.setError('root', { type: uiResponse.message.title, message: uiResponse.message.content })
-      return
-    }
 
-    toast.success(UiMessageTitle.SUCCESS, {
+    const data = handleCudResponse(response, router.push)
+    if (isNil(data)) return;
+
+    toast.success(`更改密碼` + MessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
-      description: '已更改密碼',
     })
 
     router.refresh()

@@ -18,7 +18,9 @@ import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-
 import { UpdateUserNameFormInput, updateUserNameFormInputSchema } from '@/libs/client/user/models/update-user-name-form-input';
 import { UpdateUserNameRequest } from '@/libs/server/user/models/update-user-name-request';
 import { updateUserNameAction } from '@/libs/server/user/actions/update-user-name-action';
-import { handleServiceResponse } from '@/libs/share/_general/utils/service-response-handler';
+import { handleCudResponse } from '@/libs/server/_general/utils/response-utils';
+import { isNil } from 'lodash';
+import { MessageTitle } from '@/libs/server/_general/enums/message';
 
 type Props = {
   userName: string;
@@ -66,15 +68,12 @@ export default function UpdateUserNameForm({
     }
 
     const response = await updateUserNameAction(request)
-    const uiResponse = handleServiceResponse(response, path => router.push(path))
-    if (!uiResponse.isSuccess) {
-      form.setError('root', { type: uiResponse.message.title, message: uiResponse.message.content })
-      return
-    }
 
-    toast.success(UiMessageTitle.SUCCESS, {
+    const data = handleCudResponse(response, router.push)
+    if (isNil(data)) return;
+
+    toast.success(`更改用戶名稱` + MessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
-      description: '已更改用戶名稱',
     })
 
     router.refresh()

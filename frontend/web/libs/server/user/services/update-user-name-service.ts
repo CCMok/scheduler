@@ -1,32 +1,32 @@
 import 'server-only'
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
-import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
 import { UpdateUserNameRequest, updateUserNameRequestSchema } from '../models/update-user-name-request';
 import { getSession, refreshSession } from '../../_general/managers/session-manager';
 import prisma from '../../_general/managers/database-manager';
-import { serviceWrapper } from '../../_general/services/general-service';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
 
-export const updateUserNameService = async (request: UpdateUserNameRequest): Promise<ServiceResponse> =>
-  await serviceWrapper<{}>(async () => {
-    const parsedRequest = updateUserNameRequestSchema.parse(request)
+export const updateUserNameService = tryCatch(async (
+  request: UpdateUserNameRequest,
+): Promise<ServiceResponse> => {
+  const parsedRequest = updateUserNameRequestSchema.parse(request)
 
-    const session = await getSession();
-    if (!session) return {
-      status: ServiceResponseStatus.UNAUTHORIZED,
-    }
+  const session = await getSession();
+  if (!session) return {
+    status: ServiceResponseStatus.UNAUTHORIZED,
+  }
 
-    await execute(session.userId, parsedRequest.name)
+  await execute(session.userId, parsedRequest.name)
 
-    await refreshSession({
-      ...session,
-      name: parsedRequest.name,
-    })
-
-    return {
-      status: ServiceResponseStatus.OK,
-      data: {},
-    }
+  await refreshSession({
+    ...session,
+    name: parsedRequest.name,
   })
+
+  return {
+    status: ServiceResponseStatus.OK,
+    data: {},
+  }
+})
 
 const execute = async (id: number, name?: string) =>
   await prisma.user.update({

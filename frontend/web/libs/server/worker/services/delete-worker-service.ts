@@ -1,46 +1,38 @@
 import 'server-only';
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
-import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
-import { serviceWrapper } from '../../_general/services/general-service';
-import { DeleteWorkerRequest, deleteWorkerRequestSchema } from '../models/delete-worker-request';
 import prisma from '../../_general/managers/database-manager';
-import { ServiceMessage } from '@/libs/share/_general/enums/service-message';
-import { checkWorkerIdAccess } from '../../access/utils/data-access-utils';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
+import { checkCanAccessWorker } from '../../organization/utils/access-organization-utils';
+import { MessageContent } from '../../_general/enums/message';
 
-export const deleteWorkerService = async (request: DeleteWorkerRequest): Promise<ServiceResponse> =>
-  await serviceWrapper(async () => {
-    const parsedRequest = deleteWorkerRequestSchema.parse(request)
-
-    const checkAccessResponse = await checkAccess(parsedRequest.workerId);
-    if (checkAccessResponse) return checkAccessResponse;
-
-    await execute(parsedRequest)
-
-    return {
-      status: ServiceResponseStatus.OK,
-      data: {},
-    }
-  })
-
-const checkAccess = async (workerId: number): Promise<ServiceResponse | undefined> => {
-  const pass = await checkWorkerIdAccess(workerId);
-  if (!pass) return {
+export const deleteWorkerService = tryCatch(async (
+  id: number,
+): Promise<ServiceResponse> => {
+  const canAccess = await checkCanAccessWorker(id)
+  if (!canAccess) return {
     status: ServiceResponseStatus.BAD_REQUEST,
-    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '人員'),
+    message: MessageContent.NOT_FOUND.replaceAll('{0}', '人員'),
   }
-}
 
-const execute = async (request: DeleteWorkerRequest): Promise<void> => {
+  await execute(id)
+
+  return {
+    status: ServiceResponseStatus.OK,
+    data: {},
+  }
+})
+
+const execute = async (id: number): Promise<void> => {
   await prisma.$transaction([
     prisma.worker.update({
-      where: { id: request.workerId },
+      where: { id },
       data: { isDeleted: true },
     }),
     prisma.postWorker.deleteMany({
-      where: { workerId: request.workerId },
+      where: { workerId: id },
     }),
     prisma.workerConstraintWorker.deleteMany({
-      where: { workerId: request.workerId },
+      where: { workerId: id },
     }),
   ])
 }

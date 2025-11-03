@@ -4,7 +4,6 @@ import { LocalStorageKey } from "@/libs/client/_general/enums/local-storage-key"
 import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule"
 import { useEffect, useRef } from "react"
 import { useCreateRosterStore } from "./create-roster-store-provider"
-import { fetchData } from "@/libs/share/_general/utils/fetch"
 import { getWorkersAction } from "@/libs/server/worker/actions/get-workers-action"
 import { useRouter } from "next/navigation"
 import { getPostsAction } from "@/libs/server/post/actions/get-posts-action"
@@ -33,17 +32,11 @@ export default function CreateRosterStoreHandler() {
       const departmentId = Number(departmentIdStorageString)
       if (!departmentId) return
 
-      const workers = await fetchData(
-        async () => await getWorkersAction({
-          where: { departmentId },
-          orderBys: [{ field: 'name' }],
-        }),
-        path => router.push(path),
-        [],
-      )
+      const getWorkersResponse = await getWorkersAction(undefined, departmentId)
+      const workers = handleGetResponse(getWorkersResponse, router.push, [])
 
-      const response = await getPostsAction(undefined, departmentId)
-      const posts = handleGetResponse(response, router.push, [])
+      const getPostsResponse = await getPostsAction(undefined, departmentId)
+      const posts = handleGetResponse(getPostsResponse, router.push, [])
 
       const initialScheduleStorageString = localStorage.getItem(LocalStorageKey.CREATE_ROSTER_INITIAL_SCHEDULES)
       if (!initialScheduleStorageString) return

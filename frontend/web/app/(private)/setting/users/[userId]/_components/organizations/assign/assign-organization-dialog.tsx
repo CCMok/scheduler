@@ -1,7 +1,7 @@
 'use client'
 
 import CustomButton from "@/components/_general/button/custom-button";
-import FormDialog from "@/components/_general/dialog/old-form-dialog";
+import FormDialog from "@/components/_general/dialog/form-dialog";
 import { UserRoundPlus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Organization } from "@/external/prisma-generated";
@@ -10,8 +10,7 @@ import { CreateUserOrganizationFormInput, createUserOrganizationFormInputSchema 
 import AssignOrganizationFields from "./assign-organization-fields";
 import { useParams, useRouter } from "next/navigation";
 import { Param } from "@/libs/share/_general/enums/param";
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
-import { ServiceResponseStatus } from "@/libs/share/_general/enums/service-response-status";
+import { ServiceResponse, ServiceResponseStatus } from "@/libs/server/_general/models/service-response";
 import { createUserOrganizationAction } from "@/libs/server/user-organization/actions/create-user-organization-action";
 
 type Props = {
@@ -40,6 +39,7 @@ export default function AssignOrganizationDialog({
   const submit = async (input: CreateUserOrganizationFormInput): Promise<ServiceResponse> => {
     const organizationId = Number(input.organizationId)
     if (isNaN(organizationId)) {
+      console.error(`organizationId is not a number. organizationId: ${input.organizationId}`)
       return {
         status: ServiceResponseStatus.INTERNAL_ERROR,
       }

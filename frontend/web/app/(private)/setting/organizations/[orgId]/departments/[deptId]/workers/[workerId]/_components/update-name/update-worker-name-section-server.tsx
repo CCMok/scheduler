@@ -5,17 +5,12 @@ import { notFound, redirect } from "next/navigation"
 import UpdateWorkerNameSection from "./update-worker-name-section"
 import { Suspense } from "react"
 import InputCardSkeleton from "@/components/_general/skeleton/input-card-skeleton"
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils"
 
 const getWorker = async (id: number): Promise<Worker | undefined> => {
-  const workers = await fetchData(
-    async () => await getWorkersService({
-      where: { id },
-    }),
-    path => redirect(path),
-    [],
-  )
-
-  return workers[0];
+  const response = await getWorkersService(id)
+  const data = handleGetResponse(response, redirect, [])
+  return data[0]
 }
 
 type Props = {

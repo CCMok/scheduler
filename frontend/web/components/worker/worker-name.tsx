@@ -1,21 +1,15 @@
 import { Worker } from "@/external/prisma-generated";
 import { Skeleton } from "@/external/shadcn/components/ui/skeleton";
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 import { getWorkersService } from "@/libs/server/worker/services/get-workers-service";
-import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { isNil } from "lodash";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
 const getWorker = async (id: number): Promise<Worker | undefined> => {
-  const workers = await fetchData(
-    async () => await getWorkersService({
-      where: { id },
-    }),
-    path => redirect(path),
-    [],
-  )
-
-  return workers[0];
+  const response = await getWorkersService(id)
+  const data = handleGetResponse(response, redirect, [])
+  return data[0]
 }
 
 export type Props = {

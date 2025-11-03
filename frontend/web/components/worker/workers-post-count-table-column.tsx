@@ -1,6 +1,6 @@
 import { CellContext, ColumnDef, ColumnDefTemplate } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
-import { WorkersPostWorkerCount } from "@/libs/server/worker/models/worker-dao";
+import { WorkerWithPostWorkersCount } from "@/libs/server/worker/models/worker-dao";
 import WorkerNameCell from "./worker-name-cell";
 
 export enum WorkerTableId {
@@ -9,7 +9,7 @@ export enum WorkerTableId {
   ACTIONS = 'actions',
 }
 
-export const getNameColumn = (isEditable: boolean): ColumnDef<WorkersPostWorkerCount> => ({
+export const getNameColumn = (isEditable: boolean): ColumnDef<WorkerWithPostWorkersCount> => ({
   accessorKey: WorkerTableId.NAME,
   header: ({ column }) => (
     <TableSortableHeader title="人員名稱" column={column} />
@@ -23,7 +23,7 @@ export const getNameColumn = (isEditable: boolean): ColumnDef<WorkersPostWorkerC
     : {}),
 })
 
-export const postCountColumn: ColumnDef<WorkersPostWorkerCount> = {
+export const postCountColumn: ColumnDef<WorkerWithPostWorkersCount> = {
   id: WorkerTableId.POST_COUNT,
   accessorFn: row => row._count.postWorkers,
   header: ({ column }) => (
@@ -31,7 +31,7 @@ export const postCountColumn: ColumnDef<WorkersPostWorkerCount> = {
   ),
 }
 
-export const getActionColumn = (cell: ColumnDefTemplate<CellContext<WorkersPostWorkerCount, unknown>>): ColumnDef<WorkersPostWorkerCount> => {
+export const getActionColumn = (cell: ColumnDefTemplate<CellContext<WorkerWithPostWorkersCount, unknown>>): ColumnDef<WorkerWithPostWorkersCount> => {
   return {
     id: WorkerTableId.ACTIONS,
     header: '動作',

@@ -37,17 +37,10 @@ export default function CreateRosterFormDependencyHandler({
     return handleGetResponse(response, router.push, [])
   }, [router])
 
-  const fetchWorkers = useCallback(
-    async (departmentId: number) => await fetchData(
-      async () => await getWorkersAction({
-        where: { departmentId },
-        orderBys: [{ field: 'name' }],
-      }),
-      router.push,
-      [],
-    ),
-    [router],
-  )
+  const fetchWorkers = useCallback(async (departmentId: number) => {
+    const response = await getWorkersAction(undefined, departmentId)
+    return handleGetResponse(response, router.push, [])
+  }, [router])
 
   const handleStorage = useCallback((storageItem: string): Partial<CreateRosterFilterFormInput> | undefined => {
     const jsonParsedStorageValues = JSON.parse(storageItem);

@@ -1,35 +1,35 @@
 import 'server-only';
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
-import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
-import { serviceWrapper } from '../../_general/services/general-service';
 import prisma from '../../_general/managers/database-manager';
 import { getPrismaErrorTarget, tryCatchQuery } from '../../_general/utils/database-utils';
 import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runtime/library';
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
-import { ServiceMessage } from '../../../share/_general/enums/service-message';
 import { CreateUserOrganizationRequest, createUserOrganizationRequestSchema } from '../models/create-user-organization-request';
-import { checkOrgIdAccess } from '../../access/utils/data-access-utils';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
+import { checkCanAccessOrganization } from '../../organization/utils/access-organization-utils';
+import { MessageContent } from '../../_general/enums/message';
 
-export const createUserOrganizationService = async (request: CreateUserOrganizationRequest): Promise<ServiceResponse> =>
-  await serviceWrapper(async () => {
-    const parsedRequest = createUserOrganizationRequestSchema.parse(request);
+export const createUserOrganizationService = tryCatch(async (
+  request: CreateUserOrganizationRequest,
+): Promise<ServiceResponse> => {
+  const parsedRequest = createUserOrganizationRequestSchema.parse(request);
 
-    const canAccess = await checkOrgIdAccess(parsedRequest.organizationId)
-    if (!canAccess) return {
-      status: ServiceResponseStatus.BAD_REQUEST,
-      message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '機構'),
-    };
+  const canAccess = await checkCanAccessOrganization(parsedRequest.organizationId)
+  if (!canAccess) return {
+    status: ServiceResponseStatus.BAD_REQUEST,
+    message: MessageContent.NOT_FOUND.replaceAll('{0}', '機構'),
+  };
 
-    const executeResponse = await execute(parsedRequest);
-    if (!executeResponse.isSuccess) {
-      return handleQueryError(executeResponse.error)
-    }
+  const executeResponse = await execute(parsedRequest);
+  if (!executeResponse.isSuccess) {
+    return handleQueryError(executeResponse.error)
+  }
 
-    return {
-      status: ServiceResponseStatus.OK,
-      data: {},
-    }
-  })
+  return {
+    status: ServiceResponseStatus.OK,
+    data: {},
+  }
+})
 
 const execute = async (request: CreateUserOrganizationRequest) =>
   await tryCatchQuery(async () =>
@@ -48,7 +48,7 @@ const handleQueryError = (error: PrismaClientKnownRequestError): ServiceResponse
     if (target?.includes('user_id') && target.includes('organization_id')) {
       return {
         status: ServiceResponseStatus.BAD_REQUEST,
-        message: ServiceMessage.FOUND.replaceAll('{0}', '用戶機構'),
+        message: MessageContent.FOUND.replaceAll('{0}', '用戶機構'),
       }
     }
   }

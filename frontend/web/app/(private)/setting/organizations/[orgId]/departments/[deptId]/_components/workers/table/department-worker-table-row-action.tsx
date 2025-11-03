@@ -1,13 +1,13 @@
 'use client'
 
 import { PATH } from '@/libs/share/_general/utils/path';
-import { ServiceResponse } from '@/libs/share/_general/models/service-response';
+import { ServiceResponse } from '@/libs/server/_general/models/service-response';
 import { deleteWorkerAction } from '@/libs/server/worker/actions/delete-worker-action';
 import { Param } from '@/libs/share/_general/enums/param';
 import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import ContextMenu from '@/components/_general/dropdown/context-menu';
-import DeleteDialog from '@/components/_general/dialog/old-delete-dialog';
+import DeleteDialog from '@/components/_general/dialog/delete-dialog';
 import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdown-menu-item';
 import UpdateDropdownMenuItem from '@/components/_general/dropdown/update-dropdown-menu-item';
 
@@ -32,7 +32,7 @@ export default function DepartmentWorkerTableRowAction({
   }, [deptId, orgId, id])
 
   const submitDelete = async (): Promise<ServiceResponse> => {
-    return await deleteWorkerAction({ workerId: id });
+    return await deleteWorkerAction(id)
   }
 
   return (

@@ -10,6 +10,7 @@ import { getWorkersService } from "@/libs/server/worker/services/get-workers-ser
 import CreateWorkerConstraintButton from "./create/create-worker-constraint-button";
 import { Suspense } from "react";
 import TableSkeleton from "@/components/_general/skeleton/table-skeleton";
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 
 const getWorkerConstraints = async (departmentId: number): Promise<WorkerConstraintWorkers[]> => {
   return await fetchData(
@@ -30,14 +31,8 @@ const getWorkerConstraintTypes = async (): Promise<WorkerConstraintType[]> => {
 }
 
 const getWorkers = async (departmentId: number): Promise<Worker[]> => {
-  return await fetchData(
-    async () => getWorkersService({
-      where: { departmentId },
-      orderBys: [{ field: 'name' }],
-    }),
-    path => redirect(path),
-    [],
-  )
+  const response = await getWorkersService(undefined, departmentId)
+  return handleGetResponse(response, redirect, [])
 }
 
 type Props = {

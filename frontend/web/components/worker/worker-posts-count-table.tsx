@@ -1,7 +1,7 @@
 'use client'
 
 import useTable from '@/components/_general/table/use-table';
-import { WorkersPostWorkerCount } from "@/libs/server/worker/models/worker-dao";
+import { WorkerWithPostWorkersCount } from "@/libs/server/worker/models/worker-dao";
 import { useEffect } from "react";
 import { useSearchParams } from 'next/navigation';
 import { Param } from '@/libs/share/_general/enums/param';
@@ -10,8 +10,8 @@ import { WorkerTableId } from './workers-post-count-table-column';
 import CustomTable from '../_general/table/custom-table';
 
 type Props = {
-  data?: WorkersPostWorkerCount[];
-  columns?: ColumnDef<WorkersPostWorkerCount>[];
+  data?: WorkerWithPostWorkersCount[];
+  columns?: ColumnDef<WorkerWithPostWorkersCount>[];
 }
 
 export default function WorkerPostsCountTable({
