@@ -1,44 +1,47 @@
 import 'server-only'
 import { CreateRosterHistoryRequest, createRosterHistoryRequestSchema } from '../models/create-roster-history-request'
-import { ServiceResponse } from '@/libs/share/_general/models/service-response'
-import { ServiceResponseStatus } from '../../../share/_general/enums/service-response-status'
 import prisma from '../../_general/managers/database-manager'
 import { getSession } from '../../_general/managers/session-manager'
 import { Transaction } from '../../_general/models/prisma-transaction'
 import { isNil } from 'lodash'
-import { serviceWrapper } from '../../_general/services/general-service'
-import { Organization } from '@/external/prisma-generated'
+import { Organization, Prisma, RosterHistory } from '@/external/prisma-generated'
+import { tryCatch } from '../../_general/services/try-catch-wrapper'
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response'
+import { Id } from '../../_general/models/id'
 
-export const createRosterHistoryService = async (request: CreateRosterHistoryRequest): Promise<ServiceResponse> =>
-  await serviceWrapper<{}>(async () => {
-    const parsedRequest = createRosterHistoryRequestSchema.parse(request);
+export const createRosterHistoryService = tryCatch(async (
+  request: CreateRosterHistoryRequest,
+): Promise<ServiceResponse<Id>> => {
+  const parsedRequest = createRosterHistoryRequestSchema.parse(request);
 
-    const session = await getSession();
-    if (!session) return {
-      status: ServiceResponseStatus.UNAUTHORIZED,
-    }
+  const session = await getSession();
+  if (!session) return {
+    status: ServiceResponseStatus.UNAUTHORIZED,
+  }
 
-    await execute(parsedRequest, session.userId)
+  const rosterHistory = await execute(parsedRequest, session.userId)
 
-    return {
-      status: ServiceResponseStatus.OK,
-      data: {},
-    }
-  })
+  return {
+    status: ServiceResponseStatus.OK,
+    data: rosterHistory.id,
+  }
+})
 
-const execute = async (request: CreateRosterHistoryRequest, userId: number): Promise<void> => {
-  await prisma.$transaction(async tx => {
-    await createHisotry(tx, request, userId)
+const execute = async (request: CreateRosterHistoryRequest, userId: number): Promise<RosterHistory> => {
+  return await prisma.$transaction(async tx => {
+    const rosterHistory = await createHisotry(tx, request, userId)
 
     const organization = await getOrganizationMaxHistoryCount(tx, request.departmentId)
-    if (isNil(organization?.maxHistoryCount)) return;
+    if (!isNil(organization?.maxHistoryCount)) {
+      await deleteExcessHistory(tx, request.departmentId, organization.maxHistoryCount)
+    }
 
-    await deleteExcessHistory(tx, request.departmentId, organization.maxHistoryCount)
+    return rosterHistory
   })
 }
 
-const createHisotry = async (tx: Transaction, request: CreateRosterHistoryRequest, userId: number): Promise<void> => {
-  await tx.rosterHistory.create({
+const createHisotry = async (tx: Transaction, request: CreateRosterHistoryRequest, userId: number): Promise<RosterHistory> => {
+  return await tx.rosterHistory.create({
     data: {
       departmentId: request.departmentId,
       createdByUserId: userId,
@@ -85,7 +88,7 @@ const deleteExcessHistory = async (tx: Transaction, departmentId: number, maxHis
       departmentId,
     },
     orderBy: {
-      createdAt: 'desc',
+      createdAt: Prisma.SortOrder.desc,
     },
     select: {
       id: true,
