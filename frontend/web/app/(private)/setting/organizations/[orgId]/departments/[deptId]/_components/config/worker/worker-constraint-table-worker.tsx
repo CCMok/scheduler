@@ -1,10 +1,10 @@
 import { Badge } from "@/external/shadcn/components/ui/badge";
 import { MAX_DISPLAY_COUNT } from "@/libs/client/_general/constants/display-constant";
-import { WorkerConstraintWorkerWorker } from "@/libs/server/worker-constraint/models/worker-constraint-dao";
+import { WorkerConstraintWorkerWithWorker } from "@/libs/server/worker-constraint/models/worker-constraint-dao";
 import { User } from "lucide-react";
 
 type Props = {
-  workerConstraintWorkers: WorkerConstraintWorkerWorker[];
+  workerConstraintWorkers: WorkerConstraintWorkerWithWorker[];
 }
 
 export default function WorkerConstraintTableWorker({

@@ -4,11 +4,11 @@ export type WorkerConstraintDao = Omit<WorkerConstraint, 'weighting'> & {
   weighting: number;
 }
 
-export type WorkerConstraintWorkers = WorkerConstraintDao & {
-  workerConstraintWorkers: WorkerConstraintWorkerWorker[];
+export type WorkerConstraintWithRelated = WorkerConstraintDao & {
+  workerConstraintWorkers: WorkerConstraintWorkerWithWorker[];
   workerConstraintType: WorkerConstraintType;
 }
 
-export type WorkerConstraintWorkerWorker = WorkerConstraintWorker & {
+export type WorkerConstraintWorkerWithWorker = WorkerConstraintWorker & {
   worker: Worker;
 }

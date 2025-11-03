@@ -1,30 +1,35 @@
 import 'server-only'
-import { ServiceResponseStatus } from '@/libs/share/_general/enums/service-response-status';
-import { ServiceResponse } from '@/libs/share/_general/models/service-response';
 import prisma from '../../_general/managers/database-manager';
-import { serviceWrapper } from '../../_general/services/general-service';
 import { cache } from 'react';
-import { GetWorkerConstraintTypesRequest, getWorkerConstraintTypesRequestSchema } from '../models/get-worker-constraint-types-request';
-import { WorkerConstraintType } from '@/external/prisma-generated';
+import { Prisma, WorkerConstraintType } from '@/external/prisma-generated';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
 
-export const getWorkerConstraintTypesService = cache(async (request: GetWorkerConstraintTypesRequest): Promise<ServiceResponse<WorkerConstraintType[]>> =>
-  await serviceWrapper(async () => {
-    const parsedRequest = getWorkerConstraintTypesRequestSchema.parse(request);
-    const entities = await findEntities(parsedRequest);
+export const getWorkerConstraintTypesService = cache(tryCatch(async (
+  id?: number,
+  name?: string,
+  enumValue?: number,
+): Promise<ServiceResponse<WorkerConstraintType[]>> => {
+  const entities = await findEntities(id, name, enumValue);
+  return {
+    status: ServiceResponseStatus.OK,
+    data: entities,
+  }
+}))
 
-    return {
-      status: ServiceResponseStatus.OK,
-      data: entities,
-    }
-  }))
-
-const findEntities = async (request: GetWorkerConstraintTypesRequest): Promise<WorkerConstraintType[]> => {
+const findEntities = async (
+  id?: number,
+  name?: string,
+  enumValue?: number,
+): Promise<WorkerConstraintType[]> => {
   return await prisma.workerConstraintType.findMany({
-    where: {
-      id: request.where?.id,
-      name: request.where?.name,
-      enum: request.where?.enum,
+    where: { 
+      id,
+      name,
+      enum: enumValue,
     },
-    take: request.take,
+    orderBy: {
+      enum: Prisma.SortOrder.asc,
+    },
   })
 }

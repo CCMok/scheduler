@@ -1,40 +1,35 @@
 import 'server-only';
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
-import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
-import { serviceWrapper } from '../../_general/services/general-service';
 import prisma from '../../_general/managers/database-manager';
 import { getPrismaErrorTarget, tryCatchQuery } from '../../_general/utils/database-utils';
 import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runtime/library';
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
-import { ServiceMessage } from '../../../share/_general/enums/service-message';
 import { UpdateWorkerNameRequest, updateWorkerNameRequestSchema } from '../models/update-worker-name-request';
-import { checkWorkerIdAccess } from '../../access/utils/data-access-utils';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { checkCanAccessWorker } from '../../organization/utils/access-organization-utils';
+import { MessageContent } from '../../_general/enums/message';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
 
-export const updateWorkerNameService = async (request: UpdateWorkerNameRequest): Promise<ServiceResponse> =>
-  await serviceWrapper(async () => {
-    const parsedRequest = updateWorkerNameRequestSchema.parse(request);
+export const updateWorkerNameService = tryCatch(async (
+  request: UpdateWorkerNameRequest,
+): Promise<ServiceResponse> => {
+  const parsedRequest = updateWorkerNameRequestSchema.parse(request);
 
-    const checkAccessResponse = await checkAccess(parsedRequest.id);
-    if (checkAccessResponse) return checkAccessResponse;
-
-    const executeResponse = await execute(parsedRequest);
-    if (!executeResponse.isSuccess) {
-      return handleQueryError(executeResponse.error)
-    }
-
-    return {
-      status: ServiceResponseStatus.OK,
-      data: {},
-    }
-  })
-
-const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => {
-  const pass = await checkWorkerIdAccess(id);
-  if (!pass) return {
+  const canAccess = await checkCanAccessWorker(parsedRequest.id)
+  if (!canAccess) return {
     status: ServiceResponseStatus.BAD_REQUEST,
-    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '人員'),
+    message: MessageContent.NOT_FOUND.replaceAll('{0}', '人員'),
   }
-}
+
+  const executeResponse = await execute(parsedRequest);
+  if (!executeResponse.isSuccess) {
+    return handleQueryError(executeResponse.error)
+  }
+
+  return {
+    status: ServiceResponseStatus.OK,
+    data: {},
+  }
+})
 
 const execute = async (request: UpdateWorkerNameRequest) =>
   await tryCatchQuery(async () =>
@@ -53,7 +48,7 @@ const handleQueryError = (error: PrismaClientKnownRequestError): ServiceResponse
     if (target?.includes('name')) {
       return {
         status: ServiceResponseStatus.BAD_REQUEST,
-        message: ServiceMessage.ALREADY_USED.replaceAll('{0}', '名稱'),
+        message: MessageContent.ALREADY_USED.replaceAll('{0}', '名稱'),
       }
     }
   }

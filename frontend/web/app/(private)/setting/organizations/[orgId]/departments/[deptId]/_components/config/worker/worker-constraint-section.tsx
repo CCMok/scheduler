@@ -1,9 +1,8 @@
 import CustomCard from "@/components/_general/card/custom-card";
 import WorkerConstraintTable from "./worker-constraint-table";
-import { fetchData } from "@/libs/share/_general/utils/fetch";
-import { getWorkerConstraintWorkersService } from "@/libs/server/worker-constraint/services/get-worker-constraints-workers-service";
+import { getWorkerConstraintWithRelated } from "@/libs/server/worker-constraint/services/get-worker-constraints-with-related-service";
 import { redirect } from "next/navigation";
-import { WorkerConstraintWorkers } from "@/libs/server/worker-constraint/models/worker-constraint-dao";
+import { WorkerConstraintWithRelated } from "@/libs/server/worker-constraint/models/worker-constraint-dao";
 import { WorkerConstraintType, Worker } from "@/external/prisma-generated";
 import { getWorkerConstraintTypesService } from "@/libs/server/worker-constraint-type/services/get-worker-constraint-types-service";
 import { getWorkersService } from "@/libs/server/worker/services/get-workers-service";
@@ -12,22 +11,14 @@ import { Suspense } from "react";
 import TableSkeleton from "@/components/_general/skeleton/table-skeleton";
 import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 
-const getWorkerConstraints = async (departmentId: number): Promise<WorkerConstraintWorkers[]> => {
-  return await fetchData(
-    async () => getWorkerConstraintWorkersService({
-      where: { departmentId },
-    }),
-    path => redirect(path),
-    [],
-  )
+const getWorkerConstraints = async (departmentId: number): Promise<WorkerConstraintWithRelated[]> => {
+  const response = await getWorkerConstraintWithRelated(undefined, departmentId)
+  return handleGetResponse(response, redirect, [])
 }
-
+  
 const getWorkerConstraintTypes = async (): Promise<WorkerConstraintType[]> => {
-  return await fetchData(
-    async () => getWorkerConstraintTypesService({}),
-    path => redirect(path),
-    [],
-  )
+  const response = await getWorkerConstraintTypesService()
+  return handleGetResponse(response, redirect, [])
 }
 
 const getWorkers = async (departmentId: number): Promise<Worker[]> => {

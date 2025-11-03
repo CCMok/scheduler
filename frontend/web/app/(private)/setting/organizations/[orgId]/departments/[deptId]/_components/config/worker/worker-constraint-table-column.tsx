@@ -1,5 +1,5 @@
 import TableSortableHeader from "@/components/_general/table/table-sortable-header";
-import { WorkerConstraintWorkers } from "@/libs/server/worker-constraint/models/worker-constraint-dao";
+import { WorkerConstraintWithRelated } from "@/libs/server/worker-constraint/models/worker-constraint-dao";
 import { ColumnDef } from "@tanstack/react-table";
 import WorkerConstraintTableRowAction from "./worker-constraint-table-row-action";
 import { WorkerConstraintType, Worker } from "@/external/prisma-generated";
@@ -12,7 +12,7 @@ export enum WorkerConstraintTableId {
   ACTIONS = 'actions',
 }
 
-export const getColumns = (workerConstraintTypes: WorkerConstraintType[], workers: Worker[]): ColumnDef<WorkerConstraintWorkers>[] => [
+export const getColumns = (workerConstraintTypes: WorkerConstraintType[], workers: Worker[]): ColumnDef<WorkerConstraintWithRelated>[] => [
   {
     id: WorkerConstraintTableId.CONSTRAINT_TYPE,
     accessorFn: row => row.workerConstraintType.name,

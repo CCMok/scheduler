@@ -1,44 +1,37 @@
 import 'server-only';
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
-import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
-import { serviceWrapper } from '../../_general/services/general-service';
-import { DeleteWorkerConstraintRequest, deleteWorkerConstraintRequestSchema } from '../models/delete-worker-constraint-request';
 import prisma from '../../_general/managers/database-manager';
-import { ServiceMessage } from '@/libs/share/_general/enums/service-message';
-import { checkDeptIdAccess } from '../../access/utils/data-access-utils';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
+import { checkCanAccessDepartment } from '../../organization/utils/access-organization-utils';
+import { MessageContent } from '../../_general/enums/message';
 
-export const deleteWorkerConstraintService = async (request: DeleteWorkerConstraintRequest): Promise<ServiceResponse> =>
-  await serviceWrapper(async () => {
-    const parsedRequest = deleteWorkerConstraintRequestSchema.parse(request)
+export const deleteWorkerConstraintService = tryCatch(async (
+  id: number,
+): Promise<ServiceResponse> => {
+  const canAccess = await checkAccess(id)
+  if (!canAccess) return {
+    status: ServiceResponseStatus.BAD_REQUEST,
+    message: MessageContent.NOT_FOUND.replaceAll('{0}', '人員條件'),
+  }
 
-    const checkAccessResponse = await checkAccess(parsedRequest.id);
-    if (checkAccessResponse) return checkAccessResponse;
+  await execute(id)
 
-    await execute(parsedRequest)
+  return {
+    status: ServiceResponseStatus.OK,
+    data: {},
+  }
+})
 
-    return {
-      status: ServiceResponseStatus.OK,
-      data: {},
-    }
-  })
-
-const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => {
+const checkAccess = async (id: number): Promise<boolean> => {
   const workerConstraint = await prisma.workerConstraint.findUnique({
     where: { id },
   })
-  if (!workerConstraint) return {
-    status: ServiceResponseStatus.BAD_REQUEST,
-    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '人員條件'),
-  }
-  const pass = await checkDeptIdAccess(workerConstraint.departmentId);
-  if (!pass) return {
-    status: ServiceResponseStatus.BAD_REQUEST,
-    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '部門'),
-  }
+  if (!workerConstraint) return false
+  return await checkCanAccessDepartment(workerConstraint.departmentId);
 }
 
-const execute = async (request: DeleteWorkerConstraintRequest): Promise<void> => {
+const execute = async (id: number): Promise<void> => {
   await prisma.workerConstraint.delete({
-    where: { id: request.id },
+    where: { id },
   })
 }

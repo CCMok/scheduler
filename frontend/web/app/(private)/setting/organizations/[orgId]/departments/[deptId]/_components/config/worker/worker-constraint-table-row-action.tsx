@@ -6,11 +6,9 @@ import UpdateDropdownMenuItem from "@/components/_general/dropdown/update-dropdo
 import { useState } from "react"
 import UpdateWorkerConstraintDialog from "./update/update-worker-constraint-dialog"
 import { WorkerConstraintType, Worker } from "@/external/prisma-generated"
-import DeleteDialog from "@/components/_general/dialog/old-delete-dialog"
-import { isNil } from "lodash"
-import { ServiceResponseStatus } from "@/libs/share/_general/enums/service-response-status"
-import { ServiceResponse } from "@/libs/share/_general/models/service-response"
+import DeleteDialog from "@/components/_general/dialog/delete-dialog"
 import { deleteWorkerConstraintAction } from "@/libs/server/worker-constraint/actions/delete-worker-constraint-action"
+import { ServiceResponse } from "@/libs/server/_general/models/service-response"
 
 type Props = {
   workerConstraintTypeId: string;
@@ -33,8 +31,7 @@ export default function WorkerConstraintTableRowAction({
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState(false);
 
   const submitDelete = async (): Promise<ServiceResponse> => {
-    if (isNil(id)) return { status: ServiceResponseStatus.INTERNAL_ERROR };
-    return await deleteWorkerConstraintAction({ id });
+    return await deleteWorkerConstraintAction(id);
   }
 
   return (

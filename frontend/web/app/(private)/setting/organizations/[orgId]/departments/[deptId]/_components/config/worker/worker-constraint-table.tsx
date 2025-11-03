@@ -1,13 +1,13 @@
 'use client'
 
 import useTable from "@/components/_general/table/use-table";
-import { WorkerConstraintWorkers } from "@/libs/server/worker-constraint/models/worker-constraint-dao";
+import { WorkerConstraintWithRelated } from "@/libs/server/worker-constraint/models/worker-constraint-dao";
 import { getColumns, WorkerConstraintTableId } from "./worker-constraint-table-column";
 import CustomTable from "@/components/_general/table/custom-table";
 import { WorkerConstraintType, Worker } from "@/external/prisma-generated";
 
 type Props = {
-  workerConstraints: WorkerConstraintWorkers[];
+  workerConstraints: WorkerConstraintWithRelated[];
   workerConstraintTypes: WorkerConstraintType[];
   workers: Worker[];
 }
