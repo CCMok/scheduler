@@ -8,7 +8,6 @@ import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule"
 import { postBaseToDayBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils";
 import { isNil } from "lodash";
 import { toast } from "sonner";
-import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { useRouter } from "next/navigation";
 import { useMaxHistoryCountStore } from './store/max-history-count-store-provider';
@@ -73,9 +72,8 @@ export default function RosterTableSaveConfirmButton({
   const saveRoster = async () => {
     if (isNil(generatedScheduleDepartmentId)) {
       console.error('departmentId is not set')
-      toast.error(UiMessageTitle.SYSTEM_ERROR, {
+      toast.error(MessageTitle.INTERNAL_ERROR, {
         ...SONNER_DEFAULT_OPTIONS,
-        description: UiMessageTitle.SYSTEM_ERROR,
       })
       return;
     }

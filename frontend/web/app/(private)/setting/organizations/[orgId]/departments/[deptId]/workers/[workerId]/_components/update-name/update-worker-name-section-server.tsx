@@ -1,6 +1,5 @@
 import { Worker } from "@/external/prisma-generated"
 import { getWorkersService } from "@/libs/server/worker/services/get-workers-service"
-import { fetchData } from "@/libs/share/_general/utils/fetch"
 import { notFound, redirect } from "next/navigation"
 import UpdateWorkerNameSection from "./update-worker-name-section"
 import { Suspense } from "react"

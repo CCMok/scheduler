@@ -1,10 +1,10 @@
 import 'server-only'
 import { UpdateWorkerConstraintRequest, updateWorkerConstraintRequestSchema } from "../models/update-worker-constraint-request";
 import prisma from "../../_general/managers/database-manager";
-import { ServiceMessage } from "../../../share/_general/enums/service-message";;
 import { tryCatch } from '../../_general/services/try-catch-wrapper';
 import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
 import { checkCanAccessDepartment } from '../../organization/utils/access-organization-utils';
+import { MessageContent } from '../../_general/enums/message';
 
 export const updateWorkerConstraintService = tryCatch(async (
   request: UpdateWorkerConstraintRequest,
@@ -14,7 +14,7 @@ export const updateWorkerConstraintService = tryCatch(async (
   const canAccess = await checkAccess(parsedRequest.id)
   if (!canAccess) return {
     status: ServiceResponseStatus.BAD_REQUEST,
-    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '人員條件'),
+    message: MessageContent.NOT_FOUND.replaceAll('{0}', '人員條件'),
   }
 
   await execute(parsedRequest)

@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { UiMessageContent } from "../../../share/_general/enums/ui-message";
+import { MessageContent } from "@/libs/server/_general/enums/message";
 
 export const createPostWorkerFormInputSchema = z.object({
-  workerId: z.string().min(1, UiMessageContent.REQUIRED),
+  workerId: z.string().min(1, MessageContent.REQUIRED),
 })
 
 export type CreatePostWorkerFormInput = z.infer<typeof createPostWorkerFormInputSchema>

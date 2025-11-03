@@ -1,24 +1,23 @@
 import { z } from "zod";
-import { UiMessageContent } from "../../../share/_general/enums/ui-message";
-import { ServiceMessage } from "@/libs/share/_general/enums/service-message";
+import { MessageContent } from "@/libs/server/_general/enums/message";
 
 export const postFormInputSchema = z.object({
   tempId: z.string(),
-  name: z.string().min(1, UiMessageContent.REQUIRED),
+  name: z.string().min(1, MessageContent.REQUIRED),
 })
 
 export type PostFormInput = z.infer<typeof postFormInputSchema>
 
 export const workerFormInputSchema = z.object({
   tempId: z.string(),
-  name: z.string().min(1, UiMessageContent.REQUIRED),
+  name: z.string().min(1, MessageContent.REQUIRED),
 })
 
 export type WorkerFormInput = z.infer<typeof workerFormInputSchema>
 
 export const postWorkerFormInputSchema = z.object({
   postTempId: z.string(),
-  postName: z.string().min(1, UiMessageContent.REQUIRED),
+  postName: z.string().min(1, MessageContent.REQUIRED),
   workerTempIds: z.array(z.string()),
 })
 
@@ -32,7 +31,7 @@ export const relatedFormInputSchema = z.object({
       return names.length === uniqueNames.size;
     },
     {
-      message: ServiceMessage.FOUND.replaceAll('{0}', '職位名稱'),
+      message: MessageContent.FOUND.replaceAll('{0}', '職位名稱'),
     },
   ),
   workers: z.array(workerFormInputSchema).refine(
@@ -42,7 +41,7 @@ export const relatedFormInputSchema = z.object({
       return names.length === uniqueNames.size;
     },
     {
-      message: ServiceMessage.FOUND.replaceAll('{0}', '員工名稱'),
+      message: MessageContent.FOUND.replaceAll('{0}', '員工名稱'),
     },
   ),
   postWorkers: z.array(postWorkerFormInputSchema),
@@ -51,7 +50,7 @@ export const relatedFormInputSchema = z.object({
 export type RelatedFormInput = z.infer<typeof relatedFormInputSchema>
 
 export const createDepartmentFormInputSchema = z.object({
-  name: z.string().min(1, UiMessageContent.REQUIRED),
+  name: z.string().min(1, MessageContent.REQUIRED),
 }).merge(relatedFormInputSchema)
 
 export type CreateDepartmentFormInput = z.infer<typeof createDepartmentFormInputSchema>

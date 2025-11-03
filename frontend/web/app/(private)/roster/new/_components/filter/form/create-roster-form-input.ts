@@ -1,17 +1,17 @@
-import { UiMessageContent } from "@/libs/share/_general/enums/ui-message";
+import { MessageContent } from "@/libs/server/_general/enums/message";
 import { z } from "zod";
 
 export const offFormInputSchema = z.object({
-  workerId: z.number().min(0, UiMessageContent.REQUIRED),
+  workerId: z.number().min(0, MessageContent.REQUIRED),
   days: z.date().array(),
 })
 
 export type OffFormInput = z.infer<typeof offFormInputSchema>;
 
 export const createRosterFilterFormInputSchema = z.object({
-  organizationId: z.number().min(0, UiMessageContent.REQUIRED),
-  departmentId: z.number().min(0, UiMessageContent.REQUIRED),
-  days: z.date().array().min(1, UiMessageContent.REQUIRED),
+  organizationId: z.number().min(0, MessageContent.REQUIRED),
+  departmentId: z.number().min(0, MessageContent.REQUIRED),
+  days: z.date().array().min(1, MessageContent.REQUIRED),
   offs: offFormInputSchema.array(),
 })
 

@@ -9,10 +9,10 @@ import { columns, WorkerTableData } from "./worker-table-column";
 import CustomTable from "@/components/_general/table/custom-table";
 import WorkerAddButton from "./worker-add-button";
 import { useMemo } from "react";
-import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { toast } from "sonner";
 import { CreateDepartmentFormInput } from "@/libs/client/department/models/create-department-form-input";
+import { MessageTitle } from "@/libs/server/_general/enums/message";
 
 type Props = {
   onClickNext: () => void;
@@ -55,13 +55,13 @@ export default function WorkersSection({
 
     const { error } = getFieldState('workers');
     if (!error) {
-      toast.error(UiMessageTitle.SYSTEM_ERROR, {
+      toast.error(MessageTitle.INTERNAL_ERROR, {
         ...SONNER_DEFAULT_OPTIONS,
       })
       return
     }
 
-    toast.error(UiMessageTitle.INPUT_ERROR, {
+    toast.error(MessageTitle.INPUT_ERROR, {
       ...SONNER_DEFAULT_OPTIONS,
       description: error.message,
     })

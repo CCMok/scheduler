@@ -11,9 +11,8 @@ import { useRouter } from "next/navigation";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
-import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
-import { ServiceMessage } from "@/libs/share/_general/enums/service-message";
 import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
+import { MessageContent, MessageTitle } from "@/libs/server/_general/enums/message";
 
 const isOrganizationNameExist = async (name: string, router: AppRouterInstance): Promise<boolean> => {
   const response = await getOrganizationsAction(undefined, name)
@@ -38,9 +37,9 @@ export default function BasicInfoSection({
 
     const isExist = await isOrganizationNameExist(getValues('name'), router)
     if (isExist) {
-      toast.error(UiMessageTitle.INPUT_ERROR, {
+      toast.error(MessageTitle.INPUT_ERROR, {
         ...SONNER_DEFAULT_OPTIONS,
-        description: ServiceMessage.FOUND.replaceAll('{0}', '機構名稱'),
+        description: MessageContent.FOUND.replaceAll('{0}', '機構名稱'),
       })
       return
     }

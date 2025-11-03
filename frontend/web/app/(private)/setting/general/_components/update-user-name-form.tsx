@@ -13,14 +13,13 @@ import { Save } from 'lucide-react';
 import { useState } from 'react';
 import ConfirmDialog from '@/components/_general/dialog/confirm-dialog';
 import { toast } from 'sonner';
-import { UiMessageContent, UiMessageTitle } from '@/libs/share/_general/enums/ui-message';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
 import { UpdateUserNameFormInput, updateUserNameFormInputSchema } from '@/libs/client/user/models/update-user-name-form-input';
 import { UpdateUserNameRequest } from '@/libs/server/user/models/update-user-name-request';
 import { updateUserNameAction } from '@/libs/server/user/actions/update-user-name-action';
 import { handleCudResponse } from '@/libs/server/_general/utils/response-utils';
 import { isNil } from 'lodash';
-import { MessageTitle } from '@/libs/server/_general/enums/message';
+import { MessageContent, MessageTitle } from '@/libs/server/_general/enums/message';
 
 type Props = {
   userName: string;
@@ -51,8 +50,8 @@ export default function UpdateUserNameForm({
     const isSameName = input.name !== userName;
     if (!isSameName) {
       form.setError('root', {
-        type: UiMessageTitle.INPUT_ERROR,
-        message: UiMessageContent.NOT_MATCH.replaceAll('{0}', '原本名稱')
+        type: MessageTitle.INPUT_ERROR,
+        message: MessageContent.NOT_MATCH.replaceAll('{0}', '原本名稱')
       });
 
       return false;
