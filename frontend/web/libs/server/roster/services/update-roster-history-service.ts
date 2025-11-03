@@ -1,28 +1,28 @@
 import 'server-only'
-import { ServiceResponse } from '@/libs/share/_general/models/service-response'
-import { ServiceResponseStatus } from '../../../share/_general/enums/service-response-status'
 import prisma from '../../_general/managers/database-manager'
 import { getSession } from '../../_general/managers/session-manager'
 import { Transaction } from '../../_general/models/prisma-transaction'
-import { serviceWrapper } from '../../_general/services/general-service'
 import { UpdateRosterHistoryRequest, updateRosterHistoryRequestSchema } from '../models/update-roster-history-request'
+import { tryCatch } from '../../_general/services/try-catch-wrapper'
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response'
 
-export const updateRosterHistoryService = async (request: UpdateRosterHistoryRequest): Promise<ServiceResponse> =>
-  await serviceWrapper<{}>(async () => {
-    const parsedRequest = updateRosterHistoryRequestSchema.parse(request);
+export const updateRosterHistoryService = tryCatch(async (
+  request: UpdateRosterHistoryRequest,
+): Promise<ServiceResponse> => {
+  const parsedRequest = updateRosterHistoryRequestSchema.parse(request);
 
-    const session = await getSession();
-    if (!session) return {
-      status: ServiceResponseStatus.UNAUTHORIZED,
-    }
+  const session = await getSession();
+  if (!session) return {
+    status: ServiceResponseStatus.UNAUTHORIZED,
+  }
 
-    await execute(parsedRequest, session.userId)
+  await execute(parsedRequest, session.userId)
 
-    return {
-      status: ServiceResponseStatus.OK,
-      data: {},
-    }
-  })
+  return {
+    status: ServiceResponseStatus.OK,
+    data: {},
+  }
+})
 
 const execute = async (request: UpdateRosterHistoryRequest, userId: number): Promise<void> => {
   await prisma.$transaction(async tx => {
@@ -79,7 +79,7 @@ const deleteOldOffWorkers = async (tx: Transaction, rosterHistoryId: number): Pr
 
 const createNewOffWorkers = async (tx: Transaction, request: UpdateRosterHistoryRequest): Promise<void> => {
   if (!request.offWorkers || request.offWorkers.length === 0) return;
-  
+
   for (const offWorker of request.offWorkers) {
     await tx.rosterHistoryOffWorker.create({
       data: {

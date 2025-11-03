@@ -1,17 +1,12 @@
-import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
 import UserTable from "./user-table";
-import { getUsersRoleService } from "@/libs/server/user/services/get-users-role-service";
+import { getUsersWithRoleService } from "@/libs/server/user/services/get-users-with-role-service";
 import { UserExcludePasswordWithRole } from "@/libs/server/user/models/user-dao";
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 
 const getUsers = async (): Promise<UserExcludePasswordWithRole[]> => {
-  return await fetchData(
-    async () => await getUsersRoleService({
-      orderBys: [{ field: 'email' }],
-    }),
-    path => redirect(path),
-    [],
-  )
+  const response = await getUsersWithRoleService()
+  return handleGetResponse(response, redirect, [])
 }
 
 export default async function UserTableServer() {

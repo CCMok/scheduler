@@ -6,7 +6,6 @@ import { AlertDialogTrigger, AlertDialog, AlertDialogContent, AlertDialogHeader,
 import CustomButton from '@/components/_general/button/custom-button';
 import LoadingButton from "@/components/_general/button/loading-button";
 import { toast } from "sonner";
-import { UiMessageTitle } from "@/libs/share/_general/enums/ui-message";
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
 import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule";
 import { CreateOffWorkerRequest, UpdateRosterHistoryRequest } from "@/libs/server/roster/models/update-roster-history-request";
@@ -14,9 +13,11 @@ import { postBaseToDayBaseSchedule } from "@/libs/client/roster/utils/roster-tra
 import { CreateScheduleRequest } from "@/libs/server/roster/models/create-roster-history-request";
 import { useCreateRosterStore } from "../../../../new/_components/store/create-roster-store-provider";
 import { updateRosterHistoryAction } from "@/libs/server/roster/actions/update-roster-history-action";
-import { handleServiceResponse } from "@/libs/share/_general/utils/service-response-handler";
 import { useRouter } from "next/navigation";
 import { OffFormInput } from "@/app/(private)/roster/new/_components/filter/form/create-roster-form-input";
+import { handleCudResponse } from "@/libs/server/_general/utils/response-utils";
+import { isNil } from "lodash";
+import { MessageTitle } from "@/libs/server/_general/enums/message";
 
 const getSaveRosterRequest = (
   rosterHistoryId: number, 
@@ -72,18 +73,11 @@ export default function RosterTableSaveAlertDialog({
     const request = getSaveRosterRequest(rosterHistoryId, modifiedSchedules, generatedScheduleOffs);
     const response = await updateRosterHistoryAction(request);
 
-    const uiResponse = handleServiceResponse(response, path => router.push(path))
-    if (!uiResponse.isSuccess) {
-      toast.error(uiResponse.message.title, {
-        ...SONNER_DEFAULT_OPTIONS,
-        description: uiResponse.message.content,
-      })
-      return
-    }
+    const data = handleCudResponse(response, router.push)
+    if (isNil(data)) return;
 
-    toast.success(UiMessageTitle.SUCCESS, {
+    toast.success('儲存值班表' + MessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
-      description: '已儲存值班表',
     })
 
     setInitialSchedules(modifiedSchedules)

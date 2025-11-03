@@ -5,10 +5,8 @@ import ContextMenu from '@/components/_general/dropdown/context-menu';
 import UpdateDropdownMenuItem from '@/components/_general/dropdown/update-dropdown-menu-item';
 import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdown-menu-item';
 import { useState } from 'react';
-import DeleteDialog from '@/components/_general/dialog/old-delete-dialog';
-import { isNil } from 'lodash';
-import { ServiceResponse } from '@/libs/share/_general/models/service-response';
-import { ServiceResponseStatus } from '@/libs/share/_general/enums/service-response-status';
+import DeleteDialog from '@/components/_general/dialog/delete-dialog';
+import { ServiceResponse } from '@/libs/server/_general/models/service-response';
 import { format } from 'date-fns';
 import { deleteRosterHistoryAction } from '@/libs/server/roster/actions/delete-roster-history-action';
 
@@ -24,8 +22,7 @@ export default function RosterHistoryTableRowAction({
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState(false);
 
   const submitDelete = async (): Promise<ServiceResponse> => {
-    if (isNil(id)) return { status: ServiceResponseStatus.INTERNAL_ERROR };
-    return await deleteRosterHistoryAction({ id });
+    return await deleteRosterHistoryAction(id);
   }
 
   return (

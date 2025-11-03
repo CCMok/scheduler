@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
-import { RosterHistoryRelated } from "@/libs/server/roster/models/roster-history-dao";
+import { RosterHistoryWithRelated } from "@/libs/server/roster/models/roster-history-dao";
 import { format } from "date-fns";
 import RosterHistoryTableRowAction from "./roster-history-table-row-action";
 
@@ -12,7 +12,7 @@ export enum RosterHistoryTableId {
   ACTIONS = 'actions',
 }
 
-export const columns: ColumnDef<RosterHistoryRelated>[] = [
+export const columns: ColumnDef<RosterHistoryWithRelated>[] = [
   {
     id: RosterHistoryTableId.ORGANIZATION_NAME,
     accessorFn: row => row.department.organization.name,

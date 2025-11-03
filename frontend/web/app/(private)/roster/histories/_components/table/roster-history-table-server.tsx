@@ -1,15 +1,12 @@
-import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { redirect } from "next/navigation";
-import { getRosterHistoriesService } from "@/libs/server/roster/services/get-roster-histories-service";
-import { RosterHistoryRelated } from "@/libs/server/roster/models/roster-history-dao";
+import { getRosterHistoriesWithRelatedService } from "@/libs/server/roster/services/get-roster-histories-with-related-service";
+import { RosterHistoryWithRelated } from "@/libs/server/roster/models/roster-history-dao";
 import RosterHistoryTable from "./roster-history-table";
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 
-const getRosterHistories = async (): Promise<RosterHistoryRelated[]> => {
-  return await fetchData(
-    async () => await getRosterHistoriesService({}),
-    path => redirect(path),
-    [],
-  )
+const getRosterHistories = async (): Promise<RosterHistoryWithRelated[]> => {
+  const response = await getRosterHistoriesWithRelatedService()
+  return handleGetResponse(response, redirect, [])
 }
 
 export default async function RosterHistoryTableServer() {

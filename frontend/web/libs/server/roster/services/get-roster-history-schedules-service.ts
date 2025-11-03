@@ -1,30 +1,37 @@
 import 'server-only'
-import { ServiceResponseStatus } from '@/libs/share/_general/enums/service-response-status';
-import { ServiceResponse } from '@/libs/share/_general/models/service-response';
 import prisma from '../../_general/managers/database-manager';
-import { serviceWrapper } from '../../_general/services/general-service';
 import { cache } from 'react';
-import { RosterHistoryScheduleRelated } from '../models/roster-history-dao';
-import { GetRosterHistorySchedulesRequest, getRosterHistorySchedulesRequestSchema } from '../models/get-roster-history-schedules-request';
+import { RosterHistoryScheduleWithRelated } from '../models/roster-history-dao';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { filterAccessibleDepartments } from '../../organization/utils/access-organization-utils';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
+import { Prisma } from '@/external/prisma-generated';
 
-export const getRosterHistorySchedulesService = cache(async (request: GetRosterHistorySchedulesRequest): Promise<ServiceResponse<RosterHistoryScheduleRelated[]>> =>
-  await serviceWrapper(async () => {
-    const parsedRequest = getRosterHistorySchedulesRequestSchema.parse(request)
+export const getRosterHistorySchedulesWithRelatedService = cache(tryCatch(async (
+  id?: number,
+  rosterHistoryId?: number,
+): Promise<ServiceResponse<RosterHistoryScheduleWithRelated[]>> => {
+  const entities = await findEntities(id, rosterHistoryId);
+  const filteredEntities = await filterAccessibleDepartments(entities, entity => entity.rosterHistory.departmentId)
+  const mappedEntities: RosterHistoryScheduleWithRelated[] = filteredEntities.map(({ rosterHistory, ...rest }) => rest)
 
-    const entities = await findEntities(parsedRequest);
+  return {
+    status: ServiceResponseStatus.OK,
+    data: mappedEntities,
+  }
+}))
 
-    return {
-      status: ServiceResponseStatus.OK,
-      data: entities,
-    }
-  }))
-
-const findEntities = async (request: GetRosterHistorySchedulesRequest): Promise<RosterHistoryScheduleRelated[]> => { 
+const findEntities = async (
+  id?: number,
+  rosterHistoryId?: number,
+) => { 
   return await prisma.rosterHistorySchedule.findMany({
     where: {
-      rosterHistoryId: request.where?.rosterHistoryId,
+      id,
+      rosterHistoryId,
     },
     include: {
+      rosterHistory: true,
       rosterHistoryScheduleArrangements: {
         include: {
           post: true,
@@ -32,5 +39,8 @@ const findEntities = async (request: GetRosterHistorySchedulesRequest): Promise<
         },
       },
     },
+    orderBy: {
+      id: Prisma.SortOrder.asc,
+    }
   });
 }

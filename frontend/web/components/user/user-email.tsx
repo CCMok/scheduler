@@ -1,21 +1,15 @@
 import { Skeleton } from "@/external/shadcn/components/ui/skeleton";
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 import { UserExcludePasswordWithRole } from "@/libs/server/user/models/user-dao";
-import { getUsersRoleService } from "@/libs/server/user/services/get-users-role-service";
-import { fetchData } from "@/libs/share/_general/utils/fetch";
+import { getUsersWithRoleService } from "@/libs/server/user/services/get-users-with-role-service";
 import { isNil } from "lodash";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
 const getUser = async (id: number): Promise<UserExcludePasswordWithRole | undefined> => {
-  const users = await fetchData(
-    async () => await getUsersRoleService({
-      where: { id },
-    }),
-    path => redirect(path),
-    [],
-  )
-
-  return users[0];
+  const response = await getUsersWithRoleService(id);
+  const data = handleGetResponse(response, redirect, [])
+  return data[0];
 }
 
 export type Props = {

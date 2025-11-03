@@ -2,20 +2,20 @@ import { Post, RosterHistory, RosterHistoryOffWorker, RosterHistoryOffWorkerDay,
 import { DepartmentWithOrganization } from "../../department/models/department-dao";
 import { UserExcludePassword } from "../../user/models/user-dao";
 
-export type RosterHistoryRelated = RosterHistory & {
+export type RosterHistoryWithRelated = RosterHistory & {
   department: DepartmentWithOrganization;
   createdByUser: UserExcludePassword;
 }
 
-export type RosterHistoryScheduleArrangementRelated = RosterHistoryScheduleArrangement & {
+export type RosterHistoryScheduleArrangementWithRelated = RosterHistoryScheduleArrangement & {
   post: Post;
   worker: Worker | null;
 }
 
-export type RosterHistoryScheduleRelated = RosterHistorySchedule & {
-  rosterHistoryScheduleArrangements: RosterHistoryScheduleArrangementRelated[];
+export type RosterHistoryScheduleWithRelated = RosterHistorySchedule & {
+  rosterHistoryScheduleArrangements: RosterHistoryScheduleArrangementWithRelated[];
 }
 
-export type RosterHistoryOffWorkerRelated = RosterHistoryOffWorker & {
+export type RosterHistoryOffWorkerWithDays = RosterHistoryOffWorker & {
   rosterHistoryOffWorkerDays: RosterHistoryOffWorkerDay[];
 }

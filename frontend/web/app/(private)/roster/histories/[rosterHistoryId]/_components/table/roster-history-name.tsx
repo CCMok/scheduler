@@ -1,22 +1,16 @@
 import { Skeleton } from "@/external/shadcn/components/ui/skeleton";
-import { RosterHistoryRelated } from "@/libs/server/roster/models/roster-history-dao";
-import { getRosterHistoriesService } from "@/libs/server/roster/services/get-roster-histories-service";
-import { fetchData } from "@/libs/share/_general/utils/fetch";
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
+import { RosterHistoryWithRelated } from "@/libs/server/roster/models/roster-history-dao";
+import { getRosterHistoriesWithRelatedService } from "@/libs/server/roster/services/get-roster-histories-with-related-service";
 import { format } from "date-fns";
 import { isNil } from "lodash";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
-const getRosterHistory = async (id: number): Promise<RosterHistoryRelated | undefined> => {
-  const rosterHistorys = await fetchData(
-    async () => await getRosterHistoriesService({
-      where: { id },
-    }),
-    path => redirect(path),
-    [],
-  )
-
-  return rosterHistorys[0];
+const getRosterHistory = async (id: number): Promise<RosterHistoryWithRelated | undefined> => {
+  const response = await getRosterHistoriesWithRelatedService(id)
+  const data = handleGetResponse(response, redirect, [])
+  return data[0]
 }
 
 export type Props = {

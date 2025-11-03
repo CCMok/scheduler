@@ -1,22 +1,16 @@
 import CustomCard from "@/components/_general/card/custom-card";
 import { Suspense } from "react";
 import InputCardSkeleton from "@/components/_general/skeleton/input-card-skeleton";
-import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { UserExcludePasswordWithRole } from "@/libs/server/user/models/user-dao";
-import { getUsersRoleService } from "@/libs/server/user/services/get-users-role-service";
+import { getUsersWithRoleService } from "@/libs/server/user/services/get-users-with-role-service";
 import { notFound, redirect } from "next/navigation";
 import UserViewOnlyField from "./user-view-only-field";
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 
 const getUser = async (id: number): Promise<UserExcludePasswordWithRole | undefined> => {
-  const users = await fetchData(
-    async () => await getUsersRoleService({
-      where: { id },
-    }),
-    path => redirect(path),
-    [],
-  )
-
-  return users[0];
+  const response = await getUsersWithRoleService(id);
+  const data = handleGetResponse(response, redirect, [])
+  return data[0];
 }
 
 type Props = {

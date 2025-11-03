@@ -1,12 +1,12 @@
 import TableSkeleton from "@/components/_general/skeleton/table-skeleton";
-import { RosterHistoryOffWorkerRelated, RosterHistoryScheduleRelated } from "@/libs/server/roster/models/roster-history-dao";
+import { RosterHistoryOffWorkerWithDays, RosterHistoryScheduleWithRelated } from "@/libs/server/roster/models/roster-history-dao";
 import { fetchData } from "@/libs/share/_general/utils/fetch";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
-import { getRosterHistorySchedulesService } from "@/libs/server/roster/services/get-roster-history-schedules-service";
+import { getRosterHistorySchedulesWithRelatedService } from "@/libs/server/roster/services/get-roster-history-schedules-service";
 import { dayBaseToPostBaseSchedule, rosterHistorySchedulesToDayBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils";
 import { CreateRosterStoreProvider } from "../../../../new/_components/store/create-roster-store-provider";
-import { getRosterHistoriesService } from "@/libs/server/roster/services/get-roster-histories-service";
+import { getRosterHistoriesWithRelatedService } from "@/libs/server/roster/services/get-roster-histories-with-related-service";
 import { isNil } from "lodash";
 import { Worker } from '@/external/prisma-generated'
 import { getWorkersService } from "@/libs/server/worker/services/get-workers-service";
@@ -14,40 +14,25 @@ import RosterTableClientContainer from "./roster-table-client-container";
 import RosterTableResetButton from "../../../../new/_components/table/roster-table-reset-button";
 import RosterTableSaveAlertDialog from "./roster-table-save-alert-dialog";
 import RosterTableExportXLSXButton from "../../../../new/_components/table/roster-table-export-xlsx-button";
-import { getRosterHistoryOffWorkersService } from "@/libs/server/roster/services/get-roster-history-off-workers-service";
+import { getRosterHistoryOffWorkersWithDaysService } from "@/libs/server/roster/services/get-roster-history-off-workers-with-days-service";
 import RosterTableFilterSection from "../filter/roster-table-filter-section";
 import { OffFormInput } from "@/app/(private)/roster/new/_components/filter/form/create-roster-form-input";
+import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
 
-const getRosterHistorySchedules = async (rosterHistoryId: number): Promise<RosterHistoryScheduleRelated[]> => {
-  return await fetchData(
-    async () => await getRosterHistorySchedulesService({
-      where: { rosterHistoryId },
-    }),
-    path => redirect(path),
-    [],
-  )
+const getRosterHistorySchedules = async (rosterHistoryId: number): Promise<RosterHistoryScheduleWithRelated[]> => {
+  const response = await getRosterHistorySchedulesWithRelatedService(undefined, rosterHistoryId)
+  return handleGetResponse(response, redirect, [])
 }
 
-const getRosterHistoryOffWorkers = async (rosterHistoryId: number): Promise<RosterHistoryOffWorkerRelated[]> => {
-  return await fetchData(
-    async () => await getRosterHistoryOffWorkersService({
-      where: { rosterHistoryId },
-    }),
-    path => redirect(path),
-    [],
-  )
+const getRosterHistoryOffWorkers = async (rosterHistoryId: number): Promise<RosterHistoryOffWorkerWithDays[]> => {
+  const response = await getRosterHistoryOffWorkersWithDaysService(undefined, rosterHistoryId)
+  return handleGetResponse(response, redirect, [])
 }
 
 const getDepartmentId = async (rosterHistoryId: number): Promise<number | undefined> => {
-  const rosterHistory = await fetchData(
-    async () => await getRosterHistoriesService({
-      where: { id: rosterHistoryId },
-    }),
-    path => redirect(path),
-    [],
-  )
-
-  return rosterHistory[0]?.departmentId
+  const response = await getRosterHistoriesWithRelatedService(rosterHistoryId)
+  const data = handleGetResponse(response, redirect, [])
+  return data[0]?.departmentId
 }
 
 const getWorkers = async (departmentId: number): Promise<Worker[]> => {
@@ -60,7 +45,7 @@ const getWorkers = async (departmentId: number): Promise<Worker[]> => {
   )
 }
 
-const offWorkersToOffFormInputs = (offWorkers: RosterHistoryOffWorkerRelated[]): OffFormInput[] =>
+const offWorkersToOffFormInputs = (offWorkers: RosterHistoryOffWorkerWithDays[]): OffFormInput[] =>
   offWorkers.map(offWorker => ({
     workerId: offWorker.workerId,
     days: offWorker.rosterHistoryOffWorkerDays.map(day => day.day),

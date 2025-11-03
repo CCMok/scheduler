@@ -1,28 +1,28 @@
 import 'server-only';
-import { ServiceResponse } from "@/libs/share/_general/models/service-response";
-import { ServiceResponseStatus } from "../../../share/_general/enums/service-response-status";
-import { serviceWrapper } from '../../_general/services/general-service';
-import { DeleteRosterHistoryRequest, deleteRosterHistoryRequestSchema } from '../models/delete-roster-history-request';
 import prisma from '../../_general/managers/database-manager';
-import { ServiceMessage } from '@/libs/share/_general/enums/service-message';
-import { checkDeptIdAccess } from '../../access/utils/data-access-utils';
+import { tryCatch } from '../../_general/services/try-catch-wrapper';
+import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
+import { checkCanAccessDepartment } from '../../organization/utils/access-organization-utils';
+import { MessageContent } from '../../_general/enums/message';
 
-export const deleteRosterHistoryService = async (request: DeleteRosterHistoryRequest): Promise<ServiceResponse> =>
-  await serviceWrapper(async () => {
-    const parsedRequest = deleteRosterHistoryRequestSchema.parse(request)
+export const deleteRosterHistoryService = tryCatch(async (
+  id: number,
+): Promise<ServiceResponse> => {
+  const canAccess = await checkAccess(id);
+  if (!canAccess) return {
+    status: ServiceResponseStatus.BAD_REQUEST,
+    message: MessageContent.NOT_FOUND.replaceAll('{0}', '值班表紀錄'),
+  }
 
-    const checkAccessResponse = await checkAccess(parsedRequest.id);
-    if (checkAccessResponse) return checkAccessResponse;
+  await execute(id)
 
-    await execute(parsedRequest)
+  return {
+    status: ServiceResponseStatus.OK,
+    data: {},
+  }
+})
 
-    return {
-      status: ServiceResponseStatus.OK,
-      data: {},
-    }
-  })
-
-const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => {
+const checkAccess = async (id: number): Promise<boolean> => {
   const rosterHistory = await prisma.rosterHistory.findUnique({
     where: {
       id,
@@ -32,20 +32,13 @@ const checkAccess = async (id: number): Promise<ServiceResponse | undefined> => 
     },
   })
 
-  if (!rosterHistory) return {
-    status: ServiceResponseStatus.BAD_REQUEST,
-    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '值班表紀錄'),
-  }
+  if (!rosterHistory) return false
 
-  const pass = await checkDeptIdAccess(rosterHistory.departmentId);
-  if (!pass) return {
-    status: ServiceResponseStatus.BAD_REQUEST,
-    message: ServiceMessage.NOT_FOUND.replaceAll('{0}', '值班表紀錄'),
-  }
+  return await checkCanAccessDepartment(rosterHistory.departmentId);
 }
 
-const execute = async (request: DeleteRosterHistoryRequest): Promise<void> => {
+const execute = async (id: number): Promise<void> => {
   await prisma.rosterHistory.delete({
-    where: { id: request.id },
+    where: { id },
   })
 }
