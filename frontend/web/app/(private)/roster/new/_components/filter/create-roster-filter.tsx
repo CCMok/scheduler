@@ -38,7 +38,7 @@ export default function CreateRosterFilter({
     name: CreateRosterFilterKey.OFFS,
   })
 
-  const { submit } = useCreateRosterFormSubmit({ setError: form.setError })
+  const { submit } = useCreateRosterFormSubmit()
 
   const onSubmit = async (input: CreateRosterFilterFormInput) =>
     await submit(input)

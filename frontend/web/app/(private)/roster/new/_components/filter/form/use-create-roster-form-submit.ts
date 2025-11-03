@@ -1,7 +1,6 @@
 'use client'
 
 import { arrangeRosterAction } from "@/libs/server/roster/actions/arrange-roster-action"
-import { UseFormSetError } from "react-hook-form"
 import { dayBaseToPostBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils"
 import { useRouter } from "next/navigation"
 import { CreateRosterFilterFormInput } from "./create-roster-form-input"
@@ -10,13 +9,7 @@ import { useCreateRosterFilterStore } from "../store/create-roster-filter-store-
 import { handleCudResponse } from "@/libs/server/_general/utils/response-utils"
 import { isNil } from "lodash"
 
-type Props = {
-  setError: UseFormSetError<CreateRosterFilterFormInput>,
-}
-
-export default function useCreateRosterFormSubmit({
-  setError,
-}: Readonly<Props>) {
+export default function useCreateRosterFormSubmit() {
   // Cannot useFormContext, this hook directly used by form component
   const setGeneratedScheduleDepartmentId = useCreateRosterStore(state => state.setGeneratedScheduleDepartmentId);
   const setGeneratedScheduleWorkers = useCreateRosterStore(state => state.setGeneratedScheduleWorkers);
