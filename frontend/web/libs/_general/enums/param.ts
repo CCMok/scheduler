@@ -1,7 +1,7 @@
 export enum Param {
   ID = 'id',
-  ORG_ID = 'orgId',
-  DEPT_ID = 'deptId',
+  ORGANIZATION_ID = 'organizationId',
+  DEPARTMENT_ID = 'departmentId',
   POST_ID = 'postId',
   WORKER_ID = 'workerId',
   USER_ID = 'userId',

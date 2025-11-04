@@ -1,0 +1,91 @@
+'use client'
+
+import NextButton from "@/components/_general/button/next-button";
+import CustomCard from "@/components/_general/card/custom-card";
+import { useFieldArray, useFormContext } from "react-hook-form";
+import BackButton from "@/components/_general/button/back-button";
+import useTable from "@/components/_general/table/use-table";
+import { columns, WorkerTableData } from "./worker-table-column";
+import CustomTable from "@/components/_general/table/custom-table";
+import WorkerAddButton from "./worker-add-button";
+import { useMemo } from "react";
+import { SONNER_DEFAULT_OPTIONS } from "@/libs/_general/constants/sonnar-constant";
+import { toast } from "sonner";
+import { CreateDepartmentFormInput } from "@/libs/department/models/create-department-form-input";
+import { MessageTitle } from "@/libs/_general/enums/message";
+
+type Props = {
+  onClickNext: () => void;
+  onClickPrevious: () => void;
+}
+
+export default function WorkersSection({
+  onClickNext,
+  onClickPrevious,
+}: Readonly<Props>) {
+  const { trigger, control, getFieldState } = useFormContext<CreateDepartmentFormInput>()
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'workers',
+  })
+
+  const data: WorkerTableData[] = useMemo(() =>
+    fields.map((item, index) => ({
+      id: item.id,
+      index,
+      onRemove: itemIndex => remove(itemIndex),
+    })),
+    [fields, remove],
+  );
+
+  const table = useTable({
+    data,
+    columns,
+    defaultSorting: [],
+    getRowId: row => row.id,
+    hasPagination: false,
+  })
+
+  const handleClickNext = async () => {
+    const isValid = await trigger('workers')
+    if (isValid) {
+      onClickNext()
+      return
+    }
+
+    const { error } = getFieldState('workers');
+    if (!error) {
+      toast.error(MessageTitle.INTERNAL_ERROR, {
+        ...SONNER_DEFAULT_OPTIONS,
+      })
+      return
+    }
+
+    toast.error(MessageTitle.INPUT_ERROR, {
+      ...SONNER_DEFAULT_OPTIONS,
+      description: error.message,
+    })
+  }
+
+  return (
+    <CustomCard
+      footer={(
+        <div className="w-full flex justify-end gap-2">
+          <BackButton onClick={onClickPrevious} />
+          <NextButton onClick={handleClickNext} />
+        </div>
+      )}
+    >
+      <div className='space-y-2'>
+        <div className='flex items-center justify-between'>
+          <span className='font-semibold'>人員</span>
+          <WorkerAddButton onAppend={append} />
+        </div>
+        <CustomTable
+          table={table}
+          noDataDisplay={<WorkerAddButton onAppend={append} />}
+        />
+      </div>
+    </CustomCard>
+  )
+}

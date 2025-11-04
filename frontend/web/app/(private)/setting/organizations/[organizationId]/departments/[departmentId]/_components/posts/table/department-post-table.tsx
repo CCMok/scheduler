@@ -1,0 +1,36 @@
+'use client'
+
+import { PostWithPostWorkersCount } from '@/libs/post/models/post-dao';
+import PostWorkersCountTable from '@/components/post/post-workers-count-table';
+import { ColumnDef } from "@tanstack/react-table";
+import { getActionColumn, getNameColumn, workerCountColumn } from "@/components/post/post-workers-count-table-column";
+import DepartmentPostTableRowAction from "./department-post-table-row-action";
+
+const actionColumn = getActionColumn(({ row }) => (
+  <DepartmentPostTableRowAction
+    id={row.original.id}
+    name={row.original.name}
+    departmentId={row.original.departmentId}
+  />
+))
+
+const columns: ColumnDef<PostWithPostWorkersCount>[] = [
+  getNameColumn(true),
+  workerCountColumn,
+  actionColumn,
+]
+
+type Props = {
+  posts: PostWithPostWorkersCount[];
+}
+
+export default function DepartmentPostTable({
+  posts,
+}: Readonly<Props>) {
+  return (
+    <PostWorkersCountTable
+      data={posts}
+      columns={columns}
+    />
+  )
+}

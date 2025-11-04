@@ -37,12 +37,12 @@ export const PATH = {
     general: `/${PathSegment.SETTING}/${PathSegment.GENERAL}`,
     organizations: {
       base: `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}`,
-      build: (orgId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${orgId}`,
+      build: (organizationId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${organizationId}`,
       departments: {
-        build: (orgId: string | number, deptId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${orgId}/${PathSegment.DEPARTMENTS}/${deptId}`,
-        posts: (orgId: string | number, deptId: string | number, postId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${orgId}/${PathSegment.DEPARTMENTS}/${deptId}/${PathSegment.POSTS}/${postId}`,
-        workers: (orgId: string | number, deptId: string | number, workerId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${orgId}/${PathSegment.DEPARTMENTS}/${deptId}/${PathSegment.WORKERS}/${workerId}`,
-        new: (orgId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${orgId}/${PathSegment.DEPARTMENTS}/${PathSegment.NEW}`,
+        build: (organizationId: string | number, departmentId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${organizationId}/${PathSegment.DEPARTMENTS}/${departmentId}`,
+        posts: (organizationId: string | number, departmentId: string | number, postId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${organizationId}/${PathSegment.DEPARTMENTS}/${departmentId}/${PathSegment.POSTS}/${postId}`,
+        workers: (organizationId: string | number, departmentId: string | number, workerId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${organizationId}/${PathSegment.DEPARTMENTS}/${departmentId}/${PathSegment.WORKERS}/${workerId}`,
+        new: (organizationId: string | number) => `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${organizationId}/${PathSegment.DEPARTMENTS}/${PathSegment.NEW}`,
       },
       new: `/${PathSegment.SETTING}/${PathSegment.ORGANIZATIONS}/${PathSegment.NEW}`,
     },

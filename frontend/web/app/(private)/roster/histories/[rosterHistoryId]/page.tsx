@@ -11,9 +11,10 @@ type Props = ParamProps<{ [Param.ROSTER_HISTORY_ID]: string }>
 export default async function RosterHistoryPage({
   params,
 }: Readonly<Props>) {
-  const paramId = (await params).rosterHistoryId;
-  const id = Number(paramId);
-  if (isNaN(id)) notFound();
+  const awaitedParams = await params;
+
+  const id = Number.parseInt(awaitedParams[Param.ROSTER_HISTORY_ID]);
+  if (Number.isNaN(id)) notFound();
 
   return (
     <SidebarInsetLayout breadcrumbItems={[

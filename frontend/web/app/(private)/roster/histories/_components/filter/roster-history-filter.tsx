@@ -3,7 +3,7 @@ import OrganizationNameQueryInput from "../../../../../../components/organizatio
 import { ReactNode } from 'react';
 import { Param } from '@/libs/_general/enums/param';
 import CreateDateFromQueryInput from './create-date-from-query-input';
-import DepartmentNameQueryInput from '@/app/(private)/setting/organizations/[orgId]/_components/departments/filter/department-name-query-input';
+import DepartmentNameQueryInput from '@/app/(private)/setting/organizations/[organizationId]/_components/departments/filter/department-name-query-input';
 
 type Props = {
   button?: ReactNode;

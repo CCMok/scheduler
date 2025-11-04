@@ -1,9 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
 import { DepartmentWithOrganizationChildrenCount } from '@/libs/department/models/department-dao';
-import DepartmentTableRowAction from "@/app/(private)/setting/organizations/[orgId]/_components/departments/table/department-table-row-action";
+import DepartmentTableRowAction from "@/app/(private)/setting/organizations/[organizationId]/_components/departments/table/department-table-row-action";
 import { PATH } from "@/libs/_general/enums/path";
-import DepartmentNameCell from "../../../organizations/[orgId]/_components/departments/table/department-name-cell";
+import DepartmentNameCell from "../../../organizations/[organizationId]/_components/departments/table/department-name-cell";
 
 export enum DepartmentTableId {
   ORGANIZATION_NAME = 'organizationName',

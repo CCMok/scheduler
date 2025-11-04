@@ -2,15 +2,15 @@ import { MessageContent } from "@/libs/_general/enums/message";
 import { z } from "zod";
 
 export const offFormInputSchema = z.object({
-  workerId: z.number().min(0, MessageContent.REQUIRED),
+  workerId: z.number({ required_error: MessageContent.REQUIRED }),
   days: z.date().array(),
 })
 
 export type OffFormInput = z.infer<typeof offFormInputSchema>;
 
 export const createRosterFilterFormInputSchema = z.object({
-  organizationId: z.number().min(0, MessageContent.REQUIRED),
-  departmentId: z.number().min(0, MessageContent.REQUIRED),
+  organizationId: z.number({ required_error: MessageContent.REQUIRED }),
+  departmentId: z.number({ required_error: MessageContent.REQUIRED }),
   days: z.date().array().min(1, MessageContent.REQUIRED),
   offs: offFormInputSchema.array(),
 })
