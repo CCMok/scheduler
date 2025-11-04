@@ -1,10 +1,10 @@
 import { Worker } from "@/external/prisma-generated"
-import { getWorkersService } from "@/libs/server/worker/services/get-workers-service"
+import { getWorkersService } from "@/libs/worker/services/get-workers-service"
 import { notFound, redirect } from "next/navigation"
 import UpdateWorkerNameSection from "./update-worker-name-section"
 import { Suspense } from "react"
 import InputCardSkeleton from "@/components/_general/skeleton/input-card-skeleton"
-import { handleGetResponse } from "@/libs/server/_general/utils/response-utils"
+import { handleGetResponse } from "@/libs/_general/utils/response-utils"
 
 const getWorker = async (id: number): Promise<Worker | undefined> => {
   const response = await getWorkersService(id)

@@ -2,7 +2,7 @@
 
 import LabelInput from '@/components/_general/input/label-input';
 import QueryInputWrapper from '@/components/_general/input/query-input-wrapper';
-import { Param } from '@/libs/share/_general/enums/param';
+import { Param } from '@/libs/_general/enums/param';
 import ComboBox from '@/components/_general/combobox/combo-box';
 import { Role } from '@/external/prisma-generated';
 

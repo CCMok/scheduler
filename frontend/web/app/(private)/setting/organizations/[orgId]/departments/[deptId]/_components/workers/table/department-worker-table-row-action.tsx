@@ -1,9 +1,9 @@
 'use client'
 
-import { PATH } from '@/libs/share/_general/utils/path';
-import { ServiceResponse } from '@/libs/server/_general/models/service-response';
-import { deleteWorkerAction } from '@/libs/server/worker/actions/delete-worker-action';
-import { Param } from '@/libs/share/_general/enums/param';
+import { PATH } from '@/libs/_general/enums/path';
+import { ServiceResponse } from '@/libs/_general/models/service-response';
+import { deleteWorkerAction } from '@/libs/worker/actions/delete-worker-action';
+import { Param } from '@/libs/_general/enums/param';
 import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import ContextMenu from '@/components/_general/dropdown/context-menu';

@@ -1,10 +1,10 @@
 'use client'
 
 import useTable from '@/components/_general/table/use-table';
-import { WorkerWithPostWorkersCount } from "@/libs/server/worker/models/worker-dao";
+import { WorkerWithPostWorkersCount } from "@/libs/worker/models/worker-dao";
 import { useEffect } from "react";
 import { useSearchParams } from 'next/navigation';
-import { Param } from '@/libs/share/_general/enums/param';
+import { Param } from '@/libs/_general/enums/param';
 import { ColumnDef } from '@tanstack/react-table';
 import { WorkerTableId } from './workers-post-count-table-column';
 import CustomTable from '../_general/table/custom-table';

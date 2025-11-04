@@ -3,8 +3,8 @@
 import CustomFormItem from "@/components/_general/form/custom-form-item"
 import CustomSlider from "@/components/_general/slider/custom-slider"
 import { FormField } from "@/external/shadcn/components/ui/form"
-import { CreateUpdateWorkerConstraintFormInput } from "@/libs/client/worker-constraint/models/create-update-worker-constraint-form-input"
-import { MAX_WEIGHT, MIN_WEIGHT, STEP_WEIGHT } from "@/libs/share/_general/constants/weight-constant"
+import { CreateUpdateWorkerConstraintFormInput } from "@/libs/worker-constraint/models/worker-constraint-form-input"
+import { MAX_WEIGHT, MIN_WEIGHT, STEP_WEIGHT } from "@/libs/_general/constants/weight-constant"
 import { useFormContext } from "react-hook-form"
 
 export default function WeightFormField() {

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { deleteSession, getSession, refreshSession } from './libs/server/_general/managers/session-manager';
-import { SessionPayload } from './libs/server/_general/models/session-payload';
-import { EXCLUDE_HOME_PUBLIC_PATHS, PATH, REDIRECT_PRIVATE_PATH, REDIRECT_PUBLIC_PATH } from './libs/share/_general/utils/path';
-import { isAccessable } from './libs/server/access/services/route-access-service';
+import { deleteSession, getSession, refreshSession } from './libs/access/managers/session-manager';
+import { SessionPayload } from './libs/access/models/session-payload';
+import { EXCLUDE_HOME_PUBLIC_PATHS, PATH, REDIRECT_PRIVATE_PATH, REDIRECT_PUBLIC_PATH } from './libs/_general/enums/path';
+import { checkCanAccess } from './libs/access/utils/route-access-utils';
 
 export default async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
@@ -38,7 +38,7 @@ const handlePrivatePath = async (request: NextRequest, sessionPayload: SessionPa
 }
 
 const checkAuthorized = async (request: NextRequest, path: string) => {
-  const hasAccess = await isAccessable(path);
+  const hasAccess = await checkCanAccess(path);
   return hasAccess
     ? NextResponse.next()
     : NextResponse.redirect(new URL(REDIRECT_PRIVATE_PATH, request.url))

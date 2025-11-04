@@ -2,10 +2,10 @@
 
 import { Worker } from "@/external/prisma-generated"
 import UpdateNameLayout from '@/components/_general/layout/update-name/update-name-layout'
-import { UpdateNameFormInput } from "@/libs/client/setting/models/update-name-form-input"
-import { ServiceResponse } from "@/libs/server/_general/models/service-response"
-import { UpdateWorkerNameRequest } from "@/libs/server/worker/models/update-worker-name-request"
-import { updateWorkerNameAction } from "@/libs/server/worker/actions/update-worker-name-action"
+import { UpdateNameFormInput } from "@/libs/_general/models/update-name-form-input"
+import { ServiceResponse } from "@/libs/_general/models/service-response"
+import { UpdateWorkerNameRequest } from "@/libs/worker/models/update-worker-name-request"
+import { updateWorkerNameAction } from "@/libs/worker/actions/update-worker-name-action"
 
 type Props = {
   worker: Worker;

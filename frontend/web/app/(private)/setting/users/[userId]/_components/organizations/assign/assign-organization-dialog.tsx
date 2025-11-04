@@ -6,12 +6,12 @@ import { UserRoundPlus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Organization } from "@/external/prisma-generated";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreateUserOrganizationFormInput, createUserOrganizationFormInputSchema } from "@/libs/client/user-organization/models/create-user-organization-form-input";
+import { CreateUserOrganizationFormInput, createUserOrganizationFormInputSchema } from "@/app/(private)/setting/users/[userId]/_components/organizations/assign/create-user-organization-form-input";
 import AssignOrganizationFields from "./assign-organization-fields";
 import { useParams, useRouter } from "next/navigation";
-import { Param } from "@/libs/share/_general/enums/param";
-import { ServiceResponse, ServiceResponseStatus } from "@/libs/server/_general/models/service-response";
-import { createUserOrganizationAction } from "@/libs/server/user-organization/actions/create-user-organization-action";
+import { Param } from "@/libs/_general/enums/param";
+import { ServiceResponse, ServiceResponseStatus } from "@/libs/_general/models/service-response";
+import { createUserOrganizationAction } from "@/libs/user-organization/actions/create-user-organization-action";
 
 type Props = {
   organizations: Organization[];

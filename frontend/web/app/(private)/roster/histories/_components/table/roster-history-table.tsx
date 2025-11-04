@@ -2,11 +2,11 @@
 
 import useTable from '@/components/_general/table/use-table';
 import CustomTable from "@/components/_general/table/custom-table";
-import { RosterHistoryWithRelated } from "@/libs/server/roster/models/roster-history-dao";
+import { RosterHistoryWithRelated } from "@/libs/roster/models/roster-history-dao";
 import { columns, RosterHistoryTableId } from "./roster-history-table-column";
 import { useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Param } from '@/libs/share/_general/enums/param';
+import { Param } from '@/libs/_general/enums/param';
 
 type Props = {
   rosterHistories: RosterHistoryWithRelated[];

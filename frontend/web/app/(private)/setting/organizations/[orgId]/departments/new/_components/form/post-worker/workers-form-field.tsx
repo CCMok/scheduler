@@ -1,6 +1,6 @@
 'use client'
 
-import { CreateDepartmentFormInput } from "@/libs/client/department/models/create-department-form-input";
+import { CreateDepartmentFormInput } from "@/libs/department/models/create-department-form-input";
 import { useFormContext, useWatch } from "react-hook-form";
 import { DEFAULT_WORKERS } from "../create-department-default-value";
 import { FormField } from "@/external/shadcn/components/ui/form";

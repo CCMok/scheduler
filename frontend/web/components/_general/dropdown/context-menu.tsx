@@ -5,7 +5,7 @@ import {
 } from '@/external/shadcn/components/ui/dropdown-menu';
 import { Button } from '@/external/shadcn/components/ui/button';
 import { MoreHorizontal } from 'lucide-react';
-import { ChildrenProps } from '@/libs/share/_general/props/children-props';
+import { ChildrenProps } from '@/libs/_general/props/children-props';
 import { ComponentProps } from 'react';
 
 type Props = ChildrenProps & {

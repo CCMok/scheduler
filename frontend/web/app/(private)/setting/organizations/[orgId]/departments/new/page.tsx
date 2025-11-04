@@ -1,8 +1,8 @@
 import SidebarInsetLayout from "@/components/_general/layout/sidebar-inset/sidebar-inset-layout";
-import { PATH } from "@/libs/share/_general/utils/path";
+import { PATH } from "@/libs/_general/enums/path";
 import CreateDepartmentForm from "./_components/form/create-department-form";
-import { ParamProps } from "@/libs/share/_general/props/param-props";
-import { Param } from "@/libs/share/_general/enums/param";
+import { ParamProps } from "@/libs/_general/props/param-props";
+import { Param } from "@/libs/_general/enums/param";
 import { notFound } from "next/navigation";
 import OrganizationName from "@/components/organization/organization-name";
 

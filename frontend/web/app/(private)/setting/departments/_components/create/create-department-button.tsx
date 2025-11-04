@@ -7,7 +7,7 @@ import CustomLink from "@/components/_general/link/custom-link";
 import { Organization } from "@/external/prisma-generated";
 import { AlertDialogTrigger } from "@/external/shadcn/components/ui/alert-dialog";
 import { Label } from "@/external/shadcn/components/ui/label";
-import { PATH } from "@/libs/share/_general/utils/path";
+import { PATH } from "@/libs/_general/enums/path";
 import { isNil } from "lodash";
 import { Plus } from "lucide-react";
 import { useState } from "react";

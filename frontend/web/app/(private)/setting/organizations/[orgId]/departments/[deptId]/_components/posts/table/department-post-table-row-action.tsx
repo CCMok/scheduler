@@ -1,11 +1,11 @@
 'use client'
 
-import { PATH } from '@/libs/share/_general/utils/path';
-import { ServiceResponse } from '@/libs/server/_general/models/service-response';
-import { deletePostAction } from '@/libs/server/post/actions/delete-post-action';
+import { PATH } from '@/libs/_general/enums/path';
+import { ServiceResponse } from '@/libs/_general/models/service-response';
+import { deletePostAction } from '@/libs/post/actions/delete-post-action';
 import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { Param } from '@/libs/share/_general/enums/param';
+import { Param } from '@/libs/_general/enums/param';
 import ContextMenu from '@/components/_general/dropdown/context-menu';
 import UpdateDropdownMenuItem from '@/components/_general/dropdown/update-dropdown-menu-item';
 import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdown-menu-item';

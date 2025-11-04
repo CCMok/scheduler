@@ -1,7 +1,7 @@
 import { createStore } from 'zustand/vanilla'
 import { Worker } from '@/external/prisma-generated'
-import { PostBaseSchedule } from '@/libs/share/roster/models/post-base-schedule'
-import { LocalStorageKey } from '@/libs/client/_general/enums/local-storage-key'
+import { PostBaseSchedule } from '@/libs/roster/models/schedule'
+import { LocalStorageKey } from '@/libs/_general/enums/local-storage-key'
 import { OffFormInput } from '../filter/form/create-roster-form-input'
 
 export type CreateRosterState = {

@@ -1,6 +1,6 @@
 import { Badge } from "@/external/shadcn/components/ui/badge";
-import { MAX_DISPLAY_COUNT } from "@/libs/client/_general/constants/display-constant";
-import { PostConstraintPostWithPost } from "@/libs/server/post-constraint/models/post-constraint-dao";
+import { MAX_DISPLAY_COUNT } from "@/libs/_general/constants/display-constant";
+import { PostConstraintPostWithPost } from "@/libs/post-constraint/models/post-constraint-dao";
 import { BriefcaseBusiness } from "lucide-react";
 
 type Props = {

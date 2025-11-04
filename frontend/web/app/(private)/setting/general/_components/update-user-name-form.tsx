@@ -13,13 +13,13 @@ import { Save } from 'lucide-react';
 import { useState } from 'react';
 import ConfirmDialog from '@/components/_general/dialog/confirm-dialog';
 import { toast } from 'sonner';
-import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
-import { UpdateUserNameFormInput, updateUserNameFormInputSchema } from '@/libs/client/user/models/update-user-name-form-input';
-import { UpdateUserNameRequest } from '@/libs/server/user/models/update-user-name-request';
-import { updateUserNameAction } from '@/libs/server/user/actions/update-user-name-action';
-import { handleCudResponse } from '@/libs/server/_general/utils/response-utils';
+import { SONNER_DEFAULT_OPTIONS } from '@/libs/_general/constants/sonnar-constant';
+import { UpdateUserNameFormInput, updateUserNameFormInputSchema } from '@/app/(private)/setting/general/_components/update-user-name-form-input';
+import { UpdateUserNameRequest } from '@/libs/user/models/update-user-name-request';
+import { updateUserNameAction } from '@/libs/user/actions/update-user-name-action';
+import { handleCudResponse } from '@/libs/_general/utils/response-utils';
 import { isNil } from 'lodash';
-import { MessageContent, MessageTitle } from '@/libs/server/_general/enums/message';
+import { MessageContent, MessageTitle } from '@/libs/_general/enums/message';
 
 type Props = {
   userName: string;

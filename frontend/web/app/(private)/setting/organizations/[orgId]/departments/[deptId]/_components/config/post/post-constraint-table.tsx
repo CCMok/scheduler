@@ -1,7 +1,7 @@
 'use client'
 
 import useTable from "@/components/_general/table/use-table";
-import { PostConstraintWithChild } from "@/libs/server/post-constraint/models/post-constraint-dao";
+import { PostConstraintWithChild } from "@/libs/post-constraint/models/post-constraint-dao";
 import { getColumns, PostConstraintTableId } from "./post-constraint-table-column";
 import CustomTable from "@/components/_general/table/custom-table";
 import { PostConstraintType, Post } from "@/external/prisma-generated";

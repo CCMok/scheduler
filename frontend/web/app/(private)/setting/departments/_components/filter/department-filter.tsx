@@ -1,5 +1,5 @@
 import FilterLayout from "@/components/_general/layout/filter/filter-layout";
-import { Param } from "@/libs/share/_general/enums/param";
+import { Param } from "@/libs/_general/enums/param";
 import { ReactNode } from "react";
 import DepartmentNameQueryInput from "../../../organizations/[orgId]/_components/departments/filter/department-name-query-input";
 import OrganizationNameQueryInput from "@/components/organization/organization-name-query-input";

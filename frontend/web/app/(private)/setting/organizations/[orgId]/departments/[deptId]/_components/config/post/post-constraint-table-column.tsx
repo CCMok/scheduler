@@ -1,5 +1,5 @@
 import TableSortableHeader from "@/components/_general/table/table-sortable-header";
-import { PostConstraintWithChild } from "@/libs/server/post-constraint/models/post-constraint-dao";
+import { PostConstraintWithChild } from "@/libs/post-constraint/models/post-constraint-dao";
 import { ColumnDef } from "@tanstack/react-table";
 import PostConstraintTablePost from "./post-constraint-table-post";
 import PostConstraintTableRowAction from "./post-constraint-table-row-action";

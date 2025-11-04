@@ -3,8 +3,8 @@
 import LabelInput from '@/components/_general/input/label-input';
 import QueryInputWrapper from '@/components/_general/input/query-input-wrapper';
 import DebounceInput from '@/components/_general/input/debounce-input';
-import { DEFAULT_SEARCH_PLACEHOLDER } from "@/libs/client/_general/constants/input-constant";
-import { Param } from '@/libs/share/_general/enums/param';
+import { DEFAULT_SEARCH_PLACEHOLDER } from "@/libs/_general/constants/input-constant";
+import { Param } from '@/libs/_general/enums/param';
 
 export default function PostNameQueryInput() {
   return (

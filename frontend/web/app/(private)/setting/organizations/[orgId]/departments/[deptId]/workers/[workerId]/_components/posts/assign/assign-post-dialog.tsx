@@ -2,15 +2,15 @@
 
 import CustomButton from "@/components/_general/button/custom-button";
 import FormDialog from "@/components/_general/dialog/form-dialog";
-import { createPostWorkerAction } from "@/libs/server/post-worker/actions/create-post-worker-action";
-import { Param } from "@/libs/share/_general/enums/param";
-import { ServiceResponse, ServiceResponseStatus } from "@/libs/server/_general/models/service-response";
+import { createPostWorkerAction } from "@/libs/post-worker/actions/create-post-worker-action";
+import { Param } from "@/libs/_general/enums/param";
+import { ServiceResponse, ServiceResponseStatus } from "@/libs/_general/models/service-response";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserRoundPlus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { Post } from "@/external/prisma-generated";
-import { CreateWorkerPostFormInput, createWorkerPostFormInputSchema } from "@/libs/client/post-worker/models/create-worker-post-form-input";
+import { CreateWorkerPostFormInput, createWorkerPostFormInputSchema } from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/workers/[workerId]/_components/posts/assign/create-worker-post-form-input";
 import AssignPostFields from "./assign-post-fields";
 
 type Props = {

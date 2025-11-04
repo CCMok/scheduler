@@ -1,7 +1,7 @@
 import CustomFormItem from '@/components/_general/form/custom-form-item';
 import CustomInput from '@/components/_general/input/custom-input';
 import { FormField, FormControl } from "@/external/shadcn/components/ui/form";
-import { CreatePostFormInput } from "@/libs/client/post/models/create-post-form-input";
+import { CreatePostFormInput } from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/posts/create/create-post-form-input";
 import { useFormContext } from "react-hook-form";
 
 export default function CreatePostNameFormField() {

@@ -1,15 +1,14 @@
 'use client'
 
 import CreateDialog from '@/components/_general/dialog/create-dialog';
-import { CreateWorkerFormInput, createWorkerFormInputSchema } from "@/libs/client/worker/models/create-worker-form-input";
+import { CreateWorkerFormInput, createWorkerFormInputSchema } from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/workers/create/create-worker-form-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import CreateWorkerFields from "./create-worker-fields";
-import { ServiceResponse } from "@/libs/server/_general/models/service-response";
-import { createWorkerAction } from "@/libs/server/worker/actions/create-worker-action";
-import { Param } from '@/libs/share/_general/enums/param';
+import { ServiceResponse } from "@/libs/_general/models/service-response";
+import { createWorkerAction } from "@/libs/worker/actions/create-worker-action";
+import { Param } from '@/libs/_general/enums/param';
 import { useParams, useRouter } from 'next/navigation';
-import { Id } from '@/libs/server/_general/models/id';
 
 export default function CreateWorkerButton() {
   const form = useForm({
@@ -30,7 +29,7 @@ export default function CreateWorkerButton() {
     return <></>
   }
 
-  const submit = async (input: CreateWorkerFormInput): Promise<ServiceResponse<Id>> => {
+  const submit = async (input: CreateWorkerFormInput): Promise<ServiceResponse<number>> => {
     return await createWorkerAction({
       departmentId: Number(deptId),
       workerName: input.name,

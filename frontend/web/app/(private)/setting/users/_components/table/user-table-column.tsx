@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
 import UserTableRowAction from "./user-table-row-action";
-import { UserExcludePasswordWithRole } from "@/libs/server/user/models/user-dao";
+import { UserExcludePasswordWithRole } from "@/libs/user/models/user-dao";
 
 export enum UserTableId {
   EMAIL = 'email',

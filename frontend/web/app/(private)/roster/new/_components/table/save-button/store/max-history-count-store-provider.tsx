@@ -3,7 +3,7 @@
 import { createContext, useRef, useContext } from 'react';
 import { useStore } from 'zustand';
 import { type MaxHistoryCountStore, createMaxHistoryCountStore, MaxHistoryCountState } from './max-history-count-store';
-import { ChildrenProps } from '@/libs/share/_general/props/children-props';
+import { ChildrenProps } from '@/libs/_general/props/children-props';
 
 export type StoreApi = ReturnType<typeof createMaxHistoryCountStore>
 

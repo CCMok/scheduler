@@ -1,10 +1,10 @@
 'use client';
 
-import { ServiceResponse } from "@/libs/server/_general/models/service-response";
+import { ServiceResponse } from "@/libs/_general/models/service-response";
 import CudServiceHandleDialog from "./cud-service-handle-dialog";
 import { toast } from "sonner";
-import { MessageTitle } from "@/libs/server/_general/enums/message";
-import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
+import { MessageTitle } from "@/libs/_general/enums/message";
+import { SONNER_DEFAULT_OPTIONS } from "@/libs/_general/constants/sonnar-constant";
 
 type Props<R = object> = {
   isOpen?: boolean;

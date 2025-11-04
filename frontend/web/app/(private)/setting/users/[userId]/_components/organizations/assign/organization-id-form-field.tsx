@@ -5,7 +5,7 @@ import CustomFormItem from '@/components/_general/form/custom-form-item';
 import { FormField } from "@/external/shadcn/components/ui/form";
 import { useFormContext } from "react-hook-form"
 import { Organization } from "@/external/prisma-generated"
-import { CreateUserOrganizationFormInput } from '@/libs/client/user-organization/models/create-user-organization-form-input';
+import { CreateUserOrganizationFormInput } from '@/app/(private)/setting/users/[userId]/_components/organizations/assign/create-user-organization-form-input';
 
 type Props = {
   organizations: Organization[];

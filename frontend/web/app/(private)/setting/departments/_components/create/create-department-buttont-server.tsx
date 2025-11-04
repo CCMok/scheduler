@@ -1,8 +1,8 @@
 import { Organization } from "@/external/prisma-generated";
 import CreateDepartmentButton from "./create-department-button";
-import { getOrganizationsService } from "@/libs/server/organization/services/get-organizations-service";
+import { getOrganizationsService } from "@/libs/organization/services/get-organizations-service";
 import { redirect } from "next/navigation";
-import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
+import { handleGetResponse } from "@/libs/_general/utils/response-utils";
 
 const getOrganizations = async (): Promise<Organization[]> => {
   const response = await getOrganizationsService()

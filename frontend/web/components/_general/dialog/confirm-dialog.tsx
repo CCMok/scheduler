@@ -2,7 +2,7 @@
 
 import LoadingButton from '@/components/_general/button/loading-button';
 import { useState } from "react";
-import { ChildrenProps } from "@/libs/share/_general/props/children-props";
+import { ChildrenProps } from "@/libs/_general/props/children-props";
 import CustomDialog from "./custom-dialog";
 
 type Props = ChildrenProps & {

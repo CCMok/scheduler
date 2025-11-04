@@ -4,8 +4,8 @@ import DeleteDialog from '@/components/_general/dialog/delete-dialog';
 import ContextMenu from '@/components/_general/dropdown/context-menu';
 import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdown-menu-item';
 import UpdateDropdownMenuItem from '@/components/_general/dropdown/update-dropdown-menu-item';
-import { deleteDepartmentAction } from '@/libs/server/department/actions/delete-department-action';
-import { ServiceResponse } from '@/libs/server/_general/models/service-response';
+import { deleteDepartmentAction } from '@/libs/department/actions/delete-department-action';
+import { ServiceResponse } from '@/libs/_general/models/service-response';
 import { isNil } from 'lodash';
 import { useState } from 'react';
 

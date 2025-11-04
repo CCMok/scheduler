@@ -1,6 +1,6 @@
 import { DropdownMenuTrigger } from "@/external/shadcn/components/ui/dropdown-menu"
 import { SidebarMenuButton } from "@/external/shadcn/components/ui/sidebar"
-import { getSession } from "@/libs/server/_general/managers/session-manager"
+import { getSession } from "@/libs/access/managers/session-manager"
 import { ChevronDown, User } from "lucide-react"
 
 const getUserDisplayName = async (): Promise<string> => {

@@ -1,4 +1,4 @@
-import { ChildrenProps } from "@/libs/share/_general/props/children-props";
+import { ChildrenProps } from "@/libs/_general/props/children-props";
 
 export default async function SettingLayout({
   children,

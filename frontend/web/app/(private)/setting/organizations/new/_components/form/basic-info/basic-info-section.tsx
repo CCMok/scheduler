@@ -2,17 +2,17 @@
 
 import NextButton from "@/components/_general/button/next-button";
 import CustomCard from "@/components/_general/card/custom-card";
-import { CreateOrganizationFormInput } from "@/libs/client/organization/models/create-organization-form-input";
+import { CreateOrganizationFormInput } from "@/app/(private)/setting/organizations/new/_components/form/create-organization-form-input";
 import { useFormContext } from "react-hook-form";
 import OrganizationNameFormField from "./organization-name-form-field";
 import DepartmentNameFormField from "./department-name-form-field";
-import { getOrganizationsAction } from "@/libs/server/organization/actions/get-organizations-action";
+import { getOrganizationsAction } from "@/libs/organization/actions/get-organizations-action";
 import { useRouter } from "next/navigation";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { toast } from "sonner";
-import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
-import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
-import { MessageContent, MessageTitle } from "@/libs/server/_general/enums/message";
+import { SONNER_DEFAULT_OPTIONS } from "@/libs/_general/constants/sonnar-constant";
+import { handleGetResponse } from "@/libs/_general/utils/response-utils";
+import { MessageContent, MessageTitle } from "@/libs/_general/enums/message";
 
 const isOrganizationNameExist = async (name: string, router: AppRouterInstance): Promise<boolean> => {
   const response = await getOrganizationsAction(undefined, name)

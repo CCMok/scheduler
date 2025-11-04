@@ -2,7 +2,7 @@
 
 import { createContext, useRef, useContext } from 'react'
 import { useStore } from 'zustand'
-import { ChildrenProps } from '@/libs/share/_general/props/children-props'
+import { ChildrenProps } from '@/libs/_general/props/children-props'
 import { createCreateRosterFilterStore, CreateRosterFilterState, CreateRosterFilterStore } from './create-roster-filter-store'
 
 export type StoreApi = ReturnType<typeof createCreateRosterFilterStore>

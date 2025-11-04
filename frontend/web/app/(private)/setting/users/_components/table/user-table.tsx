@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import { getColumns, UserTableId } from "./user-table-column";
 import { useSearchParams } from "next/navigation";
 import useTable from '@/components/_general/table/use-table';
-import { Param } from "@/libs/share/_general/enums/param";
+import { Param } from "@/libs/_general/enums/param";
 import CustomTable from "@/components/_general/table/custom-table";
-import { UserExcludePasswordWithRole } from "@/libs/server/user/models/user-dao";
+import { UserExcludePasswordWithRole } from "@/libs/user/models/user-dao";
 
 type Props = {
   users: UserExcludePasswordWithRole[];

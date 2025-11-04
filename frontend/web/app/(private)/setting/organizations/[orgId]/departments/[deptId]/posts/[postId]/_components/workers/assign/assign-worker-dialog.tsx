@@ -2,10 +2,10 @@
 
 import CustomButton from "@/components/_general/button/custom-button";
 import FormDialog from "@/components/_general/dialog/form-dialog";
-import { CreatePostWorkerFormInput, createPostWorkerFormInputSchema } from "@/libs/client/post-worker/models/create-post-worker-form-input";
-import { createPostWorkerAction } from "@/libs/server/post-worker/actions/create-post-worker-action";
-import { Param } from "@/libs/share/_general/enums/param";
-import { ServiceResponse, ServiceResponseStatus } from "@/libs/server/_general/models/service-response";
+import { CreatePostWorkerFormInput, createPostWorkerFormInputSchema } from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/posts/[postId]/_components/workers/assign/create-post-worker-form-input";
+import { createPostWorkerAction } from "@/libs/post-worker/actions/create-post-worker-action";
+import { Param } from "@/libs/_general/enums/param";
+import { ServiceResponse, ServiceResponseStatus } from "@/libs/_general/models/service-response";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserRoundPlus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";

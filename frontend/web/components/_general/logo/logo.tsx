@@ -1,6 +1,6 @@
 import { cn } from "@/external/shadcn/libs/utils";
-import { ClassNameProps } from "@/libs/share/_general/props/class-name-props";
-import { PATH } from "@/libs/share/_general/utils/path";
+import { ClassNameProps } from "@/libs/_general/props/class-name-props";
+import { PATH } from "@/libs/_general/enums/path";
 import { Leckerli_One } from "next/font/google";
 import CustomLink from "../link/custom-link";
 

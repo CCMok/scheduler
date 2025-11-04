@@ -4,7 +4,7 @@ import CustomFormItem from '@/components/_general/form/custom-form-item';
 import { FormControl, FormField } from "@/external/shadcn/components/ui/form";
 import { useFormContext } from "react-hook-form"
 import CustomInput from '@/components/_general/input/custom-input';
-import { CreateDepartmentFormInput } from '@/libs/client/department/models/create-department-form-input';
+import { CreateDepartmentFormInput } from '@/libs/department/models/create-department-form-input';
 
 type Props = {
   index: number;

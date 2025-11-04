@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
-import { ParamProps } from "@/libs/share/_general/props/param-props";
-import { Param } from "@/libs/share/_general/enums/param";
+import { ParamProps } from "@/libs/_general/props/param-props";
+import { Param } from "@/libs/_general/enums/param";
 import QueryTabLayout from '@/components/_general/layout/setting/query-tab-layout';
 import DepartmentsSection from "./_components/departments/departments-section";
-import { PATH } from "@/libs/share/_general/utils/path";
+import { PATH } from "@/libs/_general/enums/path";
 import OrganizationName from "@/components/organization/organization-name";
 import UpdateOrganizationNameSectionServer from "./_components/update-name/update-organization-name-section-server";
 import { OrganizationPageTabId } from "./tab-id";

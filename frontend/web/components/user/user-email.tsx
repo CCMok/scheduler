@@ -1,7 +1,7 @@
 import { Skeleton } from "@/external/shadcn/components/ui/skeleton";
-import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
-import { UserExcludePasswordWithRole } from "@/libs/server/user/models/user-dao";
-import { getUsersWithRoleService } from "@/libs/server/user/services/get-users-with-role-service";
+import { handleGetResponse } from "@/libs/_general/utils/response-utils";
+import { UserExcludePasswordWithRole } from "@/libs/user/models/user-dao";
+import { getUsersWithRoleService } from "@/libs/user/services/get-users-with-role-service";
 import { isNil } from "lodash";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";

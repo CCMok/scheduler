@@ -3,7 +3,7 @@
 import { useFormContext, useWatch } from "react-hook-form"
 import { DEFAULT_POSTS, DEFAULT_WORKERS } from "./create-department-default-value"
 import { useEffect } from "react"
-import { CreateDepartmentFormInput, PostWorkerFormInput } from "@/libs/client/department/models/create-department-form-input"
+import { CreateDepartmentFormInput, PostWorkerFormInput } from "@/libs/department/models/create-department-form-input"
 
 const useHandlePosts = () => {
   const { control, getValues, setValue, resetField } = useFormContext<CreateDepartmentFormInput>()

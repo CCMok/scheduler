@@ -1,8 +1,8 @@
-import { getSession } from "@/libs/server/_general/managers/session-manager";
+import { getSession } from "@/libs/access/managers/session-manager";
 import UpdatePasswordForm from "./_components/update-password-form";
 import UpdateUserNameForm from "./_components/update-user-name-form";
 import { redirect } from "next/navigation";
-import { REDIRECT_PUBLIC_PATH } from "@/libs/share/_general/utils/path";
+import { REDIRECT_PUBLIC_PATH } from "@/libs/_general/enums/path";
 import SidebarInsetLayout from "@/components/_general/layout/sidebar-inset/sidebar-inset-layout";
 
 export default async function UserSettingPage() {

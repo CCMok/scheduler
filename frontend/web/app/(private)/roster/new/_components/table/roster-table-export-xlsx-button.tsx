@@ -4,7 +4,7 @@ import CustomButton from "@/components/_general/button/custom-button";
 import { FileOutput } from "lucide-react";
 import { toast } from "sonner";
 import { exportToXLSX } from "./roster-table-export-utils";
-import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
+import { SONNER_DEFAULT_OPTIONS } from "@/libs/_general/constants/sonnar-constant";
 import { useCreateRosterStore } from "../store/create-roster-store-provider";
 
 export default function RosterTableExportXLSXButton() {

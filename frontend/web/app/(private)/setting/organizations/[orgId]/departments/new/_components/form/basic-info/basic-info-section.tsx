@@ -2,16 +2,16 @@
 
 import NextButton from "@/components/_general/button/next-button";
 import CustomCard from "@/components/_general/card/custom-card";
-import { CreateDepartmentFormInput } from "@/libs/client/department/models/create-department-form-input";
+import { CreateDepartmentFormInput } from "@/libs/department/models/create-department-form-input";
 import { useFormContext } from "react-hook-form";
 import DepartmentNameFormField from "./department-name-form-field";
 import { useRouter } from "next/navigation";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { toast } from "sonner";
-import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
-import { getDepartmentsAction } from "@/libs/server/department/actions/get-departments-action";
-import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
-import { MessageContent, MessageTitle } from "@/libs/server/_general/enums/message";
+import { SONNER_DEFAULT_OPTIONS } from "@/libs/_general/constants/sonnar-constant";
+import { getDepartmentsAction } from "@/libs/department/actions/get-departments-action";
+import { handleGetResponse } from "@/libs/_general/utils/response-utils";
+import { MessageContent, MessageTitle } from "@/libs/_general/enums/message";
 
 const isDepartmentNameExist = async (name: string, router: AppRouterInstance): Promise<boolean> => {
   const response = await getDepartmentsAction(undefined, name)

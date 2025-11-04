@@ -3,8 +3,8 @@
 import ConfirmDialog from '@/components/_general/dialog/confirm-dialog';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { ServiceResponse } from '@/libs/server/_general/models/service-response';
-import { handleCudResponse } from '@/libs/server/_general/utils/response-utils';
+import { ServiceResponse } from '@/libs/_general/models/service-response';
+import { handleCudResponse } from '@/libs/_general/utils/response-utils';
 import { isNil } from 'lodash';
 
 type Props<R = object> = {

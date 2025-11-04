@@ -1,8 +1,8 @@
-import { ParamProps } from "@/libs/share/_general/props/param-props";
-import { Param } from "@/libs/share/_general/enums/param";
+import { ParamProps } from "@/libs/_general/props/param-props";
+import { Param } from "@/libs/_general/enums/param";
 import { notFound } from "next/navigation";
 import QueryTabLayout from '@/components/_general/layout/setting/query-tab-layout';
-import { PATH } from "@/libs/share/_general/utils/path";
+import { PATH } from "@/libs/_general/enums/path";
 import PostsSection from "./_components/posts/posts-section";
 import DepartmentName from "@/components/department/department-name";
 import OrganizationName from "@/components/organization/organization-name";

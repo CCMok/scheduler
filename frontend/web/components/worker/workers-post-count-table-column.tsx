@@ -1,6 +1,6 @@
 import { CellContext, ColumnDef, ColumnDefTemplate } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
-import { WorkerWithPostWorkersCount } from "@/libs/server/worker/models/worker-dao";
+import { WorkerWithPostWorkersCount } from "@/libs/worker/models/worker-dao";
 import WorkerNameCell from "./worker-name-cell";
 
 export enum WorkerTableId {

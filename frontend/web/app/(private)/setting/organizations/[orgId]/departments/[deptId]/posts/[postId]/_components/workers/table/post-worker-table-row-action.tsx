@@ -2,9 +2,9 @@
 
 import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdown-menu-item';
 import ContextMenu from '@/components/_general/dropdown/context-menu';
-import { deletePostWorkerAction } from '@/libs/server/post-worker/actions/delete-post-worker-action';
-import { Param } from '@/libs/share/_general/enums/param';
-import { ServiceResponse } from '@/libs/server/_general/models/service-response';
+import { deletePostWorkerAction } from '@/libs/post-worker/actions/delete-post-worker-action';
+import { Param } from '@/libs/_general/enums/param';
+import { ServiceResponse } from '@/libs/_general/models/service-response';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import RemoveAssignmentDialog from '@/components/_general/dialog/remove-assignment-dialog';

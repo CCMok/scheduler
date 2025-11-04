@@ -1,0 +1,1 @@
+export const DEFAULT_SEARCH_PLACEHOLDER = '搜尋...';

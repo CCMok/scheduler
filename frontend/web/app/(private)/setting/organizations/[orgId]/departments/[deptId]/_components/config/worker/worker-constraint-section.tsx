@@ -1,15 +1,15 @@
 import CustomCard from "@/components/_general/card/custom-card";
 import WorkerConstraintTable from "./worker-constraint-table";
-import { getWorkerConstraintWithRelated } from "@/libs/server/worker-constraint/services/get-worker-constraints-with-related-service";
+import { getWorkerConstraintWithRelated } from "@/libs/worker-constraint/services/get-worker-constraints-with-related-service";
 import { redirect } from "next/navigation";
-import { WorkerConstraintWithRelated } from "@/libs/server/worker-constraint/models/worker-constraint-dao";
+import { WorkerConstraintWithRelated } from "@/libs/worker-constraint/models/worker-constraint-dao";
 import { WorkerConstraintType, Worker } from "@/external/prisma-generated";
-import { getWorkerConstraintTypesService } from "@/libs/server/worker-constraint-type/services/get-worker-constraint-types-service";
-import { getWorkersService } from "@/libs/server/worker/services/get-workers-service";
+import { getWorkerConstraintTypesService } from "@/libs/worker-constraint/services/get-worker-constraint-types-service";
+import { getWorkersService } from "@/libs/worker/services/get-workers-service";
 import CreateWorkerConstraintButton from "./create/create-worker-constraint-button";
 import { Suspense } from "react";
 import TableSkeleton from "@/components/_general/skeleton/table-skeleton";
-import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
+import { handleGetResponse } from "@/libs/_general/utils/response-utils";
 
 const getWorkerConstraints = async (departmentId: number): Promise<WorkerConstraintWithRelated[]> => {
   const response = await getWorkerConstraintWithRelated(undefined, departmentId)

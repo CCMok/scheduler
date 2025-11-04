@@ -1,14 +1,14 @@
 'use client'
 
-import { Arrangement } from "@/libs/share/roster/models/post-base-schedule";
+import { PostBaseArrangement } from "@/libs/roster/models/schedule";
 import { useState } from "react";
 import RosterTableSelectionCell from "./roster-table-selection-cell";
 import RosterTableSortableCell from "./roster-table-sortable-cell";
 import { Worker } from "@/external/prisma-generated";
 
 type Props = {
-  arrangement: Arrangement;
-  setArrangement: (arrangement: Arrangement) => void;
+  arrangement: PostBaseArrangement;
+  setArrangement: (arrangement: PostBaseArrangement) => void;
   workers: Worker[];
 }
 

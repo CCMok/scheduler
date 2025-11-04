@@ -2,7 +2,7 @@ import { Organization } from "@/external/prisma-generated";
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
 import OrganizationTableRowAction from "./organization-table-row-action";
-import { Role } from "@/libs/share/_general/enums/role";
+import { Role } from "@/libs/role/enums/role";
 import OrganizationNameCell from "./organization-name-cell";
 
 export enum OrganizationTableId {

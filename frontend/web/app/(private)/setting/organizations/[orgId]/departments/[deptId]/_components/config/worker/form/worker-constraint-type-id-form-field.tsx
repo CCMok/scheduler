@@ -4,7 +4,7 @@ import ComboBox from "@/components/_general/combobox/combo-box"
 import CustomFormItem from "@/components/_general/form/custom-form-item"
 import { WorkerConstraintType } from "@/external/prisma-generated"
 import { FormField } from "@/external/shadcn/components/ui/form"
-import { CreateUpdateWorkerConstraintFormInput } from "@/libs/client/worker-constraint/models/create-update-worker-constraint-form-input"
+import { CreateUpdateWorkerConstraintFormInput } from "@/libs/worker-constraint/models/worker-constraint-form-input"
 import { useFormContext } from "react-hook-form"
 
 type Props = {

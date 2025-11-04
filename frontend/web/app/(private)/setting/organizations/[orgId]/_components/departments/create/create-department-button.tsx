@@ -1,11 +1,11 @@
 'use client'
 
 import { useParams } from "next/navigation";
-import { Param } from '@/libs/share/_general/enums/param';
+import { Param } from '@/libs/_general/enums/param';
 import CustomButton from '@/components/_general/button/custom-button';
 import CustomLink from '@/components/_general/link/custom-link';
 import { Plus } from 'lucide-react';
-import { PATH } from '@/libs/share/_general/utils/path';
+import { PATH } from '@/libs/_general/enums/path';
 
 export default function CreateDepartmentButton() {
   const params = useParams();

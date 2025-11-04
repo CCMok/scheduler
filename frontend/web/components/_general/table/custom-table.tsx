@@ -1,7 +1,7 @@
 import { Table } from "@/external/shadcn/components/ui/table";
 import TablePagination from '@/components/_general/table/table-pagination';
 import { Table as TanStackTable } from "@tanstack/react-table";
-import { ChildrenProps } from "@/libs/share/_general/props/children-props";
+import { ChildrenProps } from "@/libs/_general/props/children-props";
 import CustomTableHeader from "./custom-table-header";
 import CustomTableBody from "./custom-table-body";
 import { ReactNode } from "react";

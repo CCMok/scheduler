@@ -8,16 +8,16 @@ import FormRootMessage from '@/components/_general/form/form-root-message';
 import { useRouter } from 'next/navigation';
 import FormSubmitButton from '@/components/_general/form/form-submit-button';
 import CustomInput from '@/components/_general/input/custom-input';
-import { RegisterFormInput, registerFormInputSchema } from '@/libs/client/register/models/register-form-input';
-import { registerAction } from '@/libs/server/register/actions/register-action';
+import { RegisterFormInput, registerFormInputSchema } from '@/app/(home)/register/_components/register-form-input';
+import { registerAction } from '@/libs/access/actions/register-action';
 import { toast } from "sonner";
-import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
-import { RegisterRequest } from '@/libs/server/register/models/register-request';
-import { REDIRECT_PRIVATE_PATH } from '@/libs/share/_general/utils/path';
+import { SONNER_DEFAULT_OPTIONS } from '@/libs/_general/constants/sonnar-constant';
+import { RegisterRequest } from '@/libs/access/models/register-request';
+import { REDIRECT_PRIVATE_PATH } from '@/libs/_general/enums/path';
 import NewPasswordFormField from '@/components/_general/form/new-password-form-field';
-import { handleCudResponse } from '@/libs/server/_general/utils/response-utils';
+import { handleCudResponse } from '@/libs/_general/utils/response-utils';
 import { isNil } from 'lodash';
-import { MessageTitle } from '@/libs/server/_general/enums/message';
+import { MessageTitle } from '@/libs/_general/enums/message';
 
 const inputClassName = 'w-full'
 

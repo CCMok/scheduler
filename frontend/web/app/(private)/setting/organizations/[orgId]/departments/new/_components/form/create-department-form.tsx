@@ -8,19 +8,19 @@ import { Form } from "@/external/shadcn/components/ui/form";
 import BasicInfoSection from "./basic-info/basic-info-section";
 import DependencyHandler from "./dependency-handler";
 import { useParams, useRouter } from "next/navigation";
-import { createDepartmentFormInputSchema, CreateDepartmentFormInput } from "@/libs/client/department/models/create-department-form-input";
-import { CreateDepartmentRequest, PostRequest, PostWorkerRequest, WorkerRequest } from "@/libs/server/department/models/create-department-request";
-import { createDepartmentAction } from "@/libs/server/department/actions/create-department-action";
-import { Param } from "@/libs/share/_general/enums/param";
+import { createDepartmentFormInputSchema, CreateDepartmentFormInput } from "@/libs/department/models/create-department-form-input";
+import { CreateDepartmentRequest, PostRequest, PostWorkerRequest, WorkerRequest } from "@/libs/department/models/create-department-request";
+import { createDepartmentAction } from "@/libs/department/actions/create-department-action";
+import { Param } from "@/libs/_general/enums/param";
 import { toast } from "sonner";
-import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
-import { PATH } from "@/libs/share/_general/utils/path";
+import { SONNER_DEFAULT_OPTIONS } from "@/libs/_general/constants/sonnar-constant";
+import { PATH } from "@/libs/_general/enums/path";
 import { OrganizationPageTabId } from "../../../../tab-id";
 import { createPostsRequest, createPostWorkersRequest, createWorkersRequest } from "../create-department-request-utils";
 import { CreateDepartmentStepContent } from "./create-department-step-content";
-import { handleCudResponse } from "@/libs/server/_general/utils/response-utils";
+import { handleCudResponse } from "@/libs/_general/utils/response-utils";
 import { isNil } from "lodash";
-import { MessageTitle } from "@/libs/server/_general/enums/message";
+import { MessageTitle } from "@/libs/_general/enums/message";
 
 const createRequest = (input: CreateDepartmentFormInput, organizationId: number): CreateDepartmentRequest => {
   const posts: PostRequest[] = createPostsRequest(input.posts)

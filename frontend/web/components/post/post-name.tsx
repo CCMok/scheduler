@@ -1,7 +1,7 @@
 import { Post } from "@/external/prisma-generated";
 import { Skeleton } from "@/external/shadcn/components/ui/skeleton";
-import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
-import { getPostsService } from "@/libs/server/post/services/get-posts-service";
+import { handleGetResponse } from "@/libs/_general/utils/response-utils";
+import { getPostsService } from "@/libs/post/services/get-posts-service";
 import { isNil } from "lodash";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";

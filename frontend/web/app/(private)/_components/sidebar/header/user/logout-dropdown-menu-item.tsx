@@ -1,11 +1,11 @@
 'use client'
 
 import CustomDropdownMenuItem from '@/components/_general/dropdown/custom-dropdown-menu-item'
-import { logoutAction } from "@/libs/server/logout/actions/logout-action"
-import { REDIRECT_PUBLIC_PATH } from "@/libs/share/_general/utils/path"
+import { logoutAction } from "@/libs/access/actions/logout-action"
+import { REDIRECT_PUBLIC_PATH } from "@/libs/_general/enums/path"
 import { LogOut } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { handleCudResponse } from '@/libs/server/_general/utils/response-utils'
+import { handleCudResponse } from '@/libs/_general/utils/response-utils'
 import { isNil } from 'lodash'
 
 export default function LogoutDropdownMenuItem() {

@@ -1,5 +1,5 @@
 import TableSortableHeader from "@/components/_general/table/table-sortable-header";
-import { WorkerConstraintWithRelated } from "@/libs/server/worker-constraint/models/worker-constraint-dao";
+import { WorkerConstraintWithRelated } from "@/libs/worker-constraint/models/worker-constraint-dao";
 import { ColumnDef } from "@tanstack/react-table";
 import WorkerConstraintTableRowAction from "./worker-constraint-table-row-action";
 import { WorkerConstraintType, Worker } from "@/external/prisma-generated";

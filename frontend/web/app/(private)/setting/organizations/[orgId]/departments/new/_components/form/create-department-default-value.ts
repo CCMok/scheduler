@@ -1,4 +1,4 @@
-import { CreateDepartmentFormInput } from "@/libs/client/department/models/create-department-form-input"
+import { CreateDepartmentFormInput } from "@/libs/department/models/create-department-form-input"
 
 export const DEFAULT_POSTS = [
   { tempId: crypto.randomUUID(), name: 'Host' },

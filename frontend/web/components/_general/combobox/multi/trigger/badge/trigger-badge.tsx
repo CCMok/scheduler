@@ -2,8 +2,8 @@ import { Badge } from "@/external/shadcn/components/ui/badge";
 import { cn } from "@/external/shadcn/libs/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import { useMultiSelectComboboxContext } from "../../multi-select-combobox-context";
-import { ChildrenProps } from "@/libs/share/_general/props/children-props";
-import { ClassNameProps } from "@/libs/share/_general/props/class-name-props";
+import { ChildrenProps } from "@/libs/_general/props/children-props";
+import { ClassNameProps } from "@/libs/_general/props/class-name-props";
 
 export const getTriggerBadgeClassName = cva(
   "m-1 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300",

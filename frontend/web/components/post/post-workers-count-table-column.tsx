@@ -1,6 +1,6 @@
 import { CellContext, ColumnDef, ColumnDefTemplate } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
-import { PostWithPostWorkersCount } from "@/libs/server/post/models/post-dao";
+import { PostWithPostWorkersCount } from "@/libs/post/models/post-dao";
 import PostNameCell from "./post-name-cell";
 
 export enum PostTableId {

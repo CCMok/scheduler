@@ -6,7 +6,7 @@ import FormSubmitButton from "@/components/_general/form/form-submit-button";
 import { Save } from "lucide-react";
 import { useMemo } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { CreateDepartmentFormInput } from "@/libs/client/department/models/create-department-form-input";
+import { CreateDepartmentFormInput } from "@/libs/department/models/create-department-form-input";
 import { columns, PostWorkerTableData } from "./post-worker-table-column";
 import useTable from "@/components/_general/table/use-table";
 import CustomTable from "@/components/_general/table/custom-table";

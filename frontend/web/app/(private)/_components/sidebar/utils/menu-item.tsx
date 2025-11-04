@@ -1,4 +1,4 @@
-import { PATH } from "@/libs/share/_general/utils/path";
+import { PATH } from "@/libs/_general/enums/path";
 import { Calendar, Settings } from "lucide-react";
 import { ReactNode } from "react";
 

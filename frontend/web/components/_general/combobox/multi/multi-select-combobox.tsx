@@ -6,7 +6,7 @@ import MultiSelectComboboxTrigger from "./trigger/multi-select-combobox-trigger"
 import { MultiSelectComboboxContext, MultiSelectComboboxContextState } from "./multi-select-combobox-context";
 import { TriggerBadgeVariant } from "./trigger/badge/trigger-badge";
 import MultiSelectComboboxContent from "./content/multi-select-combobox-content";
-import { MAX_DISPLAY_COUNT } from "@/libs/client/_general/constants/display-constant";
+import { MAX_DISPLAY_COUNT } from "@/libs/_general/constants/display-constant";
 
 type Props<T> = {
   values: string[];

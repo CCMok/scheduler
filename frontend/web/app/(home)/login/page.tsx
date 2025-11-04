@@ -1,7 +1,7 @@
 import AuthMainSectionBase from '../_components/auth-main-section-base';
 import AuthRemarkBase from '../_components/auth-remark-base';
 import LoginForm from './_components/login-form';
-import { PATH } from '@/libs/share/_general/utils/path';
+import { PATH } from '@/libs/_general/enums/path';
 
 export default function LoginPage() {
   return (

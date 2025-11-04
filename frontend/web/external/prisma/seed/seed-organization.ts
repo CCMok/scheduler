@@ -1,7 +1,7 @@
 import { DefaultArgs } from "../../prisma-generated/runtime/library"
 import { Post, PostConstraintType, Prisma, PrismaClient, Worker, WorkerConstraintType } from "../../prisma-generated"
 import { postConstraints, postNames, postWorkers, organizationName, workerConstraints, workerNames, departmentName, organizationMaxHistoryCount } from "./data/seed-data-demo"
-import { PostConstraintType as EPostConstraintType, WorkerConstraintType as EWorkerConstraintType } from "../../../libs/share/_general/enums/constraint-type";
+import { PostConstraintType as EPostConstraintType, WorkerConstraintType as EWorkerConstraintType } from "../../../libs/constraint/enums/constraint-type";
 
 const prisma = new PrismaClient()
 

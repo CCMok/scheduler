@@ -1,5 +1,5 @@
 import { TableCell, TableRow } from "@/external/shadcn/components/ui/table";
-import { PostBaseSchedule, Arrangement } from "@/libs/share/roster/models/post-base-schedule";
+import { PostBaseSchedule, PostBaseArrangement } from "@/libs/roster/models/schedule";
 import RosterTableCell from "./cell/roster-table-cell";
 import { Worker } from "@/external/prisma-generated";
 
@@ -14,7 +14,7 @@ export default function RosterTableRow({
   setSchedule,
   workers,
 }: Readonly<Props>) {
-  const setArrangement = (arrangement: Arrangement) => {
+  const setArrangement = (arrangement: PostBaseArrangement) => {
     const arrangements = schedule.arrangements.map(oldArrangement => ({
       ...(oldArrangement.id === arrangement.id ? arrangement : oldArrangement),
     }))

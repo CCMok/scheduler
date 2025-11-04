@@ -5,7 +5,7 @@ import CustomFormItem from '@/components/_general/form/custom-form-item';
 import { FormField } from "@/external/shadcn/components/ui/form";
 import { useFormContext } from "react-hook-form"
 import { Post } from "@/external/prisma-generated"
-import { CreateWorkerPostFormInput } from '@/libs/client/post-worker/models/create-worker-post-form-input';
+import { CreateWorkerPostFormInput } from '@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/workers/[workerId]/_components/posts/assign/create-worker-post-form-input';
 
 type Props = {
   posts: Post[];

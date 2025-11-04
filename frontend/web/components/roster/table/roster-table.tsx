@@ -5,7 +5,7 @@ import RosterTableHeader from "./roster-table-header";
 import { closestCenter, DndContext, DragEndEvent, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { rectSwappingStrategy, SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { swapSchedule } from "@/components/roster/table/utils/roster-table-utils";
-import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule";
+import { PostBaseSchedule } from "@/libs/roster/models/schedule";
 import { useMemo } from "react";
 import RosterTableRow from "./roster-table-row";
 import { Worker } from "@/external/prisma-generated";

@@ -1,13 +1,13 @@
 'use client'
 
-import { LocalStorageKey } from "@/libs/client/_general/enums/local-storage-key"
-import { PostBaseSchedule } from "@/libs/share/roster/models/post-base-schedule"
+import { LocalStorageKey } from "@/libs/_general/enums/local-storage-key"
+import { PostBaseSchedule } from "@/libs/roster/models/schedule"
 import { useEffect, useRef } from "react"
 import { useCreateRosterStore } from "./create-roster-store-provider"
-import { getWorkersAction } from "@/libs/server/worker/actions/get-workers-action"
+import { getWorkersAction } from "@/libs/worker/actions/get-workers-action"
 import { useRouter } from "next/navigation"
-import { getPostsAction } from "@/libs/server/post/actions/get-posts-action"
-import { handleGetResponse } from "@/libs/server/_general/utils/response-utils"
+import { getPostsAction } from "@/libs/post/actions/get-posts-action"
+import { handleGetResponse } from "@/libs/_general/utils/response-utils"
 
 export default function CreateRosterStoreHandler() {
   const setGeneratedScheduleDepartmentId = useCreateRosterStore(state => state.setGeneratedScheduleDepartmentId)

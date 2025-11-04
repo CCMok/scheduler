@@ -1,5 +1,5 @@
 import ExcelJS from 'exceljs';
-import { PostBaseSchedule } from '@/libs/share/roster/models/post-base-schedule';
+import { PostBaseSchedule } from '@/libs/roster/models/schedule';
 import { format } from 'date-fns';
 
 export function convertRosterToArray(schedules: PostBaseSchedule[]): string[][] {

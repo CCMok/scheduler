@@ -1,17 +1,17 @@
 'use client'
 
-import { LoginFormInput, loginFormInputSchema } from '@/libs/client/login/models/login-form-input';
+import { LoginFormInput, loginFormInputSchema } from '@/app/(home)/login/_components/login-form-input';
 import { Form, FormControl, FormField } from '@/external/shadcn/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import CustomFormItem from '@/components/_general/form/custom-form-item';
-import { loginAction } from '@/libs/server/login/actions/login-action';
+import { loginAction } from '@/libs/access/actions/login-action';
 import { useRouter } from 'next/navigation';
 import FormSubmitButton from '@/components/_general/form/form-submit-button';
 import CustomInput from '@/components/_general/input/custom-input';
-import { REDIRECT_PRIVATE_PATH } from '@/libs/share/_general/utils/path';
-import { CLEANABLE_LOCAL_STORAGE_KEYS } from '@/libs/client/_general/enums/local-storage-key';
-import { handleCudResponse } from '@/libs/server/_general/utils/response-utils';
+import { REDIRECT_PRIVATE_PATH } from '@/libs/_general/enums/path';
+import { CLEANABLE_LOCAL_STORAGE_KEYS } from '@/libs/_general/enums/local-storage-key';
+import { handleCudResponse } from '@/libs/_general/utils/response-utils';
 import { isNil } from 'lodash';
 
 const inputClassName = 'w-full'

@@ -1,10 +1,10 @@
 import { Post } from "@/external/prisma-generated"
-import { getPostsService } from "@/libs/server/post/services/get-posts-service"
+import { getPostsService } from "@/libs/post/services/get-posts-service"
 import { notFound, redirect } from "next/navigation"
 import UpdatePostNameSection from "./update-post-name-section"
 import { Suspense } from "react"
 import InputCardSkeleton from "@/components/_general/skeleton/input-card-skeleton"
-import { handleGetResponse } from "@/libs/server/_general/utils/response-utils"
+import { handleGetResponse } from "@/libs/_general/utils/response-utils"
 
 const getPost = async (id: number): Promise<Post | undefined> => {
   const response = await getPostsService(id)

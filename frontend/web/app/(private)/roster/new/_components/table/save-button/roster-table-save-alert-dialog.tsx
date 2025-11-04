@@ -8,10 +8,10 @@ import RosterTableSaveConfirmDescription from "./roster-table-save-confirm-descr
 import RosterTableSaveConfirmButton from "./roster-table-save-confirm-button";
 import { isNil } from "lodash";
 import { useRouter } from "next/navigation";
-import { getMaxHistoryCountAction } from "@/libs/server/organization/actions/get-max-history-count-action";
+import { getMaxHistoryCountAction } from "@/libs/organization/actions/get-max-history-count-action";
 import { MaxHistoryCountStoreProvider, useMaxHistoryCountStore } from "./store/max-history-count-store-provider";
 import { useCreateRosterStore } from "../../store/create-roster-store-provider";
-import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
+import { handleGetResponse } from "@/libs/_general/utils/response-utils";
 
 function RosterTableSaveAlertDialog() {
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);

@@ -1,15 +1,14 @@
 'use client'
 
 import CreateDialog from '@/components/_general/dialog/create-dialog';
-import { CreatePostFormInput, createPostFormInputSchema } from "@/libs/client/post/models/create-post-form-input";
+import { CreatePostFormInput, createPostFormInputSchema } from "@/app/(private)/setting/organizations/[orgId]/departments/[deptId]/_components/posts/create/create-post-form-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import CreatePostFields from "./create-post-fields";
-import { ServiceResponse } from "@/libs/server/_general/models/service-response";
-import { createPostAction } from "@/libs/server/post/actions/create-post-action";
+import { ServiceResponse } from "@/libs/_general/models/service-response";
+import { createPostAction } from "@/libs/post/actions/create-post-action";
 import { useParams, useRouter } from "next/navigation";
-import { Param } from '@/libs/share/_general/enums/param';
-import { Id } from '@/libs/server/_general/models/id';
+import { Param } from '@/libs/_general/enums/param';
 
 export default function CreatePostButton() {
   const form = useForm({
@@ -30,7 +29,7 @@ export default function CreatePostButton() {
     return <></>
   }
 
-  const submit = async (input: CreatePostFormInput): Promise<ServiceResponse<Id>> => {
+  const submit = async (input: CreatePostFormInput): Promise<ServiceResponse<number>> => {
     return await createPostAction({
       departmentId: deptId,
       postName: input.postName,

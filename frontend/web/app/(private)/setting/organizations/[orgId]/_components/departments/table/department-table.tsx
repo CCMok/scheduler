@@ -2,9 +2,9 @@
 
 import useTable from '@/components/_general/table/use-table';
 import { DepartmentTableId, columns } from "./department-table-column";
-import { DepartmentWithChildCount } from '@/libs/server/department/models/department-dao';
+import { DepartmentWithChildCount } from '@/libs/department/models/department-dao';
 import { useSearchParams } from 'next/navigation';
-import { Param } from '@/libs/share/_general/enums/param';
+import { Param } from '@/libs/_general/enums/param';
 import { useEffect } from 'react';
 import CustomTable from '@/components/_general/table/custom-table';
 

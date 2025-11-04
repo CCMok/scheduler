@@ -8,19 +8,19 @@ import FormRootMessage from '@/components/_general/form/form-root-message';
 import { useRouter } from 'next/navigation';
 import FormSubmitButton from '@/components/_general/form/form-submit-button';
 import CustomInput from '@/components/_general/input/custom-input';
-import { UpdatePasswordFormInput, updatePasswordFormInputSchema } from '@/libs/client/user/models/update-pasword-form-input';
+import { UpdatePasswordFormInput, updatePasswordFormInputSchema } from '@/app/(private)/setting/general/_components/update-pasword-form-input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/external/shadcn/components/ui/card';
 import NewPasswordFormField from '@/components/_general/form/new-password-form-field';
 import { Save } from 'lucide-react';
 import { useState } from 'react';
 import ConfirmDialog from '@/components/_general/dialog/confirm-dialog';
 import { toast } from 'sonner';
-import { SONNER_DEFAULT_OPTIONS } from '@/libs/client/_general/constants/sonnar-constant';
-import { UpdatePasswordRequest } from '@/libs/server/user/models/update-password-request';
-import { updatePasswordAction } from '@/libs/server/user/actions/update-password-action';
-import { handleCudResponse } from '@/libs/server/_general/utils/response-utils';
+import { SONNER_DEFAULT_OPTIONS } from '@/libs/_general/constants/sonnar-constant';
+import { UpdatePasswordRequest } from '@/libs/user/models/update-password-request';
+import { updatePasswordAction } from '@/libs/user/actions/update-password-action';
+import { handleCudResponse } from '@/libs/_general/utils/response-utils';
 import { isNil } from 'lodash';
-import { MessageTitle } from '@/libs/server/_general/enums/message';
+import { MessageTitle } from '@/libs/_general/enums/message';
 
 export default function UpdatePasswordForm() {
   const form = useForm({

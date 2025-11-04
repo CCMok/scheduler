@@ -1,4 +1,4 @@
-import { CreateOrganizationFormInput } from "@/libs/client/organization/models/create-organization-form-input"
+import { CreateOrganizationFormInput } from "@/app/(private)/setting/organizations/new/_components/form/create-organization-form-input"
 import { CREATE_DEPARTMENT_DEFAULT_BASE } from "../../../[orgId]/departments/new/_components/form/create-department-default-value"
 
 export const CREATE_ORGANIATION_DEFAULT: CreateOrganizationFormInput = {

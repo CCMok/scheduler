@@ -3,13 +3,12 @@
 import CreateDialog from '@/components/_general/dialog/create-dialog';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { ServiceResponse } from "@/libs/server/_general/models/service-response";
+import { ServiceResponse } from "@/libs/_general/models/service-response";
 import { useRouter } from "next/navigation";
-import { Id } from '@/libs/server/_general/models/id';
-import { CreateUpdatePostConstraintFormInput, createUpdatePostConstraintFormInputSchema } from '@/libs/client/post-constraint/models/create-update-post-constraint-form-input';
+import { PostConstraintFormInput, postConstraintFormInputSchema } from '@/libs/post-constraint/models/post-constraint-form-input';
 import CreateUpdatePostConstraintFields from '../form/create-update-post-constraint-fields';
 import { PostConstraintType, Post } from '@/external/prisma-generated';
-import { createPostConstraintAction } from '@/libs/server/post-constraint/actions/create-post-constraint-action';
+import { createPostConstraintAction } from '@/libs/post-constraint/actions/create-post-constraint-action';
 
 type Props = {
   postConstraintTypes: PostConstraintType[];
@@ -23,7 +22,7 @@ export default function CreatePostConstraintButton({
   departmentId,
 }: Readonly<Props>) {
   const form = useForm({
-    resolver: zodResolver(createUpdatePostConstraintFormInputSchema),
+    resolver: zodResolver(postConstraintFormInputSchema),
     defaultValues: {
       postConstraintTypeId: '',
       weighting: 1,
@@ -33,7 +32,7 @@ export default function CreatePostConstraintButton({
 
   const router = useRouter();
 
-  const submit = async (input: CreateUpdatePostConstraintFormInput): Promise<ServiceResponse<Id>> => {
+  const submit = async (input: PostConstraintFormInput): Promise<ServiceResponse<number>> => {
     return await createPostConstraintAction({
       departmentId,
       postConstraintTypeId: Number(input.postConstraintTypeId),

@@ -1,6 +1,6 @@
 'use client'
 
-import { ChildrenProps } from '@/libs/share/_general/props/children-props';
+import { ChildrenProps } from '@/libs/_general/props/children-props';
 import { FormItem, FormLabel, FormMessage } from '@/external/shadcn/components/ui/form';
 import { ReactNode } from 'react';
 

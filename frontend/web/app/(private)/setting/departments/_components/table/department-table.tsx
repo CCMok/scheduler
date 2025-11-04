@@ -1,11 +1,11 @@
 'use client'
 
 import useTable from '@/components/_general/table/use-table';
-import { DepartmentWithOrganizationChildrenCount } from '@/libs/server/department/models/department-dao';
+import { DepartmentWithOrganizationChildrenCount } from '@/libs/department/models/department-dao';
 import { useSearchParams } from 'next/navigation';
 import CustomTable from '@/components/_general/table/custom-table';
 import { DepartmentTableId, columns } from './department-table-column';
-import { Param } from '@/libs/share/_general/enums/param';
+import { Param } from '@/libs/_general/enums/param';
 import { useEffect } from 'react';
 
 type Props = {

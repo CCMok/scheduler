@@ -1,5 +1,5 @@
-import { PostFormInput, PostWorkerFormInput, WorkerFormInput } from "@/libs/client/department/models/create-department-form-input"
-import { PostRequest, PostWorkerRequest, WorkerRequest } from "@/libs/server/department/models/create-department-request"
+import { PostFormInput, PostWorkerFormInput, WorkerFormInput } from "@/libs/department/models/create-department-form-input"
+import { PostRequest, PostWorkerRequest, WorkerRequest } from "@/libs/department/models/create-department-request"
 
 export const createPostsRequest = (posts: PostFormInput[]): PostRequest[] => {
   return posts.map(post => ({

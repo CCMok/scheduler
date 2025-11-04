@@ -2,9 +2,9 @@
 
 import useTable from '@/components/_general/table/use-table';
 import { useEffect } from "react";
-import { PostWithPostWorkersCount } from '@/libs/server/post/models/post-dao';
+import { PostWithPostWorkersCount } from '@/libs/post/models/post-dao';
 import { useSearchParams } from 'next/navigation';
-import { Param } from '@/libs/share/_general/enums/param';
+import { Param } from '@/libs/_general/enums/param';
 import { PostTableId } from '@/components/post/post-workers-count-table-column';
 import { ColumnDef } from '@tanstack/react-table';
 import CustomTable from '../_general/table/custom-table';

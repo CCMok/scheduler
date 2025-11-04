@@ -6,8 +6,8 @@ import CustomFormItem from '@/components/_general/form/custom-form-item';
 import CustomInput from '@/components/_general/input/custom-input';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/external/shadcn/components/ui/tooltip';
 import { ComponentProps, useState } from 'react';
-import { ClassNameProps } from '@/libs/share/_general/props/class-name-props';
-import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH } from '@/libs/client/user/constants/password-constant';
+import { ClassNameProps } from '@/libs/_general/props/class-name-props';
+import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH } from '@/libs/user/constants/password-constant';
 
 type Props<TFormData extends FieldValues = FieldValues> = ClassNameProps & {
   name: Path<TFormData>,

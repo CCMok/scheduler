@@ -1,7 +1,7 @@
 import { Department } from "@/external/prisma-generated";
 import { Skeleton } from "@/external/shadcn/components/ui/skeleton";
-import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
-import { getDepartmentsService } from "@/libs/server/department/services/get-departments-service";
+import { handleGetResponse } from "@/libs/_general/utils/response-utils";
+import { getDepartmentsService } from "@/libs/department/services/get-departments-service";
 import { isNil } from "lodash";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";

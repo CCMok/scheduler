@@ -1,9 +1,9 @@
 'use client'
 
-import { ServiceResponse } from '@/libs/server/_general/models/service-response';
+import { ServiceResponse } from '@/libs/_general/models/service-response';
 import { useParams } from 'next/navigation';
-import { Param } from '@/libs/share/_general/enums/param';
-import { deletePostWorkerAction } from '@/libs/server/post-worker/actions/delete-post-worker-action';
+import { Param } from '@/libs/_general/enums/param';
+import { deletePostWorkerAction } from '@/libs/post-worker/actions/delete-post-worker-action';
 import ContextMenu from '@/components/_general/dropdown/context-menu';
 import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdown-menu-item';
 import { useState } from 'react';

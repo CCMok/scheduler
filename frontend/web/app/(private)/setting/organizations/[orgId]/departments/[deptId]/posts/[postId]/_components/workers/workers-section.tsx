@@ -1,15 +1,15 @@
 import { redirect } from "next/navigation";
 import CustomCard from "@/components/_general/card/custom-card";
-import { getWorkersWithPostWorkersCountService } from "@/libs/server/worker/services/get-workers-with-post-workers-count-service";
-import { WorkerWithPostWorkersCount } from "@/libs/server/worker/models/worker-dao";
+import { getWorkersWithPostWorkersCountService } from "@/libs/worker/services/get-workers-with-post-workers-count-service";
+import { WorkerWithPostWorkersCount } from "@/libs/worker/models/worker-dao";
 import WorkerFilter from "@/components/worker/worker-filter";
 import AssignWorkerDialog from "./assign/assign-worker-dialog";
-import { getWorkersService } from "@/libs/server/worker/services/get-workers-service";
+import { getWorkersService } from "@/libs/worker/services/get-workers-service";
 import { Worker } from "@/external/prisma-generated";
 import PostWorkerTable from "./table/post-worker-table";
 import { Suspense } from "react";
 import TableCardSkeleton from "@/components/_general/skeleton/table-card-skeleton";
-import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
+import { handleGetResponse } from "@/libs/_general/utils/response-utils";
 
 const getWorkerPostsCount = async (postId: number): Promise<WorkerWithPostWorkersCount[]> => {
   const response = await getWorkersWithPostWorkersCountService(undefined, undefined, undefined, postId)

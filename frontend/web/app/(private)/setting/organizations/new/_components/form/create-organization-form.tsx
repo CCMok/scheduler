@@ -1,25 +1,25 @@
 'use client'
 
-import { CreateOrganizationFormInput, createOrganizationFormInputSchema } from "@/libs/client/organization/models/create-organization-form-input";
+import { CreateOrganizationFormInput, createOrganizationFormInputSchema } from "@/app/(private)/setting/organizations/new/_components/form/create-organization-form-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { CREATE_ORGANIATION_DEFAULT } from "./create-organization-default-value";
 import { useState } from "react";
 import { Form } from "@/external/shadcn/components/ui/form";
 import BasicInfoSection from "./basic-info/basic-info-section";
-import { CreateOrganizationRequest } from "@/libs/server/organization/models/create-organization-request";
-import { createOrganizationAction } from "@/libs/server/organization/actions/create-organization-action";
+import { CreateOrganizationRequest } from "@/libs/organization/models/create-organization-request";
+import { createOrganizationAction } from "@/libs/organization/actions/create-organization-action";
 import { useRouter } from "next/navigation";
-import { PATH } from "@/libs/share/_general/utils/path";
+import { PATH } from "@/libs/_general/enums/path";
 import { toast } from "sonner";
-import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
-import { PostRequest, PostWorkerRequest, WorkerRequest } from "@/libs/server/department/models/create-department-request";
+import { SONNER_DEFAULT_OPTIONS } from "@/libs/_general/constants/sonnar-constant";
+import { PostRequest, PostWorkerRequest, WorkerRequest } from "@/libs/department/models/create-department-request";
 import { createPostsRequest, createPostWorkersRequest, createWorkersRequest } from "../../../[orgId]/departments/new/_components/create-department-request-utils";
 import DependencyHandler from "../../../[orgId]/departments/new/_components/form/dependency-handler";
 import { CreateDepartmentStepContent } from "../../../[orgId]/departments/new/_components/form/create-department-step-content";
-import { handleCudResponse } from "@/libs/server/_general/utils/response-utils";
+import { handleCudResponse } from "@/libs/_general/utils/response-utils";
 import { isNil } from "lodash";
-import { MessageTitle } from "@/libs/server/_general/enums/message";
+import { MessageTitle } from "@/libs/_general/enums/message";
 
 const createRequest = (input: CreateOrganizationFormInput): CreateOrganizationRequest => {
   const posts: PostRequest[] = createPostsRequest(input.posts)

@@ -1,6 +1,6 @@
 import { ThemeToggle } from "@/components/_general/button/theme-toggle"
 import { Meteors } from "@/external/shadcn/components/ui/meteors"
-import { ChildrenProps } from "@/libs/share/_general/props/children-props"
+import { ChildrenProps } from "@/libs/_general/props/children-props"
 
 type Props = ChildrenProps
 

@@ -1,12 +1,12 @@
 'use client'
 
-import { arrangeRosterAction } from "@/libs/server/roster/actions/arrange-roster-action"
-import { dayBaseToPostBaseSchedule } from "@/libs/client/roster/utils/roster-transform-utils"
+import { createRosterAction } from "@/libs/roster/actions/create-roster-action"
+import { dayBaseToPostBaseSchedule } from "@/libs/roster/utils/roster-transform-utils"
 import { useRouter } from "next/navigation"
 import { CreateRosterFilterFormInput } from "./create-roster-form-input"
 import { useCreateRosterStore } from "../../store/create-roster-store-provider"
 import { useCreateRosterFilterStore } from "../store/create-roster-filter-store-provider"
-import { handleCudResponse } from "@/libs/server/_general/utils/response-utils"
+import { handleCudResponse } from "@/libs/_general/utils/response-utils"
 import { isNil } from "lodash"
 
 export default function useCreateRosterFormSubmit() {
@@ -24,7 +24,7 @@ export default function useCreateRosterFormSubmit() {
   const submit = async (input: CreateRosterFilterFormInput) => {
     setIsGenerated(false)
 
-    const response = await arrangeRosterAction(input);
+    const response = await createRosterAction(input);
     const data = handleCudResponse(response, router.push)
     if (isNil(data)) return;
 

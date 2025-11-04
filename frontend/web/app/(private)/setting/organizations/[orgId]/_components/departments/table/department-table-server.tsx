@@ -1,8 +1,8 @@
 import DepartmentTable from "./department-table";
 import { redirect } from "next/navigation";
-import { getDepartmentsWithChildCountService } from "@/libs/server/department/services/get-departments-with-child-count-service";
-import { DepartmentWithChildCount } from "@/libs/server/department/models/department-dao";
-import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
+import { getDepartmentsWithChildCountService } from "@/libs/department/services/get-departments-with-child-count-service";
+import { DepartmentWithChildCount } from "@/libs/department/models/department-dao";
+import { handleGetResponse } from "@/libs/_general/utils/response-utils";
 
 const getDepartments = async (organizationId: number): Promise<DepartmentWithChildCount[]> => {
   const response = await getDepartmentsWithChildCountService(undefined, undefined, organizationId)

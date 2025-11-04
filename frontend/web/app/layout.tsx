@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ChildrenProps } from "@/libs/share/_general/props/children-props";
+import { ChildrenProps } from "@/libs/_general/props/children-props";
 import { Noto_Sans_HK } from "next/font/google";
 import { cn } from "@/external/shadcn/libs/utils";
 import { Toaster } from "sonner";

@@ -7,8 +7,8 @@ import { useState } from "react"
 import UpdateWorkerConstraintDialog from "./update/update-worker-constraint-dialog"
 import { WorkerConstraintType, Worker } from "@/external/prisma-generated"
 import DeleteDialog from "@/components/_general/dialog/delete-dialog"
-import { deleteWorkerConstraintAction } from "@/libs/server/worker-constraint/actions/delete-worker-constraint-action"
-import { ServiceResponse } from "@/libs/server/_general/models/service-response"
+import { deleteWorkerConstraintAction } from "@/libs/worker-constraint/actions/delete-worker-constraint-action"
+import { ServiceResponse } from "@/libs/_general/models/service-response"
 
 type Props = {
   workerConstraintTypeId: string;

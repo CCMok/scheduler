@@ -1,6 +1,6 @@
 import CustomButton from '@/components/_general/button/custom-button';
 import { ArrowDown, ArrowUp, ChevronsUpDown } from "lucide-react";
-import { TableSortDirection } from "@/libs/client/_general/enums/table-sort-direction";
+import { TableSortDirection } from "@/libs/_general/enums/table-sort-direction";
 import { Column } from "@tanstack/react-table";
 
 type Props<TData, TValue> = {

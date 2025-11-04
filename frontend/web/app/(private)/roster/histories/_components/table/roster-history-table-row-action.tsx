@@ -1,14 +1,14 @@
 'use client'
 
-import { PATH } from '@/libs/share/_general/utils/path';
+import { PATH } from '@/libs/_general/enums/path';
 import ContextMenu from '@/components/_general/dropdown/context-menu';
 import UpdateDropdownMenuItem from '@/components/_general/dropdown/update-dropdown-menu-item';
 import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdown-menu-item';
 import { useState } from 'react';
 import DeleteDialog from '@/components/_general/dialog/delete-dialog';
-import { ServiceResponse } from '@/libs/server/_general/models/service-response';
+import { ServiceResponse } from '@/libs/_general/models/service-response';
 import { format } from 'date-fns';
-import { deleteRosterHistoryAction } from '@/libs/server/roster/actions/delete-roster-history-action';
+import { deleteRosterHistoryAction } from '@/libs/roster/actions/delete-roster-history-action';
 
 type Props = {
   id: number;

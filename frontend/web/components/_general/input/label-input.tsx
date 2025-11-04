@@ -1,5 +1,5 @@
 import { Label } from "@/external/shadcn/components/ui/label";
-import { ChildrenProps } from "@/libs/share/_general/props/children-props";
+import { ChildrenProps } from "@/libs/_general/props/children-props";
 import { ReactNode } from "react";
 
 type Props = ChildrenProps & {

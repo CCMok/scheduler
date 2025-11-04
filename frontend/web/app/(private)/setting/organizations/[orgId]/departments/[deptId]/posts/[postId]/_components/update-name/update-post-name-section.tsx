@@ -2,10 +2,10 @@
 
 import { Post } from "@/external/prisma-generated"
 import UpdateNameLayout from '@/components/_general/layout/update-name/update-name-layout'
-import { UpdateNameFormInput } from "@/libs/client/setting/models/update-name-form-input"
-import { ServiceResponse } from "@/libs/server/_general/models/service-response"
-import { UpdatePostNameRequest } from "@/libs/server/post/models/update-post-name-request"
-import { updatePostNameAction } from "@/libs/server/post/actions/update-post-name-action"
+import { UpdateNameFormInput } from "@/libs/_general/models/update-name-form-input"
+import { ServiceResponse } from "@/libs/_general/models/service-response"
+import { UpdatePostNameRequest } from "@/libs/post/models/update-post-name-request"
+import { updatePostNameAction } from "@/libs/post/actions/update-post-name-action"
 
 type Props = {
   post: Post;

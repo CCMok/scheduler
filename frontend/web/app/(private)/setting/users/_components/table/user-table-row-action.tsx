@@ -1,4 +1,4 @@
-import { PATH } from '@/libs/share/_general/utils/path';
+import { PATH } from '@/libs/_general/enums/path';
 import ContextMenu from '@/components/_general/dropdown/context-menu';
 import UpdateDropdownMenuItem from '@/components/_general/dropdown/update-dropdown-menu-item';
 

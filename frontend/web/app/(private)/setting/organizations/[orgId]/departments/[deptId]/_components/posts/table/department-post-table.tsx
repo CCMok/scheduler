@@ -1,6 +1,6 @@
 'use client'
 
-import { PostWithPostWorkersCount } from '@/libs/server/post/models/post-dao';
+import { PostWithPostWorkersCount } from '@/libs/post/models/post-dao';
 import PostWorkersCountTable from '@/components/post/post-workers-count-table';
 import { ColumnDef } from "@tanstack/react-table";
 import { getActionColumn, getNameColumn, workerCountColumn } from "@/components/post/post-workers-count-table-column";

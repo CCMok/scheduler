@@ -8,15 +8,15 @@ import { Save } from "lucide-react"
 import FormRootMessage from '@/components/_general/form/form-root-message'
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant"
+import { SONNER_DEFAULT_OPTIONS } from "@/libs/_general/constants/sonnar-constant"
 import ConfirmDialog from '@/components/_general/dialog/confirm-dialog'
 import { useState } from "react"
-import { UpdateNameFormInput, updateNameFormInputSchema } from "@/libs/client/setting/models/update-name-form-input"
+import { UpdateNameFormInput, updateNameFormInputSchema } from "@/libs/_general/models/update-name-form-input"
 import NameField from "./name-field"
 import CustomCard from "../../card/custom-card"
-import { ServiceResponse } from "@/libs/server/_general/models/service-response"
-import { MessageContent, MessageTitle } from "@/libs/server/_general/enums/message"
-import { handleCudResponse } from "@/libs/server/_general/utils/response-utils"
+import { ServiceResponse } from "@/libs/_general/models/service-response"
+import { MessageContent, MessageTitle } from "@/libs/_general/enums/message"
+import { handleCudResponse } from "@/libs/_general/utils/response-utils"
 import { isNil } from "lodash"
 
 type Props = {

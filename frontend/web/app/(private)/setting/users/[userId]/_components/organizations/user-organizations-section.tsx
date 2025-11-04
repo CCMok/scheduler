@@ -1,13 +1,13 @@
 import CustomCard from "@/components/_general/card/custom-card";
 import { Organization } from "@/external/prisma-generated";
-import { getOrganizationsService } from "@/libs/server/organization/services/get-organizations-service";
+import { getOrganizationsService } from "@/libs/organization/services/get-organizations-service";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import UserOrganizationTable from "./table/user-organization-table";
 import TableCardSkeleton from "@/components/_general/skeleton/table-card-skeleton";
 import UserOrganizationFilter from "./filter/user-organization-filter";
 import AssignOrganizationDialog from "./assign/assign-organization-dialog";
-import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
+import { handleGetResponse } from "@/libs/_general/utils/response-utils";
 
 const getUserOrganizations = async (userId: number): Promise<Organization[]> => {
   const response = await getOrganizationsService(undefined, undefined, userId)

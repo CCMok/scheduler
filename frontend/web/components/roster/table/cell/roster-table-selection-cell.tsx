@@ -1,12 +1,12 @@
 import ComboBox from "@/components/_general/combobox/combo-box";
 import { Worker } from "@/external/prisma-generated";
 import { TableCell } from "@/external/shadcn/components/ui/table";
-import { Arrangement } from "@/libs/share/roster/models/post-base-schedule";
+import { PostBaseArrangement } from "@/libs/roster/models/schedule";
 import { useCallback, useEffect, useRef } from "react";
 
 type Props = {
-  arrangement: Arrangement;
-  setArrangement: (arrangement: Arrangement) => void;
+  arrangement: PostBaseArrangement;
+  setArrangement: (arrangement: PostBaseArrangement) => void;
   workers: Worker[];
   setIsEditing: (isEditing: boolean) => void;
 }

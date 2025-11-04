@@ -7,7 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/external/shadcn/components/ui/breadcrumb"
-import { BreadcrumbItem as TBreadcrumbItem } from "@/libs/share/_general/models/breadcrumb-item";
+import { BreadcrumbItem as TBreadcrumbItem } from "@/libs/_general/models/breadcrumb-item";
 
 const MAX_BREADCRUMBS = 3;
 

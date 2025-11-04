@@ -1,13 +1,13 @@
 'use client'
 
 import UpdateDialog from "@/components/_general/dialog/update-dialog";
-import { CreateUpdateWorkerConstraintFormInput, createUpdateWorkerConstraintFormInputSchema } from "@/libs/client/worker-constraint/models/create-update-worker-constraint-form-input";
+import { CreateUpdateWorkerConstraintFormInput, createUpdateWorkerConstraintFormInputSchema } from "@/libs/worker-constraint/models/worker-constraint-form-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import CreateUpdateWorkerConstraintFields from "../form/create-update-worker-constraint-fields";
 import { WorkerConstraintType, Worker } from "@/external/prisma-generated";
-import { ServiceResponse } from "@/libs/server/_general/models/service-response";
-import { updateWorkerConstraintAction } from "@/libs/server/worker-constraint/actions/update-worker-constraint-action";
+import { ServiceResponse } from "@/libs/_general/models/service-response";
+import { updateWorkerConstraintAction } from "@/libs/worker-constraint/actions/update-worker-constraint-action";
 import { useRouter } from "next/navigation";
 
 type Props = {

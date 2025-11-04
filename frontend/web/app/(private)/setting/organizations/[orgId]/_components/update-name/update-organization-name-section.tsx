@@ -1,11 +1,11 @@
 'use client'
 
 import { Organization } from "@/external/prisma-generated"
-import { updateOrganizationNameAction } from "@/libs/server/organization/actions/update-organization-name-action"
-import { UpdateOrganizationNameRequest } from "@/libs/server/organization/models/update-organization-name-request"
+import { updateOrganizationNameAction } from "@/libs/organization/actions/update-organization-name-action"
+import { UpdateOrganizationNameRequest } from "@/libs/organization/models/update-organization-name-request"
 import UpdateNameLayout from '@/components/_general/layout/update-name/update-name-layout'
-import { UpdateNameFormInput } from "@/libs/client/setting/models/update-name-form-input"
-import { ServiceResponse } from "@/libs/server/_general/models/service-response"
+import { UpdateNameFormInput } from "@/libs/_general/models/update-name-form-input"
+import { ServiceResponse } from "@/libs/_general/models/service-response"
 
 type Props = {
   organization: Organization;

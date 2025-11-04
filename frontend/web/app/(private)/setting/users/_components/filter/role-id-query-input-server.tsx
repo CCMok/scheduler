@@ -2,9 +2,9 @@ import RoleIdQueryInput from './role-id-query-input';
 import { Role } from '@/external/prisma-generated';
 import { Suspense } from 'react';
 import InputSkeleton from '@/components/_general/skeleton/input-skeleton';
-import { getRolesService } from '@/libs/server/role/services/get-roles-service';
+import { getRolesService } from '@/libs/role/services/get-roles-service';
 import { redirect } from 'next/navigation';
-import { handleGetResponse } from '@/libs/server/_general/utils/response-utils';
+import { handleGetResponse } from '@/libs/_general/utils/response-utils';
 
 const getRoles = async (): Promise<Role[]> => {
   const response = await getRolesService();

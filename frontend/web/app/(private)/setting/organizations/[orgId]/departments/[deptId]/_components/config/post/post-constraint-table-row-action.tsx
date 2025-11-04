@@ -7,8 +7,8 @@ import { useState } from "react"
 import UpdatePostConstraintDialog from "./update/update-post-constraint-dialog"
 import { PostConstraintType, Post } from "@/external/prisma-generated"
 import DeleteDialog from "@/components/_general/dialog/delete-dialog"
-import { ServiceResponse } from "@/libs/server/_general/models/service-response"
-import { deletePostConstraintAction } from "@/libs/server/post-constraint/actions/delete-post-constraint-action"
+import { ServiceResponse } from "@/libs/_general/models/service-response"
+import { deletePostConstraintAction } from "@/libs/post-constraint/actions/delete-post-constraint-action"
 
 type Props = {
   postConstraintTypeId: string;

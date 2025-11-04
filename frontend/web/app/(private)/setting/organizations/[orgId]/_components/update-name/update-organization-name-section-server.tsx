@@ -1,10 +1,10 @@
 import { Organization } from "@/external/prisma-generated"
-import { getOrganizationsService } from "@/libs/server/organization/services/get-organizations-service"
+import { getOrganizationsService } from "@/libs/organization/services/get-organizations-service"
 import { notFound, redirect } from "next/navigation"
 import UpdateOrganizationNameSection from "./update-organization-name-section"
 import { Suspense } from "react"
 import InputCardSkeleton from "@/components/_general/skeleton/input-card-skeleton"
-import { handleGetResponse } from "@/libs/server/_general/utils/response-utils"
+import { handleGetResponse } from "@/libs/_general/utils/response-utils"
 
 const getOrganization = async (id: number): Promise<Organization | undefined> => {
   const response = await getOrganizationsService(id)

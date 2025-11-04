@@ -9,10 +9,10 @@ import { columns, PostTableData } from "./post-table-column";
 import CustomTable from "@/components/_general/table/custom-table";
 import PostAddButton from "./post-add-button";
 import { useMemo } from "react";
-import { SONNER_DEFAULT_OPTIONS } from "@/libs/client/_general/constants/sonnar-constant";
+import { SONNER_DEFAULT_OPTIONS } from "@/libs/_general/constants/sonnar-constant";
 import { toast } from "sonner";
-import { CreateDepartmentFormInput } from "@/libs/client/department/models/create-department-form-input";
-import { MessageTitle } from "@/libs/server/_general/enums/message";
+import { CreateDepartmentFormInput } from "@/libs/department/models/create-department-form-input";
+import { MessageTitle } from "@/libs/_general/enums/message";
 
 type Props = {
   onClickNext: () => void;

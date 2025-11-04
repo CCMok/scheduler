@@ -1,7 +1,7 @@
 import CustomLink from '@/components/_general/link/custom-link';
 import ToggleSidebarMenuItem from '@/components/_general/sidebar/toggle-sidebar-menu-item';
 import { SidebarMenuButton } from "@/external/shadcn/components/ui/sidebar";
-import { isAccessable } from "@/libs/server/access/services/route-access-service";
+import { checkCanAccess } from "@/libs/access/utils/route-access-utils";
 import { ReactNode } from "react";
 
 type Props = {
@@ -15,7 +15,7 @@ export default async function LinkMenuItem({
   url,
   icon,
 }: Readonly<Props>) {
-  const hasAccess = await isAccessable(url)
+  const hasAccess = await checkCanAccess(url)
   if (!hasAccess) return <></>
 
   return (

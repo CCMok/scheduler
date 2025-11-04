@@ -4,7 +4,7 @@ import ComboBox from "@/components/_general/combobox/combo-box"
 import CustomFormItem from "@/components/_general/form/custom-form-item"
 import { PostConstraintType } from "@/external/prisma-generated"
 import { FormField } from "@/external/shadcn/components/ui/form"
-import { CreateUpdatePostConstraintFormInput } from "@/libs/client/post-constraint/models/create-update-post-constraint-form-input"
+import { PostConstraintFormInput } from "@/libs/post-constraint/models/post-constraint-form-input"
 import { useFormContext } from "react-hook-form"
 
 type Props = {
@@ -14,7 +14,7 @@ type Props = {
 export default function PostConstraintTypeIdFormField({
   postConstraintTypes,
 }: Readonly<Props>) {
-  const { control, setValue } = useFormContext<CreateUpdatePostConstraintFormInput>()
+  const { control, setValue } = useFormContext<PostConstraintFormInput>()
 
   return (
     <FormField

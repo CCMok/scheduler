@@ -1,7 +1,7 @@
 'use client'
 
 import CustomButton from '@/components/_general/button/custom-button';
-import { PostFormInput } from '@/libs/client/department/models/create-department-form-input';
+import { PostFormInput } from '@/libs/department/models/create-department-form-input';
 import { Plus } from 'lucide-react';
 
 type Props = {

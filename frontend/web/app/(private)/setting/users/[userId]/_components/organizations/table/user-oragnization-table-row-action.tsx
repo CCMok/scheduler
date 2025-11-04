@@ -5,9 +5,9 @@ import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdo
 import { useState } from 'react';
 import RemoveAssignmentDialog from '@/components/_general/dialog/remove-assignment-dialog';
 import { useParams } from 'next/navigation';
-import { Param } from '@/libs/share/_general/enums/param';
-import { deleteUserOrganizationAction } from '@/libs/server/user-organization/actions/delete-user-organization-action';
-import { ServiceResponse } from '@/libs/server/_general/models/service-response';
+import { Param } from '@/libs/_general/enums/param';
+import { deleteUserOrganizationAction } from '@/libs/user-organization/actions/delete-user-organization-action';
+import { ServiceResponse } from '@/libs/_general/models/service-response';
 
 type Props = {
   organizationId: number;

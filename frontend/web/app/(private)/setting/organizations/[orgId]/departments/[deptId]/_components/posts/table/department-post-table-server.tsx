@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
-import { PostWithPostWorkersCount } from "@/libs/server/post/models/post-dao";
-import { getPostsWithPostWorkersCountService } from "@/libs/server/post/services/get-posts-with-post-workers-count-service";
+import { PostWithPostWorkersCount } from "@/libs/post/models/post-dao";
+import { getPostsWithPostWorkersCountService } from "@/libs/post/services/get-posts-with-post-workers-count-service";
 import DepartmentPostTable from "./department-post-table";
-import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
+import { handleGetResponse } from "@/libs/_general/utils/response-utils";
 
 const getPostWorkersCount = async (departmentId: number): Promise<PostWithPostWorkersCount[]> => {
   const response = await getPostsWithPostWorkersCountService(undefined, departmentId)

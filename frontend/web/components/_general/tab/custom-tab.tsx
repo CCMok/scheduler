@@ -1,7 +1,7 @@
 'use client'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/external/shadcn/components/ui/tabs";
-import { Tab } from "@/libs/share/_general/models/tab";
+import { Tab } from "@/libs/_general/models/tab";
 
 type Props = {
   tabs: Tab[];

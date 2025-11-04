@@ -1,6 +1,6 @@
 'use client'
 
-import { CreateUpdateWorkerConstraintFormInput } from "@/libs/client/worker-constraint/models/create-update-worker-constraint-form-input";
+import { CreateUpdateWorkerConstraintFormInput } from "@/libs/worker-constraint/models/worker-constraint-form-input";
 import { useFormContext } from "react-hook-form";
 import { FormField } from "@/external/shadcn/components/ui/form";
 import CustomFormItem from '@/components/_general/form/custom-form-item';

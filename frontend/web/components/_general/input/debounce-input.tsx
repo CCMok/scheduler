@@ -3,7 +3,7 @@
 import { ChangeEventHandler, ComponentProps } from "react";
 import CustomInput from "./custom-input";
 import { useDebouncedCallback } from "use-debounce";
-import { DEFAULT_DEBOUNCE_MS } from "@/libs/client/_general/constants/debounce-constant";
+import { DEFAULT_DEBOUNCE_MS } from "@/libs/_general/constants/debounce-constant";
 
 type Props = ComponentProps<typeof CustomInput> & {
   debounceMs?: number;

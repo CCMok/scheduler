@@ -1,7 +1,7 @@
 import { Skeleton } from "@/external/shadcn/components/ui/skeleton";
-import { handleGetResponse } from "@/libs/server/_general/utils/response-utils";
-import { RosterHistoryWithRelated } from "@/libs/server/roster/models/roster-history-dao";
-import { getRosterHistoriesWithRelatedService } from "@/libs/server/roster/services/get-roster-histories-with-related-service";
+import { handleGetResponse } from "@/libs/_general/utils/response-utils";
+import { RosterHistoryWithRelated } from "@/libs/roster/models/roster-history-dao";
+import { getRosterHistoriesWithRelatedService } from "@/libs/roster/services/get-roster-histories-with-related-service";
 import { format } from "date-fns";
 import { isNil } from "lodash";
 import { notFound, redirect } from "next/navigation";

@@ -1,5 +1,5 @@
-import { Role } from "../../../../libs/share/_general/enums/role";
-import { PostConstraintType, WorkerConstraintType } from "../../../../libs/share/_general/enums/constraint-type";
+import { Role } from "../../../../libs/role/enums/role";
+import { PostConstraintType, WorkerConstraintType } from "../../../../libs/constraint/enums/constraint-type";
 
 export const postConstraintTypes = [
   { name: '每節至少一人', enum: PostConstraintType.AT_LEAST_1_WORKER_PER_DAY },

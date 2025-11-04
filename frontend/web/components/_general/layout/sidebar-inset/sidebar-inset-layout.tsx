@@ -1,4 +1,4 @@
-import { ChildrenProps } from "@/libs/share/_general/props/children-props";
+import { ChildrenProps } from "@/libs/_general/props/children-props";
 import { Separator } from "@/external/shadcn/components/ui/separator";
 import { ComponentProps } from "react";
 import { SidebarTrigger } from "@/external/shadcn/components/ui/sidebar";

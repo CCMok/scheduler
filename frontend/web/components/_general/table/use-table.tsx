@@ -1,7 +1,7 @@
 'use client'
 import { ColumnDef, ColumnFiltersState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
 import { useState } from "react";
-import { TABLE_DEFAULT_PAGE_SIZE } from "@/libs/client/_general/constants/table-constant";
+import { TABLE_DEFAULT_PAGE_SIZE } from "@/libs/_general/constants/table-constant";
 
 type Props<TData> = {
   data: TData[];

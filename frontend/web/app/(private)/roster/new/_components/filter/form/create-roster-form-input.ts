@@ -1,4 +1,4 @@
-import { MessageContent } from "@/libs/server/_general/enums/message";
+import { MessageContent } from "@/libs/_general/enums/message";
 import { z } from "zod";
 
 export const offFormInputSchema = z.object({

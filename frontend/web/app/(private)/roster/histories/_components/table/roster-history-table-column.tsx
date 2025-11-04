@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import TableSortableHeader from '@/components/_general/table/table-sortable-header';
-import { RosterHistoryWithRelated } from "@/libs/server/roster/models/roster-history-dao";
+import { RosterHistoryWithRelated } from "@/libs/roster/models/roster-history-dao";
 import { format } from "date-fns";
 import RosterHistoryTableRowAction from "./roster-history-table-row-action";
 

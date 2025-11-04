@@ -1,10 +1,10 @@
 'use client'
 
-import { Tab } from "@/libs/share/_general/models/tab";
+import { Tab } from "@/libs/_general/models/tab";
 import CustomTab from "./custom-tab";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { isNil } from "lodash";
-import { Param } from "@/libs/share/_general/enums/param";
+import { Param } from "@/libs/_general/enums/param";
 
 const getValue = (input: string | null, tabs: Tab[]): string | undefined => {
   if (isNil(input)) return tabs[0]?.value

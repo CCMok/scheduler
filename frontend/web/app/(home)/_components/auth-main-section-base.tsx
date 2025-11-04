@@ -1,5 +1,5 @@
 import Logo from "@/components/_general/logo/logo";
-import { ChildrenProps } from "@/libs/share/_general/props/children-props";
+import { ChildrenProps } from "@/libs/_general/props/children-props";
 import { ReactNode } from "react";
 
 type Props = ChildrenProps & {

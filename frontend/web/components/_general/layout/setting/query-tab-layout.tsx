@@ -1,6 +1,6 @@
 import QueryTab from '@/components/_general/tab/query-tab';
-import { BreadcrumbItem } from "@/libs/share/_general/models/breadcrumb-item";
-import { Tab } from "@/libs/share/_general/models/tab";
+import { BreadcrumbItem } from "@/libs/_general/models/breadcrumb-item";
+import { Tab } from "@/libs/_general/models/tab";
 import SidebarInsetLayout from '../sidebar-inset/sidebar-inset-layout';
 
 type Props = {

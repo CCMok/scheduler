@@ -5,8 +5,8 @@ import { useEffect } from "react";
 import { getColumns, OrganizationTableId } from "./organization-table-column";
 import { useSearchParams } from "next/navigation";
 import useTable from '@/components/_general/table/use-table';
-import { Param } from "@/libs/share/_general/enums/param";
-import { Role } from "@/libs/share/_general/enums/role";
+import { Param } from "@/libs/_general/enums/param";
+import { Role } from "@/libs/role/enums/role";
 import CustomTable from "@/components/_general/table/custom-table";
 
 type Props = {
