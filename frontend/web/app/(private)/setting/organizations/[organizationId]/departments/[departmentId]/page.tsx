@@ -1,15 +1,26 @@
 import { Param } from "@/libs/_general/enums/param"
 import { ParamProps } from "@/libs/_general/props/param-props"
 import QueryTabLayout from '@/components/_general/layout/setting/query-tab-layout';
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { PATH } from "@/libs/_general/enums/path";
 import PostsSequenceSection from "@/app/(private)/setting/organizations/[organizationId]/departments/[departmentId]/_components/posts/sequence/posts-sequence-section";
 import WorkersSection from "@/app/(private)/setting/organizations/[organizationId]/departments/[departmentId]/_components/workers/workers-section";
 import PostsSection from "@/app/(private)/setting/organizations/[organizationId]/departments/[departmentId]/_components/posts/posts-section";
 import ConfigSection from "./_components/config/config-section";
 import OrganizationName from "@/components/organization/organization-name";
-import UpdateDepartmentNameSectionServer from "./_components/update-name/update-department-name-section-server";
 import DepartmentName from "@/components/department/department-name";
+import InputCardSkeleton from "@/components/_general/skeleton/input-card-skeleton";
+import { Suspense } from "react";
+import UpdateDepartmentNameSection from "./_components/update-name/update-department-name-section";
+import { Department } from "@/external/prisma-generated";
+import { getDepartmentsService } from "@/libs/department/services/get-departments-service";
+import { handleGetResponse } from "@/libs/_general/utils/response-utils";
+
+const getDepartment = async (id: number): Promise<Department | undefined> => {
+  const entitiesResponse = await getDepartmentsService(id);
+  const entities = handleGetResponse(entitiesResponse, redirect, [])
+  return entities[0]
+}
 
 type Props = ParamProps<{
   [Param.ORGANIZATION_ID]: string;
@@ -25,6 +36,8 @@ export default async function OrganizationDepartmentSettingPage({
   const departmentId = Number.parseInt(awaitedParams[Param.DEPARTMENT_ID])
 
   if (Number.isNaN(organizationId) || Number.isNaN(departmentId)) notFound()
+
+  const departmentPromise = getDepartment(departmentId);
 
   return (
     <QueryTabLayout
@@ -52,7 +65,11 @@ export default async function OrganizationDepartmentSettingPage({
         {
           value: 'info',
           label: '基本資料',
-          content: <UpdateDepartmentNameSectionServer id={departmentId} />,
+          content: (
+            <Suspense fallback={<InputCardSkeleton />}>
+              <UpdateDepartmentNameSection departmentPromise={departmentPromise} />
+            </Suspense>
+          ),
         },
         {
           value: 'posts',

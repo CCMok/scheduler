@@ -5,16 +5,18 @@ import { DepartmentTableId, columns } from "./department-table-column";
 import { DepartmentWithChildCount } from '@/libs/department/models/department-dao';
 import { useSearchParams } from 'next/navigation';
 import { Param } from '@/libs/_general/enums/param';
-import { useEffect } from 'react';
+import { use, useEffect } from 'react';
 import CustomTable from '@/components/_general/table/custom-table';
 
 type Props = {
-  departments: DepartmentWithChildCount[];
+  departmentsPromise: Promise<DepartmentWithChildCount[]>;
 }
 
 export default function DepartmentTable({
-  departments,
+  departmentsPromise,
 }: Readonly<Props>) {
+  const departments = use(departmentsPromise);
+
   const searchParams = useSearchParams();
   const name = searchParams.get(Param.NAME);
 

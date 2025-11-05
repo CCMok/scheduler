@@ -3,22 +3,28 @@ import CustomCard from '@/components/_general/card/custom-card';
 import CreateOrganizationButton from "./_components/create/create-organization-button";
 import { Role } from "@/libs/role/enums/role";
 import { getSession } from "@/libs/access/managers/session-manager";
-import OrganizationTableServer from "./_components/table/orgainzation-table-server";
 import { Suspense } from "react";
 import TableSkeleton from "@/components/_general/skeleton/table-skeleton";
 import SidebarInsetLayout from "@/components/_general/layout/sidebar-inset/sidebar-inset-layout";
+import OrganizationTable from "./_components/table/organization-table";
+import { Organization } from "@/external/prisma-generated";
+import { getOrganizationsService } from "@/libs/organization/services/get-organizations-service";
+import { handleGetResponse } from "@/libs/_general/utils/response-utils";
+import { redirect } from "next/navigation";
 
 const getRole = async (): Promise<Role | undefined> => {
   const session = await getSession();
-  if (!session) {
-    return;
-  }
-
-  return session.roleEnum as Role;
+  return session?.roleEnum;
 }
 
-export default async function OrganizationsPage() {
-  const role = await getRole();
+const getOrganizations = async (): Promise<Organization[]> => {
+  const response = await getOrganizationsService()
+  return handleGetResponse(response, redirect, [])
+}
+
+export default function OrganizationsPage() {
+  const rolePromise = getRole();
+  const organizationsPromise = getOrganizations();
 
   return (
     <SidebarInsetLayout
@@ -34,9 +40,14 @@ export default async function OrganizationsPage() {
       ]}
     >
       <CustomCard>
-        <OrganizationFilter button={<CreateOrganizationButton />} />
+        <Suspense>
+          <OrganizationFilter button={<CreateOrganizationButton />} />
+        </Suspense>
         <Suspense fallback={<TableSkeleton />}>
-          <OrganizationTableServer role={role} />
+          <OrganizationTable
+            rolePromise={rolePromise}
+            organizationsPromise={organizationsPromise}
+          />
         </Suspense>
       </CustomCard>
     </SidebarInsetLayout>

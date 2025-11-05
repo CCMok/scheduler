@@ -6,15 +6,17 @@ import { useSearchParams } from 'next/navigation';
 import CustomTable from '@/components/_general/table/custom-table';
 import { DepartmentTableId, columns } from './department-table-column';
 import { Param } from '@/libs/_general/enums/param';
-import { useEffect } from 'react';
+import { use, useEffect } from 'react';
 
 type Props = {
-  departments: DepartmentWithOrganizationChildrenCount[];
+  departmentsPromise: Promise<DepartmentWithOrganizationChildrenCount[]>;
 }
 
 export default function DepartmentTable({
-  departments,
+  departmentsPromise,
 }: Readonly<Props>) {
+  const departments = use(departmentsPromise);
+
   const searchParams = useSearchParams();
   const organizationName = searchParams.get(Param.ORGANIZATION_NAME);
   const departmentName = searchParams.get(Param.DEPARTMENT_NAME);

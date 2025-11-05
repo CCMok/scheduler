@@ -6,14 +6,19 @@ import { UpdateNameFormInput } from "@/libs/_general/models/update-name-form-inp
 import { UpdateDepartmentNameRequest } from "@/libs/department/models/update-department-name-request"
 import { updateDepartmentNameAction } from "@/libs/department/actions/update-department-name-action"
 import { ServiceResponse } from "@/libs/_general/models/service-response"
+import { use } from "react"
+import { notFound } from "next/navigation"
 
 type Props = {
-  department: Department;
+  departmentPromise: Promise<Department | undefined>;
 }
 
 export default function UpdateDepartmentNameSection({
-  department,
+  departmentPromise,
 }: Readonly<Props>) {
+  const department = use(departmentPromise);
+  if (!department) notFound();
+
   const submit = async (input: UpdateNameFormInput): Promise<ServiceResponse> => {
     const request: UpdateDepartmentNameRequest = {
       id: department.id,

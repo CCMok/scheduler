@@ -6,14 +6,19 @@ import { UpdateNameFormInput } from "@/libs/_general/models/update-name-form-inp
 import { ServiceResponse } from "@/libs/_general/models/service-response"
 import { UpdateWorkerNameRequest } from "@/libs/worker/models/update-worker-name-request"
 import { updateWorkerNameAction } from "@/libs/worker/actions/update-worker-name-action"
+import { use } from "react"
+import { notFound } from "next/navigation"
 
 type Props = {
-  worker: Worker;
+  workerPromise: Promise<Worker | undefined>;
 }
 
 export default function UpdateWorkerNameSection({
-  worker,
+  workerPromise,
 }: Readonly<Props>) {
+  const worker = use(workerPromise);
+  if (!worker) notFound();
+
   const submit = async (input: UpdateNameFormInput): Promise<ServiceResponse> => {
     const request: UpdateWorkerNameRequest = {
       id: worker.id,

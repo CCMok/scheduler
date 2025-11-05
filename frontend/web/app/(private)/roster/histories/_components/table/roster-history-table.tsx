@@ -4,17 +4,19 @@ import useTable from '@/components/_general/table/use-table';
 import CustomTable from "@/components/_general/table/custom-table";
 import { RosterHistoryWithRelated } from "@/libs/roster/models/roster-history-dao";
 import { columns, RosterHistoryTableId } from "./roster-history-table-column";
-import { useEffect } from 'react';
+import { use, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Param } from '@/libs/_general/enums/param';
 
 type Props = {
-  rosterHistories: RosterHistoryWithRelated[];
+  rosterHistoriesPromise: Promise<RosterHistoryWithRelated[]>;
 }
 
 export default function RosterHistoryTable({
-  rosterHistories,
+  rosterHistoriesPromise,
 }: Readonly<Props>) {
+  const rosterHistories = use(rosterHistoriesPromise);
+
   const searchParams = useSearchParams();
   const organizationName = searchParams.get(Param.ORGANIZATION_NAME);
   const departmentName = searchParams.get(Param.DEPARTMENT_NAME);

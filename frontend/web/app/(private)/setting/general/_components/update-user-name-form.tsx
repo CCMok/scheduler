@@ -10,7 +10,7 @@ import FormSubmitButton from '@/components/_general/form/form-submit-button';
 import CustomInput from '@/components/_general/input/custom-input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/external/shadcn/components/ui/card';
 import { Save } from 'lucide-react';
-import { useState } from 'react';
+import { use, useState } from 'react';
 import ConfirmDialog from '@/components/_general/dialog/confirm-dialog';
 import { toast } from 'sonner';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/_general/constants/sonnar-constant';
@@ -20,14 +20,18 @@ import { updateUserNameAction } from '@/libs/user/actions/update-user-name-actio
 import { handleCudResponse } from '@/libs/_general/utils/response-utils';
 import { isNil } from 'lodash';
 import { MessageContent, MessageTitle } from '@/libs/_general/enums/message';
+import { SessionPayload } from '@/libs/access/models/session-payload';
 
 type Props = {
-  userName: string;
+  sessionPromise: Promise<SessionPayload | undefined>;
 }
 
 export default function UpdateUserNameForm({
-  userName,
+  sessionPromise,
 }: Readonly<Props>) {
+  const session = use(sessionPromise)
+  const userName = session?.name ?? '';
+
   const form = useForm({
     resolver: zodResolver(updateUserNameFormInputSchema),
     defaultValues: {

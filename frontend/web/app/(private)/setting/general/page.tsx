@@ -1,13 +1,12 @@
 import { getSession } from "@/libs/access/managers/session-manager";
 import UpdatePasswordForm from "./_components/update-password-form";
 import UpdateUserNameForm from "./_components/update-user-name-form";
-import { redirect } from "next/navigation";
-import { REDIRECT_PUBLIC_PATH } from "@/libs/_general/enums/path";
 import SidebarInsetLayout from "@/components/_general/layout/sidebar-inset/sidebar-inset-layout";
+import { Suspense } from "react";
+import InputCardSkeleton from "@/components/_general/skeleton/input-card-skeleton";
 
-export default async function UserSettingPage() {
-  const session = await getSession();
-  if (!session) return redirect(REDIRECT_PUBLIC_PATH);
+export default function UserSettingPage() {
+  const sessionPromise = getSession();
 
   return (
     <SidebarInsetLayout
@@ -24,7 +23,9 @@ export default async function UserSettingPage() {
     >
       <div className="space-y-4">
         <UpdatePasswordForm />
-        <UpdateUserNameForm userName={session.name ?? ''} />
+        <Suspense fallback={<InputCardSkeleton />}>
+          <UpdateUserNameForm sessionPromise={sessionPromise} />
+        </Suspense>
       </div>
     </SidebarInsetLayout>
   )

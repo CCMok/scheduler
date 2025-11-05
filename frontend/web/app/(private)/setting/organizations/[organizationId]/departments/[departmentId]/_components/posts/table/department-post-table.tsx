@@ -5,6 +5,7 @@ import PostWorkersCountTable from '@/components/post/post-workers-count-table';
 import { ColumnDef } from "@tanstack/react-table";
 import { getActionColumn, getNameColumn, workerCountColumn } from "@/components/post/post-workers-count-table-column";
 import DepartmentPostTableRowAction from "./department-post-table-row-action";
+import { use } from 'react';
 
 const actionColumn = getActionColumn(({ row }) => (
   <DepartmentPostTableRowAction
@@ -21,12 +22,14 @@ const columns: ColumnDef<PostWithPostWorkersCount>[] = [
 ]
 
 type Props = {
-  posts: PostWithPostWorkersCount[];
+  postsPromise: Promise<PostWithPostWorkersCount[]>;
 }
 
 export default function DepartmentPostTable({
-  posts,
+  postsPromise,
 }: Readonly<Props>) {
+  const posts = use(postsPromise);
+
   return (
     <PostWorkersCountTable
       data={posts}

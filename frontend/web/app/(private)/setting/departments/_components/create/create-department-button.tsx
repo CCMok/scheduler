@@ -10,15 +10,17 @@ import { Label } from "@/external/shadcn/components/ui/label";
 import { PATH } from "@/libs/_general/enums/path";
 import { isNil } from "lodash";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { use, useState } from "react";
 
 type Props = {
-  organizations: Organization[];
+  organizationsPromise: Promise<Organization[]>;
 }
 
 export default function CreateDepartmentButton({
-  organizations,
+  organizationsPromise,
 }: Readonly<Props>) {
+  const organizations = use(organizationsPromise);
+
   const [organizationId, setOrganizationId] = useState<number | undefined>(undefined);
 
   return (

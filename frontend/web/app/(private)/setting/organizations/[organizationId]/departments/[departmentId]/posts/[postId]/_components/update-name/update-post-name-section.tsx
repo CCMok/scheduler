@@ -6,14 +6,19 @@ import { UpdateNameFormInput } from "@/libs/_general/models/update-name-form-inp
 import { ServiceResponse } from "@/libs/_general/models/service-response"
 import { UpdatePostNameRequest } from "@/libs/post/models/update-post-name-request"
 import { updatePostNameAction } from "@/libs/post/actions/update-post-name-action"
+import { use } from "react"
+import { notFound } from "next/navigation"
 
 type Props = {
-  post: Post;
+  postPromise: Promise<Post | undefined>;
 }
 
 export default function UpdatePostNameSection({
-  post,
+  postPromise,
 }: Readonly<Props>) {
+  const post = use(postPromise);
+  if (!post) notFound()
+
   const submit = async (input: UpdateNameFormInput): Promise<ServiceResponse> => {
     const request: UpdatePostNameRequest = {
       id: post.id,

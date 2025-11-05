@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from "react";
+import { use, useEffect } from "react";
 import { getColumns, UserTableId } from "./user-table-column";
 import { useSearchParams } from "next/navigation";
 import useTable from '@/components/_general/table/use-table';
@@ -9,12 +9,14 @@ import CustomTable from "@/components/_general/table/custom-table";
 import { UserExcludePasswordWithRole } from "@/libs/user/models/user-dao";
 
 type Props = {
-  users: UserExcludePasswordWithRole[];
+  usersPromise: Promise<UserExcludePasswordWithRole[]>;
 }
 
 export default function UserTable({
-  users,
+  usersPromise,
 }: Readonly<Props>) {
+  const users = use(usersPromise);
+
   const searchParams = useSearchParams();
   const email = searchParams.get(Param.EMAIL);
   const name = searchParams.get(Param.NAME);

@@ -1,13 +1,24 @@
 import { ParamProps } from "@/libs/_general/props/param-props";
 import { Param } from "@/libs/_general/enums/param";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import QueryTabLayout from '@/components/_general/layout/setting/query-tab-layout';
 import WorkersSection from "./_components/workers/workers-section";
 import { PATH } from "@/libs/_general/enums/path";
 import OrganizationName from "@/components/organization/organization-name";
 import DepartmentName from "@/components/department/department-name";
 import PostName from "@/components/post/post-name";
-import UpdatePostNameSectionServer from "./_components/update-name/update-post-name-section-server";
+import { Post } from "@/external/prisma-generated";
+import { getPostsService } from "@/libs/post/services/get-posts-service";
+import { handleGetResponse } from "@/libs/_general/utils/response-utils";
+import UpdatePostNameSection from "./_components/update-name/update-post-name-section";
+import { Suspense } from "react";
+import InputCardSkeleton from "@/components/_general/skeleton/input-card-skeleton";
+
+const getPost = async (id: number): Promise<Post | undefined> => {
+  const response = await getPostsService(id)
+  const data = handleGetResponse(response, redirect, [])
+  return data[0]
+}
 
 type Props = ParamProps<{
   [Param.ORGANIZATION_ID]: string;
@@ -25,6 +36,8 @@ export default async function OrganizationDepartmentPostSettingPage({
   const postId = Number.parseInt(awaitedParams[Param.POST_ID]);
 
   if (Number.isNaN(organizationId) || Number.isNaN(departmentId) || Number.isNaN(postId)) notFound();
+
+  const postPromise = getPost(postId);
 
   return (
     <QueryTabLayout
@@ -57,7 +70,11 @@ export default async function OrganizationDepartmentPostSettingPage({
         {
           value: 'info',
           label: '基本資料',
-          content: <UpdatePostNameSectionServer id={postId} />,
+          content: (
+            <Suspense fallback={<InputCardSkeleton />}>
+              <UpdatePostNameSection postPromise={postPromise} />
+            </Suspense>
+          ),
         },
         {
           value: 'workers',

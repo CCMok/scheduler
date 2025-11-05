@@ -36,7 +36,7 @@ export default function ComboBox<T, V extends Key>({
   const [isOpen, setIsOpen] = useState(defaultIsOpen)
 
   const selectedItemDisplay = useMemo(() => {
-    if (isNil(value)) return '選擇';
+    if (isNil(value) || value === '') return '選擇';
     const option = options.find(option => getValue(option) === value)
     return option ? getDisplayName(option) : '';
   }, [value, options, getValue, getDisplayName])

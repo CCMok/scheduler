@@ -6,14 +6,19 @@ import { UpdateOrganizationNameRequest } from "@/libs/organization/models/update
 import UpdateNameLayout from '@/components/_general/layout/update-name/update-name-layout'
 import { UpdateNameFormInput } from "@/libs/_general/models/update-name-form-input"
 import { ServiceResponse } from "@/libs/_general/models/service-response"
+import { use } from "react"
+import { notFound } from "next/navigation"
 
 type Props = {
-  organization: Organization;
+  organizationPromise: Promise<Organization | undefined>;
 }
 
 export default function UpdateOrganizationNameSection({
-  organization,
+  organizationPromise,
 }: Readonly<Props>) {
+  const organization = use(organizationPromise);
+  if (!organization) notFound();
+
   const submit = async (input: UpdateNameFormInput): Promise<ServiceResponse> => {
     const request: UpdateOrganizationNameRequest = {
       id: organization.id,
