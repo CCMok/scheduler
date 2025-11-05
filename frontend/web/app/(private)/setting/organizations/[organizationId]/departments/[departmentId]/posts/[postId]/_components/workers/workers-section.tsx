@@ -42,6 +42,7 @@ async function WorkersSectionContent({
       <WorkerFilter button={<AssignWorkerDialog workers={assignableWorkers} postId={postId} />} />
       <PostWorkerTable
         workers={postWorkers}
+        postId={postId}
       />
     </CustomCard>
   )

@@ -37,7 +37,7 @@ const UserOrganizationTableContent = async ({
 
   return (
     <CustomCard>
-      <UserOrganizationFilter button={<AssignOrganizationDialog organizations={assignableOrganizations} />} />
+      <UserOrganizationFilter button={<AssignOrganizationDialog organizations={assignableOrganizations} userId={id} />} />
       <UserOrganizationTable organizations={userOrganizations} />
     </CustomCard>
   )

@@ -9,6 +9,10 @@ import { Param } from '@/libs/_general/enums/param';
 import { deleteUserOrganizationAction } from '@/libs/user-organization/actions/delete-user-organization-action';
 import { ServiceResponse } from '@/libs/_general/models/service-response';
 
+type PageParam = {
+  [Param.USER_ID]: string;
+}
+
 type Props = {
   organizationId: number;
   name?: string;
@@ -18,12 +22,12 @@ export default function UserOrganizationTableRowAction({
   organizationId,
   name = '',
 }: Readonly<Props>) {
-  const param = useParams();
-  const userId = Number(param[Param.USER_ID]);
+  const param = useParams<PageParam>();
+  const userId = Number.parseInt(param[Param.USER_ID]);
 
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState(false);
 
-  if (isNaN(userId)) return <></>
+  if (Number.isNaN(userId)) return <></>
 
   const submitDelete = async (): Promise<ServiceResponse> => {
     return await deleteUserOrganizationAction({
@@ -41,6 +45,7 @@ export default function UserOrganizationTableRowAction({
         isOpen={isOpenDeleteDialog}
         setIsOpen={setIsOpenDeleteDialog}
         displayName={name}
+        assigneeEntityName='組織'
         submit={submitDelete}
       />
     </>

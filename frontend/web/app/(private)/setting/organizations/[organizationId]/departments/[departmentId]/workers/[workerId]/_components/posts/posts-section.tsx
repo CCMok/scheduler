@@ -39,9 +39,10 @@ async function PostsSectionContent({
 
   return (
     <CustomCard>
-      <PostFilter button={<AssignPostDialog posts={assignablePosts} />} />
+      <PostFilter button={<AssignPostDialog posts={assignablePosts} workerId={workerId} />} />
       <WorkerPostTable
         posts={workerPosts}
+        workerId={workerId}
       />
     </CustomCard>
   )

@@ -12,9 +12,10 @@ type Props = ParamProps<{ [Param.USER_ID]: string }>
 export default async function UserSettingPage({
   params,
 }: Readonly<Props>) {
-  const paramId = (await params).userId;
-  const id = Number(paramId);
-  if (isNaN(id)) notFound();
+  const awaitedParams = await params;
+
+  const id = Number.parseInt(awaitedParams[Param.USER_ID]);
+  if (Number.isNaN(id)) notFound();
 
   return (
     <QueryTabLayout

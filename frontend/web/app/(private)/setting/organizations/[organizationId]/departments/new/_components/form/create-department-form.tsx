@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Form } from "@/external/shadcn/components/ui/form";
 import BasicInfoSection from "./basic-info/basic-info-section";
 import DependencyHandler from "./dependency-handler";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { createDepartmentFormInputSchema, CreateDepartmentFormInput } from "@/libs/department/models/create-department-form-input";
 import { CreateDepartmentRequest, PostRequest, PostWorkerRequest, WorkerRequest } from "@/libs/department/models/create-department-request";
 import { createDepartmentAction } from "@/libs/department/actions/create-department-action";
@@ -36,7 +36,13 @@ const createRequest = (input: CreateDepartmentFormInput, organizationId: number)
   }
 }
 
-export default function CreateDepartmentForm() {
+type Props = {
+  organizationId: number;
+}
+
+export default function CreateDepartmentForm({
+  organizationId,
+}: Readonly<Props>) {
   const form = useForm({
     resolver: zodResolver(createDepartmentFormInputSchema),
     defaultValues: CREATE_DEPARTMENT_DEFAULT,
@@ -44,17 +50,9 @@ export default function CreateDepartmentForm() {
 
   const router = useRouter();
 
-  const params = useParams()
-  const organizationId = Number(params[Param.ORGANIZATION_ID]);
-
   const [step, setStep] = useState(0)
 
   const onSubmit = async (input: CreateDepartmentFormInput) => {
-    if (isNaN(organizationId)) {
-      console.error(`organizationId is not found. organizationId: ${organizationId}`)
-      return
-    }
-
     const request = createRequest(input, organizationId);
     const response = await createDepartmentAction(request)
 

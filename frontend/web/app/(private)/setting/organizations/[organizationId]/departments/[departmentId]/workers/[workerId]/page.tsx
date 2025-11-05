@@ -21,14 +21,11 @@ export default async function WorkerSettingPage({
 }: Readonly<Props>) {
   const awaitedParams = await params;
 
-  const workerId = Number(awaitedParams[Param.WORKER_ID]);
-  if (isNaN(workerId)) notFound();
+  const organizationId = Number.parseInt(awaitedParams[Param.ORGANIZATION_ID]);
+  const departmentId = Number.parseInt(awaitedParams[Param.DEPARTMENT_ID]);
+  const workerId = Number.parseInt(awaitedParams[Param.WORKER_ID]);
 
-  const departmentId = Number(awaitedParams[Param.DEPARTMENT_ID]);
-  if (isNaN(departmentId)) notFound();
-
-  const organizationId = Number(awaitedParams[Param.ORGANIZATION_ID]);
-  if (isNaN(organizationId)) notFound();
+  if (Number.isNaN(workerId) || Number.isNaN(departmentId) || Number.isNaN(organizationId)) notFound();
 
   return (
     <QueryTabLayout

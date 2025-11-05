@@ -10,10 +10,11 @@ type Props = ParamProps<{ [Param.ORGANIZATION_ID]: string }>
 
 export default async function DepartmentNewPage({
   params,
-}: Readonly<Props>) {  
-  const paramId = (await params)[Param.ORGANIZATION_ID];
-  const id = Number(paramId);
-  if (isNaN(id)) notFound();
+}: Readonly<Props>) {
+  const awaitedParams = await params;
+
+  const id = Number.parseInt(awaitedParams[Param.ORGANIZATION_ID]);
+  if (Number.isNaN(id)) notFound();
 
   return (
     <SidebarInsetLayout
@@ -38,7 +39,7 @@ export default async function DepartmentNewPage({
         },
       ]}
     >
-      <CreateDepartmentForm />
+      <CreateDepartmentForm organizationId={id} />
     </SidebarInsetLayout>
   )
 }

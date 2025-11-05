@@ -25,9 +25,9 @@ export default function PostIdFormField({
           <ComboBox
             value={field.value}
             options={posts}
-            getValue={option => option.id.toString()}
+            getValue={option => option.id}
             getDisplayName={option => option.name}
-            onValueChange={value => field.onChange(value)}
+            onValueChange={field.onChange}
             isFormField
           />
         </CustomFormItem>

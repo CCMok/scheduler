@@ -8,46 +8,32 @@ import { Organization } from "@/external/prisma-generated";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateUserOrganizationFormInput, createUserOrganizationFormInputSchema } from "@/app/(private)/setting/users/[userId]/_components/organizations/assign/create-user-organization-form-input";
 import AssignOrganizationFields from "./assign-organization-fields";
-import { useParams, useRouter } from "next/navigation";
-import { Param } from "@/libs/_general/enums/param";
-import { ServiceResponse, ServiceResponseStatus } from "@/libs/_general/models/service-response";
+import { useRouter } from "next/navigation";
+import { ServiceResponse } from "@/libs/_general/models/service-response";
 import { createUserOrganizationAction } from "@/libs/user-organization/actions/create-user-organization-action";
 
 type Props = {
   organizations: Organization[];
+  userId: number;
 }
 
 export default function AssignOrganizationDialog({
   organizations,
+  userId,
 }: Readonly<Props>) {
   const form = useForm({
     resolver: zodResolver(createUserOrganizationFormInputSchema),
     defaultValues: {
-      organizationId: '',
+      organizationId: undefined,
     },
   })
 
   const router = useRouter()
 
-  const params = useParams()
-  const userId = Number(params[Param.USER_ID])
-  if (isNaN(userId)) {
-    console.error(`userId is not found. userId: ${userId}`)
-    return <></>
-  }
-
   const submit = async (input: CreateUserOrganizationFormInput): Promise<ServiceResponse> => {
-    const organizationId = Number(input.organizationId)
-    if (isNaN(organizationId)) {
-      console.error(`organizationId is not a number. organizationId: ${input.organizationId}`)
-      return {
-        status: ServiceResponseStatus.INTERNAL_ERROR,
-      }
-    }
-
     return await createUserOrganizationAction({
       userId,
-      organizationId,
+      organizationId: input.organizationId,
     })
   }
 
@@ -60,7 +46,7 @@ export default function AssignOrganizationDialog({
       form={form}
       submit={submit}
       onSuccess={onSuccess}
-      title={'指派機構'}
+      title='指派機構'
       renderTrigger={onClick => (
         <CustomButton onClick={onClick}>
           <UserRoundPlus />

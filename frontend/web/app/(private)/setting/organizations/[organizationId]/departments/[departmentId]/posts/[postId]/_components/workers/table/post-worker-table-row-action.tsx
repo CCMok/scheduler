@@ -3,27 +3,22 @@
 import DeleteDropdownMenuItem from '@/components/_general/dropdown/delete-dropdown-menu-item';
 import ContextMenu from '@/components/_general/dropdown/context-menu';
 import { deletePostWorkerAction } from '@/libs/post-worker/actions/delete-post-worker-action';
-import { Param } from '@/libs/_general/enums/param';
 import { ServiceResponse } from '@/libs/_general/models/service-response';
-import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import RemoveAssignmentDialog from '@/components/_general/dialog/remove-assignment-dialog';
 
 type Props = {
   id: number;
   name: string;
+  postId: number;
 };
 
 export default function PostWorkerTableRowAction({
   id,
   name,
+  postId,
 }: Readonly<Props>) {
-  const param = useParams();
-  const postId = Number(param[Param.POST_ID]);
-
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState(false);
-
-  if (isNaN(postId)) return <></>
 
   const submitDelete = async (): Promise<ServiceResponse> => {
     return await deletePostWorkerAction({
@@ -41,6 +36,7 @@ export default function PostWorkerTableRowAction({
         isOpen={isOpenDeleteDialog}
         setIsOpen={setIsOpenDeleteDialog}
         displayName={name}
+        assigneeEntityName='人員'
         submit={submitDelete}
       />
     </>
