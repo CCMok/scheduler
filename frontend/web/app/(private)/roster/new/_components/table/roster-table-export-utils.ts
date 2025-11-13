@@ -58,7 +58,7 @@ export async function exportToXLSX(schedules: PostBaseSchedule[], filename: stri
   });
 
   // Add data rows with styling
-  schedules.forEach((schedule, index) => {
+  for (const [index, schedule] of schedules.entries()) {
     const rowData = [
       schedule.post.name,
       ...schedule.arrangements.map(arr => arr.worker?.name || '')
@@ -102,7 +102,7 @@ export async function exportToXLSX(schedules: PostBaseSchedule[], filename: stri
         right: { style: 'thin', color: { argb: 'FFD0D0D0' } },
       };
     });
-  });
+  }
 
   // Set column widths
   worksheet.columns = [

@@ -21,9 +21,11 @@ export default function QueryInputWrapper({
   const updateQuery = useCallback((id: string) => {
     const params = new URLSearchParams(searchParams);
     params.set(paramName, id);
-    cascadeParamNames?.forEach(cascadeParamName => {
-      params.delete(cascadeParamName);
-    });
+    if (cascadeParamNames) {
+      for (const cascadeParamName of cascadeParamNames) {
+        params.delete(cascadeParamName);
+      }
+    }
     const paramString = params.toString();
     router.replace(`${pathname}?${paramString}`);
   }, [searchParams, router, paramName, cascadeParamNames, pathname])

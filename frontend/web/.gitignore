@@ -46,3 +46,4 @@ prisma-generated
 
 # sonarqube
 .scannerwork
+sonarqube-scan.bat
