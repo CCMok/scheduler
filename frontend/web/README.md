@@ -76,6 +76,12 @@ Start sonarqube server.
 
 Browse localhost:9000 and set up project.
 
+If not installed sonar in npm:
+```Nodejs
+npm install -g @sonar/scan
+```
+
+Run scan:
 ```pwsh
 sonar "-Dsonar.host.url=http://localhost:9000" "-Dsonar.token=[token]" "-Dsonar.projectKey=[projectKey]"
 ```
