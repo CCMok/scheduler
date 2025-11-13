@@ -4,7 +4,6 @@ import { Form, FormControl, FormField } from '@/external/shadcn/components/ui/fo
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import CustomFormItem from '@/components/_general/form/custom-form-item';
-import FormRootMessage from '@/components/_general/form/form-root-message';
 import { useRouter } from 'next/navigation';
 import FormSubmitButton from '@/components/_general/form/form-submit-button';
 import CustomInput from '@/components/_general/input/custom-input';
@@ -116,8 +115,6 @@ export default function RegisterForm() {
         />
 
         <FormSubmitButton className={inputClassName}>註冊</FormSubmitButton>
-
-        <FormRootMessage />
       </form>
     </Form >
   )

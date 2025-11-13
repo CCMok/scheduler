@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import FormSubmitButton from '@/components/_general/form/form-submit-button'
 import { Save } from "lucide-react"
-import FormRootMessage from '@/components/_general/form/form-root-message'
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { SONNER_DEFAULT_OPTIONS } from "@/libs/_general/constants/sonnar-constant"
@@ -76,15 +75,14 @@ export default function UpdateNameLayout({
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <CustomCard
           title={`${entityName}名稱`}
-          footer={(<>
-            <FormRootMessage />
+          footer={(
             <FormSubmitButton
               icon={<Save />}
               className='ml-auto'
             >
               儲存
             </FormSubmitButton>
-          </>)}
+          )}
         >
           <NameField />
         </CustomCard>

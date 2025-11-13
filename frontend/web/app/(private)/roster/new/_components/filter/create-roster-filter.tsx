@@ -11,7 +11,6 @@ import { Organization } from "@/external/prisma-generated"
 import CreateRosterFormDependencyHandler from "./form/create-roster-form-dependency-handler"
 import { useMemo } from "react"
 import CreateRosterFilterButtonSection from "./button/create-roster-filter-button-section"
-import FormRootMessage from "@/components/_general/form/form-root-message"
 import useCreateRosterFormSubmit from "./form/use-create-roster-form-submit"
 
 type Props = {
@@ -58,7 +57,6 @@ export default function CreateRosterFilter({
             onRemove={offsFieldArray.remove}
           />
           <CreateRosterFilterButtonSection />
-          <FormRootMessage />
         </CustomCard>
       </form>
     </Form>
