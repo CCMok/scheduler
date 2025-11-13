@@ -9,17 +9,18 @@ import OffFilter from "./off/off-filter"
 import BasicFilter from "./basic/basic-filter"
 import { Organization } from "@/external/prisma-generated"
 import CreateRosterFormDependencyHandler from "./form/create-roster-form-dependency-handler"
-import { useMemo } from "react"
+import { use, useMemo } from "react"
 import CreateRosterFilterButtonSection from "./button/create-roster-filter-button-section"
 import useCreateRosterFormSubmit from "./form/use-create-roster-form-submit"
+import { CreateRosterFilterStoreProvider } from "./store/create-roster-filter-store-provider"
 
-type Props = {
+type CreateRosterFilterContentProps = {
   organizations: Organization[];
 }
 
-export default function CreateRosterFilter({
+function CreateRosterFilterContent({
   organizations,
-}: Readonly<Props>) {
+}: Readonly<CreateRosterFilterContentProps>) {
   const defaultValues: Partial<CreateRosterFilterFormInput> = useMemo(() => ({
     organizationId: organizations[0]?.id,
     departmentId: undefined,
@@ -60,5 +61,21 @@ export default function CreateRosterFilter({
         </CustomCard>
       </form>
     </Form>
+  )
+}
+
+type Props = {
+  organizationsPromise: Promise<Organization[]>,
+}
+
+export default function CreateRosterFilter({
+  organizationsPromise,
+}: Readonly<Props>) {
+  const organizations = use(organizationsPromise);
+
+  return (
+    <CreateRosterFilterStoreProvider initState={{ organizations }}>
+      <CreateRosterFilterContent organizations={organizations} />
+    </CreateRosterFilterStoreProvider>
   )
 }
