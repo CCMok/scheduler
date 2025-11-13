@@ -26,6 +26,7 @@ export default function PostConstraintTable({
       id: PostConstraintTableId.CONSTRAINT_TYPE,
       desc: false,
     }],
+    getRowId: row => row.id.toString(),
   })
 
   return (

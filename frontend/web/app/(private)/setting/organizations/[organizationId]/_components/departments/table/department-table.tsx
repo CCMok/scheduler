@@ -30,6 +30,7 @@ export default function DepartmentTable({
     defaultColumnFilters: [
       ...(name ? [{ id: DepartmentTableId.NAME, value: name }] : []),
     ],
+    getRowId: row => row.id.toString(),
   })
 
   useEffect(() => {

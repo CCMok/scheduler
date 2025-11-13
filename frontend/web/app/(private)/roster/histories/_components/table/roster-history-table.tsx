@@ -30,6 +30,7 @@ export default function RosterHistoryTable({
       id: RosterHistoryTableId.CREATED_AT,
       desc: true,
     }],
+    getRowId: row => row.id.toString(),
   })
 
   useEffect(() => {

@@ -33,6 +33,7 @@ export default function DepartmentTable({
       ...(organizationName ? [{ id: DepartmentTableId.ORGANIZATION_NAME, value: organizationName }] : []),
       ...(departmentName ? [{ id: DepartmentTableId.DEPARTMENT_NAME, value: departmentName }] : []),
     ],
+    getRowId: row => row.id.toString(),
   })
 
   useEffect(() => {

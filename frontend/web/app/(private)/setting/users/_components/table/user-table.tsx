@@ -36,6 +36,7 @@ export default function UserTable({
       ...(name ? [{ id: UserTableId.NAME, value: name }] : []),
       ...(roleName ? [{ id: UserTableId.ROLE_NAME, value: roleName }] : []),
     ],
+    getRowId: row => row.id.toString(),
   })
 
   useEffect(() => {

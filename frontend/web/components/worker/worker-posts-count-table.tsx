@@ -31,6 +31,7 @@ export default function WorkerPostsCountTable({
     defaultColumnFilters: [
       ...(name ? [{ id: WorkerTableId.NAME, value: name }] : []),
     ],
+    getRowId: row => row.id.toString(),
   })
 
   useEffect(() => {

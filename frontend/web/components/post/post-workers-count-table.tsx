@@ -31,6 +31,7 @@ export default function PostWorkersCountTable({
     defaultColumnFilters: [
       ...(name ? [{ id: PostTableId.NAME, value: name }] : []),
     ],
+    getRowId: row => row.id.toString(),
   })
 
   useEffect(() => {

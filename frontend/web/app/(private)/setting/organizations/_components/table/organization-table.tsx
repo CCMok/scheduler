@@ -36,6 +36,7 @@ export default function OrganizationTable({
     defaultColumnFilters: [
       ...(name ? [{ id: OrganizationTableId.NAME, value: name }] : []),
     ],
+    getRowId: row => row.id.toString(),
   })
 
   useEffect(() => {

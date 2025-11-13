@@ -28,6 +28,7 @@ export default function UserOrganizationTable({
     defaultColumnFilters: [
       ...(name ? [{ id: UserOrganizationTableId.NAME, value: name }] : []),
     ],
+    getRowId: row => row.id.toString(),
   })
 
   useEffect(() => {

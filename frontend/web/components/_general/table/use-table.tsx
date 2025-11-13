@@ -8,7 +8,7 @@ type Props<TData> = {
   columns: ColumnDef<TData>[];
   defaultSorting: SortingState;
   defaultColumnFilters?: ColumnFiltersState;
-  getRowId?: (row: TData) => string;
+  getRowId: (row: TData) => string;
   hasPagination?: boolean;
 }
 

@@ -26,6 +26,7 @@ export default function WorkerConstraintTable({
       id: WorkerConstraintTableId.CONSTRAINT_TYPE,
       desc: false,
     }],
+    getRowId: row => row.id.toString(),
   })
 
   return (
