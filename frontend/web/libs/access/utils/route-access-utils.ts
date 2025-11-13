@@ -76,8 +76,8 @@ export const checkCanAccess = async (path: string): Promise<boolean> => {
  */
 const matchDynamicPath = (actualPath: string, pattern: string): boolean => {
   const regexPattern = pattern
-    .replace(/\*/g, '[^/]+')
-    .replace(/\//g, '\\/');
+    .replaceAll('*', '[^/]+')
+    .replaceAll('/', String.raw`\/`);
 
   const regex = new RegExp(`^${regexPattern}$`);
   return regex.test(actualPath);

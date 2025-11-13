@@ -35,7 +35,7 @@ yarn seed-system
 yarn seed-organization
 ```
 
-## Database debug
+#### Database debug
 Place at `database-manager.ts`
 ```Nodejs
 const prisma = globalForPrisma.prisma || new PrismaClient({
@@ -67,4 +67,15 @@ prisma.$on('query', (e) => {
     // @ts-ignore
     console.log('Duration: ' + e.duration + 'ms')
   })
+```
+
+### Sonarqube
+Download latest sonarqube community build.
+
+Start sonarqube server. 
+
+Browse localhost:9000 and set up project.
+
+```pwsh
+sonar "-Dsonar.host.url=http://localhost:9000" "-Dsonar.token=[token]" "-Dsonar.projectKey=[projectKey]"
 ```
