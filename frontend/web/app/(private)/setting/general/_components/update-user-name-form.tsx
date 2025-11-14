@@ -7,19 +7,19 @@ import CustomFormItem from '@/components/_general/form/custom-form-item';
 import { useRouter } from 'next/navigation';
 import FormSubmitButton from '@/components/_general/form/form-submit-button';
 import CustomInput from '@/components/_general/input/custom-input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/external/shadcn/components/ui/card';
 import { Save } from 'lucide-react';
 import { use, useState } from 'react';
 import ConfirmDialog from '@/components/_general/dialog/confirm-dialog';
 import { toast } from 'sonner';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/_general/constants/sonnar-constant';
-import { UpdateUserNameFormInput, updateUserNameFormInputSchema } from '@/app/(private)/setting/general/_components/update-user-name-form-input';
+import { UpdateUserNameFormInput, updateUserNameFormInputSchema, UpdateUserNameFormKey } from '@/app/(private)/setting/general/_components/update-user-name-form-input';
 import { UpdateUserNameRequest } from '@/libs/user/models/update-user-name-request';
 import { updateUserNameAction } from '@/libs/user/actions/update-user-name-action';
 import { handleCudResponse } from '@/libs/_general/utils/response-utils';
 import { isNil } from 'lodash';
 import { MessageContent, MessageTitle } from '@/libs/_general/enums/message';
 import { SessionPayload } from '@/libs/access/models/session-payload';
+import CustomCard from '@/components/_general/card/custom-card';
 
 type Props = {
   sessionPromise: Promise<SessionPayload | undefined>;
@@ -34,7 +34,7 @@ export default function UpdateUserNameForm({
   const form = useForm({
     resolver: zodResolver(updateUserNameFormInputSchema),
     defaultValues: {
-      name: userName,
+      [UpdateUserNameFormKey.NAME]: userName,
     },
   })
 
@@ -50,9 +50,9 @@ export default function UpdateUserNameForm({
   }
 
   const inputCheck = (input: UpdateUserNameFormInput): boolean => {
-    const isSameName = input.name !== userName;
+    const isSameName = input[UpdateUserNameFormKey.NAME] !== userName;
     if (!isSameName) {
-      form.setError('root', {
+      form.setError(UpdateUserNameFormKey.NAME, {
         type: MessageTitle.INPUT_ERROR,
         message: MessageContent.NOT_MATCH.replaceAll('{0}', '原本名稱')
       });
@@ -66,7 +66,7 @@ export default function UpdateUserNameForm({
   const onAlertDialogContinue = async () => {
     const input = form.getValues()
     const request: UpdateUserNameRequest = {
-      name: input.name,
+      name: input[UpdateUserNameFormKey.NAME],
     }
 
     const response = await updateUserNameAction(request)
@@ -80,46 +80,41 @@ export default function UpdateUserNameForm({
 
     router.refresh()
     form.reset({
-      name: input.name,
+      [UpdateUserNameFormKey.NAME]: input[UpdateUserNameFormKey.NAME],
     });
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <Card>
-          <CardHeader>
-            <CardTitle>用戶名稱</CardTitle>
-            <CardDescription>
-              更改你在Scheduler的用戶名稱。
-            </CardDescription>
-          </CardHeader>
-          <CardContent className='flex flex-wrap space-x-4 space-y-4'>
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <CustomFormItem>
-                  <FormControl>
-                    <CustomInput
-                      autoComplete='nickname'
-                      placeholder={'用戶名稱'}
-                      {...field}
-                    />
-                  </FormControl>
-                </CustomFormItem>
-              )}
-            />
-          </CardContent>
-          <CardFooter className='flex space-x-4'>
+        <CustomCard
+          title='用戶名稱'
+          description='更改您的用戶名稱。'
+          footer={(
             <FormSubmitButton
               icon={<Save />}
               className='ml-auto'
             >
               儲存
             </FormSubmitButton>
-          </CardFooter>
-        </Card>
+          )}
+        >
+          <FormField
+            control={form.control}
+            name={UpdateUserNameFormKey.NAME}
+            render={({ field }) => (
+              <CustomFormItem>
+                <FormControl>
+                  <CustomInput
+                    autoComplete='nickname'
+                    placeholder='用戶名稱'
+                    {...field}
+                  />
+                </FormControl>
+              </CustomFormItem>
+            )}
+          />
+        </CustomCard>
         <ConfirmDialog
           isOpen={isAlertDialogOpen}
           setIsOpen={setIsAlertDialogOpen}

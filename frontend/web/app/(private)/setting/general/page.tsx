@@ -4,6 +4,7 @@ import UpdateUserNameForm from "./_components/update-user-name-form";
 import SidebarInsetLayout from "@/components/_general/layout/sidebar-inset/sidebar-inset-layout";
 import { Suspense } from "react";
 import InputCardSkeleton from "@/components/_general/skeleton/input-card-skeleton";
+import EmailSection from "./_components/email-section";
 
 export default function UserSettingPage() {
   const sessionPromise = getSession();
@@ -22,10 +23,13 @@ export default function UserSettingPage() {
       ]}
     >
       <div className="space-y-4">
-        <UpdatePasswordForm />
+        <Suspense fallback={<InputCardSkeleton />}>
+          <EmailSection />
+        </Suspense>
         <Suspense fallback={<InputCardSkeleton />}>
           <UpdateUserNameForm sessionPromise={sessionPromise} />
         </Suspense>
+        <UpdatePasswordForm />
       </div>
     </SidebarInsetLayout>
   )

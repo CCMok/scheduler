@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 import FormSubmitButton from '@/components/_general/form/form-submit-button';
 import CustomInput from '@/components/_general/input/custom-input';
 import { UpdatePasswordFormInput, updatePasswordFormInputSchema } from '@/app/(private)/setting/general/_components/update-pasword-form-input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/external/shadcn/components/ui/card';
 import NewPasswordFormField from '@/components/_general/form/new-password-form-field';
 import { Save } from 'lucide-react';
 import { useState } from 'react';
@@ -20,6 +19,7 @@ import { updatePasswordAction } from '@/libs/user/actions/update-password-action
 import { handleCudResponse } from '@/libs/_general/utils/response-utils';
 import { isNil } from 'lodash';
 import { MessageTitle } from '@/libs/_general/enums/message';
+import CustomCard from '@/components/_general/card/custom-card';
 
 export default function UpdatePasswordForm() {
   const form = useForm({
@@ -60,45 +60,40 @@ export default function UpdatePasswordForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <Card>
-          <CardHeader>
-            <CardTitle>密碼</CardTitle>
-            <CardDescription>
-              更改你在Scheduler的密碼。
-            </CardDescription>
-          </CardHeader>
-          <CardContent className='flex flex-wrap space-x-4 space-y-4'>
-            <NewPasswordFormField<UpdatePasswordFormInput>
-              name='password'
-              inputProps={{ placeholder: '新密碼' }}
-            />
-
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <CustomFormItem>
-                  <FormControl>
-                    <CustomInput
-                      type='password'
-                      autoComplete='new-password'
-                      placeholder='確認密碼'
-                      {...field}
-                    />
-                  </FormControl>
-                </CustomFormItem>
-              )}
-            />
-          </CardContent>
-          <CardFooter className='flex space-x-4'>
+        <CustomCard
+          title='密碼'
+          description='更改您的密碼。'
+          footer={(
             <FormSubmitButton
               icon={<Save />}
               className='ml-auto'
             >
               儲存
             </FormSubmitButton>
-          </CardFooter>
-        </Card>
+          )}
+          contentClassName='flex flex-wrap'
+        >
+          <NewPasswordFormField<UpdatePasswordFormInput>
+            name='password'
+            inputProps={{ placeholder: '新密碼' }}
+          />
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <CustomFormItem>
+                <FormControl>
+                  <CustomInput
+                    type='password'
+                    autoComplete='new-password'
+                    placeholder='確認密碼'
+                    {...field}
+                  />
+                </FormControl>
+              </CustomFormItem>
+            )}
+          />
+        </CustomCard>
         <ConfirmDialog
           isOpen={isAlertDialogOpen}
           setIsOpen={setIsAlertDialogOpen}
