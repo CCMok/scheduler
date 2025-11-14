@@ -5,22 +5,31 @@ import { FormItem, FormLabel, FormMessage } from '@/external/shadcn/components/u
 import { ReactNode } from 'react';
 
 type Props = ChildrenProps & {
-  label?: ReactNode,
-  isLabelStar?: boolean,
+  label?: ReactNode;
+  isLabelStar?: boolean;
+  labelAddon?: ReactNode;
 }
 
 export default function CustomFormItem({
-  label,
   children,
+  label,
   isLabelStar,
+  labelAddon,
 }: Readonly<Props>) {
   return (
     <FormItem className='flex flex-col'>
-      {label && (
-        <FormLabel>
-          {label}
-          {isLabelStar && <span className='text-destructive'>*</span>}
-        </FormLabel>
+      {(label || labelAddon) && (
+        <div className='flex'>
+          {label && (
+            <FormLabel>
+              {label}
+              {isLabelStar && <span className='text-destructive'>*</span>}
+            </FormLabel>
+          )}
+          <div className='ml-auto'>
+            {labelAddon}
+          </div>
+        </div>
       )}
       {children}
       <FormMessage />

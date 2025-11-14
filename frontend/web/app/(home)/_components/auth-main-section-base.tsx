@@ -18,9 +18,9 @@ export default function AuthMainSectionBase({
     <>
       <Logo className='absolute top-8 left-8' />
       <section className={'flex flex-col items-center justify-center px-8 space-y-6 min-h-screen'}>
-        <div className='space-y-2 flex flex-col items-center'>
+        <div className='space-y-2 flex flex-col items-center max-w-sm'>
           <h1 className='text-2xl font-bold'>{title}</h1>
-          <p className='text-secondary-foreground'>
+          <p className='text-secondary-foreground text-center'>
             {description}
           </p>
         </div>
