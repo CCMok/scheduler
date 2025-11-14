@@ -12,7 +12,7 @@ import { registerAction } from '@/libs/access/actions/register-action';
 import { toast } from "sonner";
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/_general/constants/sonnar-constant';
 import { RegisterRequest } from '@/libs/access/models/register-request';
-import { REDIRECT_PRIVATE_PATH } from '@/libs/_general/enums/path';
+import { PATH } from '@/libs/_general/enums/path';
 import NewPasswordFormField from '@/components/_general/form/new-password-form-field';
 import { handleCudResponse } from '@/libs/_general/utils/response-utils';
 import { isNil } from 'lodash';
@@ -46,10 +46,10 @@ export default function RegisterForm() {
 
     toast.success('註冊' + MessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
-      description: '編排您第一個值班表吧！',
+      description: '創建您的機構吧！',
     })
 
-    router.push(REDIRECT_PRIVATE_PATH)
+    router.push(PATH.setting.organizations.new)
   }
 
   return (
