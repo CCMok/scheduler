@@ -53,20 +53,24 @@ const deleteOldSchedules = async (tx: Transaction, rosterHistoryId: number): Pro
 }
 
 const createNewSchedules = async (tx: Transaction, request: UpdateRosterHistoryRequest): Promise<void> => {
-  for (const schedule of request.schedules) {
-    await tx.rosterHistorySchedule.create({
-      data: {
-        rosterHistoryId: request.id,
-        day: schedule.day,
-        rosterHistoryScheduleArrangements: {
-          create: schedule.arrangements.map(arrangement => ({
-            postId: arrangement.postId,
-            workerId: arrangement.workerId,
-          })),
+  if (!request.schedules?.length) return;
+  
+  await Promise.all(
+    request.schedules.map(schedule =>
+      tx.rosterHistorySchedule.create({
+        data: {
+          rosterHistoryId: request.id,
+          day: schedule.day,
+          rosterHistoryScheduleArrangements: {
+            create: schedule.arrangements.map(arrangement => ({
+              postId: arrangement.postId,
+              workerId: arrangement.workerId,
+            })),
+          },
         },
-      },
-    })
-  }
+      })
+    )
+  )
 }
 
 const deleteOldOffWorkers = async (tx: Transaction, rosterHistoryId: number): Promise<void> => {
@@ -78,19 +82,21 @@ const deleteOldOffWorkers = async (tx: Transaction, rosterHistoryId: number): Pr
 }
 
 const createNewOffWorkers = async (tx: Transaction, request: UpdateRosterHistoryRequest): Promise<void> => {
-  if (!request.offWorkers || request.offWorkers.length === 0) return;
+  if (!request.offWorkers?.length) return;
 
-  for (const offWorker of request.offWorkers) {
-    await tx.rosterHistoryOffWorker.create({
-      data: {
-        rosterHistoryId: request.id,
-        workerId: offWorker.workerId,
-        rosterHistoryOffWorkerDays: {
-          create: offWorker.days.map(day => ({
-            day,
-          })),
+  await Promise.all(
+    request.offWorkers.map(offWorker =>
+      tx.rosterHistoryOffWorker.create({
+        data: {
+          rosterHistoryId: request.id,
+          workerId: offWorker.workerId,
+          rosterHistoryOffWorkerDays: {
+            create: offWorker.days.map(day => ({
+              day,
+            })),
+          },
         },
-      },
-    })
-  }
+      })
+    )
+  )
 }

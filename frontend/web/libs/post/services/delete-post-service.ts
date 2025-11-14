@@ -34,5 +34,5 @@ const execute = async (id: number): Promise<void> => {
     prisma.postConstraintPost.deleteMany({
       where: { postId: id },
     }),
-  ])
+  ],)
 }

@@ -2,6 +2,7 @@
 
 import ComboBox from '@/components/_general/combobox/combo-box';
 import { useCreateRosterStore } from '../../../../new/_components/store/create-roster-store-provider';
+import { useMemo } from 'react';
 
 type Props = {
   index: number;
@@ -24,10 +25,19 @@ export default function WorkerIdField({
     }
   };
 
+  const options = useMemo(() => (
+    workers.filter(worker => (
+      !generatedScheduleOffs.some((off, offIndex) => (
+        offIndex !== index
+        && off.workerId === worker.id
+      ))
+    ))
+  ), [workers, generatedScheduleOffs, index])
+
   return (
     <ComboBox
       value={value}
-      options={workers}
+      options={options}
       getValue={option => option.id}
       getDisplayName={option => option.name}
       onValueChange={handleValueChange}

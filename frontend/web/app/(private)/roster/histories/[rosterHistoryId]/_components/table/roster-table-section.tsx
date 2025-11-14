@@ -1,4 +1,3 @@
-import TableSkeleton from "@/components/_general/skeleton/table-skeleton";
 import { RosterHistoryOffWorkerWithDays, RosterHistoryScheduleWithRelated } from "@/libs/roster/models/roster-history-dao";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -17,6 +16,7 @@ import { getRosterHistoryOffWorkersWithDaysService } from "@/libs/roster/service
 import RosterTableFilterSection from "../filter/roster-table-filter-section";
 import { OffFormInput } from "@/app/(private)/roster/new/_components/filter/form/create-roster-form-input";
 import { handleGetResponse } from "@/libs/_general/utils/response-utils";
+import InputCardSkeleton from "@/components/_general/skeleton/input-card-skeleton";
 
 const getRosterHistorySchedules = async (rosterHistoryId: number): Promise<RosterHistoryScheduleWithRelated[]> => {
   const response = await getRosterHistorySchedulesWithRelatedService(undefined, rosterHistoryId)
@@ -95,7 +95,7 @@ export default function RosterTableSection({
   rosterHistoryId,
 }: Readonly<Props>) {
   return (
-    <Suspense fallback={<TableSkeleton />}>
+    <Suspense fallback={<InputCardSkeleton />}>
       <RosterTableServerContent
         rosterHistoryId={rosterHistoryId}
       />
