@@ -36,7 +36,7 @@ const issueTokenSetCookie = async (tokenPayload: TokenPayload): Promise<void> =>
   await setCookie(cookieName, token);
 }
 
-const getSessionPayloadFromUserRole = (userRole: UserWithRole): SessionPayload => {
+export const getSessionPayloadFromUserRole = (userRole: UserWithRole): SessionPayload => {
   return {
     userId: userRole.id,
     email: userRole.email,
