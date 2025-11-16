@@ -1,7 +1,8 @@
 const enum PathSegment {
   LOGIN = 'login',
   REGISTER = 'register',
-  PASSWORD_RESET = 'password-reset',
+  RESET_PASSWORD = 'reset-password',
+  UPDATE_PASSWORD = 'update-password',
   DASHBOARD = 'dashboard',
   ROSTER = 'roster',
   SETTING = 'setting',
@@ -25,7 +26,8 @@ export const PATH = {
   home: '/',
   login: `/${PathSegment.LOGIN}`,
   register: `/${PathSegment.REGISTER}`,
-  passwordReset: `/${PathSegment.PASSWORD_RESET}`,
+  resetPassword: `/${PathSegment.RESET_PASSWORD}`,
+  updatePassword: `/${PathSegment.UPDATE_PASSWORD}`,
   dashboard: `/${PathSegment.DASHBOARD}`,
   roster: {
     new: `/${PathSegment.ROSTER}/${PathSegment.NEW}`,
@@ -59,4 +61,4 @@ export const PATH = {
 export const REDIRECT_PUBLIC_PATH = PATH.login;
 export const REDIRECT_PRIVATE_PATH = PATH.roster.new;
 
-export const EXCLUDE_HOME_PUBLIC_PATHS = [PATH.login, PATH.register, PATH.passwordReset];
+export const EXCLUDE_HOME_PUBLIC_PATHS = [PATH.login, PATH.register, PATH.resetPassword];

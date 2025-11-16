@@ -13,6 +13,7 @@ export enum Param {
   DEPARTMENT_NAME = 'departmentName',
   CREATE_DATE_FROM = 'createDateFrom',
   CREATE_DATE_TO = 'createDateTo',
+  TOKEN = 'token',
 
   // function
   TAB = 'tab',

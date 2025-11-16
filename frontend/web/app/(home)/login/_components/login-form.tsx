@@ -74,7 +74,7 @@ export default function LoginForm() {
               label='密碼'
               labelAddon={(
                 <CustomButton variant='link' size='sm' asChild>
-                  <CustomLink href={PATH.passwordReset}>
+                  <CustomLink href={PATH.resetPassword}>
                     忘記密碼？
                   </CustomLink>
                 </CustomButton>
