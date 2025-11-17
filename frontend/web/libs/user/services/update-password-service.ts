@@ -16,7 +16,7 @@ export const updatePasswordService = tryCatch(async (
 ): Promise<ServiceResponse> => {
   const parsedRequest = updatePasswordRequestSchema.parse(request)
 
-  const userId = await getUserId();
+  const userId = await getUserId(parsedRequest.token);
   if (isNil(userId)) return {
     status: ServiceResponseStatus.UNAUTHORIZED,
   }

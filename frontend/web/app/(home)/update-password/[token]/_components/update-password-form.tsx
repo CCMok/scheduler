@@ -16,17 +16,20 @@ import { toast } from 'sonner';
 import { MessageTitle } from '@/libs/_general/enums/message';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/_general/constants/sonnar-constant';
 import { afterLoginUi } from '@/libs/access/utils/login-utils';
+import LabelInput from '@/components/_general/input/label-input';
 
-const inputClassName = 'w-full'
+const INPUT_CLASS_NAME = 'w-full'
+const INPUT_ID_EMAIL = 'email'
 
 type Props = {
   token: string;
+  email: string;
 }
 
 export default function UpdatePasswordForm({
   token,
+  email,
 }: Readonly<Props>) {
-  // TODO show email
   const form = useForm({
     resolver: zodResolver(updatePasswordFormInputSchema),
     defaultValues: {
@@ -59,10 +62,23 @@ export default function UpdatePasswordForm({
         className='space-y-4'
         onSubmit={form.handleSubmit(onSubmit)}
       >
+        <LabelInput
+          label='電郵地址'
+          htmlFor={INPUT_ID_EMAIL}
+        >
+          <CustomInput
+            id={INPUT_ID_EMAIL}
+            type='email'
+            autoComplete='email'
+            value={email}
+            disabled
+            className={INPUT_CLASS_NAME}
+          />
+        </LabelInput>
         <NewPasswordFormField<UpdatePasswordFormInput>
           name={UpdatePasswordFormInputKey.PASSWORD}
           formItemProps={{ label: '新密碼' }}
-          className={inputClassName}
+          className={INPUT_CLASS_NAME}
         />
         <FormField
           control={form.control}
@@ -73,14 +89,14 @@ export default function UpdatePasswordForm({
                 <CustomInput
                   type='password'
                   autoComplete='new-password'
-                  className={inputClassName}
+                  className={INPUT_CLASS_NAME}
                   {...field}
                 />
               </FormControl>
             </CustomFormItem>
           )}
         />
-        <FormSubmitButton className={inputClassName}>確定</FormSubmitButton>
+        <FormSubmitButton className={INPUT_CLASS_NAME}>確定</FormSubmitButton>
       </form>
     </Form >
   )
