@@ -36,7 +36,6 @@ export const PATH = {
       build: (rosterHistoryId: string | number) => `/${PathSegment.ROSTER}/${PathSegment.HISTORIES}/${rosterHistoryId}`,
     },
   },
-
   setting: {
     general: `/${PathSegment.SETTING}/${PathSegment.GENERAL}`,
     organizations: {
@@ -61,4 +60,9 @@ export const PATH = {
 export const REDIRECT_PUBLIC_PATH = PATH.login;
 export const REDIRECT_PRIVATE_PATH = PATH.roster.new;
 
-export const EXCLUDE_HOME_PUBLIC_PATHS = [PATH.login, PATH.register, PATH.resetPassword];
+export const EXCLUDE_HOME_PUBLIC_PATHS = [
+  PATH.login,
+  PATH.register,
+  PATH.resetPassword,
+  PATH.updatePassword,
+];

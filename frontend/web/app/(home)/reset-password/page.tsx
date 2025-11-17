@@ -1,7 +1,7 @@
 import { PATH } from "@/libs/_general/enums/path";
 import AuthMainSectionBase from "../_components/auth-main-section-base";
 import AuthRemarkBase from "../_components/auth-remark-base";
-import ResetPasswordForm from "./_component/reset-password-form";
+import ResetPasswordForm from "./_components/reset-password-form";
 
 export default function ResetPasswordPage() {
   return (

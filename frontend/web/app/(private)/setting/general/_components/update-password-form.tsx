@@ -7,7 +7,7 @@ import CustomFormItem from '@/components/_general/form/custom-form-item';
 import { useRouter } from 'next/navigation';
 import FormSubmitButton from '@/components/_general/form/form-submit-button';
 import CustomInput from '@/components/_general/input/custom-input';
-import { UpdatePasswordFormInput, updatePasswordFormInputSchema } from '@/app/(private)/setting/general/_components/update-pasword-form-input';
+import { UpdatePasswordFormInput, UpdatePasswordFormInputKey, updatePasswordFormInputSchema } from '@/libs/user/models/update-pasword-form-input';
 import NewPasswordFormField from '@/components/_general/form/new-password-form-field';
 import { Save } from 'lucide-react';
 import { useState } from 'react';
@@ -25,8 +25,8 @@ export default function UpdatePasswordForm() {
   const form = useForm({
     resolver: zodResolver(updatePasswordFormInputSchema),
     defaultValues: {
-      password: '',
-      confirmPassword: '',
+      [UpdatePasswordFormInputKey.PASSWORD]: '',
+      [UpdatePasswordFormInputKey.CONFIRM_PASSWORD]: '',
     },
   })
 
@@ -41,7 +41,7 @@ export default function UpdatePasswordForm() {
   const onAlertDialogContinue = async () => {
     const input = form.getValues()
     const request: UpdatePasswordRequest = {
-      password: input.password,
+      password: input[UpdatePasswordFormInputKey.PASSWORD],
     }
 
     const response = await updatePasswordAction(request)
@@ -74,12 +74,12 @@ export default function UpdatePasswordForm() {
           contentClassName='flex flex-wrap'
         >
           <NewPasswordFormField<UpdatePasswordFormInput>
-            name='password'
+            name={UpdatePasswordFormInputKey.PASSWORD}
             inputProps={{ placeholder: '新密碼' }}
           />
           <FormField
             control={form.control}
-            name="confirmPassword"
+            name={UpdatePasswordFormInputKey.CONFIRM_PASSWORD}
             render={({ field }) => (
               <CustomFormItem>
                 <FormControl>
