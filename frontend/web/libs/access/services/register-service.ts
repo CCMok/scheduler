@@ -19,7 +19,6 @@ export const registerService = tryCatch(async (
 
   const encryptedPassword = await hash(parsedRequest.password, SALT_ROUNDS)
 
-
   const createResult = await createUser(parsedRequest, encryptedPassword)
   if (!createResult.isSuccess) {
     return handleQueryError(createResult.error)
