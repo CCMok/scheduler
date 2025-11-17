@@ -1,5 +1,6 @@
 export enum MessageTitle {
   SUCCESS = '成功',
+  UNAUTHORIZED = '未授權執行操作',
   INPUT_ERROR = '輸入錯誤',
   INTERNAL_ERROR = '系統錯誤',
 }

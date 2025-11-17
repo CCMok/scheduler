@@ -13,6 +13,9 @@ export const handleGetResponse = <T>(
     case ServiceResponseStatus.OK:
       return response.data;
     case ServiceResponseStatus.UNAUTHORIZED:
+      toast.error(MessageTitle.UNAUTHORIZED, {
+        ...SONNER_DEFAULT_OPTIONS,
+      })
       onRoute(REDIRECT_PUBLIC_PATH);
       break;
     case ServiceResponseStatus.BAD_REQUEST:
@@ -38,6 +41,9 @@ export const handleCudResponse = <T>(
     case ServiceResponseStatus.OK:
       return response.data;
     case ServiceResponseStatus.UNAUTHORIZED:
+      toast.error(MessageTitle.UNAUTHORIZED, {
+        ...SONNER_DEFAULT_OPTIONS,
+      })
       onRoute(REDIRECT_PUBLIC_PATH);
       break;
     case ServiceResponseStatus.BAD_REQUEST:

@@ -9,10 +9,24 @@ import FormSubmitButton from '@/components/_general/form/form-submit-button';
 import CustomInput from '@/components/_general/input/custom-input';
 import { UpdatePasswordFormInput, UpdatePasswordFormInputKey, updatePasswordFormInputSchema } from '@/libs/user/models/update-pasword-form-input';
 import NewPasswordFormField from '@/components/_general/form/new-password-form-field';
+import { updatePasswordAction } from '@/libs/user/actions/update-password-action';
+import { handleCudResponse } from '@/libs/_general/utils/response-utils';
+import { isNil } from 'lodash';
+import { toast } from 'sonner';
+import { MessageTitle } from '@/libs/_general/enums/message';
+import { SONNER_DEFAULT_OPTIONS } from '@/libs/_general/constants/sonnar-constant';
+import { afterLoginUi } from '@/libs/access/utils/login-utils';
 
 const inputClassName = 'w-full'
 
-export default function UpdatePasswordForm() {
+type Props = {
+  token: string;
+}
+
+export default function UpdatePasswordForm({
+  token,
+}: Readonly<Props>) {
+  // TODO show email
   const form = useForm({
     resolver: zodResolver(updatePasswordFormInputSchema),
     defaultValues: {
@@ -24,17 +38,19 @@ export default function UpdatePasswordForm() {
   const router = useRouter()
 
   const onSubmit = async (input: UpdatePasswordFormInput) => {
-    // TODO
-    // const response = await resetPasswordAction(input)
+    const response = await updatePasswordAction({
+      password: input[UpdatePasswordFormInputKey.PASSWORD],
+      token,
+    })
 
-    // const data = handleCudResponse(response, router.push)
-    // if (isNil(data)) return;
+    const data = handleCudResponse(response, router.push)
+    if (isNil(data)) return;
 
-    // toast.success('已發送密碼重設電郵，請檢查您的電郵。', {
-    //   ...SONNER_DEFAULT_OPTIONS,
-    // })
+    toast.success('更改密碼' + MessageTitle.SUCCESS, {
+      ...SONNER_DEFAULT_OPTIONS,
+    })
 
-    // router.push(REDIRECT_PUBLIC_PATH)
+    afterLoginUi(router.push)
   }
 
   return (

@@ -9,12 +9,12 @@ import { loginAction } from '@/libs/access/actions/login-action';
 import { useRouter } from 'next/navigation';
 import FormSubmitButton from '@/components/_general/form/form-submit-button';
 import CustomInput from '@/components/_general/input/custom-input';
-import { PATH, REDIRECT_PRIVATE_PATH } from '@/libs/_general/enums/path';
-import { CLEANABLE_LOCAL_STORAGE_KEYS } from '@/libs/_general/enums/local-storage-key';
+import { PATH } from '@/libs/_general/enums/path';
 import { handleCudResponse } from '@/libs/_general/utils/response-utils';
 import { isNil } from 'lodash';
 import CustomLink from '@/components/_general/link/custom-link';
 import CustomButton from '@/components/_general/button/custom-button';
+import { afterLoginUi } from '@/libs/access/utils/login-utils';
 
 const inputClassName = 'w-full'
 
@@ -35,12 +35,7 @@ export default function LoginForm() {
     const data = handleCudResponse(response, router.push)
     if (isNil(data)) return;
 
-    // Remove user specific item
-    for (const key of CLEANABLE_LOCAL_STORAGE_KEYS) {
-      localStorage.removeItem(key)
-    }
-
-    router.push(REDIRECT_PRIVATE_PATH)
+    afterLoginUi(router.push)
   }
 
   return (

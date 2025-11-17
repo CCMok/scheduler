@@ -8,7 +8,6 @@ import { UserWithRole } from '@/libs/user/models/user-dao';
 import { getSessionPayloadFromUserRole } from '../managers/session-manager';
 import { issueToken } from '@/libs/_general/managers/jwt-manager';
 import { PATH } from '@/libs/_general/enums/path';
-import { Param } from '@/libs/_general/enums/param';
 import ResetPasswordEmail, { EMAIL_SUBJECT } from '@/emails/reset-password-email';
 import { sendEmail } from '@/libs/_general/managers/email-manager';
 import { BASE_URL } from '@/libs/_general/constants/url-constant';
@@ -60,5 +59,5 @@ const createEmailContent = async (user: UserWithRole): Promise<ReactNode> => {
 const createUpdatePasswordUrl = async (user: UserWithRole): Promise<string> => {
   const payload = getSessionPayloadFromUserRole(user)
   const token = await issueToken(payload, '15m')
-  return `${BASE_URL}${PATH.updatePassword}?${Param.TOKEN}=${token}`
+  return `${BASE_URL}${PATH.updatePassword}/${token}`
 }
