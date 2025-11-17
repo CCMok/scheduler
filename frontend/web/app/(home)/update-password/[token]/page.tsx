@@ -27,6 +27,7 @@ export default async function UpdatePasswordPage({
   const token = awaitedParams[Param.TOKEN];
   if (!token) notFound();
 
+  // Verify user
   const user = await getUser(token)
   if (!user) notFound();
 

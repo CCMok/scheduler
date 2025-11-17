@@ -3,9 +3,9 @@ import { issueToken, TokenPayload, verifyToken } from "../../_general/managers/j
 import { UserExcludePasswordWithRole } from "../../user/models/user-dao";
 import { SessionPayload } from "../models/session-payload";
 import { deleteCookie, getCookie, setCookie } from '../../_general/managers/cookie-manager';
+import { LOGIN_SESSION_EXPIRATION_TIME } from '../constants/token-constant';
 
 // config
-const sessionExpirationTime = '1d';
 const cookieName = 'token';
 
 export const setSession = async (userRole: UserExcludePasswordWithRole): Promise<void> => {
@@ -32,7 +32,7 @@ export const refreshSession = async (sessionPayload: SessionPayload): Promise<vo
 }
 
 const issueTokenSetCookie = async (tokenPayload: TokenPayload): Promise<void> => {
-  const token = await issueToken(tokenPayload, sessionExpirationTime);
+  const token = await issueToken(tokenPayload, LOGIN_SESSION_EXPIRATION_TIME);
   await setCookie(cookieName, token);
 }
 

@@ -46,10 +46,9 @@ export default function RegisterForm() {
 
     toast.success('註冊' + MessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
-      description: '創建您的機構吧！',
     })
 
-    router.push(PATH.setting.organizations.new)
+    router.push(PATH.verifyEmail.sent(data.userId))
   }
 
   return (
@@ -74,13 +73,11 @@ export default function RegisterForm() {
             </CustomFormItem>
           )}
         />
-
         <NewPasswordFormField<RegisterFormInput>
           className={inputClassName}
           name='password'
           formItemProps={{ label: '密碼', isLabelStar: true }}
         />
-
         <FormField
           control={form.control}
           name="confirmPassword"
@@ -97,7 +94,6 @@ export default function RegisterForm() {
             </CustomFormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="name"
@@ -113,7 +109,6 @@ export default function RegisterForm() {
             </CustomFormItem>
           )}
         />
-
         <FormSubmitButton className={inputClassName}>註冊</FormSubmitButton>
       </form>
     </Form >

@@ -1,7 +1,6 @@
 import 'server-only'
 import { RegisterRequest, registerRequestSchema } from '../models/register-request';
 import prisma from '../../_general/managers/database-manager';
-import { setSession } from '../managers/session-manager';
 import { getPrismaErrorTarget, tryCatchQuery } from '../../_general/utils/database-utils';
 import { PrismaClientKnownRequestError } from '@/external/prisma-generated/runtime/library';
 import { PrismaErrorCode } from '../../_general/enums/prisma-error-code';
@@ -11,10 +10,12 @@ import { tryCatch } from '../../_general/utils/service-utils';
 import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
 import { MessageContent } from '../../_general/enums/message';
 import { DEFAULT_ROLE } from '../../role/enums/role';
+import { RegisterResponse } from '../models/register-response';
+import { UserExcludePasswordWithRole } from '@/libs/user/models/user-dao';
 
 export const registerService = tryCatch(async (
   request: RegisterRequest,
-): Promise<ServiceResponse> => {
+): Promise<ServiceResponse<RegisterResponse>> => {
   const parsedRequest = registerRequestSchema.parse(request);
 
   const encryptedPassword = await hash(parsedRequest.password, SALT_ROUNDS)
@@ -24,11 +25,16 @@ export const registerService = tryCatch(async (
     return handleQueryError(createResult.error)
   }
 
-  await setSession(createResult.data)
+  const emailSent = await sendVerificationEmail(createResult.data)
+  if (!emailSent) return {
+    status: ServiceResponseStatus.INTERNAL_ERROR,
+  }
 
   return {
     status: ServiceResponseStatus.OK,
-    data: {},
+    data: {
+      userId: createResult.data.id,
+    },
   }
 })
 
@@ -42,12 +48,15 @@ const createUser = async (request: RegisterRequest, password: string) =>
         role: {
           connect: { enum: DEFAULT_ROLE },
         },
+        isEmailVerified: false,
       },
-      include: { role: true },
+      include: {
+        role: true,
+      },
     })
   )
 
-const handleQueryError = (error: PrismaClientKnownRequestError): ServiceResponse => {
+const handleQueryError = (error: PrismaClientKnownRequestError): ServiceResponse<RegisterResponse> => {
   if (error.code === PrismaErrorCode.UNIQUE_CONSTRAINT_VIOLATION) {
     const target = getPrismaErrorTarget(error)
 
@@ -60,4 +69,9 @@ const handleQueryError = (error: PrismaClientKnownRequestError): ServiceResponse
   }
 
   throw error;
+}
+
+const sendVerificationEmail = async (user: UserExcludePasswordWithRole): Promise<boolean> => {
+  // TODO: create url
+  return true;
 }

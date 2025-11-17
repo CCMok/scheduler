@@ -34,6 +34,7 @@ model User {
   password               String
   name                   String?
   roleId                 Int                @map("role_id")
+  isEmailVerified        Boolean            @default(false) @map("is_email_verified")
   role                   Role               @relation(fields: [roleId], references: [id])
   userOrganizations      UserOrganization[]
   createdRosterHistories RosterHistory[]    @relation("CreatedBy")
@@ -44,14 +45,15 @@ model User {
 }
 
 model UserAudit {
-  auditId        Int      @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction    String   @map("audit_action")
-  id             Int?
-  email          String?
-  password       String?
-  name           String?
-  roleId         Int?     @map("role_id")
+  auditId         Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp  DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction     String   @map("audit_action")
+  id              Int?
+  email           String?
+  password        String?
+  name            String?
+  roleId          Int?     @map("role_id")
+  isEmailVerified Boolean? @map("is_email_verified")
 
   @@map("user_audit")
 }

@@ -17,4 +17,5 @@ export enum Param {
 
   // function
   TAB = 'tab',
+  AUTO_SEND = 'autoSend',
 }

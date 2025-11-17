@@ -3,6 +3,7 @@ const enum PathSegment {
   REGISTER = 'register',
   RESET_PASSWORD = 'reset-password',
   UPDATE_PASSWORD = 'update-password',
+  VERIFY_EMAIL = 'verify-email',
   DASHBOARD = 'dashboard',
   ROSTER = 'roster',
   SETTING = 'setting',
@@ -20,6 +21,7 @@ const enum PathSegment {
   // function
   NEW = 'new',
   HISTORIES = 'histories',
+  SENT = 'sent',
 }
 
 export const PATH = {
@@ -28,6 +30,11 @@ export const PATH = {
   register: `/${PathSegment.REGISTER}`,
   resetPassword: `/${PathSegment.RESET_PASSWORD}`,
   updatePassword: `/${PathSegment.UPDATE_PASSWORD}`,
+  verifyEmail: {
+    base: `/${PathSegment.VERIFY_EMAIL}`,
+    build: (userId: string | number) => `/${PathSegment.VERIFY_EMAIL}/${userId}`,
+    sent: (userId: string | number) => `/${PathSegment.VERIFY_EMAIL}/${userId}/${PathSegment.SENT}`,
+  },
   dashboard: `/${PathSegment.DASHBOARD}`,
   roster: {
     new: `/${PathSegment.ROSTER}/${PathSegment.NEW}`,
@@ -65,4 +72,5 @@ export const EXCLUDE_HOME_PUBLIC_PATHS = [
   PATH.register,
   PATH.resetPassword,
   PATH.updatePassword,
+  PATH.verifyEmail.base,
 ];
