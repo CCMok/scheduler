@@ -61,7 +61,7 @@ const createUpdatePasswordUrl = async (user: UserWithRole): Promise<string> => {
 }
 
 const sendEmail = async (userEmail: string, userName: string, updatePasswordUrl: string): Promise<boolean> => {
-  const { error } = await resend.emails.send({
+  const { data, error } = await resend.emails.send({
     from: `Scheduler <${FROM_EMAIL_ADDRESS}>`,
     to: [userEmail],
     subject: EMAIL_SUBJECT,
@@ -72,6 +72,8 @@ const sendEmail = async (userEmail: string, userName: string, updatePasswordUrl:
     console.error('Send reset password email failed. Error: ', error)
     return false;
   }
+
+  console.log('Sent reset password email. Email id:', data.id)
 
   return true;
 }
