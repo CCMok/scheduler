@@ -1,20 +1,20 @@
 import { Body, Button, Container, Head, Html, Section, Tailwind, Text } from "@react-email/components";
 
-export const EMAIL_SUBJECT = 'Scheduler - 重置您的密碼';
+export const EMAIL_SUBJECT = 'Scheduler - 驗證您的電郵地址';
 
 type Props = {
   userName: string;
-  updatePasswordUrl: string;
+  verifyResultUrl: string;
 }
 
-export default function ResetPasswordEmail({
+export default function RegisterVerificationEmail({
   userName,
-  updatePasswordUrl,
+  verifyResultUrl,
 }: Readonly<Props>) {
   return (
     <Html>
       <Head>
-        <title>Scheudler - Reset password</title>
+        <title>Scheudler - Verify email</title>
       </Head>
       <Tailwind>
         <Body className='bg-[#efeef1]'>
@@ -24,16 +24,16 @@ export default function ResetPasswordEmail({
                 您好 {userName}，
               </Text>
               <Text>
-                最近有人要求更改您的 Scheduler 帳戶密碼。如果您是請求者，可以在這裡設定新密碼：
+                感謝您註冊 Scheduler 帳戶。為完成註冊手續，請點擊以下按鈕驗證您的電郵地址：
               </Text>
               <Button
-                href={updatePasswordUrl}
+                href={verifyResultUrl}
                 className='bg-[#000] rounded text-white text-[15px] no-underline text-center w-[210px] py-[14px]'
               >
-                重設密碼
+                驗證電郵地址
               </Button>
               <Text>
-                如果您不想更改密碼或沒有提出更改密碼的請求，請忽略並刪除此訊息。
+                如果您沒有提出註冊帳戶的請求，請忽略並刪除此訊息。
               </Text>
               <Text>
                 為了確保您的帳戶安全，請勿將此郵件轉發給任何人。
@@ -49,7 +49,7 @@ export default function ResetPasswordEmail({
   )
 }
 
-ResetPasswordEmail.PreviewProps = {
+RegisterVerificationEmail.PreviewProps = {
   userName: 'Eren Yeager',
-  updatePasswordUrl: 'localhost:3000/update-password/1234567890',
+  verifyResultUrl: 'localhost:3000/verify-email/result/1234567890',
 } as Props;

@@ -4,7 +4,7 @@ import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/se
 import { ResetPasswordRequest, resetPasswordRequestSchema } from '../models/reset-password-request';
 import prisma from '@/libs/_general/managers/database-manager';
 import { MessageContent } from '@/libs/_general/enums/message';
-import { UserExcludePasswordWithRole, UserWithRole } from '@/libs/user/models/user-dao';
+import { UserExcludePasswordWithRole } from '@/libs/user/models/user-dao';
 import { getSessionPayloadFromUserRole } from '../managers/session-manager';
 import { issueToken } from '@/libs/_general/managers/jwt-manager';
 import { PATH } from '@/libs/_general/enums/path';

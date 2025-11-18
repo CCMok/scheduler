@@ -11,7 +11,7 @@ import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/se
 import { MessageContent } from '../../_general/enums/message';
 import { DEFAULT_ROLE } from '../../role/enums/role';
 import { RegisterResponse } from '../models/register-response';
-import { UserExcludePasswordWithRole } from '@/libs/user/models/user-dao';
+import { sendVerificationEmail } from '../utils/email-verification-utils';
 
 export const registerService = tryCatch(async (
   request: RegisterRequest,
@@ -69,9 +69,4 @@ const handleQueryError = (error: PrismaClientKnownRequestError): ServiceResponse
   }
 
   throw error;
-}
-
-const sendVerificationEmail = async (user: UserExcludePasswordWithRole): Promise<boolean> => {
-  // TODO: create url
-  return true;
 }
