@@ -3,7 +3,7 @@ import { Department } from "@/external/prisma-generated";
 import { handleGetResponse } from "@/libs/_general/utils/response-utils";
 import { getDepartmentsService } from "@/libs/department/services/get-departments-service";
 import { redirect } from "next/navigation";
-import DepartmentConstraintForm from "./form/department-constraint-form";
+import UpdateDepartmentConstraintForm from "./form/update-department-constraint-form";
 import { Suspense } from "react";
 import InputCardSkeleton from "@/components/_general/skeleton/input-card-skeleton";
 
@@ -24,7 +24,7 @@ export default function DepartmentConstraintSection({
 
   return (
     <Suspense fallback={<InputCardSkeleton />}>
-      <DepartmentConstraintForm
+      <UpdateDepartmentConstraintForm
         departmentPromise={departmentPromise}
       />
     </Suspense >
