@@ -34,13 +34,15 @@ class RosterModelHelper:
 
     @staticmethod
     def __define_each_worker_max_post_per_roster(material: RosterMaterial) -> None:
+        max_worker_post_per_roster = material.department.max_worker_post_per_roster if material.department.max_worker_post_per_roster is not None else 2
+
         for worker in material.workers:
             material.model.add(
                 sum(
                     material.shifts[(day, post.id, worker.id)]
                     for day in material.request.days
                     for post in worker.active_posts
-                ) <= 2
+                ) <= max_worker_post_per_roster
             )
 
     @staticmethod

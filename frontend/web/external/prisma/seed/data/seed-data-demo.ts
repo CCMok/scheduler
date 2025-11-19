@@ -1,10 +1,10 @@
 import { PostConstraintType, WorkerConstraintType } from "../../../../libs/constraint/enums/constraint-type";
 
 export const organizationName = 'Demo Church 2'
-
 export const organizationMaxHistoryCount = 5
 
 export const departmentName = 'Worship Team'
+export const departmentMaxWorkerPostPerRoster = 2
 
 export const postNames = [
   'Host',

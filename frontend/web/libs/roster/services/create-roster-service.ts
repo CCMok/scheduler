@@ -72,7 +72,7 @@ const sendArrangeRosterRequest = async (request: CreateRosterRequest): Promise<a
         [ApiHeaderKey.CONTENT_TYPE]: ContentType.APPLICATION_JSON,
         [ApiHeaderKey.X_API_KEY]: SCH_API_KEY,
       },
-      body: JSON.stringify(request),
+      body: JSON.stringify({ ...request }),
     });
 
     if (!response.ok) {

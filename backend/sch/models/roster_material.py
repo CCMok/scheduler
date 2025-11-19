@@ -1,14 +1,16 @@
 from datetime import datetime
 from sqlmodel import select
-from models.dao import Worker, Post
+from models.dao import Department, Worker, Post
 from managers.db import DbSession
 from models.arrange_roster_request import ArrangeRosterRequest
 from ortools.sat.python import cp_model
+from fastapi import HTTPException
 
 
 class RosterMaterial:
     db_session: DbSession
     request: ArrangeRosterRequest
+    department: Department
     posts: list[Post]
     workers: list[Worker]
     model: cp_model.CpModel
@@ -21,10 +23,25 @@ class RosterMaterial:
     ):
         self.db_session = db_session
         self.request = request
+        self.department = self.__find_department()
         self.posts = self.__find_posts()
         self.workers = self.__find_workers()
         self.model = cp_model.CpModel()
         self.shifts = self.__create_shifts()
+
+    def __find_department(self) -> Department:
+        department = self.db_session.exec(
+            select(Department)
+            .where(Department.id == self.request.department_id)
+        ).first()
+
+        if department is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Department not found. ID={self.request.department_id}"
+            )
+
+        return department
 
     def __find_posts(self) -> list[Post]:
         return self.db_session.exec(

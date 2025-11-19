@@ -1,6 +1,6 @@
 import { DefaultArgs } from "../../prisma-generated/runtime/library"
 import { Post, PostConstraintType, Prisma, PrismaClient, Worker, WorkerConstraintType } from "../../prisma-generated"
-import { postConstraints, postNames, postWorkers, organizationName, workerConstraints, workerNames, departmentName, organizationMaxHistoryCount } from "./data/seed-data-demo"
+import { postConstraints, postNames, postWorkers, organizationName, workerConstraints, workerNames, departmentName, organizationMaxHistoryCount, departmentMaxWorkerPostPerRoster } from "./data/seed-data-demo"
 import { PostConstraintType as EPostConstraintType, WorkerConstraintType as EWorkerConstraintType } from "../../../libs/constraint/enums/constraint-type";
 
 const prisma = new PrismaClient()
@@ -52,6 +52,7 @@ const seedDepartment = async (tx: Transaction, organizationId: number): Promise<
     data: {
       organizationId,
       name: departmentName,
+      maxWorkerPostPerRoster: departmentMaxWorkerPostPerRoster,
     },
   })
 

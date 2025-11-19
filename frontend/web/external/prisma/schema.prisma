@@ -104,15 +104,16 @@ model UserOrganizationAudit {
 }
 
 model Department {
-  id                Int                @id @default(autoincrement())
-  organizationId    Int                @map("organization_id")
-  name              String
-  posts             Post[]
-  workers           Worker[]
-  postConstraints   PostConstraint[]
-  workerConstraints WorkerConstraint[]
-  rosterHistories   RosterHistory[]
-  organization      Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  id                     Int                @id @default(autoincrement())
+  organizationId         Int                @map("organization_id")
+  name                   String
+  maxWorkerPostPerRoster Int?               @map("max_worker_post_per_roster")
+  posts                  Post[]
+  workers                Worker[]
+  postConstraints        PostConstraint[]
+  workerConstraints      WorkerConstraint[]
+  rosterHistories        RosterHistory[]
+  organization           Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@unique([organizationId, name])
   @@index([organizationId])
@@ -120,12 +121,13 @@ model Department {
 }
 
 model DepartmentAudit {
-  auditId        Int      @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction    String   @map("audit_action")
-  id             Int?
-  organizationId Int?     @map("organization_id")
-  name           String?
+  auditId                Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp         DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction            String   @map("audit_action")
+  id                     Int?
+  organizationId         Int?     @map("organization_id")
+  name                   String?
+  maxWorkerPostPerRoster Int?     @map("max_worker_post_per_roster")
 
   @@map("department_audit")
 }

@@ -1,5 +1,14 @@
 from sqlmodel import Field, Relationship, SQLModel
 from decimal import Decimal
+from typing import Optional
+
+
+class Department(SQLModel, table=True):
+    __tablename__ = 'department'
+    id: int = Field(primary_key=True)
+    organization_id: int = Field(foreign_key='organization.id')
+    name: str
+    max_worker_post_per_roster: Optional[int] = None
 
 
 class PostWorker(SQLModel, table=True):
