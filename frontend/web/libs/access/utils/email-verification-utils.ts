@@ -24,5 +24,5 @@ export const sendVerificationEmail = async (user: UserExcludePasswordWithRole): 
 const createVerifyEmailUrl = async (user: UserExcludePasswordWithRole): Promise<string> => {
   const payload = getSessionPayloadFromUserRole(user)
   const token = await issueToken(payload, VERIFY_EMAIL_TOKEN_EXPIRATION_TIME)
-  return `${BASE_URL}${PATH.verifyEmail.result(token)}`
+  return `${BASE_URL}${PATH.verifyEmail.build(token)}`
 }

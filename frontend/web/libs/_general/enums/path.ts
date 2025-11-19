@@ -22,7 +22,6 @@ const enum PathSegment {
   NEW = 'new',
   HISTORIES = 'histories',
   SENT = 'sent',
-  RESULT = 'result',
 }
 
 export const PATH = {
@@ -33,9 +32,8 @@ export const PATH = {
   updatePassword: `/${PathSegment.UPDATE_PASSWORD}`,
   verifyEmail: {
     base: `/${PathSegment.VERIFY_EMAIL}`,
-    build: (userId: string | number) => `/${PathSegment.VERIFY_EMAIL}/${userId}`,
-    sent: (userId: string | number) => `/${PathSegment.VERIFY_EMAIL}/${userId}/${PathSegment.SENT}`,
-    result: (token: string) => `/${PathSegment.VERIFY_EMAIL}/${PathSegment.RESULT}/${token}`,
+    sent: (userId: string | number) => `/${PathSegment.VERIFY_EMAIL}/${PathSegment.SENT}/${userId}`,
+    build: (token: string) => `/${PathSegment.VERIFY_EMAIL}/${token}`,
   },
   dashboard: `/${PathSegment.DASHBOARD}`,
   roster: {

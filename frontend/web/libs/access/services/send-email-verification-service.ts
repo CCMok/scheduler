@@ -21,6 +21,7 @@ export const sendEmailVerificationService = tryCatch(async (
   if (!emailSent) return {
     status: ServiceResponseStatus.INTERNAL_ERROR,
   }
+
   return {
     status: ServiceResponseStatus.OK,
     data: {},
