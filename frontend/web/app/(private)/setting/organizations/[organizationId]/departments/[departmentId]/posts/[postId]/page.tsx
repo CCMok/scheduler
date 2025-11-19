@@ -68,6 +68,14 @@ export default async function OrganizationDepartmentPostSettingPage({
       ]}
       tabs={[
         {
+          value: 'workers',
+          label: '人員',
+          content: <WorkersSection
+            departmentId={departmentId}
+            postId={postId}
+          />,
+        },
+        {
           value: 'info',
           label: '基本資料',
           content: (
@@ -75,14 +83,6 @@ export default async function OrganizationDepartmentPostSettingPage({
               <UpdatePostNameSection postPromise={postPromise} />
             </Suspense>
           ),
-        },
-        {
-          value: 'workers',
-          label: '人員',
-          content: <WorkersSection
-            departmentId={departmentId}
-            postId={postId}
-          />,
         },
       ]}
     />

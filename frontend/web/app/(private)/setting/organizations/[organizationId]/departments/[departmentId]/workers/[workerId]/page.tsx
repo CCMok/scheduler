@@ -68,6 +68,14 @@ export default async function WorkerSettingPage({
       ]}
       tabs={[
         {
+          value: 'posts',
+          label: '職位',
+          content: <PostsSection
+            departmentId={departmentId}
+            workerId={workerId}
+          />,
+        },
+        {
           value: 'info',
           label: '基本資料',
           content: (
@@ -75,14 +83,6 @@ export default async function WorkerSettingPage({
               <UpdateWorkerNameSection workerPromise={workerPromise} />
             </Suspense>
           ),
-        },
-        {
-          value: 'posts',
-          label: '職位',
-          content: <PostsSection
-            departmentId={departmentId}
-            workerId={workerId}
-          />,
         },
       ]}
     />

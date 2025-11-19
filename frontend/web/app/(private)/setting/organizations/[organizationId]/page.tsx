@@ -50,6 +50,11 @@ export default async function OrganizationSettingPage({
       ]}
       tabs={[
         {
+          value: OrganizationPageTabId.DEPARTMENTS,
+          label: '部門',
+          content: <DepartmentsSection organizationId={id} />,
+        },
+        {
           value: OrganizationPageTabId.INFO,
           label: '基本資料',
           content: (
@@ -57,11 +62,6 @@ export default async function OrganizationSettingPage({
               <UpdateOrganizationNameSection organizationPromise={organizationPromise} />
             </Suspense>
           ),
-        },
-        {
-          value: OrganizationPageTabId.DEPARTMENTS,
-          label: '部門',
-          content: <DepartmentsSection organizationId={id} />,
         },
       ]}
     />

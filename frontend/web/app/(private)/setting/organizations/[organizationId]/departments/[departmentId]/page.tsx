@@ -63,15 +63,6 @@ export default async function OrganizationDepartmentSettingPage({
       ]}
       tabs={[
         {
-          value: 'info',
-          label: '基本資料',
-          content: (
-            <Suspense fallback={<InputCardSkeleton />}>
-              <UpdateDepartmentNameSection departmentPromise={departmentPromise} />
-            </Suspense>
-          ),
-        },
-        {
           value: 'posts',
           label: '職位',
           content: <PostsSection departmentId={departmentId} />,
@@ -90,6 +81,15 @@ export default async function OrganizationDepartmentSettingPage({
           value: 'config',
           label: '編排配置',
           content: <ConfigSection departmentId={departmentId} />,
+        },
+        {
+          value: 'info',
+          label: '基本資料',
+          content: (
+            <Suspense fallback={<InputCardSkeleton />}>
+              <UpdateDepartmentNameSection departmentPromise={departmentPromise} />
+            </Suspense>
+          ),
         },
       ]}
     />
