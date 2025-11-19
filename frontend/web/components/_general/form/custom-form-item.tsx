@@ -1,13 +1,14 @@
 'use client'
 
 import { ChildrenProps } from '@/libs/_general/props/children-props';
-import { FormItem, FormLabel, FormMessage } from '@/external/shadcn/components/ui/form';
+import { FormDescription, FormItem, FormLabel, FormMessage } from '@/external/shadcn/components/ui/form';
 import { ReactNode } from 'react';
 
 type Props = ChildrenProps & {
   label?: ReactNode;
   isLabelStar?: boolean;
   labelAddon?: ReactNode;
+  description?: ReactNode;
 }
 
 export default function CustomFormItem({
@@ -15,6 +16,7 @@ export default function CustomFormItem({
   label,
   isLabelStar,
   labelAddon,
+  description,
 }: Readonly<Props>) {
   return (
     <FormItem className='flex flex-col'>
@@ -30,6 +32,11 @@ export default function CustomFormItem({
             {labelAddon}
           </div>
         </div>
+      )}
+      {description && (
+        <FormDescription>
+          {description}
+        </FormDescription>
       )}
       {children}
       <FormMessage />
