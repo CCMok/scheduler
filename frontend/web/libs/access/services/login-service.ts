@@ -7,23 +7,35 @@ import { compare } from 'bcryptjs';
 import { tryCatch } from '../../_general/utils/service-utils';
 import { ServiceResponse, ServiceResponseStatus } from '../../_general/models/service-response';
 import { MessageContent } from '../../_general/enums/message';
+import { LoginResponse } from '../models/login-response';
 
 export const loginService = tryCatch(async (
   request: LoginRequest,
-): Promise<ServiceResponse> => {
+): Promise<ServiceResponse<LoginResponse>> => {
   const parsedRequest = loginRequestSchema.parse(request);
 
-  const userRole = await checkLoginInfo(parsedRequest)
-  if (!userRole) return {
+  const user = await checkLoginInfo(parsedRequest)
+  if (!user) return {
     status: ServiceResponseStatus.BAD_REQUEST,
     message: MessageContent.INCORRECT.replaceAll('{0}', '電郵地址或密碼'),
   }
 
-  await setSession(userRole)
+  if (!user.isEmailVerified) return {
+    status: ServiceResponseStatus.OK,
+    data: {
+      userId: user.id,
+      isVerified: false,
+    },
+  }
+
+  await setSession(user)
 
   return {
     status: ServiceResponseStatus.OK,
-    data: {},
+    data: {
+      userId: user.id,
+      isVerified: true,
+    },
   }
 })
 

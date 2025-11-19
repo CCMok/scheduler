@@ -17,6 +17,7 @@ import { MessageTitle } from '@/libs/_general/enums/message';
 import { SONNER_DEFAULT_OPTIONS } from '@/libs/_general/constants/sonnar-constant';
 import { afterLoginUi } from '@/libs/access/utils/login-utils';
 import LabelInput from '@/components/_general/input/label-input';
+import { REDIRECT_PRIVATE_PATH } from '@/libs/_general/enums/path';
 
 const INPUT_CLASS_NAME = 'w-full'
 const INPUT_ID_EMAIL = 'email'
@@ -53,7 +54,9 @@ export default function UpdatePasswordForm({
       ...SONNER_DEFAULT_OPTIONS,
     })
 
-    afterLoginUi(router.push)
+    afterLoginUi()
+
+    router.push(REDIRECT_PRIVATE_PATH)
   }
 
   return (

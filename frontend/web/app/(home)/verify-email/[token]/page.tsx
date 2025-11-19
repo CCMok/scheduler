@@ -10,6 +10,10 @@ import { isNil } from "lodash"
 import CustomButton from "@/components/_general/button/custom-button"
 import Link from "next/link"
 import { PATH } from "@/libs/_general/enums/path"
+import { afterLoginUi } from "@/libs/access/utils/login-utils"
+import { MessageTitle } from "@/libs/_general/enums/message"
+import { toast } from "sonner"
+import { SONNER_DEFAULT_OPTIONS } from "@/libs/_general/constants/sonnar-constant"
 
 const getDescription = (isLoading: boolean, isVerified: boolean): string => {
   if (isLoading) return '正在驗證電子郵件...'
@@ -42,6 +46,12 @@ export default function VerifyEmailResultPage() {
 
     const data = handleCudResponse(response, router.push)
     if (isNil(data)) return;
+
+    toast.success('驗證電子郵件' + MessageTitle.SUCCESS, {
+      ...SONNER_DEFAULT_OPTIONS,
+    })
+
+    afterLoginUi()
 
     setIsVerified(data.isVerified)
   }, [token, router, setIsVerified])
