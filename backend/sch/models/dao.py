@@ -16,6 +16,7 @@ class PostWorker(SQLModel, table=True):
     id: int = Field(primary_key=True)
     post_id: int = Field(foreign_key='post.id')
     worker_id: int = Field(foreign_key='worker.id')
+    priority: int = Field(default=0)
 
 
 class Post(SQLModel, table=True):

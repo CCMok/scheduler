@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlmodel import select
-from models.dao import Department, Worker, Post
+from models.dao import Department, PostWorker, Worker, Post
 from managers.db import DbSession
 from models.arrange_roster_request import ArrangeRosterRequest
 from ortools.sat.python import cp_model
@@ -13,6 +13,7 @@ class RosterMaterial:
     department: Department
     posts: list[Post]
     workers: list[Worker]
+    post_workers: list[PostWorker]
     model: cp_model.CpModel
     shifts: dict[tuple[datetime, int, int], cp_model.IntVar]
 
@@ -26,6 +27,7 @@ class RosterMaterial:
         self.department = self.__find_department()
         self.posts = self.__find_posts()
         self.workers = self.__find_workers()
+        self.post_workers = self.__find_post_workers()
         self.model = cp_model.CpModel()
         self.shifts = self.__create_shifts()
 
@@ -55,6 +57,15 @@ class RosterMaterial:
             select(Worker)
             .where(Worker.department_id == self.request.department_id)
             .where(Worker.is_deleted == False)
+        ).all()
+
+    # Run after post fetching
+    def __find_post_workers(self) -> list[PostWorker]:
+        post_ids = [post.id for post in self.posts]
+
+        return self.db_session.exec(
+            select(PostWorker)
+            .where(PostWorker.post_id.in_(post_ids))
         ).all()
 
     def __create_shifts(self) -> dict[tuple[datetime, int, int], cp_model.IntVar]:

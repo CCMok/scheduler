@@ -86,6 +86,7 @@ export default function RosterTableSaveConfirmButton({
 
     toast.success('儲存值班表' + MessageTitle.SUCCESS, {
       ...SONNER_DEFAULT_OPTIONS,
+      description: '可在值班表 > 紀錄中查看。',
     })
 
     setInitialSchedules(modifiedSchedules)
