@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation"
 import { getPostsAction } from "@/libs/post/actions/get-posts-action"
 import { handleGetResponse } from "@/libs/_general/utils/response-utils"
 import { Post, Worker } from "@/external/prisma-generated"
+import { OffFormInput } from "../filter/form/create-roster-form-input"
 
 function mapArrangements(
   arrangements: PostBaseArrangement[],
@@ -87,11 +88,15 @@ export default function CreateRosterStoreHandler() {
       const offsStorageString = localStorage.getItem(LocalStorageKey.CREATE_ROSTER_GENERATED_OFFS)
       if (!offsStorageString) return
 
-      const offs = JSON.parse(offsStorageString)
+      const offs = JSON.parse(offsStorageString) as OffFormInput[];
+      const mappedOffs = offs.map(off => ({
+        ...off,
+        days: off.days.map(day => new Date(day)),
+      }))
 
       setGeneratedScheduleDepartmentId(departmentId)
       setGeneratedScheduleWorkers(workers)
-      setGeneratedScheduleOffs(offs)
+      setGeneratedScheduleOffs(mappedOffs)
       setInitialSchedules(initialSchedules)
       setModifiedSchedules(modifiedSchedules)
       setIsGenerated(true)

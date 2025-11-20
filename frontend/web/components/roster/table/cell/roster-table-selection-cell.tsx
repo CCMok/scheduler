@@ -1,7 +1,9 @@
+import { OffFormInput } from "@/app/(private)/roster/new/_components/filter/form/create-roster-form-input";
 import ComboBox from "@/components/_general/combobox/combo-box";
 import { Worker } from "@/external/prisma-generated";
 import { TableCell } from "@/external/shadcn/components/ui/table";
 import { PostBaseArrangement } from "@/libs/roster/models/schedule";
+import { isEqual } from "date-fns";
 import { useCallback, useEffect, useRef } from "react";
 
 type Props = {
@@ -9,6 +11,7 @@ type Props = {
   setArrangement: (arrangement: PostBaseArrangement) => void;
   workers: Worker[];
   setIsEditing: (isEditing: boolean) => void;
+  offs?: OffFormInput[];
 }
 
 export default function RosterTableSelectionCell({
@@ -16,6 +19,7 @@ export default function RosterTableSelectionCell({
   setArrangement,
   workers,
   setIsEditing,
+  offs,
 }: Readonly<Props>) {
   const ref = useRef<HTMLTableCellElement>(null);
 
@@ -47,13 +51,21 @@ export default function RosterTableSelectionCell({
     setIsEditing(false);
   }
 
+  const getDisplayName = (option: Worker): string => {
+    if (offs?.some(off => off.days.some(day => isEqual(day, arrangement.day)) && off.workerId === option.id)) {
+      return `${option.name} (休)`
+    }
+
+    return option.name;
+  }
+
   return (
     <TableCell ref={ref} className='w-[100px]'>
       <ComboBox
         value={arrangement.worker?.id}
         options={workers}
         getValue={option => option.id}
-        getDisplayName={option => option.name}
+        getDisplayName={getDisplayName}
         onValueChange={onValueChange}
         defaultIsOpen
       />

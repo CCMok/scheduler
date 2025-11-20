@@ -11,6 +11,7 @@ export default function RosterTableClientContainer() {
   const modifiedSchedules = useCreateRosterStore(state => state.modifiedSchedules);
   const setModifiedSchedules = useCreateRosterStore(state => state.setModifiedSchedules);
   const generatedScheduleWorkers = useCreateRosterStore(state => state.generatedScheduleWorkers);
+  const generatedScheduleOffs = useCreateRosterStore(state => state.generatedScheduleOffs);
 
   const days = useMemo(() => {
     return modifiedSchedules.length ? modifiedSchedules[0].arrangements.map(arrangement => arrangement.day) : []
@@ -22,6 +23,7 @@ export default function RosterTableClientContainer() {
       schedules={modifiedSchedules}
       setSchedules={setModifiedSchedules}
       workers={generatedScheduleWorkers}
+      offs={generatedScheduleOffs}
     />
   )
 }

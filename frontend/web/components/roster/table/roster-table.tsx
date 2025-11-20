@@ -9,12 +9,14 @@ import { PostBaseSchedule } from "@/libs/roster/models/schedule";
 import { useMemo } from "react";
 import RosterTableRow from "./roster-table-row";
 import { Worker } from "@/external/prisma-generated";
+import { OffFormInput } from "@/app/(private)/roster/new/_components/filter/form/create-roster-form-input";
 
 type Props = {
   days: Date[];
   schedules: PostBaseSchedule[];
   setSchedules: (schedules: PostBaseSchedule[]) => void;
   workers: Worker[];
+  offs?: OffFormInput[];
 }
 
 export default function RosterTable({
@@ -22,6 +24,7 @@ export default function RosterTable({
   schedules,
   setSchedules,
   workers,
+  offs,
 }: Readonly<Props>) {
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -79,6 +82,7 @@ export default function RosterTable({
                 schedule={schedule}
                 setSchedule={setSchedule}
                 workers={workers}
+                offs={offs}
               />
             ))}
           </SortableContext>
