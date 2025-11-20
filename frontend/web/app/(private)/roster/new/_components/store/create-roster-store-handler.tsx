@@ -36,6 +36,13 @@ function transformSchedule(
   }
 }
 
+const mapOffs = (offs: OffFormInput[]): OffFormInput[] => {
+  return offs.map(off => ({
+    ...off,
+    days: off.days.map(day => new Date(day)),
+  }))
+}
+
 export default function CreateRosterStoreHandler() {
   const setGeneratedScheduleDepartmentId = useCreateRosterStore(state => state.setGeneratedScheduleDepartmentId)
   const setGeneratedScheduleWorkers = useCreateRosterStore(state => state.setGeneratedScheduleWorkers)
@@ -89,10 +96,7 @@ export default function CreateRosterStoreHandler() {
       if (!offsStorageString) return
 
       const offs = JSON.parse(offsStorageString) as OffFormInput[];
-      const mappedOffs = offs.map(off => ({
-        ...off,
-        days: off.days.map(day => new Date(day)),
-      }))
+      const mappedOffs = mapOffs(offs)
 
       setGeneratedScheduleDepartmentId(departmentId)
       setGeneratedScheduleWorkers(workers)
