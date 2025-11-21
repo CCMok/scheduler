@@ -91,7 +91,12 @@ class RosterModelHelper:
     @staticmethod
     def __create_total_assignment_reward(material: RosterMaterial) -> cp_model.LinearExpr:
         return sum(
-            material.shifts[(day, post.id, worker.id)]
+            material.shifts[(day, post.id, worker.id)] * (
+                1 + material.post_worker_priorities.get(
+                    (post.id, worker.id),
+                    0  # default priority
+                ) * 0.5
+            )
             for day in material.request.days
             for post in material.posts
             for worker in post.active_workers

@@ -13,7 +13,7 @@ class RosterMaterial:
     department: Department
     posts: list[Post]
     workers: list[Worker]
-    post_workers: list[PostWorker]
+    post_worker_priorities: dict[tuple[int, int], int]
     model: cp_model.CpModel
     shifts: dict[tuple[datetime, int, int], cp_model.IntVar]
 
@@ -27,7 +27,7 @@ class RosterMaterial:
         self.department = self.__find_department()
         self.posts = self.__find_posts()
         self.workers = self.__find_workers()
-        self.post_workers = self.__find_post_workers()
+        self.post_worker_priorities = self.__find_post_worker_priorities()
         self.model = cp_model.CpModel()
         self.shifts = self.__create_shifts()
 
@@ -60,13 +60,18 @@ class RosterMaterial:
         ).all()
 
     # Run after post fetching
-    def __find_post_workers(self) -> list[PostWorker]:
+    def __find_post_worker_priorities(self) -> dict[tuple[int, int], int]:
         post_ids = [post.id for post in self.posts]
 
-        return self.db_session.exec(
+        post_workers = self.db_session.exec(
             select(PostWorker)
             .where(PostWorker.post_id.in_(post_ids))
         ).all()
+
+        return {
+            (post_worker.post_id, post_worker.worker_id): post_worker.priority
+            for post_worker in post_workers
+        }
 
     def __create_shifts(self) -> dict[tuple[datetime, int, int], cp_model.IntVar]:
         shifts: dict[tuple[datetime, int, int], cp_model.IntVar] = {}
