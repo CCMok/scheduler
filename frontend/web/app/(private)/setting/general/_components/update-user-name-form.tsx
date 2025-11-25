@@ -120,7 +120,7 @@ export default function UpdateUserNameForm({
           setIsOpen={setIsAlertDialogOpen}
           title='確定要儲存嗎?'
           description='儲存後將更改用戶名稱，請確認是否繼續。'
-          onContinue={onAlertDialogContinue}
+          onConfirm={onAlertDialogContinue}
         />
       </form>
     </Form >

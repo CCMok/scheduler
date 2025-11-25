@@ -16,7 +16,7 @@ export default function RosterTableCleanButton() {
     <ConfirmDialog
       title='確定要清除值班表嗎?'
       description='清除將會清除所有編排，沒有儲存的資料將會遺失，請確認是否繼續。'
-      onContinue={onContinue}
+      onConfirm={onContinue}
     >
       <AlertDialogTrigger asChild>
         <CustomButton variant='secondary'>

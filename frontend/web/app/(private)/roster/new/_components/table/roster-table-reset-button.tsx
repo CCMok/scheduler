@@ -23,7 +23,7 @@ export default function RosterTableResetButton({
     <ConfirmDialog
       title='確定要重置值班表嗎?'
       description={description}
-      onContinue={onContinue}
+      onConfirm={onContinue}
     >
       <AlertDialogTrigger asChild>
         <CustomButton variant='secondary'>

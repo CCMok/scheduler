@@ -10,7 +10,7 @@ type Props = ChildrenProps & {
   setIsOpen?: (isOpen: boolean) => void;
   title?: string;
   description?: string;
-  onContinue: () => Promise<void> | void;
+  onConfirm: () => Promise<void> | void;
 }
 
 export default function ConfirmDialog({
@@ -18,7 +18,7 @@ export default function ConfirmDialog({
   setIsOpen,
   title,
   description,
-  onContinue,
+  onConfirm,
   children,
 }: Readonly<Props>) {
   const [isLoading, setIsLoading] = useState(false)
@@ -27,10 +27,10 @@ export default function ConfirmDialog({
   const isOpenFinal = isOpen ?? isOpenDefault
   const setIsOpenFinal = setIsOpen ?? setIsOpenDefault
 
-  const onClickContinue = async () => {
+  const onClickConfirm = async () => {
     setIsLoading(true)
 
-    await onContinue();
+    await onConfirm();
 
     setIsOpenFinal(false)
     setIsLoading(false)
@@ -46,7 +46,7 @@ export default function ConfirmDialog({
       submitButton={(
         <LoadingButton
           isLoading={isLoading}
-          onClick={onClickContinue}
+          onClick={onClickConfirm}
         >
           確定
         </LoadingButton>

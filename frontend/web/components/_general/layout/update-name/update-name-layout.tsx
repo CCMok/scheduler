@@ -92,7 +92,7 @@ export default function UpdateNameLayout({
           setIsOpen={setIsAlertDialogOpen}
           title='確定要儲存嗎?'
           description={`儲存後將更改${entityName}名稱，請確認是否繼續。`}
-          onContinue={onConfirm}
+          onConfirm={onConfirm}
         />
       </form>
     </Form>
