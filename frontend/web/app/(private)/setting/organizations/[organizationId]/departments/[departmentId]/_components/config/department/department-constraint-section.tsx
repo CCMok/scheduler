@@ -1,4 +1,3 @@
-import CustomCard from "@/components/_general/card/custom-card";
 import { Department } from "@/external/prisma-generated";
 import { handleGetResponse } from "@/libs/_general/utils/response-utils";
 import { getDepartmentsService } from "@/libs/department/services/get-departments-service";

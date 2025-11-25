@@ -61,7 +61,7 @@ export default function VerifyEmailResultPage() {
     firstRenderRef.current = true;
 
     loadingCallback(verify)
-  }, [verify, loadingCallback, verify])
+  }, [verify, loadingCallback])
 
   return (
     <AuthMainSectionBase
