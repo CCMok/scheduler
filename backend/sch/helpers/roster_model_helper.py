@@ -85,7 +85,8 @@ class RosterModelHelper:
         )
 
         material.model.maximize(
-            2 * total_assignment_reward + posts_constraint_reward + workers_constraint_reward - worker_balancing_penalty
+            total_assignment_reward + posts_constraint_reward +
+            workers_constraint_reward - worker_balancing_penalty
         )
 
     @staticmethod
@@ -104,13 +105,38 @@ class RosterModelHelper:
 
     @staticmethod
     def __create_worker_balancing_per_post_penalty(material: RosterMaterial) -> cp_model.LinearExpr:
+        # Determine which workers are available for at least one day
+        available_workers_per_post = {}
+        for post in material.posts:
+            available_workers = []
+            for worker in post.active_workers:
+                # Check if worker is available for at least one day
+                is_available_any_day = False
+                for day in material.request.days:
+                    # Check if this shift exists (worker is not completely off)
+                    is_off_this_day = False
+                    for off in material.request.offs:
+                        if off.worker_id == worker.id and day in off.days:
+                            is_off_this_day = True
+                            break
+
+                    if not is_off_this_day:
+                        is_available_any_day = True
+                        break
+
+                if is_available_any_day:
+                    available_workers.append(worker)
+
+            available_workers_per_post[post.id] = available_workers
+
         post_worker_assignment = {
             post.id: {
                 worker.id: sum(
                     material.shifts[(day, post.id, worker.id)]
                     for day in material.request.days
                 )
-                for worker in post.active_workers
+                # Only available workers
+                for worker in available_workers_per_post[post.id]
             }
             for post in material.posts
         }
@@ -130,16 +156,20 @@ class RosterModelHelper:
         }
 
         for post_id, worker_assignments in post_worker_assignment.items():
-            if worker_assignments == {}:
+            if len(worker_assignments) == 0:  # No available workers
                 continue
 
             for total_assignment in worker_assignments.values():
-                material.model.add(total_assignment >= post_min_assignment[post_id])
-                material.model.add(total_assignment <= post_max_assignment[post_id])
+                material.model.add(total_assignment >=
+                                   post_min_assignment[post_id])
+                material.model.add(total_assignment <=
+                                   post_max_assignment[post_id])
 
         return sum(
             post_max_assignment[post.id] - post_min_assignment[post.id]
             for post in material.posts
+            # Only penalize posts with available workers
+            if len(post_worker_assignment[post.id]) > 0
         )
 
     @staticmethod
@@ -160,7 +190,8 @@ class RosterModelHelper:
                     )
 
                 case _:
-                    print('Unknown post constraint type:', post_constraint.post_constraint_type)
+                    print('Unknown post constraint type:',
+                          post_constraint.post_constraint_type)
 
         return sum(rewards)
 
@@ -186,7 +217,8 @@ class RosterModelHelper:
 
             material.model.add(
                 sum(
-                    material.shifts[(day, post_constraint_post.post_id, worker.id)]
+                    material.shifts[(
+                        day, post_constraint_post.post_id, worker.id)]
                     for post_constraint_post in post_constraint.post_constraint_posts
                     for worker in post_constraint_post.post.workers
                     if (day, post_constraint_post.post_id, worker.id) in material.shifts
@@ -195,7 +227,8 @@ class RosterModelHelper:
 
             material.model.add(
                 sum(
-                    material.shifts[(day, post_constraint_post.post_id, worker.id)]
+                    material.shifts[(
+                        day, post_constraint_post.post_id, worker.id)]
                     for post_constraint_post in post_constraint.post_constraint_posts
                     for worker in post_constraint_post.post.workers
                     if (day, post_constraint_post.post_id, worker.id) in material.shifts
@@ -222,7 +255,8 @@ class RosterModelHelper:
                     )
 
                 case _:
-                    print('Unkown worker constraint type: ', worker_constraint.worker_constraint_type)
+                    print('Unkown worker constraint type: ',
+                          worker_constraint.worker_constraint_type)
 
         return sum(rewards)
 
@@ -240,7 +274,8 @@ class RosterModelHelper:
         rewards: list[cp_model.LinearExpr] = []
 
         for day in material.request.days:
-            reward = material.model.new_bool_var(f'reward_workers_correlate_{worker_constraint.id}_{day}')
+            reward = material.model.new_bool_var(
+                f'reward_workers_correlate_{worker_constraint.id}_{day}')
             rewards.append(reward)
 
             worker_assigneds: list[cp_model.IntVar] = []
@@ -254,7 +289,8 @@ class RosterModelHelper:
 
                 material.model.add(
                     sum(
-                        material.shifts[(day, post.id, worker_constraint_worker.worker.id)]
+                        material.shifts[(
+                            day, post.id, worker_constraint_worker.worker.id)]
                         for post in worker_constraint_worker.worker.posts
                         if (day, post.id, worker_constraint_worker.worker.id) in material.shifts
                     ) >= 1
@@ -262,13 +298,15 @@ class RosterModelHelper:
 
                 material.model.add(
                     sum(
-                        material.shifts[(day, post.id, worker_constraint_worker.worker.id)]
+                        material.shifts[(
+                            day, post.id, worker_constraint_worker.worker.id)]
                         for post in worker_constraint_worker.worker.posts
                         if (day, post.id, worker_constraint_worker.worker.id) in material.shifts
                     ) < 1
                 ).only_enforce_if(worker_assigned.Not())
 
-            material.model.add_bool_and(worker_assigneds).only_enforce_if(reward)
+            material.model.add_bool_and(
+                worker_assigneds).only_enforce_if(reward)
             material.model.add_bool_or([
                 worker_assigned.Not()
                 for worker_assigned in worker_assigneds
