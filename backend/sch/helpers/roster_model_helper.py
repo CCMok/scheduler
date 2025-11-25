@@ -80,13 +80,20 @@ class RosterModelHelper:
             material
         )
 
+        worker_variety_reward = RosterModelHelper.__create_worker_post_variety_reward(
+            material
+        )
+
         worker_balancing_penalty = RosterModelHelper.__create_worker_balancing_per_post_penalty(
             material
         )
 
         material.model.maximize(
-            total_assignment_reward + posts_constraint_reward +
-            workers_constraint_reward - worker_balancing_penalty
+            total_assignment_reward
+            + posts_constraint_reward
+            + workers_constraint_reward
+            + worker_variety_reward
+            - worker_balancing_penalty
         )
 
     @staticmethod
@@ -102,6 +109,48 @@ class RosterModelHelper:
             for post in material.posts
             for worker in post.active_workers
         )
+
+    @staticmethod
+    def __create_worker_post_variety_reward(material: RosterMaterial) -> cp_model.LinearExpr:
+        """
+        Rewards workers being assigned to different posts across days.
+        Higher score when a worker works multiple different posts rather than same post repeatedly.
+
+        Example:
+        - Worker A: Post1(day1), Post2(day2), Post3(day3) = 3 unique posts = reward of 3
+        - Worker B: Post1(day1), Post1(day2), Post1(day3) = 1 unique post = reward of 1
+        """
+        rewards: list[cp_model.LinearExpr] = []
+
+        for worker in material.workers:
+            if len(worker.active_posts) <= 1:
+                # No variety possible with 0 or 1 posts
+                continue
+
+            # For each post, create a boolean indicating if worker is assigned to it at least once
+            for post in worker.active_posts:
+                post_assigned_to_worker = material.model.new_bool_var(
+                    f'worker_{worker.id}_assigned_to_post_{post.id}'
+                )
+                rewards.append(post_assigned_to_worker)
+
+                # True if worker works this post on at least one day
+                material.model.add(
+                    sum(
+                        material.shifts[(day, post.id, worker.id)]
+                        for day in material.request.days
+                    ) >= 1
+                ).only_enforce_if(post_assigned_to_worker)
+
+                # False if worker never works this post
+                material.model.add(
+                    sum(
+                        material.shifts[(day, post.id, worker.id)]
+                        for day in material.request.days
+                    ) == 0
+                ).only_enforce_if(post_assigned_to_worker.Not())
+
+        return sum(rewards)
 
     @staticmethod
     def __create_worker_balancing_per_post_penalty(material: RosterMaterial) -> cp_model.LinearExpr:
