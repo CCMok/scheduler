@@ -1,9 +1,7 @@
 'use client';
 
-import { Save } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { AlertDialogTrigger, AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel } from "@/external/shadcn/components/ui/alert-dialog";
-import CustomButton from '@/components/_general/button/custom-button';
+import { useCallback, useEffect, useRef } from "react";
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel } from "@/external/shadcn/components/ui/alert-dialog";
 import RosterTableSaveConfirmDescription from "./roster-table-save-confirm-description";
 import RosterTableSaveConfirmButton from "./roster-table-save-confirm-button";
 import { isNil } from "lodash";
@@ -13,9 +11,15 @@ import { MaxHistoryCountStoreProvider, useMaxHistoryCountStore } from "./store/m
 import { useCreateRosterStore } from "../../store/create-roster-store-provider";
 import { handleGetResponse } from "@/libs/_general/utils/response-utils";
 
-function RosterTableSaveAlertDialog() {
-  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
+type Props = {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
 
+function RosterTableSaveDialogContent({
+  isOpen,
+  setIsOpen,
+}: Readonly<Props>) {
   const router = useRouter();
 
   const generatedScheduleDepartmentId = useCreateRosterStore(state => state.generatedScheduleDepartmentId);
@@ -44,7 +48,7 @@ function RosterTableSaveAlertDialog() {
   const previousDepartmentId = useRef<boolean>(false);
 
   useEffect(() => {
-    if (!isAlertDialogOpen) {
+    if (!isOpen) {
       previousDepartmentId.current = false;
       return;
     }
@@ -54,16 +58,10 @@ function RosterTableSaveAlertDialog() {
     }
 
     previousDepartmentId.current = true;
-  }, [isAlertDialogOpen, onDialogOpen]);
+  }, [isOpen, onDialogOpen]);
 
   return (
-    <AlertDialog open={isAlertDialogOpen} onOpenChange={setIsAlertDialogOpen}>
-      <AlertDialogTrigger asChild>
-        <CustomButton>
-          <Save />
-          儲存
-        </CustomButton>
-      </AlertDialogTrigger>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>確定要儲存值班表嗎?</AlertDialogTitle>
@@ -73,17 +71,19 @@ function RosterTableSaveAlertDialog() {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>取消</AlertDialogCancel>
-          <RosterTableSaveConfirmButton setIsAlertDialogOpen={setIsAlertDialogOpen} />
+          <RosterTableSaveConfirmButton setIsOpen={setIsOpen} />
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );
 }
 
-export default function RosterTableSaveButton() {
+export default function RosterTableSaveDialog(props: Readonly<Props>) {
   return (
     <MaxHistoryCountStoreProvider>
-      <RosterTableSaveAlertDialog />
+      <RosterTableSaveDialogContent
+        {...props}
+      />
     </MaxHistoryCountStoreProvider>
   )
 }

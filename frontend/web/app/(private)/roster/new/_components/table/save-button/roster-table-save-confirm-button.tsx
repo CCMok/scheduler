@@ -3,7 +3,7 @@
 import LoadingButton from '@/components/_general/button/loading-button';
 import { createRosterHistoryAction } from "@/libs/roster/actions/create-roster-history-action";
 import { CreateRosterHistoryRequest, CreateScheduleRequest } from "@/libs/roster/models/create-roster-history-request";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { PostBaseSchedule } from "@/libs/roster/models/schedule";
 import { postBaseToDayBaseSchedule } from "@/libs/roster/utils/roster-transform-utils";
 import { isNil } from "lodash";
@@ -45,11 +45,11 @@ const getSaveRosterRequest = (
 }
 
 type Props = {
-  setIsAlertDialogOpen: Dispatch<SetStateAction<boolean>>,
+  setIsOpen: (isOpen: boolean) => void;
 }
 
 export default function RosterTableSaveConfirmButton({
-  setIsAlertDialogOpen,
+  setIsOpen,
 }: Readonly<Props>) {
   const generatedScheduleDepartmentId = useCreateRosterStore(state => state.generatedScheduleDepartmentId);
   const generatedScheduleOffs = useCreateRosterStore(state => state.generatedScheduleOffs);
@@ -66,7 +66,7 @@ export default function RosterTableSaveConfirmButton({
     setIsLoading(true);
     await saveRoster();
     setIsLoading(false)
-    setIsAlertDialogOpen(false)
+    setIsOpen(false)
   }
 
   const saveRoster = async () => {
