@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getPostsService } from "@/libs/post/services/get-posts-service";
 import { Post } from "@/external/prisma-generated";
-import PostSaveButton from "./button/post-sequence-save-button";
+import PostSequenceSaveButton from "./button/post-sequence-save-button";
 import { PostSequenceStoreProvider } from "./store/post-sequence-store-provider";
 import CustomCard from "@/components/_general/card/custom-card";
 import PostSequenceTableContainer from "./table/post-sequence-table-container";
@@ -30,7 +30,7 @@ async function PostsSequenceSectionContent({
       <div className='space-y-2'>
         <PostSequenceTableContainer />
         <div className='flex justify-end'>
-          <PostSaveButton />
+          <PostSequenceSaveButton />
         </div>
       </div>
     </PostSequenceStoreProvider>
