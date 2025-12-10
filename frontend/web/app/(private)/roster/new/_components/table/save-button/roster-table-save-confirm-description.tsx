@@ -1,12 +1,16 @@
 'use client'
 
 import { Loader2 } from "lucide-react";
-import { useMaxHistoryCountStore } from "./store/max-history-count-store-provider";
 
-export default function RosterTableSaveConfirmDescription() {
-  const maxHistoryCount = useMaxHistoryCountStore(state => state.maxHistoryCount);
-  const isFetchingMaxHistoryCount = useMaxHistoryCountStore(state => state.isFetchingMaxHistoryCount);
+type Props = {
+  maxHistoryCount?: number;
+  isFetchingMaxHistoryCount: boolean;
+}
 
+export default function RosterTableSaveConfirmDescription({
+  maxHistoryCount,
+  isFetchingMaxHistoryCount,
+}: Readonly<Props>) {
   if (isFetchingMaxHistoryCount) return <Loader2 className='animate-spin' />
 
   return maxHistoryCount

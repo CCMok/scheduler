@@ -50,7 +50,7 @@ export default function CudServiceHandleDialog<R = object>({
       setIsOpen={setIsOpenFinal}
       title={title}
       description={description}
-      onContinue={onContinue}
+      onConfirm={onContinue}
     />
   )
 }

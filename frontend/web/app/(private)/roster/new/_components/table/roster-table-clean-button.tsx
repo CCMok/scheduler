@@ -9,14 +9,13 @@ import { useCreateRosterStore } from "../store/create-roster-store-provider";
 export default function RosterTableCleanButton() {
   const reset = useCreateRosterStore(state => state.reset);
 
-  const onContinue = () =>
-    reset()
+  const onConfirm = () => reset()
 
   return (
     <ConfirmDialog
       title='確定要清除值班表嗎?'
       description='清除將會清除所有編排，沒有儲存的資料將會遺失，請確認是否繼續。'
-      onContinue={onContinue}
+      onConfirm={onConfirm}
     >
       <AlertDialogTrigger asChild>
         <CustomButton variant='secondary'>

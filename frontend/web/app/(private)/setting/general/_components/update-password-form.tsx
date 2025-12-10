@@ -99,7 +99,7 @@ export default function UpdatePasswordForm() {
           setIsOpen={setIsAlertDialogOpen}
           title='確定要儲存嗎?'
           description='儲存後將更改密碼，請確認是否繼續。'
-          onContinue={onAlertDialogContinue}
+          onConfirm={onAlertDialogContinue}
         />
       </form>
     </Form >

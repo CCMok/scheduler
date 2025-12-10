@@ -1,10 +1,10 @@
 "use client";
 
-import RosterTableSaveAlertDialog from './save-button/roster-table-save-alert-dialog';
 import RosterTableResetButton from './roster-table-reset-button';
 import RosterTableCleanButton from './roster-table-clean-button';
 import { useCreateRosterStore } from '../store/create-roster-store-provider';
 import RosterTableExportXLSXButton from './roster-table-export-xlsx-button';
+import RosterTableSaveButton from './save-button/roster-table-save-button';
 import { useMemo } from 'react';
 import dynamic from "next/dynamic";
 
@@ -20,7 +20,7 @@ export default function RosterTableSection() {
 
   const days = useMemo(() => {
     return modifiedSchedules.length ? modifiedSchedules[0].arrangements.map(arrangement => arrangement.day) : []
-  }, [modifiedSchedules]) 
+  }, [modifiedSchedules])
 
   if (!isGenerated) return <></>;
 
@@ -37,7 +37,7 @@ export default function RosterTableSection() {
         <RosterTableCleanButton />
         <RosterTableResetButton description='重置將會回復至系統產生的編排，沒有儲存的資料將會遺失，請確認是否繼續。' />
         <RosterTableExportXLSXButton />
-        <RosterTableSaveAlertDialog />
+        <RosterTableSaveButton />
       </div>
     </section>
   );

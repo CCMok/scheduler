@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
-import CustomButton from '@/components/_general/button/custom-button';
 import { Save } from "lucide-react";
 import { useState } from "react";
-import PostSequenceSaveDialog from './post-sequence-save-dialog';
+import CustomButton from '@/components/_general/button/custom-button';
+import RosterTableSaveDialog from "./roster-table-save-dialog";
 
-export default function PostSequenceSaveButton() {
+export default function RosterTableSaveButton() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const onClick = () => setIsDialogOpen(true);
+  const onClick = () => setIsDialogOpen(true)
 
   return (
     <>
@@ -16,7 +16,7 @@ export default function PostSequenceSaveButton() {
         <Save />
         儲存
       </CustomButton>
-      <PostSequenceSaveDialog
+      <RosterTableSaveDialog
         isOpen={isDialogOpen}
         setIsOpen={setIsDialogOpen}
       />

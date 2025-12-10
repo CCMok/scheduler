@@ -10,13 +10,13 @@ import { Worker } from '@/external/prisma-generated'
 import { getWorkersService } from "@/libs/worker/services/get-workers-service";
 import RosterTableClientContainer from "./roster-table-client-container";
 import RosterTableResetButton from "../../../../new/_components/table/roster-table-reset-button";
-import RosterTableSaveAlertDialog from "./roster-table-save-alert-dialog";
 import RosterTableExportXLSXButton from "../../../../new/_components/table/roster-table-export-xlsx-button";
 import { getRosterHistoryOffWorkersWithDaysService } from "@/libs/roster/services/get-roster-history-off-workers-with-days-service";
 import RosterTableFilterSection from "../filter/roster-table-filter-section";
 import { OffFormInput } from "@/app/(private)/roster/new/_components/filter/form/create-roster-form-input";
 import { handleGetResponse } from "@/libs/_general/utils/response-utils";
 import InputCardSkeleton from "@/components/_general/skeleton/input-card-skeleton";
+import RosterTableSaveButton from "./save/roster-table-save-button";
 
 const getRosterHistorySchedules = async (rosterHistoryId: number): Promise<RosterHistoryScheduleWithRelated[]> => {
   const response = await getRosterHistorySchedulesWithRelatedService(undefined, rosterHistoryId)
@@ -84,7 +84,7 @@ const RosterTableServerContent = async ({
         <div className='flex justify-end space-x-2'>
           <RosterTableResetButton description="沒有儲存的資料將會遺失，請確認是否繼續。" />
           <RosterTableExportXLSXButton />
-          <RosterTableSaveAlertDialog rosterHistoryId={rosterHistoryId} />
+          <RosterTableSaveButton rosterHistoryId={rosterHistoryId} />
         </div>
       </div>
     </CreateRosterStoreProvider>

@@ -1,7 +1,7 @@
 'use client'
 
 import LoadingButton from '@/components/_general/button/loading-button';
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { ChildrenProps } from "@/libs/_general/props/children-props";
 import CustomDialog from "./custom-dialog";
 
@@ -9,8 +9,9 @@ type Props = ChildrenProps & {
   isOpen?: boolean;
   setIsOpen?: (isOpen: boolean) => void;
   title?: string;
-  description?: string;
-  onContinue: () => Promise<void> | void;
+  description?: ReactNode;
+  onConfirm: () => Promise<void> | void;
+  renderConfirmButton?: (isLoading: boolean, onClick: () => Promise<void> | void) => ReactNode;
 }
 
 export default function ConfirmDialog({
@@ -18,8 +19,9 @@ export default function ConfirmDialog({
   setIsOpen,
   title,
   description,
-  onContinue,
+  onConfirm,
   children,
+  renderConfirmButton,
 }: Readonly<Props>) {
   const [isLoading, setIsLoading] = useState(false)
 
@@ -27,14 +29,25 @@ export default function ConfirmDialog({
   const isOpenFinal = isOpen ?? isOpenDefault
   const setIsOpenFinal = setIsOpen ?? setIsOpenDefault
 
-  const onClickContinue = async () => {
+  const onClickConfirm = async () => {
     setIsLoading(true)
 
-    await onContinue();
+    await onConfirm();
 
     setIsOpenFinal(false)
     setIsLoading(false)
   }
+
+  const submitButton = renderConfirmButton 
+    ? renderConfirmButton(isLoading, onClickConfirm)
+    : (
+      <LoadingButton
+        isLoading={isLoading}
+        onClick={onClickConfirm}
+      >
+        確定
+      </LoadingButton>
+    )
 
   return (
     <CustomDialog
@@ -43,14 +56,7 @@ export default function ConfirmDialog({
       trigger={children}
       title={title}
       description={description}
-      submitButton={(
-        <LoadingButton
-          isLoading={isLoading}
-          onClick={onClickContinue}
-        >
-          確定
-        </LoadingButton>
-      )}
+      submitButton={submitButton}
     />
   )
 }

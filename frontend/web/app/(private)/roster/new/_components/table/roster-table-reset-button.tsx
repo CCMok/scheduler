@@ -16,14 +16,13 @@ export default function RosterTableResetButton({
   const initialSchedules = useCreateRosterStore(state => state.initialSchedules);
   const setModifiedSchedules = useCreateRosterStore(state => state.setModifiedSchedules);
 
-  const onContinue = () =>
-    setModifiedSchedules(initialSchedules)
+  const onConfirm = () => setModifiedSchedules(initialSchedules)
 
   return (
     <ConfirmDialog
       title='確定要重置值班表嗎?'
       description={description}
-      onContinue={onContinue}
+      onConfirm={onConfirm}
     >
       <AlertDialogTrigger asChild>
         <CustomButton variant='secondary'>
