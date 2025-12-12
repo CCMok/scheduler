@@ -1353,10 +1353,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/env@npm:15.4.8":
-  version: 15.4.8
-  resolution: "@next/env@npm:15.4.8"
-  checksum: 10c0/6b0555e30c175a04781a75f0ddc2630bea1af0f31bac0c7875d6063bec9fb2ee50ccf6a3965e532604f40a2c98f1ceb8eb52283b449ba4345ab1b50a0fde8b88
+"@next/env@npm:15.4.10":
+  version: 15.4.10
+  resolution: "@next/env@npm:15.4.10"
+  checksum: 10c0/f455f9630f56691800441333bf1462135f64eba65cc81a34fceedb42fcc62fd22fb2dfaa8de49f65b378fc46c5cf35795c0a32363006b989806223856be221fa
   languageName: node
   linkType: hard
 
@@ -7056,11 +7056,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next@npm:15.4.8":
-  version: 15.4.8
-  resolution: "next@npm:15.4.8"
+"next@npm:15.4.10":
+  version: 15.4.10
+  resolution: "next@npm:15.4.10"
   dependencies:
-    "@next/env": "npm:15.4.8"
+    "@next/env": "npm:15.4.10"
     "@next/swc-darwin-arm64": "npm:15.4.8"
     "@next/swc-darwin-x64": "npm:15.4.8"
     "@next/swc-linux-arm64-gnu": "npm:15.4.8"
@@ -7111,7 +7111,7 @@ __metadata:
       optional: true
   bin:
     next: dist/bin/next
-  checksum: 10c0/4bbeb66d2db81f7f8580b3db0e14569bf09d71b958a3c65ddfb23015f316f3b85a4bf32349c9d21b03a61cd31b7d4e19829ff625b71dbde6ab0aa8db60bacd90
+  checksum: 10c0/67101363146d48f6e532b7b4d15df6d6a02601782037e4f9013f620a3cb046231a0db986bd983e1726b95aa30d10d02f673f9f123188582fe7c42d1fe94d74d9
   languageName: node
   linkType: hard
 
@@ -7733,14 +7733,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:19.1.2":
-  version: 19.1.2
-  resolution: "react-dom@npm:19.1.2"
+"react-dom@npm:19.1.4":
+  version: 19.1.4
+  resolution: "react-dom@npm:19.1.4"
   dependencies:
     scheduler: "npm:^0.26.0"
   peerDependencies:
-    react: ^19.1.2
-  checksum: 10c0/67d5f574eecd1f7a89df3c94936122d4df361d3e78ea19d5879c560439ef05f154af9b9281c1f5c92f79d13c39364bfa60136916d00bdbbccd019b8b3471de10
+    react: ^19.1.4
+  checksum: 10c0/fffb4c273773727c9b6e79418626bbe4f2546ad92018fe6e6b6b7df5a5ed96ef61602805662012b4e53c0a6d339cf83030fe09baadd688cd3587d6f780f39028
   languageName: node
   linkType: hard
 
@@ -7838,10 +7838,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:19.1.2":
-  version: 19.1.2
-  resolution: "react@npm:19.1.2"
-  checksum: 10c0/dfbe1dee96547ad2d6d6872b6052cbd5bd7841b6f57a7d6cda62b27e1a7df31d47beecb6d11e24abaff0c5ea347459a0a3c60917b41f5a0ee0b507436b3c50a6
+"react@npm:19.1.4":
+  version: 19.1.4
+  resolution: "react@npm:19.1.4"
+  checksum: 10c0/159257dbaf168facecc0a34825114e2b00624d315b7dca8468afcc790eadf5a49f90c0234be7492c7207239292e789e443ca419a83121898b82b0824454900f2
   languageName: node
   linkType: hard
 
@@ -8163,12 +8163,12 @@ __metadata:
     lodash: "npm:^4.17.21"
     lucide-react: "npm:^0.555.0"
     motion: "npm:^12.23.22"
-    next: "npm:15.4.8"
+    next: "npm:15.4.10"
     next-themes: "npm:^0.4.6"
     prisma: "npm:^6.17.1"
-    react: "npm:19.1.2"
+    react: "npm:19.1.4"
     react-day-picker: "npm:^9.11.3"
-    react-dom: "npm:19.1.2"
+    react-dom: "npm:19.1.4"
     react-email: "npm:5.0.4"
     react-hook-form: "npm:^7.56.3"
     resend: "npm:^6.4.2"
