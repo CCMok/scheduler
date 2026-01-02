@@ -7544,12 +7544,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.56.3":
-  version: 7.56.3
-  resolution: "react-hook-form@npm:7.56.3"
+"react-hook-form@npm:^7.69.0":
+  version: 7.69.0
+  resolution: "react-hook-form@npm:7.69.0"
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
-  checksum: 10c0/9467b027fd030d93ba3c8de85853d381ca92ba70bfdb9d0569a63dae44c1459082f5863a4ceb8690789a7185a588516182904db4c72546119c966bf25316d591
+  checksum: 10c0/99440aac1edbbda1f1704e31bea72dd75130d09593f5fce037596d381fb3dbf5a9864b28f49ecd52bd6dfabceb437905578fe2efc20c69411500fbdbc8647df6
   languageName: node
   linkType: hard
 
@@ -7943,7 +7943,7 @@ __metadata:
     react-day-picker: "npm:^9.11.3"
     react-dom: "npm:^19.2.3"
     react-email: "npm:5.0.4"
-    react-hook-form: "npm:^7.56.3"
+    react-hook-form: "npm:^7.69.0"
     resend: "npm:^6.4.2"
     server-only: "npm:^0.0.1"
     sonner: "npm:^2.0.7"
@@ -7955,7 +7955,7 @@ __metadata:
     typescript: "npm:^5"
     use-debounce: "npm:^10.0.6"
     zod: "npm:^3.24.4"
-    zustand: "npm:^5.0.5"
+    zustand: "npm:^5.0.9"
   languageName: unknown
   linkType: soft
 
@@ -9297,9 +9297,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zustand@npm:^5.0.5":
-  version: 5.0.5
-  resolution: "zustand@npm:5.0.5"
+"zustand@npm:^5.0.9":
+  version: 5.0.9
+  resolution: "zustand@npm:5.0.9"
   peerDependencies:
     "@types/react": ">=18.0.0"
     immer: ">=9.0.6"
@@ -9314,6 +9314,6 @@ __metadata:
       optional: true
     use-sync-external-store:
       optional: true
-  checksum: 10c0/76228022ad589c8ef29227f184d8852277509f88c80afd537de0506a6ded2e7ecc01d21bb79f426867560e4d59553c526e88d01abc46bd32b133d97ff337e19b
+  checksum: 10c0/552849e4546c7760704d6509a5c412d57c62a1fa9e53169c939ba5e3d75f8cb3df50a64c3a22e6c3f1c8cc00de7543e4edd61ab5ae0c9169ba9a98e28303aba6
   languageName: node
   linkType: hard
