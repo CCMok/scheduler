@@ -1,3 +1,4 @@
+import ThemeToggle from "@/components/_general/theme/theme-toggle";
 import { Meteors } from "@/external/shadcn/components/ui/meteors"
 import { ReactNode } from "react";
 
@@ -12,7 +13,7 @@ export default function HomeLayout({
         <Meteors />
       </div>
       <div className='absolute top-4 right-4'>
-        {/* <ThemeToggle /> */} {/* TODO: Add ThemeToggle */}
+        <ThemeToggle />
       </div>
       {children}
     </div>

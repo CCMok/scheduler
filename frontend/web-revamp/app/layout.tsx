@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Sans_HK } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/_general/theme/theme-provider";
+import { cn } from "@/external/shadcn/libs/utils";
 
 const noto = Noto_Sans_HK({ subsets: ['latin'] });
 
@@ -18,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="zh-Hant-HK" suppressHydrationWarning>
       <body
-        className={`${noto.className} antialiased`}
+        className={cn(noto.className, 'antialiased')}
       >
         <ThemeProvider
           attribute="class"

@@ -1,15 +1,23 @@
-'use client'
+import CustomButton from '@/components/_general/button/custom-button';
+import { Path } from '@/libs/_general/path/path';
+// import { PATH } from '@/libs/_general/enums/path';
+// import CustomLink from '@/components/_general/link/custom-link';
+import Link from 'next/link';
 
-import ThemeToggle from "@/components/_general/theme/theme-toggle";
-import { useTheme } from "next-themes";
-
-export default function Home() {
-  const { theme, setTheme } = useTheme()
-
+export default function HomePage() {
   return (
-    <div>
-      <h1>Hello World</h1>
-      <ThemeToggle />
+    <div className='flex flex-col items-center justify-center min-h-screen'>
+      <div className='text-center px-8'>
+        <h1 className='text-4xl font-bold'>歡迎使用 Scheduler</h1>
+        <p className='text-lg text-secondary-foreground mt-4'>
+          簡化您的日程安排並有效率地管理您的團隊。
+        </p>
+        <CustomButton className='mt-6' asChild>
+          <Link href={Path.LOGIN}>
+            開始使用
+          </Link>
+        </CustomButton>
+      </div>
     </div>
   );
 }
