@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_HK } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/_general/theme/theme-provider";
 
 const noto = Noto_Sans_HK({ subsets: ['latin'] });
 
