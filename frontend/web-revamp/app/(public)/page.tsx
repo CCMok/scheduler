@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from "@/external/shadcn/components/ui/button";
+import ThemeToggle from "@/components/_general/theme/theme-toggle";
 import { useTheme } from "next-themes";
 
 export default function Home() {
@@ -9,9 +9,7 @@ export default function Home() {
   return (
     <div>
       <h1>Hello World</h1>
-      <Button onClick={() => {
-        setTheme(theme === 'light' ? 'dark' : 'light')
-      }}>Click me</Button>
+      <ThemeToggle />
     </div>
   );
 }
