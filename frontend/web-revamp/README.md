@@ -6,13 +6,14 @@
 
 Base on `.env.example`, create `.env` file.
 
-#### JWT Secret
-
+#### Session
 Generate random secret. Encode: base64 Length: 32
 
 ```bash
 openssl rand -base64 32
 ```
+
+Update `.env` SESSION_SECRET.
 
 ### Database operation
 Update `.env` DATABASE_URL.
