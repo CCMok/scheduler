@@ -1,6 +1,6 @@
 import CustomButton from '@/components/_general/button/custom-button';
+import CustomLink from '@/components/_general/link/custom-link';
 import { Path } from '@/libs/_general/path/path';
-import Link from 'next/link';
 
 export default function HomePage() {
   return (
@@ -10,10 +10,10 @@ export default function HomePage() {
         <p className='text-lg text-secondary-foreground mt-4'>
           簡化您的日程安排並有效率地管理您的團隊。
         </p>
-        <CustomButton className='mt-6' asChild>
-          <Link href={Path.LOGIN}>
+        <CustomButton className='mt-6' >
+          <CustomLink href={Path.LOGIN}>
             開始使用
-          </Link>
+          </CustomLink>
         </CustomButton>
       </div>
     </div>
