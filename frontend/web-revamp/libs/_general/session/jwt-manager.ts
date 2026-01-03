@@ -20,7 +20,7 @@ export const decrypt = async (session: string | undefined = ''): Promise<Session
     })
     return payload
   } catch (error) {
-    console.error('Failed to verify session')
+    console.error('Failed to verify JWT')
     console.error(error)
   }
 }

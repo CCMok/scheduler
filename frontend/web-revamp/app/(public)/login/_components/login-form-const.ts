@@ -1,4 +1,4 @@
-import { Message } from "@/libs/_general/message/message";
+import { Message } from "@/libs/_general/service/message";
 import { z } from "zod";
 
 export const FORM_ID = 'login-form';
