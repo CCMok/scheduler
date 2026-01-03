@@ -1,7 +1,5 @@
 import CustomButton from '@/components/_general/button/custom-button';
 import { Path } from '@/libs/_general/path/path';
-// import { PATH } from '@/libs/_general/enums/path';
-// import CustomLink from '@/components/_general/link/custom-link';
 import Link from 'next/link';
 
 export default function HomePage() {

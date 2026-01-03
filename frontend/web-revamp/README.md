@@ -21,18 +21,19 @@ Migrate schema
 
 [dev]
 ```Nodejs
-yarn prisma migrate dev
+npx prisma migrate dev --name [migration name]
+npx prisma generate
 ```
 [other]
 ```Nodejs
-yarn prisma migrate deploy
+npx prisma migrate deploy
+npx prisma genearte
 ```
 
 Seed data
 
 ```Nodejs
-yarn seed-system
-yarn seed-organization
+npx prisma db seed
 ```
 
 #### Database debug
