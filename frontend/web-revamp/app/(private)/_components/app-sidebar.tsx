@@ -32,7 +32,7 @@ export default async function AppSidebar(props: Readonly<ComponentProps<typeof S
                   <SidebarMenuButton asChild>
                     <CustomLink href={Path.ROSTER + Path.NEW}>
                       <Calendar />
-                      <span>編製值班表</span>
+                      <span>新增值班表</span>
                     </CustomLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

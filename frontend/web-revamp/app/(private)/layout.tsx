@@ -11,10 +11,7 @@ export default function PrivateLayout({
     <SidebarProvider>
       <AppSidebar variant='inset' />
       <SidebarInset>
-        <main>
-          <SidebarTrigger />
-          {children}
-        </main>
+        {children}
       </SidebarInset>
     </SidebarProvider>
   )
