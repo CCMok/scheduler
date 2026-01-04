@@ -8,7 +8,7 @@ import { cookies } from 'next/headers'
 const EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000
 const COOKIE_NAME = 'session'
 
-export async function createSession(user: User) {
+export const createSession = async (user: User) => {
   const expirationTime = new Date(Date.now() + EXPIRATION_TIME)
   const payload: Session = {
     userId: user.id,
@@ -19,7 +19,7 @@ export async function createSession(user: User) {
   await setCookie(COOKIE_NAME, jwt, expirationTime)
 }
 
-export async function getSession(): Promise<Session | undefined> {
+export const getSession = async (): Promise<Session | undefined> => {
   const jwt = (await cookies()).get(COOKIE_NAME)?.value
   if (!jwt) return
 
@@ -34,4 +34,8 @@ export async function getSession(): Promise<Session | undefined> {
   }
   
   return parseResult.data
+}
+
+export const deleteSession = async (): Promise<void> => {
+  (await cookies()).delete(COOKIE_NAME)
 }

@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { REDIRECT_PRIVATE_PATH } from "@/libs/_general/path/path";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
+import { LogIn } from "lucide-react";
 
 export default function LoginCard({
   className,
@@ -79,7 +80,7 @@ export default function LoginCard({
         <CardFooter>
           <form.AppForm>
             <Field>
-              <form.SubmitButton>
+              <form.SubmitButton icon={<LogIn />}>
                 登入
               </form.SubmitButton>
             </Field>

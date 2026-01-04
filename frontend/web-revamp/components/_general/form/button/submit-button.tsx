@@ -6,9 +6,11 @@ import { Spinner } from "@/external/shadcn/components/ui/spinner";
 export default function SubmitButton({
   children,
   className,
+  icon,
 }: Readonly<{
   children?: ReactNode;
   className?: string;
+  icon?: ReactNode;
 }>) {
   const form = useFormContext()
   return (
@@ -19,7 +21,7 @@ export default function SubmitButton({
           disabled={isSubmitting}
           className={className}
         >
-          {isSubmitting && <Spinner />}
+          {isSubmitting ? <Spinner /> : icon}
           {children}
         </CustomButton>
       )}
