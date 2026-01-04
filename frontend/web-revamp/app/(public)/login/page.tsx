@@ -5,7 +5,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-svh mx-2 flex flex-col items-center justify-center gap-2">
       <Logo />
-      <LoginCard />
+      <LoginCard className='w-full max-w-sm' />
     </div>
   )
 }
