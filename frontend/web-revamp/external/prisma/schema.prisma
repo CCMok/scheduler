@@ -7,11 +7,140 @@ datasource db {
   provider = "postgresql"
 }
 
+model Role {
+  id    Int    @id
+  name  String @unique
+  users User[]
+
+  @@map("role")
+}
+
+model RoleAudit {
+  auditId        Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction    String   @map("audit_action")
+  id             Int?
+  name           String?
+
+  @@map("role_audit")
+}
+
 model User {
   id       Int     @id @default(autoincrement())
   email    String  @unique
   password String
   name     String?
+  roleId   Int     @map("role_id")
+  role     Role    @relation(fields: [roleId], references: [id])
+  teams    Team[]
 
+  @@index([roleId])
   @@map("user")
+}
+
+model UserAudit {
+  auditId        Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction    String   @map("audit_action")
+  id             Int?
+  email          String?
+  password       String?
+  name           String?
+  roleId         Int?     @map("role_id")
+
+  @@map("user_audit")
+}
+
+model Team {
+  id                        Int                        @id @default(autoincrement())
+  ownerId                   Int                        @map("owner_id")
+  name                      String
+  owner                     User                       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  workers                   Worker[]
+  posts                     Post[]
+
+  @@unique([ownerId, name])
+  @@index([ownerId])
+  @@map("team")
+}
+
+model TeamAudit {
+  auditId        Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction    String   @map("audit_action")
+  id             Int?
+  ownerId        Int?     @map("owner_id")
+  name           String?
+
+  @@map("team_audit")
+}
+
+model Post {
+  id          Int          @id @default(autoincrement())
+  teamId      Int          @map("team_id")
+  name        String
+  team        Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  postWorkers PostWorker[]
+
+  @@unique([teamId, name])
+  @@index([teamId])
+  @@map("post")
+}
+
+model PostAudit {
+  auditId        Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction    String   @map("audit_action")
+  id             Int?
+  teamId         Int?     @map("team_id")
+  name           String?
+
+  @@map("post_audit")
+}
+
+model Worker {
+  id          Int          @id @default(autoincrement())
+  teamId      Int          @map("team_id")
+  name        String
+  team        Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  postWorkers PostWorker[]
+
+  @@unique([teamId, name])
+  @@index([teamId])
+  @@map("worker")
+}
+
+model WorkerAudit {
+  auditId        Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction    String   @map("audit_action")
+  id             Int?
+  teamId         Int?     @map("team_id")
+  name           String?
+
+  @@map("worker_audit")
+}
+
+model PostWorker {
+  id       Int    @id @default(autoincrement())
+  postId   Int    @map("post_id")
+  workerId Int    @map("worker_id")
+  post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  worker   Worker @relation(fields: [workerId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, workerId])
+  @@index([postId])
+  @@index([workerId])
+  @@map("post_worker")
+}
+
+model PostWorkerAudit {
+  auditId        Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction    String   @map("audit_action")
+  id             Int?
+  postId         Int?     @map("post_id")
+  workerId       Int?     @map("worker_id")
+
+  @@map("post_worker_audit")
 }

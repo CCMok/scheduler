@@ -1,3 +1,4 @@
+import { Role } from "@/libs/auth/role/role";
 import { PrismaClient, Prisma } from "./generated/client";
 import { PrismaPg } from '@prisma/adapter-pg'
 import 'dotenv/config'
@@ -10,8 +11,20 @@ const prisma = new PrismaClient({
   adapter,
 });
 
+const insertRole = async () => {
+  await prisma.role.createMany({
+    data: [
+      { id: Role.SYSTEM_ADMIN , name: 'System Admin' },
+      { id: Role.BASIC_USER , name: 'Basic User' },
+    ],
+  })
+}
+
 export async function main() {
-  // seed operation
+  console.log('Start seeding...');
+  await insertRole();
+  console.log('Roles seeded successfully.');
+  console.log('Seeding completed.');
 }
 
 main();
