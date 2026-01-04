@@ -1,26 +1,37 @@
 import 'server-only'
-import { SessionPayload } from './session-payload'
-import { cookies } from 'next/headers'
+import { Session, sessionSchema } from './session'
 import { User } from '@/external/prisma/generated/client'
-import { encrypt } from './jwt-manager'
+import { decrypt, encrypt } from '../jwt/jwt-manager'
+import { setCookie } from '../cookie/cookie-manager'
+import { cookies } from 'next/headers'
 
 const EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000
+const COOKIE_NAME = 'session'
 
 export async function createSession(user: User) {
   const expirationTime = new Date(Date.now() + EXPIRATION_TIME)
-  const payload: SessionPayload = {
+  const payload: Session = {
     userId: user.id,
     email: user.email,
     name: user.name ?? undefined,
   }
   const jwt = await encrypt(payload, expirationTime)
-  const cookieStore = await cookies()
- 
-  cookieStore.set('session', jwt, {
-    httpOnly: true,
-    secure: true,
-    expires: expirationTime,
-    sameSite: 'lax',
-    path: '/',
-  })
+  await setCookie(COOKIE_NAME, jwt, expirationTime)
+}
+
+export async function getSession(): Promise<Session | undefined> {
+  const jwt = (await cookies()).get(COOKIE_NAME)?.value
+  if (!jwt) return
+
+  const payload = await decrypt(jwt)
+  if (!payload) return
+
+  const parseResult = sessionSchema.safeParse(payload)
+  if (!parseResult.success) {
+    console.error('Invalid session payload')
+    console.error(parseResult.error)
+    return
+  }
+  
+  return parseResult.data
 }

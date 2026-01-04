@@ -7,7 +7,7 @@ import { useAppForm } from "@/components/_general/form/utils/form-utils";
 import { loginAction } from "@/libs/auth/login/login-action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { PRIVATE_HOME } from "@/libs/_general/path/path";
+import { REDIRECT_PRIVATE_PATH } from "@/libs/_general/path/path";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
 
 export default function LoginCard({
@@ -33,7 +33,7 @@ export default function LoginCard({
         return;
       }
       toast.success('登入成功')
-      router.push(PRIVATE_HOME);
+      router.push(REDIRECT_PRIVATE_PATH);
     },
   })
 
