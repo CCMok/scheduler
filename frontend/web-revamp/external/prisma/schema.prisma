@@ -52,12 +52,15 @@ model UserAudit {
 }
 
 model Team {
-  id                        Int                        @id @default(autoincrement())
-  ownerId                   Int                        @map("owner_id")
-  name                      String
-  owner                     User                       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  workers                   Worker[]
-  posts                     Post[]
+  id                       Int              @id @default(autoincrement())
+  ownerId                  Int              @map("owner_id")
+  name                     String
+  maxWorkerAssignPerRoster Int?             @map("max_worker_assign_per_roster")
+  owner                    User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  workers                  Worker[]
+  posts                    Post[]
+  workerAffinities         WorkerAffinity[]
+  postAffinities           PostAffinity[]
 
   @@unique([ownerId, name])
   @@index([ownerId])
@@ -65,22 +68,24 @@ model Team {
 }
 
 model TeamAudit {
-  auditId        Int      @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction    String   @map("audit_action")
-  id             Int?
-  ownerId        Int?     @map("owner_id")
-  name           String?
+  auditId                  Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp           DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction              String   @map("audit_action")
+  id                       Int?
+  ownerId                  Int?     @map("owner_id")
+  name                     String?
+  maxWorkerAssignPerRoster Int?     @map("max_worker_assign_per_roster")
 
   @@map("team_audit")
 }
 
 model Post {
-  id          Int          @id @default(autoincrement())
-  teamId      Int          @map("team_id")
-  name        String
-  team        Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  postWorkers PostWorker[]
+  id                  Int                  @id @default(autoincrement())
+  teamId              Int                  @map("team_id")
+  name                String
+  team                Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  postWorkers         PostWorker[]
+  postAffinityMembers PostAffinityMember[]
 
   @@unique([teamId, name])
   @@index([teamId])
@@ -99,11 +104,12 @@ model PostAudit {
 }
 
 model Worker {
-  id          Int          @id @default(autoincrement())
-  teamId      Int          @map("team_id")
-  name        String
-  team        Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  postWorkers PostWorker[]
+  id                    Int                    @id @default(autoincrement())
+  teamId                Int                    @map("team_id")
+  name                  String
+  team                  Team                   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  postWorkers           PostWorker[]
+  workerAffinityMembers WorkerAffinityMember[]
 
   @@unique([teamId, name])
   @@index([teamId])
@@ -143,4 +149,92 @@ model PostWorkerAudit {
   workerId       Int?     @map("worker_id")
 
   @@map("post_worker_audit")
+}
+
+model PostAffinity {
+  id                  Int                  @id @default(autoincrement())
+  teamId              Int                  @map("team_id")
+  team                Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  postAffinityMembers PostAffinityMember[]
+
+  @@index([teamId])
+  @@map("post_affinity")
+}
+
+model PostAffinityAudit {
+  auditId        Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction    String   @map("audit_action")
+  id             Int?
+  teamId         Int?     @map("team_id")
+
+  @@map("post_affinity_audit")
+}
+
+model PostAffinityMember {
+  id             Int          @id @default(autoincrement())
+  postAffinityId Int          @map("post_affinity_id")
+  postId         Int          @map("post_id")
+  postAffinity   PostAffinity @relation(fields: [postAffinityId], references: [id], onDelete: Cascade)
+  post           Post         @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postAffinityId, postId])
+  @@index([postAffinityId])
+  @@index([postId])
+  @@map("post_affinity_member")
+}
+
+model PostAffinityMemberAudit {
+  auditId        Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction    String   @map("audit_action")
+  id             Int?
+  postAffinityId Int?     @map("post_affinity_id")
+  postId         Int?     @map("post_id")
+
+  @@map("post_affinity_member_audit")
+}
+
+model WorkerAffinity {
+  id                    Int                    @id @default(autoincrement())
+  teamId                Int                    @map("team_id")
+  team                  Team                   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  workerAffinityMembers WorkerAffinityMember[]
+
+  @@index([teamId])
+  @@map("worker_affinity")
+}
+
+model WorkerAffinityAudit {
+  auditId        Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction    String   @map("audit_action")
+  id             Int?
+  teamId         Int?     @map("team_id")
+
+  @@map("worker_affinity_audit")
+}
+
+model WorkerAffinityMember {
+  id               Int            @id @default(autoincrement())
+  workerAffinityId Int            @map("worker_affinity_id")
+  workerId         Int            @map("worker_id")
+  workerAffinity   WorkerAffinity @relation(fields: [workerAffinityId], references: [id], onDelete: Cascade)
+  worker           Worker         @relation(fields: [workerId], references: [id], onDelete: Cascade)
+
+  @@unique([workerAffinityId, workerId])
+  @@index([workerAffinityId])
+  @@index([workerId])
+  @@map("worker_affinity_member")
+}
+
+model WorkerAffinityMemberAudit {
+  auditId          Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp   DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction      String   @map("audit_action")
+  id               Int?
+  workerAffinityId Int?     @map("worker_affinity_id")
+  workerId         Int?     @map("worker_id")
+
+  @@map("worker_affinity_member_audit")
 }
