@@ -1,7 +1,6 @@
 from sqlmodel import select
-from models.dao import PostConstraint, WorkerConstraint
+from models.dao import PostAffinity, Worker, WorkerAffinity
 from managers.db import DbSession
-from enums.constraint_type import PostsConstraintType, WorkersConstraintType
 from models.roster_material import RosterMaterial
 from ortools.sat.python import cp_model
 
@@ -10,39 +9,39 @@ class RosterModelHelper:
     @staticmethod
     def define_constraints(material: RosterMaterial) -> None:
         RosterModelHelper.__define_each_post_max_worker(material)
-        RosterModelHelper.__define_each_worker_max_post_per_day(material)
-        RosterModelHelper.__define_each_worker_max_post_per_roster(material)
+        RosterModelHelper.__define_each_worker_max_post_per_timeslot(material)
+        RosterModelHelper.__define_each_worker_max_assign_per_roster(material)
         RosterModelHelper.__define_off_constraint(material)
 
     @staticmethod
     def __define_each_post_max_worker(material: RosterMaterial) -> None:
-        for day in material.request.days:
+        for timeslot in material.request.timeslots:
             for post in material.posts:
                 material.model.add_at_most_one(
-                    material.shifts[(day, post.id, worker.id)]
-                    for worker in post.active_workers
+                    material.shifts[(timeslot, post.id, worker.id)]
+                    for worker in post.workers
                 )
 
     @staticmethod
-    def __define_each_worker_max_post_per_day(material: RosterMaterial) -> None:
-        for day in material.request.days:
+    def __define_each_worker_max_post_per_timeslot(material: RosterMaterial) -> None:
+        for timeslot in material.request.timeslots:
             for worker in material.workers:
                 material.model.add_at_most_one(
-                    material.shifts[(day, post.id, worker.id)]
-                    for post in worker.active_posts
+                    material.shifts[(timeslot, post.id, worker.id)]
+                    for post in worker.posts
                 )
 
     @staticmethod
-    def __define_each_worker_max_post_per_roster(material: RosterMaterial) -> None:
-        max_worker_post_per_roster = material.department.max_worker_post_per_roster if material.department.max_worker_post_per_roster is not None else 2
+    def __define_each_worker_max_assign_per_roster(material: RosterMaterial) -> None:
+        max_worker_assign_per_roster = material.team.max_worker_assign_per_roster if material.team.max_worker_assign_per_roster is not None else 2
 
         for worker in material.workers:
             material.model.add(
                 sum(
-                    material.shifts[(day, post.id, worker.id)]
-                    for day in material.request.days
-                    for post in worker.active_posts
-                ) <= max_worker_post_per_roster
+                    material.shifts[(timeslot, post.id, worker.id)]
+                    for timeslot in material.request.timeslots
+                    for post in worker.posts
+                ) <= max_worker_assign_per_roster
             )
 
     @staticmethod
@@ -57,13 +56,14 @@ class RosterModelHelper:
             if worker is None:
                 continue
 
-            for day in off.days:
-                if day not in material.request.days:
+            for timeslot in off.timeslots:
+                if timeslot not in material.request.timeslots:
                     continue
 
-                for post in worker.active_posts:
+                for post in worker.posts:
                     material.model.add(
-                        material.shifts[(day, post.id, off.worker_id)] == 0
+                        material.shifts[(timeslot, post.id,
+                                         off.worker_id)] == 0
                     )
 
     @staticmethod
@@ -72,11 +72,11 @@ class RosterModelHelper:
             material
         )
 
-        posts_constraint_reward = RosterModelHelper.__create_posts_constraint_reward(
+        post_affinity_reward = RosterModelHelper.__create_post_affinity_reward(
             material
         )
 
-        workers_constraint_reward = RosterModelHelper.__create_workers_constraint_reward(
+        worker_affinity_reward = RosterModelHelper.__create_worker_affinity_reward(
             material
         )
 
@@ -90,8 +90,8 @@ class RosterModelHelper:
 
         material.model.maximize(
             total_assignment_reward
-            + posts_constraint_reward
-            + workers_constraint_reward
+            + post_affinity_reward
+            + worker_affinity_reward
             + worker_variety_reward
             - worker_balancing_penalty
         )
@@ -99,54 +99,54 @@ class RosterModelHelper:
     @staticmethod
     def __create_total_assignment_reward(material: RosterMaterial) -> cp_model.LinearExpr:
         return sum(
-            material.shifts[(day, post.id, worker.id)] * (
+            material.shifts[(timeslot, post.id, worker.id)] * (
                 1 + material.post_worker_priorities.get(
                     (post.id, worker.id),
                     0  # default priority
                 ) * 0.5
             )
-            for day in material.request.days
+            for timeslot in material.request.timeslots
             for post in material.posts
-            for worker in post.active_workers
+            for worker in post.workers
         )
 
     @staticmethod
     def __create_worker_post_variety_reward(material: RosterMaterial) -> cp_model.LinearExpr:
         """
-        Rewards workers being assigned to different posts across days.
+        Rewards workers being assigned to different posts across timeslots.
         Higher score when a worker works multiple different posts rather than same post repeatedly.
 
         Example:
-        - Worker A: Post1(day1), Post2(day2), Post3(day3) = 3 unique posts = reward of 3
-        - Worker B: Post1(day1), Post1(day2), Post1(day3) = 1 unique post = reward of 1
+        - Worker A: Post1(timeslot1), Post2(timeslot2), Post3(timeslot3) = 3 unique posts = reward of 3
+        - Worker B: Post1(timeslot1), Post1(timeslot2), Post1(timeslot3) = 1 unique post = reward of 1
         """
         rewards: list[cp_model.LinearExpr] = []
 
         for worker in material.workers:
-            if len(worker.active_posts) <= 1:
+            if len(worker.posts) <= 1:
                 # No variety possible with 0 or 1 posts
                 continue
 
             # For each post, create a boolean indicating if worker is assigned to it at least once
-            for post in worker.active_posts:
+            for post in worker.posts:
                 post_assigned_to_worker = material.model.new_bool_var(
                     f'worker_{worker.id}_assigned_to_post_{post.id}'
                 )
                 rewards.append(post_assigned_to_worker)
 
-                # True if worker works this post on at least one day
+                # True if worker works this post on at least one timeslot
                 material.model.add(
                     sum(
-                        material.shifts[(day, post.id, worker.id)]
-                        for day in material.request.days
+                        material.shifts[(timeslot, post.id, worker.id)]
+                        for timeslot in material.request.timeslots
                     ) >= 1
                 ).only_enforce_if(post_assigned_to_worker)
 
                 # False if worker never works this post
                 material.model.add(
                     sum(
-                        material.shifts[(day, post.id, worker.id)]
-                        for day in material.request.days
+                        material.shifts[(timeslot, post.id, worker.id)]
+                        for timeslot in material.request.timeslots
                     ) == 0
                 ).only_enforce_if(post_assigned_to_worker.Not())
 
@@ -154,26 +154,26 @@ class RosterModelHelper:
 
     @staticmethod
     def __create_worker_balancing_per_post_penalty(material: RosterMaterial) -> cp_model.LinearExpr:
-        # Determine which workers are available for at least one day
-        available_workers_per_post = {}
+        # Determine which workers are available for at least one timeslot
+        available_workers_per_post: dict[int, list[Worker]] = {}
         for post in material.posts:
-            available_workers = []
-            for worker in post.active_workers:
-                # Check if worker is available for at least one day
-                is_available_any_day = False
-                for day in material.request.days:
+            available_workers: list[Worker] = []
+            for worker in post.workers:
+                # Check if worker is available for at least one timeslot
+                is_available_any_timeslot = False
+                for timeslot in material.request.timeslots:
                     # Check if this shift exists (worker is not completely off)
-                    is_off_this_day = False
+                    is_off_this_timeslot = False
                     for off in material.request.offs:
-                        if off.worker_id == worker.id and day in off.days:
-                            is_off_this_day = True
+                        if off.worker_id == worker.id and timeslot in off.timeslots:
+                            is_off_this_timeslot = True
                             break
 
-                    if not is_off_this_day:
-                        is_available_any_day = True
+                    if not is_off_this_timeslot:
+                        is_available_any_timeslot = True
                         break
 
-                if is_available_any_day:
+                if is_available_any_timeslot:
                     available_workers.append(worker)
 
             available_workers_per_post[post.id] = available_workers
@@ -181,8 +181,8 @@ class RosterModelHelper:
         post_worker_assignment = {
             post.id: {
                 worker.id: sum(
-                    material.shifts[(day, post.id, worker.id)]
-                    for day in material.request.days
+                    material.shifts[(timeslot, post.id, worker.id)]
+                    for timeslot in material.request.timeslots
                 )
                 # Only available workers
                 for worker in available_workers_per_post[post.id]
@@ -192,14 +192,14 @@ class RosterModelHelper:
 
         post_min_assignment = {
             post.id: material.model.new_int_var(
-                0, len(material.request.days), f'min_assignment_{post.id}'
+                0, len(material.request.timeslots), f'min_assignment_{post.id}'
             )
             for post in material.posts
         }
 
         post_max_assignment = {
             post.id: material.model.new_int_var(
-                0, len(material.request.days), f'max_assignment_{post.id}'
+                0, len(material.request.timeslots), f'max_assignment_{post.id}'
             )
             for post in material.posts
         }
@@ -222,135 +222,125 @@ class RosterModelHelper:
         )
 
     @staticmethod
-    def __create_posts_constraint_reward(material: RosterMaterial) -> cp_model.LinearExpr:
+    def __create_post_affinity_reward(material: RosterMaterial) -> cp_model.LinearExpr:
+        """
+        Reward when at least 1 post from the affinity group has a worker assigned each timeslot.
+        """
         rewards: list[cp_model.LinearExpr] = []
 
-        post_constraints = RosterModelHelper.__find_post_constraints(
-            material.db_session, material.request.department_id
+        post_affinities = RosterModelHelper.__find_post_affinities(
+            material.db_session, material.request.team_id
         )
 
-        for post_constraint in post_constraints:
-            match post_constraint.post_constraint_type.enum:
-                case PostsConstraintType.AT_LEAST_1_WORKER_PER_DAY.value:
-                    rewards.append(
-                        RosterModelHelper.__create_posts_at_least_1_worker_per_day_reward(
-                            material, post_constraint
-                        ) * post_constraint.weighting
-                    )
-
-                case _:
-                    print('Unknown post constraint type:',
-                          post_constraint.post_constraint_type)
+        for post_affinity in post_affinities:
+            rewards.append(
+                RosterModelHelper.__create_posts_at_least_1_worker_per_timeslot_reward(
+                    material, post_affinity
+                )
+            )
 
         return sum(rewards)
 
     @staticmethod
-    def __find_post_constraints(db_session: DbSession, department_id: int):
+    def __find_post_affinities(db_session: DbSession, team_id: int):
         return db_session.exec(
-            select(PostConstraint)
-            .where(PostConstraint.department_id == department_id)
+            select(PostAffinity)
+            .where(PostAffinity.team_id == team_id)
         ).all()
 
     @staticmethod
-    def __create_posts_at_least_1_worker_per_day_reward(
+    def __create_posts_at_least_1_worker_per_timeslot_reward(
         material: RosterMaterial,
-        post_constraint: PostConstraint,
+        post_affinity: PostAffinity,
     ) -> cp_model.LinearExpr:
         rewards: list[cp_model.LinearExpr] = []
 
-        for day in material.request.days:
+        for timeslot in material.request.timeslots:
             reward = material.model.new_bool_var(
-                f'reward_posts_at_least_1_worker_per_day_{post_constraint.id}_{day}'
+                f'reward_posts_at_least_1_worker_per_timeslot_{post_affinity.id}_{timeslot}'
             )
             rewards.append(reward)
 
             material.model.add(
                 sum(
-                    material.shifts[(
-                        day, post_constraint_post.post_id, worker.id)]
-                    for post_constraint_post in post_constraint.post_constraint_posts
-                    for worker in post_constraint_post.post.workers
-                    if (day, post_constraint_post.post_id, worker.id) in material.shifts
+                    material.shifts[(timeslot, member.post_id, worker.id)]
+                    for member in post_affinity.members
+                    for worker in member.post.workers
+                    if (timeslot, member.post_id, worker.id) in material.shifts
                 ) >= 1
             ).only_enforce_if(reward)
 
             material.model.add(
                 sum(
-                    material.shifts[(
-                        day, post_constraint_post.post_id, worker.id)]
-                    for post_constraint_post in post_constraint.post_constraint_posts
-                    for worker in post_constraint_post.post.workers
-                    if (day, post_constraint_post.post_id, worker.id) in material.shifts
+                    material.shifts[(timeslot, member.post_id, worker.id)]
+                    for member in post_affinity.members
+                    for worker in member.post.workers
+                    if (timeslot, member.post_id, worker.id) in material.shifts
                 ) < 1
             ).only_enforce_if(reward.Not())
 
         return sum(rewards)
 
     @staticmethod
-    def __create_workers_constraint_reward(material: RosterMaterial) -> cp_model.LinearExpr:
+    def __create_worker_affinity_reward(material: RosterMaterial) -> cp_model.LinearExpr:
+        """
+        Reward when all workers in the affinity group are assigned together on the same timeslot.
+        """
         rewards: list[cp_model.LinearExpr] = []
 
-        worker_constraints = RosterModelHelper.__find_worker_constraints(
-            material.db_session, material.request.department_id
+        worker_affinities = RosterModelHelper.__find_worker_affinities(
+            material.db_session, material.request.team_id
         )
 
-        for worker_constraint in worker_constraints:
-            match worker_constraint.worker_constraint_type.enum:
-                case WorkersConstraintType.CORRELATE.value:
-                    rewards.append(
-                        RosterModelHelper.__create_workers_correlate_reward(
-                            material, worker_constraint
-                        ) * worker_constraint.weighting
-                    )
-
-                case _:
-                    print('Unkown worker constraint type: ',
-                          worker_constraint.worker_constraint_type)
+        for worker_affinity in worker_affinities:
+            rewards.append(
+                RosterModelHelper.__create_workers_correlate_reward(
+                    material, worker_affinity
+                )
+            )
 
         return sum(rewards)
 
     @staticmethod
-    def __find_worker_constraints(db_session: DbSession, department_id: int):
+    def __find_worker_affinities(db_session: DbSession, team_id: int):
         return db_session.exec(
-            select(WorkerConstraint)
-            .where(WorkerConstraint.department_id == department_id)
+            select(WorkerAffinity)
+            .where(WorkerAffinity.team_id == team_id)
         ).all()
 
     @staticmethod
     def __create_workers_correlate_reward(
-            material: RosterMaterial, worker_constraint: WorkerConstraint
+            material: RosterMaterial, worker_affinity: WorkerAffinity
     ) -> cp_model.LinearExpr:
         rewards: list[cp_model.LinearExpr] = []
 
-        for day in material.request.days:
+        for timeslot in material.request.timeslots:
             reward = material.model.new_bool_var(
-                f'reward_workers_correlate_{worker_constraint.id}_{day}')
+                f'reward_workers_correlate_{worker_affinity.id}_{timeslot}')
             rewards.append(reward)
 
             worker_assigneds: list[cp_model.IntVar] = []
 
-            for worker_constraint_worker in worker_constraint.worker_constraint_workers:
+            for member in worker_affinity.members:
                 worker_assigned = material.model.new_bool_var(
-                    f'reward_workers_correlate_{worker_constraint.id}_{day}_worker_assigned_'
-                    f'{worker_constraint_worker.worker.id}'
+                    f'reward_workers_correlate_{worker_affinity.id}_{timeslot}_worker_assigned_'
+                    f'{member.worker.id}'
                 )
                 worker_assigneds.append(worker_assigned)
 
                 material.model.add(
                     sum(
-                        material.shifts[(
-                            day, post.id, worker_constraint_worker.worker.id)]
-                        for post in worker_constraint_worker.worker.posts
-                        if (day, post.id, worker_constraint_worker.worker.id) in material.shifts
+                        material.shifts[(timeslot, post.id, member.worker.id)]
+                        for post in member.worker.posts
+                        if (timeslot, post.id, member.worker.id) in material.shifts
                     ) >= 1
                 ).only_enforce_if(worker_assigned)
 
                 material.model.add(
                     sum(
-                        material.shifts[(
-                            day, post.id, worker_constraint_worker.worker.id)]
-                        for post in worker_constraint_worker.worker.posts
-                        if (day, post.id, worker_constraint_worker.worker.id) in material.shifts
+                        material.shifts[(timeslot, post.id, member.worker.id)]
+                        for post in member.worker.posts
+                        if (timeslot, post.id, member.worker.id) in material.shifts
                     ) < 1
                 ).only_enforce_if(worker_assigned.Not())
 

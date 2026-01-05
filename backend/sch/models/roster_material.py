@@ -1,6 +1,5 @@
-from datetime import datetime
 from sqlmodel import select
-from models.dao import Department, PostWorker, Worker, Post
+from models.dao import Team, PostWorker, Worker, Post
 from managers.db import DbSession
 from models.arrange_roster_request import ArrangeRosterRequest
 from ortools.sat.python import cp_model
@@ -10,12 +9,12 @@ from fastapi import HTTPException
 class RosterMaterial:
     db_session: DbSession
     request: ArrangeRosterRequest
-    department: Department
+    team: Team
     posts: list[Post]
     workers: list[Worker]
     post_worker_priorities: dict[tuple[int, int], int]
     model: cp_model.CpModel
-    shifts: dict[tuple[datetime, int, int], cp_model.IntVar]
+    shifts: dict[tuple[str, int, int], cp_model.IntVar]
 
     def __init__(
         self,
@@ -24,39 +23,37 @@ class RosterMaterial:
     ):
         self.db_session = db_session
         self.request = request
-        self.department = self.__find_department()
+        self.team = self.__find_team()
         self.posts = self.__find_posts()
         self.workers = self.__find_workers()
         self.post_worker_priorities = self.__find_post_worker_priorities()
         self.model = cp_model.CpModel()
         self.shifts = self.__create_shifts()
 
-    def __find_department(self) -> Department:
-        department = self.db_session.exec(
-            select(Department)
-            .where(Department.id == self.request.department_id)
+    def __find_team(self) -> Team:
+        team = self.db_session.exec(
+            select(Team)
+            .where(Team.id == self.request.team_id)
         ).first()
 
-        if department is None:
+        if team is None:
             raise HTTPException(
                 status_code=404,
-                detail=f"Department not found. ID={self.request.department_id}"
+                detail=f"Team not found. ID={self.request.team_id}"
             )
 
-        return department
+        return team
 
     def __find_posts(self) -> list[Post]:
         return self.db_session.exec(
             select(Post)
-            .where(Post.department_id == self.request.department_id)
-            .where(Post.is_deleted == False)
+            .where(Post.team_id == self.request.team_id)
         ).all()
 
     def __find_workers(self) -> list[Worker]:
         return self.db_session.exec(
             select(Worker)
-            .where(Worker.department_id == self.request.department_id)
-            .where(Worker.is_deleted == False)
+            .where(Worker.team_id == self.request.team_id)
         ).all()
 
     # Run after post fetching
@@ -73,13 +70,13 @@ class RosterMaterial:
             for post_worker in post_workers
         }
 
-    def __create_shifts(self) -> dict[tuple[datetime, int, int], cp_model.IntVar]:
-        shifts: dict[tuple[datetime, int, int], cp_model.IntVar] = {}
+    def __create_shifts(self) -> dict[tuple[str, int, int], cp_model.IntVar]:
+        shifts: dict[tuple[str, int, int], cp_model.IntVar] = {}
 
-        for day in self.request.days:
+        for timeslot in self.request.timeslots:
             for post in self.posts:
-                for worker in post.active_workers:
-                    shifts[(day, post.id, worker.id)] = self.model.new_bool_var(
-                        f'shift_{day}_{post.id}_{worker.id}')
+                for worker in post.workers:
+                    shifts[(timeslot, post.id, worker.id)] = self.model.new_bool_var(
+                        f'shift_{timeslot}_{post.id}_{worker.id}')
 
         return shifts

@@ -1,13 +1,12 @@
-from datetime import datetime
 from pydantic import BaseModel, Field
 
 
 class OffRequest(BaseModel):
     worker_id: int = Field(alias="workerId")
-    days: list[datetime]
+    timeslots: list[str]
 
 
 class ArrangeRosterRequest(BaseModel):
-    department_id: int = Field(alias="departmentId")
-    days: list[datetime]
+    team_id: int = Field(alias="teamId")
+    timeslots: list[str]
     offs: list[OffRequest]

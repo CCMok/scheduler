@@ -131,6 +131,7 @@ model PostWorker {
   id       Int    @id @default(autoincrement())
   postId   Int    @map("post_id")
   workerId Int    @map("worker_id")
+  priority Int    @default(0) @map("priority")
   post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   worker   Worker @relation(fields: [workerId], references: [id], onDelete: Cascade)
 
@@ -147,14 +148,15 @@ model PostWorkerAudit {
   id             Int?
   postId         Int?     @map("post_id")
   workerId       Int?     @map("worker_id")
+  priority       Int?     @map("priority")
 
   @@map("post_worker_audit")
 }
 
 model PostAffinity {
-  id                  Int                  @id @default(autoincrement())
-  teamId              Int                  @map("team_id")
-  team                Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  id      Int                  @id @default(autoincrement())
+  teamId  Int                  @map("team_id")
+  team    Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
   members PostAffinityMember[]
 
   @@index([teamId])
@@ -196,9 +198,9 @@ model PostAffinityMemberAudit {
 }
 
 model WorkerAffinity {
-  id                    Int                    @id @default(autoincrement())
-  teamId                Int                    @map("team_id")
-  team                  Team                   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  id      Int                    @id @default(autoincrement())
+  teamId  Int                    @map("team_id")
+  team    Team                   @relation(fields: [teamId], references: [id], onDelete: Cascade)
   members WorkerAffinityMember[]
 
   @@index([teamId])
