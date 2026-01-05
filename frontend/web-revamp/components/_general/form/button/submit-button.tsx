@@ -1,6 +1,6 @@
 import { ReactNode } from "react"
 import { useFormContext } from "../utils/form-utils"
-import CustomButton from "../../button/custom-button";
+import CustomButton from "../../_custom/button/custom-button";
 import { Spinner } from "@/external/shadcn/components/ui/spinner";
 
 export default function SubmitButton({

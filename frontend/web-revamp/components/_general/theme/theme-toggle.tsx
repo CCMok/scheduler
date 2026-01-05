@@ -4,7 +4,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Theme } from "@/libs/_general/theme/theme-const";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import CustomButton from "../button/custom-button";
+import CustomButton from "../_custom/button/custom-button";
 
 export default function ThemeToggle() {
   const { setTheme } = useTheme()

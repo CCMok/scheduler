@@ -1,6 +1,6 @@
 import { cn } from "@/external/shadcn/libs/utils";
 import { Leckerli_One } from "next/font/google";
-import CustomLink from "../link/custom-link";
+import CustomLink from "../_custom/link/custom-link";
 import { Path } from "@/libs/_general/path/path";
 
 const leckerliOne = Leckerli_One({ weight: '400', subsets: ["latin"] });
