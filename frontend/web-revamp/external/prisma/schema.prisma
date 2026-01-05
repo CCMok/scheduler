@@ -83,6 +83,7 @@ model Post {
   id                  Int                  @id @default(autoincrement())
   teamId              Int                  @map("team_id")
   name                String
+  displayOrder        Int                  @default(0) @map("display_order")
   team                Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
   postWorkers         PostWorker[]
   postAffinityMembers PostAffinityMember[]
@@ -99,6 +100,7 @@ model PostAudit {
   id             Int?
   teamId         Int?     @map("team_id")
   name           String?
+  displayOrder   Int?     @map("display_order")
 
   @@map("post_audit")
 }
