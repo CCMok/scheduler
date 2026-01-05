@@ -155,7 +155,7 @@ model PostAffinity {
   id                  Int                  @id @default(autoincrement())
   teamId              Int                  @map("team_id")
   team                Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  postAffinityMembers PostAffinityMember[]
+  members PostAffinityMember[]
 
   @@index([teamId])
   @@map("post_affinity")
@@ -199,7 +199,7 @@ model WorkerAffinity {
   id                    Int                    @id @default(autoincrement())
   teamId                Int                    @map("team_id")
   team                  Team                   @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  workerAffinityMembers WorkerAffinityMember[]
+  members WorkerAffinityMember[]
 
   @@index([teamId])
   @@map("worker_affinity")
