@@ -39,3 +39,12 @@ export const getSession = async (): Promise<Session | undefined> => {
 export const deleteSession = async (): Promise<void> => {
   (await cookies()).delete(COOKIE_NAME)
 }
+
+export const refreshSession = async (): Promise<void> => {
+  const session = await getSession()
+  if (!session) return
+
+  const expirationTime = new Date(Date.now() + EXPIRATION_TIME)
+  const jwt = await encrypt(session, expirationTime)
+  await setCookie(COOKIE_NAME, jwt, expirationTime)
+}

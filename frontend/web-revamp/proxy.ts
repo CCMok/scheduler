@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { REDIRECT_PRIVATE_PATH, PUBLIC_PATH_EXCLUDE_HOME, REDIRECT_PUBLIC_PATH } from "./libs/_general/path/path";
-import { getSession } from "./libs/_general/session/session-manager";
-import { Path } from "./libs/_general/path/path";
+import { REDIRECT_PRIVATE_PATH, PUBLIC_PATH_EXCLUDE_HOME, REDIRECT_PUBLIC_PATH, Path } from "./libs/_general/path/path";
+import { getSession, refreshSession } from "./libs/_general/session/session-manager";
 
 export default async function proxy(req: NextRequest) {
   const isPublicPath = checkIsPublicPath(req.nextUrl.pathname);
   const session = await getSession()
+
+  if (session) {
+    await refreshSession()
+  }
 
   if (isPublicPath && session) {
     return NextResponse.redirect(new URL(REDIRECT_PRIVATE_PATH, req.url))
