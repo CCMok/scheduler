@@ -13,7 +13,7 @@ export default function TeamCombobox({
   const teams = use(teamsPromise);
 
   const [selectedTeam, setSelectedTeam] = useState(teams[0]?.id.toString() ?? '')
-// TODO fix command input cannot search
+
   return (
     <Combobox
       placeHolder="選擇團隊"

@@ -58,8 +58,9 @@ export default function Combobox<T>({
               {options.map((option) => (
                 <CommandItem
                   key={getOptionValue(option)}
-                  value={getOptionValue(option)}
-                  onSelect={(selectValue) => {
+                  value={getOptionDisplay(option)}
+                  onSelect={() => {
+                    const selectValue = getOptionValue(option)
                     setValue(isOptional && selectValue === value ? '' : selectValue)
                     setOpen(false)
                   }}
