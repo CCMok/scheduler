@@ -1,8 +1,8 @@
-import Combobox from "@/components/_general/_custom/combobox/combobox";
 import FieldLayout from "@/components/_general/form/field/field-layout";
 import HeaderLayout from "@/components/_general/header/header-layout";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/external/shadcn/components/ui/breadcrumb";
 import { FieldGroup, FieldSet } from "@/external/shadcn/components/ui/field";
+import TeamCombobox from "./_components/team-combobox";
 
 export default function RosterPage() {
   return (
@@ -21,9 +21,7 @@ export default function RosterPage() {
         <FieldGroup>
           <FieldSet className='flex flex-row items-center'>
             <FieldLayout className='w-(--input-width)'>
-              <Combobox
-                placeHolder="選擇圑隊"
-              />
+              <TeamCombobox />
             </FieldLayout>
             <span>Auto button to auto-schedule</span>
           </FieldSet>

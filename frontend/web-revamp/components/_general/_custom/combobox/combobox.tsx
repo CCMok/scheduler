@@ -1,20 +1,35 @@
 'use client'
 
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandList } from "@/external/shadcn/components/ui/command"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/external/shadcn/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/external/shadcn/components/ui/popover"
-import { useState } from "react"
+import { ReactNode, useState } from "react"
 import CustomButton from "../button/custom-button"
-import { ChevronDown } from "lucide-react"
+import { CheckIcon, ChevronDown } from "lucide-react"
 import { cn } from "@/external/shadcn/libs/utils"
 
-export default function Combobox({
+export default function Combobox<T>({
   placeHolder,
-  value,
+  value = '',
+  setValue = () => { },
+  options = [],
+  getOptionValue = () => '',
+  getOptionDisplay = () => '',
+  isOptional = false,
+  icon,
 }: Readonly<{
   placeHolder?: string;
   value?: string;
+  setValue?: (value: string) => void;
+  options?: T[];
+  getOptionValue?: (option: T) => string;
+  getOptionDisplay?: (option: T) => string;
+  isOptional?: boolean;
+  icon?: ReactNode;
 }>) {
   const [open, setOpen] = useState(false)
+
+  const selectedItem = options.find((option) => getOptionValue(option) === value)
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -24,47 +39,38 @@ export default function Combobox({
           aria-expanded={open}
           className="w-(--input-width)"
         >
+          {icon}
           <span className={cn("truncate", !value && "text-muted-foreground")}>
-            {value ?? placeHolder}
+            {selectedItem
+              ? getOptionDisplay(selectedItem)
+              : placeHolder
+            }
           </span>
           <ChevronDown className='ml-auto' />
         </CustomButton>
-        {/* <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-[200px] justify-between"
-        >
-          {value
-            ? frameworks.find((framework) => framework.value === value)?.label
-            : "Select framework..."}
-          <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button> */}
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search framework..." />
+          <CommandInput placeholder="搜尋..." />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>沒有資料</CommandEmpty>
             <CommandGroup>
-              {/* {frameworks.map((framework) => (
+              {options.map((option) => (
                 <CommandItem
-                  key={framework.value}
-                  value={framework.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue)
+                  key={getOptionValue(option)}
+                  value={getOptionValue(option)}
+                  onSelect={(selectValue) => {
+                    setValue(isOptional && selectValue === value ? '' : selectValue)
                     setOpen(false)
                   }}
                 >
-                  <CheckIcon
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === framework.value ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {framework.label}
+                  {icon}
+                  <span className="truncate">{getOptionDisplay(option)}</span>
+                  {value === getOptionValue(option) && (
+                    <CheckIcon className="ml-auto" />
+                  )}
                 </CommandItem>
-              ))} */}
+              ))}
             </CommandGroup>
           </CommandList>
         </Command>
