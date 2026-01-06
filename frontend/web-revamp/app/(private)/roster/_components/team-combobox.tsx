@@ -1,17 +1,19 @@
 'use client'
 
 import Combobox from "@/components/_general/_custom/combobox/combobox";
+import { Team } from "@/external/prisma/generated/client";
 import { Users } from "lucide-react";
-import { useState } from "react";
+import { useState, use } from "react";
 
-export default function TeamCombobox() {
-  const teams = [
-    { id: 1, name: '團隊1' },
-    { id: 2, name: '團隊2' },
-    { id: 3, name: '團隊312312312313132123123' },
-  ]
+export default function TeamCombobox({
+  teamsPromise,
+}: Readonly<{
+  teamsPromise: Promise<Team[]>
+}>) {
+  const teams = use(teamsPromise);
 
-  const [selectedTeam, setSelectedTeam] = useState('')
+  const [selectedTeam, setSelectedTeam] = useState(teams[0]?.id.toString() ?? '')
+// TODO fix command input cannot search
   return (
     <Combobox
       placeHolder="選擇團隊"

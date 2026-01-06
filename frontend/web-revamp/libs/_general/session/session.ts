@@ -4,6 +4,7 @@ export const sessionSchema = z.object({
   userId: z.number(),
   email: z.string(),
   name: z.string().optional(),
+  roleId: z.number(),
 })
 
 export type Session = z.infer<typeof sessionSchema>

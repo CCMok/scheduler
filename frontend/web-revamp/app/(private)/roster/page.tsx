@@ -3,8 +3,19 @@ import HeaderLayout from "@/components/_general/header/header-layout";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/external/shadcn/components/ui/breadcrumb";
 import { FieldGroup, FieldSet } from "@/external/shadcn/components/ui/field";
 import TeamCombobox from "./_components/team-combobox";
+import { getTeams as getTeamsService } from "@/libs/team/read/get-team-service";
+import { Suspense } from "react";
+import InputSkeleton from "@/components/_general/_custom/skeleton/input-skeleton";
+
+const getTeams = async () => {
+  const response = await getTeamsService();
+  if (!response.isSuccess) return [];
+  return response.data;
+}
 
 export default function RosterPage() {
+  const teamsPromise = getTeams();
+
   return (
     <HeaderLayout
       title={(
@@ -21,7 +32,9 @@ export default function RosterPage() {
         <FieldGroup>
           <FieldSet className='flex flex-row items-center'>
             <FieldLayout className='w-(--input-width)'>
-              <TeamCombobox />
+              <Suspense fallback={<InputSkeleton />}> 
+              <TeamCombobox teamsPromise={teamsPromise} />
+              </Suspense>
             </FieldLayout>
             <span>Auto button to auto-schedule</span>
           </FieldSet>

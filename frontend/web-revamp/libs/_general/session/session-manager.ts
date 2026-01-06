@@ -14,6 +14,7 @@ export const createSession = async (user: User) => {
     userId: user.id,
     email: user.email,
     name: user.name ?? undefined,
+    roleId: user.roleId,
   }
   const jwt = await encrypt(payload, expirationTime)
   await setCookie(COOKIE_NAME, jwt, expirationTime)
