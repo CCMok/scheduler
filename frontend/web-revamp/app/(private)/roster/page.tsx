@@ -7,7 +7,11 @@ import RosterPageContentSkeleton from "./_components/roster-page-content-skeleto
 
 const getTeams = async () => {
   const response = await getTeamsService();
-  if (!response.isSuccess) return [];
+  if (!response.isSuccess) {
+    console.error('Fail to get teams');
+    console.error(response.message);
+    return [];
+  }
   return response.data;
 }
 

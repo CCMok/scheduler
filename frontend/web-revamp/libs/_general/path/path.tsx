@@ -4,7 +4,7 @@ export enum Path {
   ROSTER = '/roster',
 
   // functions
-  NEW = '/new',
+  AUTO_NEW = '/auto-new',
 }
 
 export const REDIRECT_PRIVATE_PATH = Path.ROSTER;
