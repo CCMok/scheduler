@@ -7,7 +7,8 @@ type SuccessResponseBase = {
   isSuccess: true;
 }
 
-type SuccessResponse<T = void> = T extends void
+// [T] extends [void] to preserve data attribute when T = <Entity | undefined>
+type SuccessResponse<T = void> = [T] extends [void]
   ? SuccessResponseBase
   : SuccessResponseBase & {
     data: T;
