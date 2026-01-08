@@ -2,34 +2,32 @@
 
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/external/shadcn/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/external/shadcn/components/ui/popover"
-import { ReactNode, useState } from "react"
+import { Key, ReactNode, useState } from "react"
 import CustomButton from "../button/custom-button"
 import { CheckIcon, ChevronDown } from "lucide-react"
 import { cn } from "@/external/shadcn/libs/utils"
 
-export default function Combobox<T>({
-  placeHolder,
-  value = '',
-  setValue = () => { },
-  options = [],
-  getOptionValue = () => '',
-  getOptionDisplay = () => '',
+export default function Combobox<T, V extends Key>({
+  value,
+  setValue,
+  options,
+  getOptionValue,
+  getOptionDisplay,
   isOptional = false,
+  placeHolder,
   icon,
 }: Readonly<{
-  placeHolder?: string;
-  value?: string;
-  setValue?: (value: string) => void;
-  options?: T[];
-  getOptionValue?: (option: T) => string;
-  getOptionDisplay?: (option: T) => string;
+  value: V | undefined;
+  setValue: (value: V | undefined) => void;
+  options: T[];
+  getOptionValue: (option: T) => V;
+  getOptionDisplay: (option: T) => string;
   isOptional?: boolean;
+  placeHolder?: string;
   icon?: ReactNode;
 }>) {
   const [open, setOpen] = useState(false)
-
   const selectedItem = options.find((option) => getOptionValue(option) === value)
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -61,7 +59,7 @@ export default function Combobox<T>({
                   value={getOptionDisplay(option)}
                   onSelect={() => {
                     const selectValue = getOptionValue(option)
-                    setValue(isOptional && selectValue === value ? '' : selectValue)
+                    setValue(isOptional && selectValue === value ? undefined : selectValue)
                     setOpen(false)
                   }}
                 >

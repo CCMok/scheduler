@@ -1,11 +1,9 @@
-import FieldLayout from "@/components/_general/form/field/field-layout";
 import HeaderLayout from "@/components/_general/header/header-layout";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/external/shadcn/components/ui/breadcrumb";
-import { FieldGroup, FieldSet } from "@/external/shadcn/components/ui/field";
-import TeamCombobox from "./_components/team-combobox";
 import { getTeams as getTeamsService } from "@/libs/team/read/get-team-service";
+import RosterPageContent from "./_components/roster-page-content";
 import { Suspense } from "react";
-import InputSkeleton from "@/components/_general/_custom/skeleton/input-skeleton";
+import RosterPageContentSkeleton from "./_components/roster-page-content-skeleton";
 
 const getTeams = async () => {
   const response = await getTeamsService();
@@ -15,7 +13,6 @@ const getTeams = async () => {
 
 export default function RosterPage() {
   const teamsPromise = getTeams();
-
   return (
     <HeaderLayout
       title={(
@@ -28,27 +25,9 @@ export default function RosterPage() {
         </Breadcrumb>
       )}
     >
-      <div className='space-y-4'>
-        <FieldGroup>
-          <FieldSet className='flex flex-row items-center'>
-            <FieldLayout className='w-(--input-width)'>
-              <Suspense fallback={<InputSkeleton />}> 
-              <TeamCombobox teamsPromise={teamsPromise} />
-              </Suspense>
-            </FieldLayout>
-            <span>Auto button to auto-schedule</span>
-          </FieldSet>
-        </FieldGroup>
-        <div className='space-x-4'>
-          <span>Previous button</span>
-          <span>Roster Name (Click to Combobox search)</span>
-          <span>Next button</span>
-        </div>
-        <div>
-          <p>Roster table</p>
-          <p>- Default show latest roster</p>
-        </div>
-      </div>
+      <Suspense fallback={<RosterPageContentSkeleton />}>
+        <RosterPageContent teamsPromise={teamsPromise} />
+      </Suspense>
     </HeaderLayout>
   )
 }
