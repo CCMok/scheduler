@@ -6,9 +6,6 @@ import { ReactNode, useState } from "react";
 import TimeslotStep from "./step/timeslot-step";
 import WorkerOffStep from "./step/worker-off-step";
 import ResultPreviewStep from "./step/result-preview-step";
-import CustomButton from "@/components/_general/_custom/button/custom-button";
-import NextStepButton from "./next-step-button";
-import { ChevronLeft } from "lucide-react";
 
 export default function StepControl({
   className,
@@ -16,6 +13,7 @@ export default function StepControl({
   className?: string;
 }>) {
   const [step, setStep] = useState<number>(0)
+  const [selectedTimeslots, setSelectedTimeslots] = useState<Date[]>([])
 
   const stepContents: {
     step: number;
@@ -26,12 +24,18 @@ export default function StepControl({
       {
         step: 0,
         title: '選擇時段',
-        children: <TimeslotStep />
+        children: <TimeslotStep
+          setStep={setStep}
+          selectedTimeslots={selectedTimeslots}
+          setSelectedTimeslots={setSelectedTimeslots}
+        />,
       },
       {
         step: 1,
         title: '選擇職員休息時段',
-        children: <WorkerOffStep />,
+        children: <WorkerOffStep
+          setStep={setStep}
+        />,
       },
       {
         step: 2,
@@ -51,32 +55,6 @@ export default function StepControl({
             <span className='ml-auto text-muted-foreground text-sm'>步驟 {currentStepContent.step + 1} / {stepContents.length}</span>
           </div>
           {currentStepContent.children}
-          <div className='flex'>
-            {step > 0 && (
-              <CustomButton
-                onClick={(e) => {
-                  e.preventDefault()
-                  setStep((step) => step - 1)
-                }}
-              >
-                <ChevronLeft />
-                上一步
-              </CustomButton>
-            )}
-            {step < stepContents.length - 1 && (
-              <NextStepButton
-                setStep={setStep}
-                onClick={currentStepContent.onNext}
-              />
-            )}
-            {step === stepContents.length - 1 && (
-              <CustomButton
-                className='ml-auto'
-              >
-                儲存
-              </CustomButton>
-            )}
-          </div>
         </>
       )}
     </div>
