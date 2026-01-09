@@ -1,3 +1,4 @@
+import H2 from "@/components/_general/_custom/typography/h2";
 import { getTeamById } from "@/libs/team/read/get-team-service";
 
 export default async function TeamTitle({
@@ -7,6 +8,6 @@ export default async function TeamTitle({
 }>) {
   const team = await getTeamById(id)
   return (
-    <h3 className='text-2xl font-semibold tracking-tight'>{team?.name}</h3>
+    <H2>{team?.name}</H2>
   )
 }

@@ -5,7 +5,7 @@ import { FieldGroup, FieldSet } from "@/external/shadcn/components/ui/field"
 import { use, useState } from "react"
 import { Team } from "@/external/prisma/generated/client"
 import Combobox from "@/components/_general/_custom/combobox/combobox"
-import { Users, WandSparkles } from "lucide-react"
+import { Sparkles, Users } from "lucide-react"
 import CustomButton from "@/components/_general/_custom/button/custom-button"
 import CustomLink from "@/components/_general/_custom/link/custom-link"
 import { Path } from "@/libs/_general/path/path"
@@ -38,8 +38,8 @@ export default function RosterPageContent({
               href={Path.ROSTER + Path.AUTO_NEW + '/' + selectedTeamId}
               isDisabled={isNil(selectedTeamId)}
             >
-              <WandSparkles />
-              自動排班
+              <Sparkles />
+              自動編排
             </CustomLink>
           </CustomButton>
         </FieldSet>
