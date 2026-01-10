@@ -21,17 +21,15 @@ export default function TimeslotStep({
   return (
     <>
       <div className='flex flex-col lg:flex-row gap-6'>
-        <div>
-          <Calendar
-            mode='multiple'
-            numberOfMonths={2}
-            className="rounded-lg border shadow-sm"
-            selected={timeslots}
-            onSelect={(timeslots) => setTimeslots(timeslots?.toSorted((a, b) => a.getTime() - b.getTime()) ?? [])}
-            locale={zhHK}
-          />
-        </div>
-        <div className='w-120 space-y-2'>
+        <Calendar
+          mode='multiple'
+          numberOfMonths={2}
+          className="rounded-lg border shadow-sm"
+          selected={timeslots}
+          onSelect={(timeslots) => setTimeslots(timeslots?.toSorted((a, b) => a.getTime() - b.getTime()) ?? [])}
+          locale={zhHK}
+        />
+        <div className='w-100 space-y-2'>
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">
               已選擇 {timeslots.length} 個時段

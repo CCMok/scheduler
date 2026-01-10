@@ -40,6 +40,7 @@ export default function StepControl({
           <WorkerOffStep
             setStep={setStep}
             workersPromise={workersPromise}
+            timeslots={timeslots}
           />
         </Suspense>,
       },
