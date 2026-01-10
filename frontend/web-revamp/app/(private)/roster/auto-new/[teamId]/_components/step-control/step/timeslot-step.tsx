@@ -11,12 +11,12 @@ import { Dispatch, SetStateAction } from "react";
 
 export default function TimeslotStep({
   setStep,
-  selectedTimeslots,
-  setSelectedTimeslots,
+  timeslots,
+  setTimeslots,
 }: Readonly<{
   setStep: Dispatch<SetStateAction<number>>,
-  selectedTimeslots: Date[],
-  setSelectedTimeslots: (timeslots: Date[]) => void,
+  timeslots: Date[],
+  setTimeslots: (timeslots: Date[]) => void,
 }>) {
   return (
     <>
@@ -26,21 +26,21 @@ export default function TimeslotStep({
             mode='multiple'
             numberOfMonths={2}
             className="rounded-lg border shadow-sm"
-            selected={selectedTimeslots}
-            onSelect={(timeslots) => setSelectedTimeslots(timeslots?.toSorted((a, b) => a.getTime() - b.getTime()) ?? [])}
+            selected={timeslots}
+            onSelect={(timeslots) => setTimeslots(timeslots?.toSorted((a, b) => a.getTime() - b.getTime()) ?? [])}
             locale={zhHK}
           />
         </div>
         <div className='w-120 space-y-2'>
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">
-              已選擇 {selectedTimeslots.length} 個時段
+              已選擇 {timeslots.length} 個時段
             </span>
             <CustomButton
               variant="ghost"
               size="sm"
               className="text-muted-foreground"
-              onClick={() => setSelectedTimeslots([])}
+              onClick={() => setTimeslots([])}
             >
               清除全部
             </CustomButton>
@@ -53,14 +53,14 @@ export default function TimeslotStep({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {selectedTimeslots.map((timeslot) => (
+              {timeslots.map((timeslot) => (
                 <TableRow key={timeslot.toISOString()}>
                   <TableCell>{format(timeslot, 'PP', { locale: zhHK })}</TableCell>
                   <TableCell>
                     <CustomButton
                       variant="ghost"
                       size='icon-sm'
-                      onClick={() => setSelectedTimeslots(selectedTimeslots.filter((t) => t !== timeslot))}
+                      onClick={() => setTimeslots(timeslots.filter((t) => t !== timeslot))}
                     >
                       <X />
                     </CustomButton>
@@ -73,7 +73,7 @@ export default function TimeslotStep({
       </div>
       <div className='flex'>
         <NextButton
-          disabled={selectedTimeslots.length === 0}
+          disabled={timeslots.length === 0}
           onClick={(e) => {
             e.preventDefault()
             setStep((step) => step + 1)

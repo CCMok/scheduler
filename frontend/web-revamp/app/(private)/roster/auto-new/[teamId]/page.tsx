@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import TitleSkeleton from "@/components/_general/_custom/skeleton/title-skeleton";
 import { Separator } from "@/external/shadcn/components/ui/separator";
 import StepControl from "./_components/step-control/step-control";
+import { getWorkers } from "@/libs/worker/read/get-worker-service";
 
 export default async function RosterAutoNewPage({
   params,
@@ -16,6 +17,8 @@ export default async function RosterAutoNewPage({
   const { teamId } = await params
   const teamIdNum = Number(teamId)
   if (Number.isNaN(teamIdNum)) notFound()
+
+  const workersPromise = getWorkers(teamIdNum)
 
   return (
     <HeaderLayout
@@ -34,11 +37,14 @@ export default async function RosterAutoNewPage({
       )}
     >
       <div className='h-full flex flex-col'>
-      <Suspense fallback={<TitleSkeleton />}>
-        <TeamTitle id={teamIdNum} />
-      </Suspense>
-      <Separator className="mt-2 mb-4" />
-      <StepControl className='flex-1' />
+        <Suspense fallback={<TitleSkeleton />}>
+          <TeamTitle id={teamIdNum} />
+        </Suspense>
+        <Separator className="mt-2 mb-4" />
+        <StepControl
+          className='flex-1'
+          workersPromise={workersPromise}
+        />
       </div>
     </HeaderLayout>
   )

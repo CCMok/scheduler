@@ -2,18 +2,21 @@
 
 import H3 from "@/components/_general/_custom/typography/h3";
 import { cn } from "@/external/shadcn/libs/utils";
-import { ReactNode, useState } from "react";
+import { ReactNode, Suspense, useState } from "react";
 import TimeslotStep from "./step/timeslot-step";
 import WorkerOffStep from "./step/worker-off-step";
 import ResultPreviewStep from "./step/result-preview-step";
+import { Worker } from "@/external/prisma/generated/client";
 
 export default function StepControl({
   className,
+  workersPromise,
 }: Readonly<{
   className?: string;
+  workersPromise: Promise<Worker[]>;
 }>) {
   const [step, setStep] = useState<number>(0)
-  const [selectedTimeslots, setSelectedTimeslots] = useState<Date[]>([])
+  const [timeslots, setTimeslots] = useState<Date[]>([])
 
   const stepContents: {
     step: number;
@@ -26,16 +29,19 @@ export default function StepControl({
         title: '選擇時段',
         children: <TimeslotStep
           setStep={setStep}
-          selectedTimeslots={selectedTimeslots}
-          setSelectedTimeslots={setSelectedTimeslots}
+          timeslots={timeslots}
+          setTimeslots={setTimeslots}
         />,
       },
       {
         step: 1,
         title: '選擇職員休息時段',
-        children: <WorkerOffStep
-          setStep={setStep}
-        />,
+        children: <Suspense fallback={<div>Loading...</div>}>
+          <WorkerOffStep
+            setStep={setStep}
+            workersPromise={workersPromise}
+          />
+        </Suspense>,
       },
       {
         step: 2,
