@@ -21,14 +21,16 @@ export default function TimeslotStep({
   return (
     <>
       <div className='flex flex-col lg:flex-row gap-6'>
-        <Calendar
-          mode='multiple'
-          numberOfMonths={2}
-          className="rounded-lg border shadow-sm"
-          selected={timeslots}
-          onSelect={(timeslots) => setTimeslots(timeslots?.toSorted((a, b) => a.getTime() - b.getTime()) ?? [])}
-          locale={zhHK}
-        />
+        <div>
+          <Calendar
+            mode='multiple'
+            numberOfMonths={2}
+            className="rounded-lg border shadow-sm"
+            selected={timeslots}
+            onSelect={(timeslots) => setTimeslots(timeslots?.toSorted((a, b) => a.getTime() - b.getTime()) ?? [])}
+            locale={zhHK}
+          />
+        </div>
         <div className='w-100 space-y-2'>
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">

@@ -7,6 +7,22 @@ import TimeslotStep from "./step/timeslot-step";
 import WorkerOffStep from "./step/worker-off-step";
 import ResultPreviewStep from "./step/result-preview-step";
 import { Worker } from "@/external/prisma/generated/client";
+import { WorkerOff } from "./worker-off";
+
+const filterWorkerOffsByTimeslots = (
+  workerOffs: WorkerOff[],
+  validTimeslots: Date[]
+): WorkerOff[] => {
+  const isTimeslotValid = (t: Date) =>
+    validTimeslots.some((nt) => nt.getTime() === t.getTime())
+
+  return workerOffs
+    .map((wo) => ({
+      ...wo,
+      timeslots: wo.timeslots.filter(isTimeslotValid),
+    }))
+    .filter((wo) => wo.timeslots.length > 0)
+}
 
 export default function StepControl({
   className,
@@ -17,6 +33,12 @@ export default function StepControl({
 }>) {
   const [step, setStep] = useState<number>(0)
   const [timeslots, setTimeslots] = useState<Date[]>([])
+  const [workerOffs, setWorkerOffs] = useState<WorkerOff[]>([])
+
+  const setTimeslotsWrapper = (newTimeslots: Date[]) => {
+    setWorkerOffs((prev) => filterWorkerOffsByTimeslots(prev, newTimeslots))
+    setTimeslots(newTimeslots)
+  }
 
   const stepContents: {
     step: number;
@@ -30,7 +52,7 @@ export default function StepControl({
         children: <TimeslotStep
           setStep={setStep}
           timeslots={timeslots}
-          setTimeslots={setTimeslots}
+          setTimeslots={setTimeslotsWrapper}
         />,
       },
       {
@@ -41,6 +63,8 @@ export default function StepControl({
             setStep={setStep}
             workersPromise={workersPromise}
             timeslots={timeslots}
+            workerOffs={workerOffs}
+            setWorkerOffs={setWorkerOffs}
           />
         </Suspense>,
       },
