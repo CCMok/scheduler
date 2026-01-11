@@ -36,8 +36,8 @@ export default function WorkerOffStep({
   return (
     <>
       <div className='flex flex-col lg:flex-row gap-6'>
-        <div>
-          <Card className='w-120'>
+        <div className='w-full lg:w-120'>
+          <Card>
             <CardHeader>
               <CardTitle>新增休息時段</CardTitle>
             </CardHeader>
@@ -97,7 +97,7 @@ export default function WorkerOffStep({
             </CardContent>
           </Card>
         </div>
-        <div className='w-100 space-y-2'>
+        <div className='w-full lg:w-100 space-y-2'>
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">
               已選擇 {workerOffs.length} 位職員
