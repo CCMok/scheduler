@@ -12,7 +12,7 @@ import { zhHK } from "date-fns/locale"
 import CustomButton from "@/components/_general/_custom/button/custom-button"
 import { Plus, Sparkles, X } from "lucide-react"
 import { isNil } from "lodash"
-import { WorkerOff } from "../worker-off"
+import { Off } from "../off"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/external/shadcn/components/ui/tooltip"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/external/shadcn/components/ui/dialog"
@@ -20,20 +20,21 @@ import LoadingButton from "@/components/_general/_custom/button/loading-button"
 import { autoCreateRosterAction } from "@/libs/roster/create/auto-create-roster-action"
 import { toast } from "sonner"
 import { Roster } from "@/libs/roster/roster"
+import { useParams } from "next/navigation"
 
-export default function WorkerOffStep({
+export default function OffStep({
   setStep,
   workersPromise,
   timeslots,
-  workerOffs,
-  setWorkerOffs,
+  offs,
+  setOffs,
   setRoster,
 }: Readonly<{
   setStep: Dispatch<SetStateAction<number>>,
   workersPromise: Promise<Worker[]>;
   timeslots: Date[];
-  workerOffs: WorkerOff[];
-  setWorkerOffs: Dispatch<SetStateAction<WorkerOff[]>>;
+  offs: Off[];
+  setOffs: Dispatch<SetStateAction<Off[]>>;
   setRoster: Dispatch<SetStateAction<Roster | undefined>>;
 }>) {
   const workers = use(workersPromise)
@@ -41,9 +42,18 @@ export default function WorkerOffStep({
   const [selectedTimeslots, setSelectedTimeslots] = useState<Date[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitDialogOpen, setIsSubmitDialogOpen] = useState(false)
+  const { teamId } = useParams<{ teamId: string }>()
 
   const onSubmit = async () => {
-    const response = await autoCreateRosterAction()
+    const response = await autoCreateRosterAction({
+      teamId: Number(teamId),
+      timeslots: timeslots.map((timeslot) => format(timeslot, 'PP', { locale: zhHK })),
+      offs: offs.map((off) => ({
+        workerId: off.workerId,
+        timeslots: off.timeslots.map((timeslot) => format(timeslot, 'PP', { locale: zhHK })),
+      })),
+    })
+
     if (!response.isSuccess) {
       toast.error(response.message)
       return
@@ -67,7 +77,7 @@ export default function WorkerOffStep({
               <Combobox
                 value={workerId}
                 setValue={setWorkerId}
-                options={workers.filter((worker) => !workerOffs.some((wo) => wo.workerId === worker.id))}
+                options={workers.filter((worker) => !offs.some((wo) => wo.workerId === worker.id))}
                 getOptionValue={(worker) => worker.id}
                 getOptionDisplay={(worker) => worker.name}
                 isOptional={false}
@@ -108,7 +118,7 @@ export default function WorkerOffStep({
                 onClick={(e) => {
                   e.preventDefault()
                   if (isNil(workerId)) return
-                  setWorkerOffs([...workerOffs, { workerId, timeslots: selectedTimeslots }])
+                  setOffs([...offs, { workerId, timeslots: selectedTimeslots }])
                   setWorkerId(undefined)
                   setSelectedTimeslots([])
                 }}
@@ -122,13 +132,13 @@ export default function WorkerOffStep({
         <div className='w-full lg:w-100 space-y-2'>
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">
-              已選擇 {workerOffs.length} 位職員
+              已選擇 {offs.length} 位職員
             </span>
             <CustomButton
               variant="ghost"
               size="sm"
               className="text-muted-foreground"
-              onClick={() => setWorkerOffs([])}
+              onClick={() => setOffs([])}
             >
               清除全部
             </CustomButton>
@@ -142,17 +152,17 @@ export default function WorkerOffStep({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {workerOffs.map((workerOff) => (
-                <Tooltip key={workerOff.workerId}>
+              {offs.map((off) => (
+                <Tooltip key={off.workerId}>
                   <TooltipTrigger asChild>
                     <TableRow>
-                      <TableCell>{workers.find((worker) => worker.id === workerOff.workerId)?.name}</TableCell>
-                      <TableCell>{workerOff.timeslots.length} 個時段</TableCell>
+                      <TableCell>{workers.find((worker) => worker.id === off.workerId)?.name}</TableCell>
+                      <TableCell>{off.timeslots.length} 個時段</TableCell>
                       <TableCell>
                         <CustomButton
                           variant="ghost"
                           size='icon-sm'
-                          onClick={() => setWorkerOffs(workerOffs.filter((wo) => wo.workerId !== workerOff.workerId))}
+                          onClick={() => setOffs(offs.filter((wo) => wo.workerId !== off.workerId))}
                         >
                           <X />
                         </CustomButton>
@@ -161,7 +171,7 @@ export default function WorkerOffStep({
                   </TooltipTrigger>
                   <TooltipContent>
                     <div className='space-y-1'>
-                      {workerOff.timeslots.map((timeslot) => (
+                      {off.timeslots.map((timeslot) => (
                         <p key={timeslot.toISOString()}>{format(timeslot, 'PP', { locale: zhHK })}</p>
                       ))}
                     </div>

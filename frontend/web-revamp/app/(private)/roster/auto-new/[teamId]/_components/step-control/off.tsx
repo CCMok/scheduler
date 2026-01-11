@@ -1,4 +1,4 @@
-export type WorkerOff = {
+export type Off = {
   workerId: number;
   timeslots: Date[];
 }

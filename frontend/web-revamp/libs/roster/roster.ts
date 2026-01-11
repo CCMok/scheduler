@@ -8,6 +8,6 @@ export type PostArrangement = {
 }
 
 export type Assignement = {
-  timeslot: Date[];
+  timeslot: string;
   workerId?: number;
 }

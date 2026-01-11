@@ -4,20 +4,20 @@ import H3 from "@/components/_general/_custom/typography/h3";
 import { cn } from "@/external/shadcn/libs/utils";
 import { ReactNode, Suspense, useState } from "react";
 import TimeslotStep from "./step/timeslot-step";
-import WorkerOffStep from "./step/worker-off-step";
+import OffStep from "./step/off-step";
 import ResultPreviewStep from "./step/result-preview-step";
 import { Worker } from "@/external/prisma/generated/client";
-import { WorkerOff } from "./worker-off";
+import { Off } from "./off";
 import { Roster } from "@/libs/roster/roster";
 
-const filterWorkerOffsByTimeslots = (
-  workerOffs: WorkerOff[],
+const filterOffsByTimeslots = (
+  offs: Off[],
   validTimeslots: Date[]
-): WorkerOff[] => {
+): Off[] => {
   const isTimeslotValid = (t: Date) =>
     validTimeslots.some((nt) => nt.getTime() === t.getTime())
 
-  return workerOffs
+  return offs
     .map((wo) => ({
       ...wo,
       timeslots: wo.timeslots.filter(isTimeslotValid),
@@ -34,11 +34,11 @@ export default function StepControl({
 }>) {
   const [step, setStep] = useState<number>(0)
   const [timeslots, setTimeslots] = useState<Date[]>([])
-  const [workerOffs, setWorkerOffs] = useState<WorkerOff[]>([])
+  const [offs, setOffs] = useState<Off[]>([])
   const [roster, setRoster] = useState<Roster | undefined>(undefined)
 
   const setTimeslotsWrapper = (newTimeslots: Date[]) => {
-    setWorkerOffs((prev) => filterWorkerOffsByTimeslots(prev, newTimeslots))
+    setOffs((prev) => filterOffsByTimeslots(prev, newTimeslots))
     setTimeslots(newTimeslots)
   }
 
@@ -61,12 +61,12 @@ export default function StepControl({
         step: 1,
         title: '選擇職員休息時段',
         children: <Suspense fallback={<div>Loading...</div>}>
-          <WorkerOffStep
+          <OffStep
             setStep={setStep}
             workersPromise={workersPromise}
             timeslots={timeslots}
-            workerOffs={workerOffs}
-            setWorkerOffs={setWorkerOffs}
+            offs={offs}
+            setOffs={setOffs}
             setRoster={setRoster}
           />
         </Suspense>,
