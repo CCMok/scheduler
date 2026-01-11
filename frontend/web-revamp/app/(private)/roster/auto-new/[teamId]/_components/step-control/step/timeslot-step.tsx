@@ -5,8 +5,7 @@ import { zhHK } from "date-fns/locale";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table";
 import { format } from "date-fns";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
-import { X } from "lucide-react";
-import NextButton from "../next-button";
+import { ChevronRight, X } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 
 export default function TimeslotStep({
@@ -72,13 +71,17 @@ export default function TimeslotStep({
         </div>
       </div>
       <div className='flex'>
-        <NextButton
+        <CustomButton
+          className='ml-auto'
           disabled={timeslots.length === 0}
           onClick={(e) => {
             e.preventDefault()
             setStep((step) => step + 1)
           }}
-        />
+        >
+          下一步
+          <ChevronRight />
+        </CustomButton>
       </div>
     </>
   )

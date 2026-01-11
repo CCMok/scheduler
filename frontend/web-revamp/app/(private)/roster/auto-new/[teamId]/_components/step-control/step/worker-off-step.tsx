@@ -1,6 +1,5 @@
 'use client'
 
-import NextButton from "../next-button"
 import BackButton from "../back-button"
 import { Dispatch, SetStateAction, use, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card"
@@ -11,11 +10,16 @@ import { Checkbox } from "@/external/shadcn/components/ui/checkbox"
 import { format } from "date-fns"
 import { zhHK } from "date-fns/locale"
 import CustomButton from "@/components/_general/_custom/button/custom-button"
-import { Plus, X } from "lucide-react"
+import { Plus, Sparkles, X } from "lucide-react"
 import { isNil } from "lodash"
 import { WorkerOff } from "../worker-off"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/external/shadcn/components/ui/tooltip"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/external/shadcn/components/ui/dialog"
+import LoadingButton from "@/components/_general/_custom/button/loading-button"
+import { autoCreateRosterAction } from "@/libs/roster/create/auto-create-roster-action"
+import { toast } from "sonner"
+import { Roster } from "@/libs/roster/roster"
 
 export default function WorkerOffStep({
   setStep,
@@ -23,16 +27,34 @@ export default function WorkerOffStep({
   timeslots,
   workerOffs,
   setWorkerOffs,
+  setRoster,
 }: Readonly<{
   setStep: Dispatch<SetStateAction<number>>,
   workersPromise: Promise<Worker[]>;
   timeslots: Date[];
   workerOffs: WorkerOff[];
   setWorkerOffs: Dispatch<SetStateAction<WorkerOff[]>>;
+  setRoster: Dispatch<SetStateAction<Roster | undefined>>;
 }>) {
   const workers = use(workersPromise)
   const [workerId, setWorkerId] = useState<number | undefined>(undefined)
   const [selectedTimeslots, setSelectedTimeslots] = useState<Date[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitDialogOpen, setIsSubmitDialogOpen] = useState(false)
+
+  const onSubmit = async () => {
+    const response = await autoCreateRosterAction()
+    if (!response.isSuccess) {
+      toast.error(response.message)
+      return
+    }
+
+    setRoster(response.data)
+    toast.success('編排成功')
+    setIsSubmitDialogOpen(false)
+    setStep((step) => step + 1)
+  }
+
   return (
     <>
       <div className='flex flex-col lg:flex-row gap-6'>
@@ -157,12 +179,37 @@ export default function WorkerOffStep({
             setStep((step) => step - 1)
           }}
         />
-        <NextButton
-          onClick={(e) => {
-            e.preventDefault()
-            // TODO
-          }}
-        />
+        <Dialog open={isSubmitDialogOpen} onOpenChange={setIsSubmitDialogOpen}>
+          <DialogTrigger asChild>
+            <CustomButton className='ml-auto'>
+              <Sparkles />
+              編排
+            </CustomButton>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>編排值班表</DialogTitle>
+              <DialogDescription></DialogDescription>
+            </DialogHeader>
+            <p>確定後系統將自動編排值班表。</p>
+            <DialogFooter>
+              <DialogClose asChild>
+                <CustomButton variant="outline">取消</CustomButton>
+              </DialogClose>
+              <LoadingButton
+                isLoading={isSubmitting}
+                onClick={async (e) => {
+                  e.preventDefault()
+                  setIsSubmitting(true)
+                  await onSubmit()
+                  setIsSubmitting(false)
+                }}
+              >
+                確定
+              </LoadingButton>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   )

@@ -8,6 +8,7 @@ import WorkerOffStep from "./step/worker-off-step";
 import ResultPreviewStep from "./step/result-preview-step";
 import { Worker } from "@/external/prisma/generated/client";
 import { WorkerOff } from "./worker-off";
+import { Roster } from "@/libs/roster/roster";
 
 const filterWorkerOffsByTimeslots = (
   workerOffs: WorkerOff[],
@@ -34,6 +35,7 @@ export default function StepControl({
   const [step, setStep] = useState<number>(0)
   const [timeslots, setTimeslots] = useState<Date[]>([])
   const [workerOffs, setWorkerOffs] = useState<WorkerOff[]>([])
+  const [roster, setRoster] = useState<Roster | undefined>(undefined)
 
   const setTimeslotsWrapper = (newTimeslots: Date[]) => {
     setWorkerOffs((prev) => filterWorkerOffsByTimeslots(prev, newTimeslots))
@@ -65,13 +67,17 @@ export default function StepControl({
             timeslots={timeslots}
             workerOffs={workerOffs}
             setWorkerOffs={setWorkerOffs}
+            setRoster={setRoster}
           />
         </Suspense>,
       },
       {
         step: 2,
         title: '結果預覽',
-        children: <ResultPreviewStep />
+        children: <ResultPreviewStep
+          setStep={setStep}
+          roster={roster}
+        />
       },
     ]
 
