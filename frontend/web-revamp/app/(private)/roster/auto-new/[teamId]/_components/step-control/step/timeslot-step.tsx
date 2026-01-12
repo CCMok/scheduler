@@ -3,10 +3,10 @@
 import { Calendar } from "@/external/shadcn/components/ui/calendar";
 import { zhHK } from "date-fns/locale";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table";
-import { format } from "date-fns";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
 import { ChevronRight, X } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
+import { formatDate } from "@/libs/_general/date/date-utils";
 
 export default function TimeslotStep({
   setStep,
@@ -18,7 +18,7 @@ export default function TimeslotStep({
   setTimeslots: (timeslots: Date[]) => void,
 }>) {
   return (
-    <>
+    <div className='space-y-4'>
       <div className='flex flex-col lg:flex-row items-center lg:items-stretch gap-6'>
         <div>
           <Calendar
@@ -54,7 +54,7 @@ export default function TimeslotStep({
             <TableBody>
               {timeslots.map((timeslot) => (
                 <TableRow key={timeslot.toISOString()}>
-                  <TableCell>{format(timeslot, 'PP', { locale: zhHK })}</TableCell>
+                  <TableCell>{formatDate(timeslot)}</TableCell>
                   <TableCell>
                     <CustomButton
                       variant="ghost"
@@ -83,6 +83,6 @@ export default function TimeslotStep({
           <ChevronRight />
         </CustomButton>
       </div>
-    </>
+    </div>
   )
 }

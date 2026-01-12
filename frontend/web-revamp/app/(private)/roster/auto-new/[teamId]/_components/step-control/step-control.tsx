@@ -6,7 +6,7 @@ import { ReactNode, Suspense, useState } from "react";
 import TimeslotStep from "./step/timeslot-step";
 import OffStep from "./step/off-step";
 import ResultPreviewStep from "./step/result-preview-step";
-import { Worker } from "@/external/prisma/generated/client";
+import { Post, Worker } from "@/external/prisma/generated/client";
 import { Off } from "./off";
 import { Roster } from "@/libs/roster/roster";
 
@@ -28,9 +28,11 @@ const filterOffsByTimeslots = (
 export default function StepControl({
   className,
   workersPromise,
+  postsPromise,
 }: Readonly<{
   className?: string;
   workersPromise: Promise<Worker[]>;
+  postsPromise: Promise<Post[]>;
 }>) {
   const [step, setStep] = useState<number>(0)
   const [timeslots, setTimeslots] = useState<Date[]>([])
@@ -60,6 +62,7 @@ export default function StepControl({
       {
         step: 1,
         title: '選擇職員休息時段',
+        // TODO: suspense content
         children: <Suspense fallback={<div>Loading...</div>}>
           <OffStep
             setStep={setStep}
@@ -73,11 +76,17 @@ export default function StepControl({
       },
       {
         step: 2,
-        title: '結果預覽',
-        children: <ResultPreviewStep
-          setStep={setStep}
-          roster={roster}
-        />
+        title: '預覽編排結果',
+        // TODO: suspense content
+        children: <Suspense fallback={<div>Loading...</div>}>
+          <ResultPreviewStep
+            setStep={setStep}
+            roster={roster}
+            timeslots={timeslots}
+            postsPromise={postsPromise}
+            workersPromise={workersPromise}
+          />
+        </Suspense>,
       },
     ]
 

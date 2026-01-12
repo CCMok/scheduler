@@ -1,16 +1,13 @@
 'use client'
 
-import BackButton from "../back-button"
 import { Dispatch, SetStateAction, use, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card"
 import Combobox from "@/components/_general/_custom/combobox/combobox"
 import { Worker } from "@/external/prisma/generated/client"
 import { Field, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/external/shadcn/components/ui/field"
 import { Checkbox } from "@/external/shadcn/components/ui/checkbox"
-import { format } from "date-fns"
-import { zhHK } from "date-fns/locale"
 import CustomButton from "@/components/_general/_custom/button/custom-button"
-import { Plus, Sparkles, X } from "lucide-react"
+import { ChevronLeft, Plus, Sparkles, X } from "lucide-react"
 import { isNil } from "lodash"
 import { Off } from "../off"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table"
@@ -21,6 +18,7 @@ import { autoCreateRosterAction } from "@/libs/roster/create/auto-create-roster-
 import { toast } from "sonner"
 import { Roster } from "@/libs/roster/roster"
 import { useParams } from "next/navigation"
+import { formatDate } from "@/libs/_general/date/date-utils"
 
 export default function OffStep({
   setStep,
@@ -41,16 +39,15 @@ export default function OffStep({
   const [workerId, setWorkerId] = useState<number | undefined>(undefined)
   const [selectedTimeslots, setSelectedTimeslots] = useState<Date[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitDialogOpen, setIsSubmitDialogOpen] = useState(false)
   const { teamId } = useParams<{ teamId: string }>()
 
   const onSubmit = async () => {
     const response = await autoCreateRosterAction({
       teamId: Number(teamId),
-      timeslots: timeslots.map((timeslot) => format(timeslot, 'PP', { locale: zhHK })),
+      timeslots: timeslots.map((timeslot) => formatDate(timeslot)),
       offs: offs.map((off) => ({
         workerId: off.workerId,
-        timeslots: off.timeslots.map((timeslot) => format(timeslot, 'PP', { locale: zhHK })),
+        timeslots: off.timeslots.map((timeslot) => formatDate(timeslot)),
       })),
     })
 
@@ -61,12 +58,11 @@ export default function OffStep({
 
     setRoster(response.data)
     toast.success('編排成功')
-    setIsSubmitDialogOpen(false)
     setStep((step) => step + 1)
   }
 
   return (
-    <>
+    <div className='space-y-4'>
       <div className='flex flex-col lg:flex-row gap-6'>
         <div className='w-full lg:w-120'>
           <Card>
@@ -104,7 +100,7 @@ export default function OffStep({
                           }}
                         />
                         <FieldLabel htmlFor={timeslot.toISOString()} className='font-normal'>
-                          {format(timeslot, 'PP', { locale: zhHK })}
+                          {formatDate(timeslot)}
                         </FieldLabel>
                       </Field>
                     ))}
@@ -172,7 +168,7 @@ export default function OffStep({
                   <TooltipContent>
                     <div className='space-y-1'>
                       {off.timeslots.map((timeslot) => (
-                        <p key={timeslot.toISOString()}>{format(timeslot, 'PP', { locale: zhHK })}</p>
+                        <p key={timeslot.toISOString()}>{formatDate(timeslot)}</p>
                       ))}
                     </div>
                   </TooltipContent>
@@ -183,13 +179,16 @@ export default function OffStep({
         </div>
       </div>
       <div className='flex'>
-        <BackButton
+        <CustomButton
           onClick={(e) => {
             e.preventDefault()
             setStep((step) => step - 1)
           }}
-        />
-        <Dialog open={isSubmitDialogOpen} onOpenChange={setIsSubmitDialogOpen}>
+        >
+          <ChevronLeft />
+          上一步
+        </CustomButton>
+        <Dialog>
           <DialogTrigger asChild>
             <CustomButton className='ml-auto'>
               <Sparkles />
@@ -199,7 +198,7 @@ export default function OffStep({
           <DialogContent>
             <DialogHeader>
               <DialogTitle>編排值班表</DialogTitle>
-              <DialogDescription></DialogDescription>
+              <DialogDescription />
             </DialogHeader>
             <p>確定後系統將自動編排值班表。</p>
             <DialogFooter>
@@ -221,6 +220,6 @@ export default function OffStep({
           </DialogContent>
         </Dialog>
       </div>
-    </>
+    </div>
   )
 }
