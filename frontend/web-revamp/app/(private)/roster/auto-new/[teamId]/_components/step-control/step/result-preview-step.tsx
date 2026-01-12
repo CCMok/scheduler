@@ -28,6 +28,7 @@ export default function ResultPreviewStep({
   const workers = use(workersPromise)
   return (
     <div className='space-y-4'>
+      <p className='text-sm text-muted-foreground'>預覽結果還未儲存，離開頁面後需重新編排。</p>
       <Card>
         <CardContent>
           <Table>

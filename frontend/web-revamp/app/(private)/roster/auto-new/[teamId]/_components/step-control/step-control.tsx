@@ -9,6 +9,7 @@ import ResultPreviewStep from "./step/result-preview-step";
 import { Post, Worker } from "@/external/prisma/generated/client";
 import { Off } from "./off";
 import { Roster } from "@/libs/roster/roster";
+import StepSkeleton from "./step-skeleton";
 
 const filterOffsByTimeslots = (
   offs: Off[],
@@ -62,8 +63,7 @@ export default function StepControl({
       {
         step: 1,
         title: '選擇職員休息時段',
-        // TODO: suspense content
-        children: <Suspense fallback={<div>Loading...</div>}>
+        children: <Suspense fallback={<StepSkeleton />}>
           <OffStep
             setStep={setStep}
             workersPromise={workersPromise}
@@ -77,8 +77,7 @@ export default function StepControl({
       {
         step: 2,
         title: '預覽編排結果',
-        // TODO: suspense content
-        children: <Suspense fallback={<div>Loading...</div>}>
+        children: <Suspense fallback={<StepSkeleton />}>
           <ResultPreviewStep
             setStep={setStep}
             roster={roster}
