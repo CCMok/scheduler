@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/external/shadcn/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table";
 import { formatDate } from "@/libs/_general/date/date-utils";
 import { Post, Worker } from "@/external/prisma/generated/client";
+import RosterTable from "./roster-table";
 
 export default function ResultPreviewStep({
   setStep,
@@ -17,12 +18,16 @@ export default function ResultPreviewStep({
   timeslots,
   postsPromise,
   workersPromise,
+  modifiedRoster,
+  setModifiedRoster,
 }: Readonly<{
   setStep: Dispatch<SetStateAction<number>>;
   roster: Roster | undefined;
   timeslots: Date[];
   postsPromise: Promise<Post[]>;
   workersPromise: Promise<Worker[]>;
+  modifiedRoster: Roster | undefined;
+  setModifiedRoster: Dispatch<SetStateAction<Roster | undefined>>;
 }>) {
   const posts = use(postsPromise)
   const workers = use(workersPromise)
@@ -31,30 +36,13 @@ export default function ResultPreviewStep({
       <p className='text-sm text-muted-foreground'>預覽結果還未儲存，離開頁面後需重新編排。</p>
       <Card>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead />
-                {timeslots.map((timeslot) => (
-                  <TableHead key={timeslot.toISOString()}>
-                    {formatDate(timeslot)}
-                  </TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {roster?.posts.map((post) => (
-                <TableRow key={post.postId}>
-                  <TableCell>{posts.find((p) => p.id === post.postId)?.name}</TableCell>
-                  {post.assignments.map((assignement) => (
-                    <TableCell key={assignement.timeslot}>
-                      {workers.find((w) => w.id === assignement.workerId)?.name}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          {modifiedRoster && <RosterTable
+            roster={modifiedRoster}
+            setRoster={setModifiedRoster}
+            timeslots={timeslots}
+            posts={posts}
+            workers={workers}
+          />}
         </CardContent>
       </Card>
       <div className='flex'>

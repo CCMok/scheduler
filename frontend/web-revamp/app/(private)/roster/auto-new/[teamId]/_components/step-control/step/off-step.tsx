@@ -27,6 +27,7 @@ export default function OffStep({
   offs,
   setOffs,
   setRoster,
+  setModifiedRoster,
 }: Readonly<{
   setStep: Dispatch<SetStateAction<number>>,
   workersPromise: Promise<Worker[]>;
@@ -34,6 +35,7 @@ export default function OffStep({
   offs: Off[];
   setOffs: Dispatch<SetStateAction<Off[]>>;
   setRoster: Dispatch<SetStateAction<Roster | undefined>>;
+  setModifiedRoster: Dispatch<SetStateAction<Roster | undefined>>;
 }>) {
   const workers = use(workersPromise)
   const [workerId, setWorkerId] = useState<number | undefined>(undefined)
@@ -57,6 +59,7 @@ export default function OffStep({
     }
 
     setRoster(response.data)
+    setModifiedRoster(response.data)
     toast.success('編排成功')
     setStep((step) => step + 1)
   }

@@ -5,7 +5,7 @@ import { cn } from "@/external/shadcn/libs/utils";
 import { ReactNode, Suspense, useState } from "react";
 import TimeslotStep from "./step/timeslot-step";
 import OffStep from "./step/off-step";
-import ResultPreviewStep from "./step/result-preview-step";
+import ResultPreviewStep from "./step/reset-preview/result-preview-step";
 import { Post, Worker } from "@/external/prisma/generated/client";
 import { Off } from "./off";
 import { Roster } from "@/libs/roster/roster";
@@ -39,6 +39,7 @@ export default function StepControl({
   const [timeslots, setTimeslots] = useState<Date[]>([])
   const [offs, setOffs] = useState<Off[]>([])
   const [roster, setRoster] = useState<Roster | undefined>(undefined)
+  const [modifiedRoster, setModifiedRoster] = useState<Roster | undefined>(undefined)
 
   const setTimeslotsWrapper = (newTimeslots: Date[]) => {
     setOffs((prev) => filterOffsByTimeslots(prev, newTimeslots))
@@ -71,6 +72,7 @@ export default function StepControl({
             offs={offs}
             setOffs={setOffs}
             setRoster={setRoster}
+            setModifiedRoster={setModifiedRoster}
           />
         </Suspense>,
       },
@@ -81,6 +83,8 @@ export default function StepControl({
           <ResultPreviewStep
             setStep={setStep}
             roster={roster}
+            modifiedRoster={modifiedRoster}
+            setModifiedRoster={setModifiedRoster}
             timeslots={timeslots}
             postsPromise={postsPromise}
             workersPromise={workersPromise}
