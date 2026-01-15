@@ -1,6 +1,6 @@
 import 'server-only'
 import { ServiceResponse } from "@/libs/_general/service/response";
-import { RosterDto, RosterPostAssignment } from "../roster";
+import { RosterDto, RosterPostAssignment } from "../../roster";
 import { tryCatch } from '@/libs/_general/service/try-catch';
 import { getSession } from '@/libs/_general/session/session-manager';
 import { Message } from '@/libs/_general/service/message';

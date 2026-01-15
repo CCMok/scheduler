@@ -16,7 +16,7 @@ export default async function RosterAutoNewPage({
   params: Promise<{ teamId: string }>;
 }>) {
   const { teamId } = await params
-  const teamIdNum = Number(teamId)
+  const teamIdNum = Number.parseInt(teamId)
   if (Number.isNaN(teamIdNum)) notFound()
 
   const workersPromise = getWorkers(teamIdNum)

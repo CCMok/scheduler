@@ -13,7 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/external/shadcn/components/ui/tooltip"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/external/shadcn/components/ui/dialog"
 import LoadingButton from "@/components/_general/_custom/button/loading-button"
-import { autoCreateRosterAction } from "@/libs/roster/create/auto-create-roster-action"
+import { autoCreateRosterAction } from "@/libs/roster/create/auto/auto-create-roster-action"
 import { toast } from "sonner"
 import { useParams } from "next/navigation"
 import { useAutoNewRosterStore } from "./store/auto-new-roster-store-provider"
@@ -38,7 +38,7 @@ export default function OffStep({
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { teamId: teamIdString } = useParams<{ teamId: string }>()
-  const teamId = Number(teamIdString)
+  const teamId = Number.parseInt(teamIdString)
   if (Number.isNaN(teamId)) {
     console.info('Invalid teamId', teamIdString)
     return <StepSkeleton />

@@ -15,3 +15,7 @@ type SuccessResponse<T = void> = [T] extends [void]
   }
 
 export type ServiceResponse<T = void> = FailResponse | SuccessResponse<T>
+
+export type CreateResponseData = {
+  id: number;
+}
