@@ -1,13 +1,17 @@
-export type Roster = {
-  posts: PostArrangement[];
+export type RosterDto = RosterPost[]
+
+export type RosterPost = {
+  post: {
+    id: number;
+    name: string;
+  },
+  assignments: RosterPostAssignment[];
 }
 
-export type PostArrangement = {
-  postId: number;
-  assignments: Assignement[];
-}
-
-export type Assignement = {
+export type RosterPostAssignment = {
   timeslot: string;
-  workerId?: number;
+  worker?: {
+    id: number;
+    name: string;
+  },
 }

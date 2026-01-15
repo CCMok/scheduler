@@ -1,14 +1,12 @@
 'use client'
 
 import { Dispatch, SetStateAction, use } from "react";
-import { Roster } from "@/libs/roster/roster";
+import { RosterDto } from "@/libs/roster/roster";
 import { ChevronLeft, Save } from "lucide-react";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/external/shadcn/components/ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Card, CardContent } from "@/external/shadcn/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table";
-import { formatDate } from "@/libs/_general/date/date-utils";
 import { Post, Worker } from "@/external/prisma/generated/client";
 import RosterTable from "./roster-table";
 
@@ -22,12 +20,12 @@ export default function ResultPreviewStep({
   setModifiedRoster,
 }: Readonly<{
   setStep: Dispatch<SetStateAction<number>>;
-  roster: Roster | undefined;
+  roster: RosterDto;
   timeslots: Date[];
   postsPromise: Promise<Post[]>;
   workersPromise: Promise<Worker[]>;
-  modifiedRoster: Roster | undefined;
-  setModifiedRoster: Dispatch<SetStateAction<Roster | undefined>>;
+  modifiedRoster: RosterDto;
+  setModifiedRoster: Dispatch<SetStateAction<RosterDto>>;
 }>) {
   const posts = use(postsPromise)
   const workers = use(workersPromise)

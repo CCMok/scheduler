@@ -1,6 +1,6 @@
 'use client'
 
-import { Roster } from "@/libs/roster/roster";
+import { RosterDto } from "@/libs/roster/roster";
 import { Dispatch, SetStateAction } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table";
 import { formatDate } from "@/libs/_general/date/date-utils";
@@ -15,8 +15,8 @@ export default function RosterTable({
   posts,
   workers,
 }: Readonly<{
-  roster: Roster;
-  setRoster: Dispatch<SetStateAction<Roster | undefined>>;
+  roster: RosterDto;
+  setRoster: Dispatch<SetStateAction<RosterDto>>;
   timeslots: Date[];
   posts: Post[];
   workers: Worker[];
@@ -53,10 +53,10 @@ export default function RosterTable({
       collisionDetection={closestCenter}
       onDragEnd={onDragEnd}
     >
-      <SortableContext
+      {/* <SortableContext
         items={}
         strategy={rectSwappingStrategy}
-      >
+      > */}
         <Table>
           <TableHeader>
             <TableRow>
@@ -69,7 +69,7 @@ export default function RosterTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {roster.posts.map((post) => (
+            {/* {roster.posts.map((post) => (
               <TableRow key={post.postId}>
                 <TableCell>{posts.find((p) => p.id === post.postId)?.name}</TableCell>
                 {post.assignments.map((assignement) => (
@@ -78,10 +78,10 @@ export default function RosterTable({
                   </TableCell>
                 ))}
               </TableRow>
-            ))}
+            ))} */}
           </TableBody>
         </Table>
-      </SortableContext>
+      {/* </SortableContext> */}
     </DndContext>
   )
 }

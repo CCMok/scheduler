@@ -81,14 +81,14 @@ model TeamAudit {
 }
 
 model Post {
-  id                         Int                         @id @default(autoincrement())
-  teamId                     Int                         @map("team_id")
-  name                       String
-  displayOrder               Int                         @default(0) @map("display_order")
-  team                       Team                        @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  postWorkers                PostWorker[]
-  postAffinityMembers        PostAffinityMember[]
-  rosterTimeslotAssignements RosterTimeslotAssignement[]
+  id                  Int                        @id @default(autoincrement())
+  teamId              Int                        @map("team_id")
+  name                String
+  displayOrder        Int                        @default(0) @map("display_order")
+  team                Team                       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  postWorkers         PostWorker[]
+  postAffinityMembers PostAffinityMember[]
+  assignments         RosterTimeslotAssignment[]
 
   @@unique([teamId, name])
   @@index([teamId])
@@ -108,13 +108,13 @@ model PostAudit {
 }
 
 model Worker {
-  id                         Int                         @id @default(autoincrement())
-  teamId                     Int                         @map("team_id")
-  name                       String
-  team                       Team                        @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  postWorkers                PostWorker[]
-  workerAffinityMembers      WorkerAffinityMember[]
-  rosterTimeslotAssignements RosterTimeslotAssignement[]
+  id                    Int                        @id @default(autoincrement())
+  teamId                Int                        @map("team_id")
+  name                  String
+  team                  Team                       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  postWorkers           PostWorker[]
+  workerAffinityMembers WorkerAffinityMember[]
+  assignments           RosterTimeslotAssignment[]
 
   @@unique([teamId, name])
   @@index([teamId])
@@ -267,11 +267,11 @@ model RosterAudit {
 }
 
 model RosterTimeslot {
-  id                         Int                         @id @default(autoincrement())
-  rosterId                   Int                         @map("roster_id")
-  timeslot                   String                      @map("timeslot")
-  roster                     Roster                      @relation(fields: [rosterId], references: [id], onDelete: Cascade)
-  rosterTimeslotAssignements RosterTimeslotAssignement[]
+  id          Int                        @id @default(autoincrement())
+  rosterId    Int                        @map("roster_id")
+  timeslot    String                     @map("timeslot")
+  roster      Roster                     @relation(fields: [rosterId], references: [id], onDelete: Cascade)
+  assignments RosterTimeslotAssignment[]
 
   @@unique([rosterId, timeslot])
   @@index([rosterId])
@@ -289,7 +289,7 @@ model RosterTimeslotAudit {
   @@map("roster_timeslot_audit")
 }
 
-model RosterTimeslotAssignement {
+model RosterTimeslotAssignment {
   id                 Int            @id @default(autoincrement())
   rosterTimeslotId   Int            @map("roster_timeslot_id")
   postId             Int?           @map("post_id")
@@ -304,10 +304,10 @@ model RosterTimeslotAssignement {
   @@index([rosterTimeslotId])
   @@index([postId])
   @@index([workerId])
-  @@map("roster_timeslot_assignement")
+  @@map("roster_timeslot_assignment")
 }
 
-model SchedulteTimeslotAssignementAudit {
+model SchedulteTimeslotAssignmentAudit {
   auditId            Int      @id @default(autoincrement()) @map("audit_id")
   auditTimestamp     DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
   auditAction        String   @map("audit_action")
@@ -318,5 +318,5 @@ model SchedulteTimeslotAssignementAudit {
   fallbackPostName   String?  @map("fallback_post_name")
   fallbackWorkerName String?  @map("fallback_worker_name")
 
-  @@map("roster_timeslot_assignement_audit")
+  @@map("roster_timeslot_assignment_audit")
 }

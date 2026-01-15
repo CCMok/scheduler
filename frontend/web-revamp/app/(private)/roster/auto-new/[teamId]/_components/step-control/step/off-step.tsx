@@ -16,7 +16,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import LoadingButton from "@/components/_general/_custom/button/loading-button"
 import { autoCreateRosterAction } from "@/libs/roster/create/auto-create-roster-action"
 import { toast } from "sonner"
-import { Roster } from "@/libs/roster/roster"
+import { RosterDto } from "@/libs/roster/roster"
 import { useParams } from "next/navigation"
 import { formatDate } from "@/libs/_general/date/date-utils"
 
@@ -34,8 +34,8 @@ export default function OffStep({
   timeslots: Date[];
   offs: Off[];
   setOffs: Dispatch<SetStateAction<Off[]>>;
-  setRoster: Dispatch<SetStateAction<Roster | undefined>>;
-  setModifiedRoster: Dispatch<SetStateAction<Roster | undefined>>;
+  setRoster: Dispatch<SetStateAction<RosterDto>>;
+  setModifiedRoster: Dispatch<SetStateAction<RosterDto>>;
 }>) {
   const workers = use(workersPromise)
   const [workerId, setWorkerId] = useState<number | undefined>(undefined)

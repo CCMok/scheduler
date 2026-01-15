@@ -2,14 +2,14 @@ from models.arrange_roster_response import ArrangeRosterResponse
 from managers.db import DbSession
 from helpers.roster_model_helper import RosterModelHelper
 from models.arrange_roster_request import ArrangeRosterRequest
-from models.schedule import Arrangement, Schedule
+from models.roster import RosterTimeslotAssignment, RosterTimeslot
 from models.roster_material import RosterMaterial
 from ortools.sat.python import cp_model
 
 
 class RosterService:
     @staticmethod
-    def arrange(request: ArrangeRosterRequest, db_session: DbSession) -> list[Schedule]:
+    def arrange(request: ArrangeRosterRequest, db_session: DbSession) -> list[RosterTimeslot]:
         material = RosterMaterial(db_session=db_session, request=request)
 
         RosterModelHelper.define_constraints(material)
@@ -28,11 +28,11 @@ class RosterService:
         material: RosterMaterial,
         solver: cp_model.CpSolver,
     ) -> ArrangeRosterResponse:
-        schedules: list[Schedule] = []
+        roster_timeslots: list[RosterTimeslot] = []
 
         for timeslot in material.request.timeslots:
-            schedule = Schedule(timeslot=timeslot, arrangements=[])
-            schedules.append(schedule)
+            roster_timeslot = RosterTimeslot(timeslot=timeslot, assignments=[])
+            roster_timeslots.append(roster_timeslot)
 
             for post in material.posts:
                 result_worker_id = None
@@ -48,6 +48,6 @@ class RosterService:
                     result_worker_id = worker.id
                     break
 
-                schedule.arrangements.append(Arrangement(post_id=post.id, worker_id=result_worker_id))
+                roster_timeslot.assignments.append(RosterTimeslotAssignment(post_id=post.id, worker_id=result_worker_id))
 
-        return ArrangeRosterResponse(root=schedules)
+        return ArrangeRosterResponse(root=roster_timeslots)

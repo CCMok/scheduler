@@ -8,7 +8,7 @@ import OffStep from "./step/off-step";
 import ResultPreviewStep from "./step/reset-preview/result-preview-step";
 import { Post, Worker } from "@/external/prisma/generated/client";
 import { Off } from "./off";
-import { Roster } from "@/libs/roster/roster";
+import { RosterDto } from "@/libs/roster/roster";
 import StepSkeleton from "./step-skeleton";
 
 const filterOffsByTimeslots = (
@@ -38,8 +38,8 @@ export default function StepControl({
   const [step, setStep] = useState<number>(0)
   const [timeslots, setTimeslots] = useState<Date[]>([])
   const [offs, setOffs] = useState<Off[]>([])
-  const [roster, setRoster] = useState<Roster | undefined>(undefined)
-  const [modifiedRoster, setModifiedRoster] = useState<Roster | undefined>(undefined)
+  const [roster, setRoster] = useState<RosterDto>([])
+  const [modifiedRoster, setModifiedRoster] = useState<RosterDto>([])
 
   const setTimeslotsWrapper = (newTimeslots: Date[]) => {
     setOffs((prev) => filterOffsByTimeslots(prev, newTimeslots))
