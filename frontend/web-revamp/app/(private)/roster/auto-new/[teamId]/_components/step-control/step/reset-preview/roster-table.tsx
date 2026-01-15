@@ -1,24 +1,16 @@
 'use client'
 
 import { RosterDto } from "@/libs/roster/roster";
-import { Dispatch, SetStateAction } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table";
-import { Post, Worker } from "@/external/prisma/generated/client";
 import { closestCenter, DndContext, DragEndEvent, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { rectSwappingStrategy, SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
 export default function RosterTable({
   roster,
-  setRoster,
   timeslots,
-  posts,
-  workers,
 }: Readonly<{
   roster: RosterDto;
-  setRoster: Dispatch<SetStateAction<RosterDto>>;
   timeslots: string[];
-  posts: Post[];
-  workers: Worker[];
 }>) {
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -68,16 +60,16 @@ export default function RosterTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {/* {roster.posts.map((post) => (
-              <TableRow key={post.postId}>
-                <TableCell>{posts.find((p) => p.id === post.postId)?.name}</TableCell>
-                {post.assignments.map((assignement) => (
-                  <TableCell key={assignement.timeslot}>
-                    {workers.find((w) => w.id === assignement.workerId)?.name}
+            {roster.map((rosterPost) => (
+              <TableRow key={rosterPost.post.id}>
+                <TableCell>{rosterPost.post.name}</TableCell>
+                {rosterPost.assignments.map((assignment) => (
+                  <TableCell key={assignment.timeslot}>
+                    {assignment.worker?.name}
                   </TableCell>
                 ))}
               </TableRow>
-            ))} */}
+            ))}
           </TableBody>
         </Table>
       {/* </SortableContext> */}

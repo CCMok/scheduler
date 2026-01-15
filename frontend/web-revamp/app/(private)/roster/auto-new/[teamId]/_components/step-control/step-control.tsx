@@ -6,7 +6,7 @@ import { ReactNode, Suspense, useState } from "react";
 import TimeslotStep from "./step/timeslot-step";
 import OffStep from "./step/off-step";
 import ResultPreviewStep from "./step/reset-preview/result-preview-step";
-import { Post, Worker } from "@/external/prisma/generated/client";
+import { Worker } from "@/external/prisma/generated/client";
 import { Off } from "./off";
 import { RosterDto } from "@/libs/roster/roster";
 import StepSkeleton from "./step-skeleton";
@@ -16,11 +16,9 @@ const timeslotFilter = (validTimeslots: string[]) => (timeslot: string) => valid
 export default function StepControl({
   className,
   workersPromise,
-  postsPromise,
 }: Readonly<{
   className?: string;
   workersPromise: Promise<Worker[]>;
-  postsPromise: Promise<Post[]>;
 }>) {
   const [step, setStep] = useState<number>(0)
   const [timeslots, setTimeslots] = useState<string[]>([])
@@ -72,12 +70,8 @@ export default function StepControl({
         children: <Suspense fallback={<StepSkeleton />}>
           <ResultPreviewStep
             setStep={setStep}
-            roster={roster}
             modifiedRoster={modifiedRoster}
-            setModifiedRoster={setModifiedRoster}
             timeslots={timeslots}
-            postsPromise={postsPromise}
-            workersPromise={workersPromise}
           />
         </Suspense>,
       },

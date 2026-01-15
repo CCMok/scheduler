@@ -1,34 +1,23 @@
 'use client'
 
-import { Dispatch, SetStateAction, use } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { RosterDto } from "@/libs/roster/roster";
 import { ChevronLeft, Save } from "lucide-react";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/external/shadcn/components/ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Card, CardContent } from "@/external/shadcn/components/ui/card";
-import { Post, Worker } from "@/external/prisma/generated/client";
 import RosterTable from "./roster-table";
 
 export default function ResultPreviewStep({
   setStep,
-  roster,
   timeslots,
-  postsPromise,
-  workersPromise,
   modifiedRoster,
-  setModifiedRoster,
 }: Readonly<{
   setStep: Dispatch<SetStateAction<number>>;
-  roster: RosterDto;
   timeslots: string[];
-  postsPromise: Promise<Post[]>;
-  workersPromise: Promise<Worker[]>;
   modifiedRoster: RosterDto;
-  setModifiedRoster: Dispatch<SetStateAction<RosterDto>>;
 }>) {
-  const posts = use(postsPromise)
-  const workers = use(workersPromise)
   return (
     <div className='space-y-4'>
       <p className='text-sm text-muted-foreground'>預覽結果還未儲存，離開頁面後需重新編排。</p>
@@ -36,10 +25,7 @@ export default function ResultPreviewStep({
         <CardContent>
           {modifiedRoster && <RosterTable
             roster={modifiedRoster}
-            setRoster={setModifiedRoster}
             timeslots={timeslots}
-            posts={posts}
-            workers={workers}
           />}
         </CardContent>
       </Card>
