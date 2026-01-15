@@ -1,6 +1,6 @@
 'use client'
 
-import { Dispatch, SetStateAction, use, useState } from "react"
+import { use, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card"
 import Combobox from "@/components/_general/_custom/combobox/combobox"
 import { Worker } from "@/external/prisma/generated/client"
@@ -9,42 +9,44 @@ import { Checkbox } from "@/external/shadcn/components/ui/checkbox"
 import CustomButton from "@/components/_general/_custom/button/custom-button"
 import { ChevronLeft, Plus, Sparkles, X } from "lucide-react"
 import { isNil } from "lodash"
-import { Off } from "../off"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/external/shadcn/components/ui/tooltip"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/external/shadcn/components/ui/dialog"
 import LoadingButton from "@/components/_general/_custom/button/loading-button"
 import { autoCreateRosterAction } from "@/libs/roster/create/auto-create-roster-action"
 import { toast } from "sonner"
-import { RosterDto } from "@/libs/roster/roster"
 import { useParams } from "next/navigation"
+import { useAutoNewRosterStore } from "./store/auto-new-roster-store-provider"
+import StepSkeleton from "../step-skeleton"
 
 export default function OffStep({
-  setStep,
   workersPromise,
-  timeslots,
-  offs,
-  setOffs,
-  setRoster,
-  setModifiedRoster,
 }: Readonly<{
-  setStep: Dispatch<SetStateAction<number>>,
   workersPromise: Promise<Worker[]>;
-  timeslots: string[];
-  offs: Off[];
-  setOffs: Dispatch<SetStateAction<Off[]>>;
-  setRoster: Dispatch<SetStateAction<RosterDto>>;
-  setModifiedRoster: Dispatch<SetStateAction<RosterDto>>;
 }>) {
   const workers = use(workersPromise)
+
+  const nextStep = useAutoNewRosterStore(state => state.nextStep)
+  const previousStep = useAutoNewRosterStore(state => state.previousStep)
+  const timeslots = useAutoNewRosterStore(state => state.timeslots)
+  const offs = useAutoNewRosterStore(state => state.offs)
+  const setOffs = useAutoNewRosterStore(state => state.setOffs)
+  const setRoster = useAutoNewRosterStore(state => state.setRoster)
+
   const [workerId, setWorkerId] = useState<number | undefined>(undefined)
   const [selectedTimeslots, setSelectedTimeslots] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { teamId } = useParams<{ teamId: string }>()
+
+  const { teamId: teamIdString } = useParams<{ teamId: string }>()
+  const teamId = Number(teamIdString)
+  if (Number.isNaN(teamId)) {
+    console.info('Invalid teamId', teamIdString)
+    return <StepSkeleton />
+  }
 
   const onSubmit = async () => {
     const response = await autoCreateRosterAction({
-      teamId: Number(teamId),
+      teamId,
       timeslots,
       offs,
     })
@@ -55,9 +57,8 @@ export default function OffStep({
     }
 
     setRoster(response.data)
-    setModifiedRoster(response.data)
     toast.success('編排成功')
-    setStep((step) => step + 1)
+    nextStep()
   }
 
   return (
@@ -181,7 +182,7 @@ export default function OffStep({
         <CustomButton
           onClick={(e) => {
             e.preventDefault()
-            setStep((step) => step - 1)
+            previousStep()
           }}
         >
           <ChevronLeft />

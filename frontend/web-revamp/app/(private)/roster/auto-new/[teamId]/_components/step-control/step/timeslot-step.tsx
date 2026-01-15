@@ -5,18 +5,13 @@ import { zhHK } from "date-fns/locale";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
 import { ChevronRight, X } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
 import { formatDate } from "@/libs/_general/date/date-utils";
+import { useAutoNewRosterStore } from "./store/auto-new-roster-store-provider";
 
-export default function TimeslotStep({
-  setStep,
-  timeslots,
-  setTimeslots,
-}: Readonly<{
-  setStep: Dispatch<SetStateAction<number>>,
-  timeslots: string[],
-  setTimeslots: (timeslots: string[]) => void,
-}>) {
+export default function TimeslotStep() {
+  const nextStep = useAutoNewRosterStore(state => state.nextStep)
+  const timeslots = useAutoNewRosterStore(state => state.timeslots)
+  const setTimeslots = useAutoNewRosterStore(state => state.setTimeslots)
   return (
     <div className='space-y-4'>
       <div className='flex flex-col lg:flex-row items-center lg:items-stretch gap-6'>
@@ -85,7 +80,7 @@ export default function TimeslotStep({
           disabled={timeslots.length === 0}
           onClick={(e) => {
             e.preventDefault()
-            setStep((step) => step + 1)
+            nextStep()
           }}
         >
           下一步

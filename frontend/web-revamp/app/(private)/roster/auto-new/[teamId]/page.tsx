@@ -8,6 +8,7 @@ import TitleSkeleton from "@/components/_general/_custom/skeleton/title-skeleton
 import { Separator } from "@/external/shadcn/components/ui/separator";
 import StepControl from "./_components/step-control/step-control";
 import { getWorkers } from "@/libs/worker/read/get-worker-service";
+import { AutoNewRosterStoreProvider } from "./_components/step-control/step/store/auto-new-roster-store-provider";
 
 export default async function RosterAutoNewPage({
   params,
@@ -41,10 +42,12 @@ export default async function RosterAutoNewPage({
           <TeamTitle id={teamIdNum} />
         </Suspense>
         <Separator className="mt-2 mb-4" />
-        <StepControl
-          className='flex-1'
-          workersPromise={workersPromise}
-        />
+        <AutoNewRosterStoreProvider>
+          <StepControl
+            className='flex-1'
+            workersPromise={workersPromise}
+          />
+        </AutoNewRosterStoreProvider>
       </div>
     </HeaderLayout>
   )

@@ -1,15 +1,13 @@
 'use client'
 
-import { RosterDto } from "@/libs/roster/roster";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table";
 import { closestCenter, DndContext, DragEndEvent, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { useAutoNewRosterStore } from "../store/auto-new-roster-store-provider";
 
-export default function RosterTable({
-  roster,
-}: Readonly<{
-  roster: RosterDto;
-}>) {
+export default function RosterTable() {
+  const roster = useAutoNewRosterStore(state => state.roster)
+
   const sensors = useSensors(
     useSensor(MouseSensor, {
       activationConstraint: {
@@ -36,9 +34,7 @@ export default function RosterTable({
     // setSchedules(swappedSchedules);
   }
 
-  const timeslots = (() => {
-    return roster ? roster[0].assignments.map(assignment => assignment.timeslot) : [];
-  })()
+  const timeslots = roster ? roster[0].assignments.map(assignment => assignment.timeslot) : []
 
   return (
     <DndContext

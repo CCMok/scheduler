@@ -1,29 +1,22 @@
 'use client'
 
-import { Dispatch, SetStateAction } from "react";
-import { RosterDto } from "@/libs/roster/roster";
 import { ChevronLeft, Save } from "lucide-react";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/external/shadcn/components/ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Card, CardContent } from "@/external/shadcn/components/ui/card";
 import RosterTable from "./roster-table";
+import { useAutoNewRosterStore } from "../store/auto-new-roster-store-provider";
 
-export default function ResultPreviewStep({
-  setStep,
-  modifiedRoster,
-}: Readonly<{
-  setStep: Dispatch<SetStateAction<number>>;
-  modifiedRoster: RosterDto;
-}>) {
+export default function ResultPreviewStep() {
+  const previousStep = useAutoNewRosterStore(state => state.previousStep)
+
   return (
     <div className='space-y-4'>
       <p className='text-sm text-muted-foreground'>預覽結果還未儲存，離開頁面後需重新編排。</p>
       <Card>
         <CardContent>
-          {modifiedRoster && <RosterTable
-            roster={modifiedRoster}
-          />}
+          <RosterTable />
         </CardContent>
       </Card>
       <div className='flex'>
@@ -47,7 +40,7 @@ export default function ResultPreviewStep({
               <CustomButton
                 onClick={async (e) => {
                   e.preventDefault()
-                  setStep((step) => step - 1)
+                  previousStep()
                 }}
               >
                 確定
