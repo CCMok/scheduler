@@ -44,7 +44,7 @@ export default function OffStep({
     return <StepSkeleton />
   }
 
-  const onSubmit = async () => {
+  const submit = async () => {
     const response = await autoCreateRosterAction({
       teamId,
       timeslots,
@@ -210,7 +210,7 @@ export default function OffStep({
                 onClick={async (e) => {
                   e.preventDefault()
                   setIsSubmitting(true)
-                  await onSubmit()
+                  await submit()
                   setIsSubmitting(false)
                 }}
               >

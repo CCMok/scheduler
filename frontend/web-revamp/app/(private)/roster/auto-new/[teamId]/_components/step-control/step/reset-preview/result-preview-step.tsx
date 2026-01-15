@@ -7,9 +7,15 @@ import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Card, CardContent } from "@/external/shadcn/components/ui/card";
 import RosterTable from "./roster-table";
 import { useAutoNewRosterStore } from "../store/auto-new-roster-store-provider";
+import { useState } from "react";
 
 export default function ResultPreviewStep() {
   const previousStep = useAutoNewRosterStore(state => state.previousStep)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const submit = async () => {
+    // TODO
+  }
 
   return (
     <div className='space-y-4'>
@@ -40,7 +46,9 @@ export default function ResultPreviewStep() {
               <CustomButton
                 onClick={async (e) => {
                   e.preventDefault()
-                  previousStep()
+                  setIsSubmitting(true)
+                  await submit()
+                  setIsSubmitting(false)
                 }}
               >
                 確定
@@ -48,7 +56,6 @@ export default function ResultPreviewStep() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        {/* TODO: implement save logic */}
         <CustomButton className='ml-auto'>
           <Save />
           儲存
