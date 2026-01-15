@@ -3,7 +3,6 @@
 import { RosterDto } from "@/libs/roster/roster";
 import { Dispatch, SetStateAction } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table";
-import { formatDate } from "@/libs/_general/date/date-utils";
 import { Post, Worker } from "@/external/prisma/generated/client";
 import { closestCenter, DndContext, DragEndEvent, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { rectSwappingStrategy, SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
@@ -17,7 +16,7 @@ export default function RosterTable({
 }: Readonly<{
   roster: RosterDto;
   setRoster: Dispatch<SetStateAction<RosterDto>>;
-  timeslots: Date[];
+  timeslots: string[];
   posts: Post[];
   workers: Worker[];
 }>) {
@@ -62,8 +61,8 @@ export default function RosterTable({
             <TableRow>
               <TableHead />
               {timeslots.map((timeslot) => (
-                <TableHead key={timeslot.toISOString()}>
-                  {formatDate(timeslot)}
+                <TableHead key={timeslot}>
+                  {timeslot}
                 </TableHead>
               ))}
             </TableRow>

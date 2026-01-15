@@ -1,4 +1,4 @@
 export type Off = {
   workerId: number;
-  timeslots: Date[];
+  timeslots: string[];
 }

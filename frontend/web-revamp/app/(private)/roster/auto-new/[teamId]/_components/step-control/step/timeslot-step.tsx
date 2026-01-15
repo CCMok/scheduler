@@ -14,8 +14,8 @@ export default function TimeslotStep({
   setTimeslots,
 }: Readonly<{
   setStep: Dispatch<SetStateAction<number>>,
-  timeslots: Date[],
-  setTimeslots: (timeslots: Date[]) => void,
+  timeslots: string[],
+  setTimeslots: (timeslots: string[]) => void,
 }>) {
   return (
     <div className='space-y-4'>
@@ -25,8 +25,17 @@ export default function TimeslotStep({
             mode='multiple'
             numberOfMonths={2}
             className="rounded-lg border shadow-sm"
-            selected={timeslots}
-            onSelect={(timeslots) => setTimeslots(timeslots?.toSorted((a, b) => a.getTime() - b.getTime()) ?? [])}
+            selected={timeslots.map((timeslot) => new Date(timeslot))}
+            onSelect={(timeslots) => {
+              if (!timeslots) {
+                setTimeslots([])
+                return
+              }
+              setTimeslots(timeslots
+                .toSorted((a, b) => a.getTime() - b.getTime())
+                .map((timeslot) => formatDate(timeslot))
+              )
+            }}
             locale={zhHK}
           />
         </div>
@@ -53,8 +62,8 @@ export default function TimeslotStep({
             </TableHeader>
             <TableBody>
               {timeslots.map((timeslot) => (
-                <TableRow key={timeslot.toISOString()}>
-                  <TableCell>{formatDate(timeslot)}</TableCell>
+                <TableRow key={timeslot}>
+                  <TableCell>{timeslot}</TableCell>
                   <TableCell>
                     <CustomButton
                       variant="ghost"

@@ -18,7 +18,6 @@ import { autoCreateRosterAction } from "@/libs/roster/create/auto-create-roster-
 import { toast } from "sonner"
 import { RosterDto } from "@/libs/roster/roster"
 import { useParams } from "next/navigation"
-import { formatDate } from "@/libs/_general/date/date-utils"
 
 export default function OffStep({
   setStep,
@@ -31,7 +30,7 @@ export default function OffStep({
 }: Readonly<{
   setStep: Dispatch<SetStateAction<number>>,
   workersPromise: Promise<Worker[]>;
-  timeslots: Date[];
+  timeslots: string[];
   offs: Off[];
   setOffs: Dispatch<SetStateAction<Off[]>>;
   setRoster: Dispatch<SetStateAction<RosterDto>>;
@@ -39,18 +38,15 @@ export default function OffStep({
 }>) {
   const workers = use(workersPromise)
   const [workerId, setWorkerId] = useState<number | undefined>(undefined)
-  const [selectedTimeslots, setSelectedTimeslots] = useState<Date[]>([])
+  const [selectedTimeslots, setSelectedTimeslots] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { teamId } = useParams<{ teamId: string }>()
 
   const onSubmit = async () => {
     const response = await autoCreateRosterAction({
       teamId: Number(teamId),
-      timeslots: timeslots.map((timeslot) => formatDate(timeslot)),
-      offs: offs.map((off) => ({
-        workerId: off.workerId,
-        timeslots: off.timeslots.map((timeslot) => formatDate(timeslot)),
-      })),
+      timeslots,
+      offs,
     })
 
     if (!response.isSuccess) {
@@ -89,10 +85,10 @@ export default function OffStep({
                   </FieldLegend>
                   <FieldGroup className='gap-3'>
                     {timeslots.map((timeslot) => (
-                      <Field key={timeslot.toISOString()} orientation="horizontal">
+                      <Field key={timeslot} orientation="horizontal">
                         <Checkbox
-                          id={timeslot.toISOString()}
-                          name={timeslot.toISOString()}
+                          id={timeslot}
+                          name={timeslot}
                           checked={selectedTimeslots.includes(timeslot)}
                           onCheckedChange={(checked) => {
                             if (checked) {
@@ -102,8 +98,8 @@ export default function OffStep({
                             setSelectedTimeslots(selectedTimeslots.filter((t) => t !== timeslot))
                           }}
                         />
-                        <FieldLabel htmlFor={timeslot.toISOString()} className='font-normal'>
-                          {formatDate(timeslot)}
+                        <FieldLabel htmlFor={timeslot} className='font-normal'>
+                          {timeslot}
                         </FieldLabel>
                       </Field>
                     ))}
@@ -171,7 +167,7 @@ export default function OffStep({
                   <TooltipContent>
                     <div className='space-y-1'>
                       {off.timeslots.map((timeslot) => (
-                        <p key={timeslot.toISOString()}>{formatDate(timeslot)}</p>
+                        <p key={timeslot}>{timeslot}</p>
                       ))}
                     </div>
                   </TooltipContent>

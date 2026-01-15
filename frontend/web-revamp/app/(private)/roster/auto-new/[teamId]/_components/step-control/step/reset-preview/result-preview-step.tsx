@@ -21,7 +21,7 @@ export default function ResultPreviewStep({
 }: Readonly<{
   setStep: Dispatch<SetStateAction<number>>;
   roster: RosterDto;
-  timeslots: Date[];
+  timeslots: string[];
   postsPromise: Promise<Post[]>;
   workersPromise: Promise<Worker[]>;
   modifiedRoster: RosterDto;

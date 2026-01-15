@@ -11,20 +11,7 @@ import { Off } from "./off";
 import { RosterDto } from "@/libs/roster/roster";
 import StepSkeleton from "./step-skeleton";
 
-const filterOffsByTimeslots = (
-  offs: Off[],
-  validTimeslots: Date[]
-): Off[] => {
-  const isTimeslotValid = (t: Date) =>
-    validTimeslots.some((nt) => nt.getTime() === t.getTime())
-
-  return offs
-    .map((wo) => ({
-      ...wo,
-      timeslots: wo.timeslots.filter(isTimeslotValid),
-    }))
-    .filter((wo) => wo.timeslots.length > 0)
-}
+const timeslotFilter = (validTimeslots: string[]) => (timeslot: string) => validTimeslots.includes(timeslot)
 
 export default function StepControl({
   className,
@@ -36,13 +23,16 @@ export default function StepControl({
   postsPromise: Promise<Post[]>;
 }>) {
   const [step, setStep] = useState<number>(0)
-  const [timeslots, setTimeslots] = useState<Date[]>([])
+  const [timeslots, setTimeslots] = useState<string[]>([])
   const [offs, setOffs] = useState<Off[]>([])
   const [roster, setRoster] = useState<RosterDto>([])
   const [modifiedRoster, setModifiedRoster] = useState<RosterDto>([])
 
-  const setTimeslotsWrapper = (newTimeslots: Date[]) => {
-    setOffs((prev) => filterOffsByTimeslots(prev, newTimeslots))
+  const setTimeslotsWrapper = (newTimeslots: string[]) => {
+    setOffs((offs) => offs.map(off => ({
+      ...off,
+      timeslots: off.timeslots.filter(timeslotFilter(newTimeslots)),
+    })))
     setTimeslots(newTimeslots)
   }
 
