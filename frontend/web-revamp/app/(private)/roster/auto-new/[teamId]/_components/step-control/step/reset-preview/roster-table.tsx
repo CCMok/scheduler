@@ -7,10 +7,8 @@ import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
 export default function RosterTable({
   roster,
-  timeslots,
 }: Readonly<{
   roster: RosterDto;
-  timeslots: string[];
 }>) {
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -37,6 +35,10 @@ export default function RosterTable({
     // const swappedSchedules = swapSchedule(schedules, over.id, active.id)
     // setSchedules(swappedSchedules);
   }
+
+  const timeslots = (() => {
+    return roster ? roster[0].assignments.map(assignment => assignment.timeslot) : [];
+  })()
 
   return (
     <DndContext

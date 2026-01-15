@@ -71,7 +71,6 @@ export default function StepControl({
           <ResultPreviewStep
             setStep={setStep}
             modifiedRoster={modifiedRoster}
-            timeslots={timeslots}
           />
         </Suspense>,
       },

@@ -11,11 +11,9 @@ import RosterTable from "./roster-table";
 
 export default function ResultPreviewStep({
   setStep,
-  timeslots,
   modifiedRoster,
 }: Readonly<{
   setStep: Dispatch<SetStateAction<number>>;
-  timeslots: string[];
   modifiedRoster: RosterDto;
 }>) {
   return (
@@ -25,7 +23,6 @@ export default function ResultPreviewStep({
         <CardContent>
           {modifiedRoster && <RosterTable
             roster={modifiedRoster}
-            timeslots={timeslots}
           />}
         </CardContent>
       </Card>
