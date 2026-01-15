@@ -61,6 +61,7 @@ model Team {
   posts                    Post[]
   workerAffinities         WorkerAffinity[]
   postAffinities           PostAffinity[]
+  rosters                  Roster[]
 
   @@unique([ownerId, name])
   @@index([ownerId])
@@ -80,13 +81,14 @@ model TeamAudit {
 }
 
 model Post {
-  id                  Int                  @id @default(autoincrement())
-  teamId              Int                  @map("team_id")
-  name                String
-  displayOrder        Int                  @default(0) @map("display_order")
-  team                Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  postWorkers         PostWorker[]
-  postAffinityMembers PostAffinityMember[]
+  id                         Int                         @id @default(autoincrement())
+  teamId                     Int                         @map("team_id")
+  name                       String
+  displayOrder               Int                         @default(0) @map("display_order")
+  team                       Team                        @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  postWorkers                PostWorker[]
+  postAffinityMembers        PostAffinityMember[]
+  rosterTimeslotAssignements RosterTimeslotAssignement[]
 
   @@unique([teamId, name])
   @@index([teamId])
@@ -106,12 +108,13 @@ model PostAudit {
 }
 
 model Worker {
-  id                    Int                    @id @default(autoincrement())
-  teamId                Int                    @map("team_id")
-  name                  String
-  team                  Team                   @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  postWorkers           PostWorker[]
-  workerAffinityMembers WorkerAffinityMember[]
+  id                         Int                         @id @default(autoincrement())
+  teamId                     Int                         @map("team_id")
+  name                       String
+  team                       Team                        @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  postWorkers                PostWorker[]
+  workerAffinityMembers      WorkerAffinityMember[]
+  rosterTimeslotAssignements RosterTimeslotAssignement[]
 
   @@unique([teamId, name])
   @@index([teamId])
@@ -241,4 +244,79 @@ model WorkerAffinityMemberAudit {
   workerId         Int?     @map("worker_id")
 
   @@map("worker_affinity_member_audit")
+}
+
+model Roster {
+  id        Int              @id @default(autoincrement())
+  teamId    Int              @map("team_id")
+  team      Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  timeslots RosterTimeslot[]
+
+  @@index([teamId])
+  @@map("roster")
+}
+
+model RosterAudit {
+  auditId        Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction    String   @map("audit_action")
+  id             Int?
+  teamId         Int?     @map("team_id")
+
+  @@map("roster_audit")
+}
+
+model RosterTimeslot {
+  id                         Int                         @id @default(autoincrement())
+  rosterId                   Int                         @map("roster_id")
+  timeslot                   String                      @map("timeslot")
+  roster                     Roster                      @relation(fields: [rosterId], references: [id], onDelete: Cascade)
+  rosterTimeslotAssignements RosterTimeslotAssignement[]
+
+  @@unique([rosterId, timeslot])
+  @@index([rosterId])
+  @@map("roster_timeslot")
+}
+
+model RosterTimeslotAudit {
+  auditId        Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction    String   @map("audit_action")
+  id             Int?
+  rosterId       Int?     @map("roster_id")
+  timeslot       String?  @map("timeslot")
+
+  @@map("roster_timeslot_audit")
+}
+
+model RosterTimeslotAssignement {
+  id                 Int            @id @default(autoincrement())
+  rosterTimeslotId   Int            @map("roster_timeslot_id")
+  postId             Int?           @map("post_id")
+  workerId           Int?           @map("worker_id")
+  fallbackPostName   String         @map("fallback_post_name")
+  fallbackWorkerName String?        @map("fallback_worker_name")
+  rosterTimeslot     RosterTimeslot @relation(fields: [rosterTimeslotId], references: [id], onDelete: Cascade)
+  post               Post?          @relation(fields: [postId], references: [id], onDelete: SetNull)
+  worker             Worker?        @relation(fields: [workerId], references: [id], onDelete: SetNull)
+
+  @@unique([rosterTimeslotId, postId])
+  @@index([rosterTimeslotId])
+  @@index([postId])
+  @@index([workerId])
+  @@map("roster_timeslot_assignement")
+}
+
+model SchedulteTimeslotAssignementAudit {
+  auditId            Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp     DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction        String   @map("audit_action")
+  id                 Int?
+  rosterTimeslotId   Int?     @map("roster_timeslot_id")
+  postId             Int?     @map("post_id")
+  workerId           Int?     @map("worker_id")
+  fallbackPostName   String?  @map("fallback_post_name")
+  fallbackWorkerName String?  @map("fallback_worker_name")
+
+  @@map("roster_timeslot_assignement_audit")
 }
