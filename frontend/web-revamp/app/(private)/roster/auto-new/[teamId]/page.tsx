@@ -9,6 +9,7 @@ import { Separator } from "@/external/shadcn/components/ui/separator";
 import StepControl from "./_components/step-control/step-control";
 import { getWorkers } from "@/libs/worker/read/get-worker-service";
 import { AutoNewRosterStoreProvider } from "./_components/step-control/step/store/auto-new-roster-store-provider";
+import { getPosts } from "@/libs/post/read/get-post-service";
 
 export default async function RosterAutoNewPage({
   params,
@@ -20,6 +21,7 @@ export default async function RosterAutoNewPage({
   if (Number.isNaN(teamIdNum)) notFound()
 
   const workersPromise = getWorkers(teamIdNum)
+  const postsPromise = getPosts(teamIdNum)
 
   return (
     <HeaderLayout
@@ -45,6 +47,7 @@ export default async function RosterAutoNewPage({
         <AutoNewRosterStoreProvider>
           <StepControl
             className='flex-1'
+            postPromise={postsPromise}
             workersPromise={workersPromise}
           />
         </AutoNewRosterStoreProvider>

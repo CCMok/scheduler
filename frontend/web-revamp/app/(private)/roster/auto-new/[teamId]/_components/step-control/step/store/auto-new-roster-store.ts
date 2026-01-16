@@ -1,4 +1,4 @@
-import { RosterDto } from "@/libs/roster/roster";
+import { PostBaseRoster } from "@/libs/roster/roster";
 import { Off } from "../../off";
 import { createStore } from "zustand/vanilla";
 
@@ -6,7 +6,7 @@ export type AutoNewRosterState = {
   step: number;
   timeslots: string[];
   offs: Off[];
-  roster: RosterDto;
+  roster: PostBaseRoster;
 }
 
 export type AutoNewRosterAction = {
@@ -14,7 +14,7 @@ export type AutoNewRosterAction = {
   previousStep: () => void;
   setTimeslots: (timeslots: string[]) => void;
   setOffs: (offs: Off[]) => void;
-  setRoster: (roster: RosterDto) => void;
+  setRoster: (roster: PostBaseRoster) => void;
 }
 
 export type AutoNewRosterStore = AutoNewRosterState & AutoNewRosterAction

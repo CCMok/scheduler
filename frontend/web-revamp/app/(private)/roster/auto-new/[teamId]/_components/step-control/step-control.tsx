@@ -6,15 +6,17 @@ import { ReactNode, Suspense } from "react";
 import TimeslotStep from "./step/timeslot-step";
 import OffStep from "./step/off-step";
 import ResultPreviewStep from "./step/reset-preview/result-preview-step";
-import { Worker } from "@/external/prisma/generated/client";
+import { Post, Worker } from "@/external/prisma/generated/client";
 import StepSkeleton from "./step-skeleton";
 import { useAutoNewRosterStore } from "./step/store/auto-new-roster-store-provider";
 
 export default function StepControl({
   className,
+  postPromise,
   workersPromise,
 }: Readonly<{
   className?: string;
+  postPromise: Promise<Post[]>;
   workersPromise: Promise<Worker[]>;
 }>) {
   const step = useAutoNewRosterStore(state => state.step)
@@ -34,7 +36,10 @@ export default function StepControl({
         step: 1,
         title: '選擇職員休息時段',
         children: <Suspense fallback={<StepSkeleton />}>
-          <OffStep workersPromise={workersPromise} />
+          <OffStep
+            postPromise={postPromise}
+            workersPromise={workersPromise}
+          />
         </Suspense>,
       },
       {

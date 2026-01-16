@@ -3,7 +3,7 @@
 import { use, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card"
 import Combobox from "@/components/_general/_custom/combobox/combobox"
-import { Worker } from "@/external/prisma/generated/client"
+import { Post, Worker } from "@/external/prisma/generated/client"
 import { Field, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/external/shadcn/components/ui/field"
 import { Checkbox } from "@/external/shadcn/components/ui/checkbox"
 import CustomButton from "@/components/_general/_custom/button/custom-button"
@@ -18,12 +18,16 @@ import { toast } from "sonner"
 import { useParams } from "next/navigation"
 import { useAutoNewRosterStore } from "./store/auto-new-roster-store-provider"
 import StepSkeleton from "../step-skeleton"
+import { convertToPostBaseRoster } from "@/libs/roster/roster-utils"
 
 export default function OffStep({
+  postPromise,
   workersPromise,
 }: Readonly<{
+  postPromise: Promise<Post[]>;
   workersPromise: Promise<Worker[]>;
 }>) {
+  const posts = use(postPromise)
   const workers = use(workersPromise)
 
   const nextStep = useAutoNewRosterStore(state => state.nextStep)
@@ -56,7 +60,8 @@ export default function OffStep({
       return
     }
 
-    setRoster(response.data)
+    const postBaseRoster = convertToPostBaseRoster(response.data, posts, workers)
+    setRoster(postBaseRoster)
     toast.success('編排成功')
     nextStep()
   }
