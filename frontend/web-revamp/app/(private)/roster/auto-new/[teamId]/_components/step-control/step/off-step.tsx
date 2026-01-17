@@ -18,7 +18,7 @@ import { toast } from "sonner"
 import { useParams } from "next/navigation"
 import { useAutoNewRosterStore } from "./store/auto-new-roster-store-provider"
 import StepSkeleton from "../step-skeleton"
-import { convertToPostBaseRoster } from "@/libs/roster/roster-utils"
+import { convertToRosterDisplay } from "@/libs/roster/roster-utils"
 
 export default function OffStep({
   postPromise,
@@ -60,8 +60,8 @@ export default function OffStep({
       return
     }
 
-    const postBaseRoster = convertToPostBaseRoster(response.data, posts, workers)
-    setRoster(postBaseRoster)
+    const rosterDisplay = convertToRosterDisplay(response.data, posts, workers)
+    setRoster(rosterDisplay)
     toast.success('編排成功')
     nextStep()
   }

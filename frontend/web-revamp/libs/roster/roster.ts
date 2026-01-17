@@ -1,21 +1,29 @@
-// communication
-export type RosterDto = {
-  teamId: number;
-  timeslots: RosterTimeslot[];
-}
+import { z } from "zod";
 
-export type RosterTimeslot = {
-  timeslot: string;
-  assignments: RosterTimeslotAssignment[],
-}
+// Communication
+export const rosterTimeslotAssignmentSchema = z.object({
+  postId: z.number(),
+  workerId: z.number().optional(),
+})
+export type RosterTimeslotAssignment = z.infer<typeof rosterTimeslotAssignmentSchema>
 
-export type RosterTimeslotAssignment = {
-  postId: number;
-  workerId?: number;
-}
+export const rosterTimeslotSchema = z.object({
+  timeslot: z.string(),
+  assignments: rosterTimeslotAssignmentSchema.array(),
+})
+export type RosterTimeslot = z.infer<typeof rosterTimeslotSchema>
+
+export const rosterDtoSchema = rosterTimeslotSchema.array()
+export type RosterDto = z.infer<typeof rosterDtoSchema>
 
 // Display
-export type PostBaseRoster = RosterPost[];
+export type RosterPostAssignment = {
+  timeslot: string;
+  worker?: {
+    id: number;
+    name: string;
+  },
+}
 
 export type RosterPost = {
   post: {
@@ -25,10 +33,4 @@ export type RosterPost = {
   assignments: RosterPostAssignment[],
 }
 
-export type RosterPostAssignment = {
-  timeslot: string;
-  worker?: {
-    id: number;
-    name: string;
-  },
-}
+export type RosterDisplay = RosterPost[];

@@ -2,12 +2,10 @@ import 'server-only'
 import { ServiceResponse } from "@/libs/_general/service/response";
 import { RosterDto } from "../../roster";
 import { tryCatch } from '@/libs/_general/service/try-catch';
-import { getSession } from '@/libs/_general/session/session-manager';
 import { Message } from '@/libs/_general/service/message';
-import { Role } from '@/libs/auth/role/role';
-import prisma from '@/libs/_general/database/database-manager';
 import { AutoCreateRosterRequest, autoCreateRosterRequestSchema } from './auto-create-roster-request';
 import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from './sch-arrange-roster-response';
+import { checkCanAccessTeam } from '@/libs/auth/authorization/access-utils';
 
 const SCH_HOST = process.env.SCH_HOST ?? '';
 const SCH_API_KEY = process.env.SCH_API_KEY ?? '';
@@ -15,8 +13,8 @@ const SCH_API_KEY = process.env.SCH_API_KEY ?? '';
 export const autoCreateRoster = tryCatch(async (request: AutoCreateRosterRequest): Promise<ServiceResponse<RosterDto>> => {
   const parsedRequest = autoCreateRosterRequestSchema.parse(request)
 
-  const canCreate = await checkCanCreate(parsedRequest.teamId)
-  if (!canCreate) return {
+  const canAccess = await checkCanAccessTeam(parsedRequest.teamId)
+  if (!canAccess) return {
     isSuccess: false,
     message: Message.UNAUTHORIZED,
   }
@@ -34,22 +32,6 @@ export const autoCreateRoster = tryCatch(async (request: AutoCreateRosterRequest
     data: roster,
   }
 })
-
-const checkCanCreate = async (teamId: number): Promise<boolean> => {
-  const session = await getSession()
-
-  if (!session) return false
-  if (session.roleId === Role.SYSTEM_ADMIN) return true
-
-  const team = await prisma.team.findUnique({
-    where: {
-      id: teamId,
-      ownerId: session.userId,
-    },
-  })
-
-  return team !== null;
-}
 
 const sendArrangeRosterRequest = async (request: AutoCreateRosterRequest): Promise<SchArrangeRosterResponse | undefined> => {
   try {
@@ -77,14 +59,11 @@ const sendArrangeRosterRequest = async (request: AutoCreateRosterRequest): Promi
 }
 
 const convertToRoster = async (response: SchArrangeRosterResponse, teamId: number): Promise<RosterDto> => {
-  return {
-    teamId,
-    timeslots: response.map(r => ({
-      timeslot: r.timeslot,
-      assignments: r.assignments.map(a => ({
-        postId: a.postId,
-        workerId: a.workerId ?? undefined,
-      })),
+  return response.map(r => ({
+    timeslot: r.timeslot,
+    assignments: r.assignments.map(a => ({
+      postId: a.postId,
+      workerId: a.workerId ?? undefined,
     })),
-  }
+  }))
 }

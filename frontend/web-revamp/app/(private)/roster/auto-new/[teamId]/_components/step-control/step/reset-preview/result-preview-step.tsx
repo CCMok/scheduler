@@ -12,6 +12,7 @@ import { createRosterAction } from "@/libs/roster/create/create-roster-action";
 import LoadingButton from "@/components/_general/_custom/button/loading-button";
 import { useParams } from "next/navigation";
 import StepSkeleton from "../../step-skeleton";
+import { convertToRosterDto } from "@/libs/roster/roster-utils";
 
 export default function ResultPreviewStep() {
   const previousStep = useAutoNewRosterStore(state => state.previousStep)
@@ -27,17 +28,12 @@ export default function ResultPreviewStep() {
   }
 
   const submit = async () => {
-    // TODO
+    const rosterDto = convertToRosterDto(roster)
     const response = await createRosterAction({
       teamId,
-      posts: roster.map(rosterPost => ({
-        postId: rosterPost.post.id,
-        assignments: rosterPost.assignments.map(assignment => ({
-          timeslot: assignment.timeslot,
-          workerId: assignment.worker?.id,
-        })),
-      })),
+      rosterDto,
     })
+    console.log(response) // TODO
 
     
   }
