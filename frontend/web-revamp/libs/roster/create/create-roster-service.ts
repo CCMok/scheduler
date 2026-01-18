@@ -33,9 +33,7 @@ export const createRoster = tryCatch(async (request: CreateRosterRequest): Promi
 
 const getPostMap = async (teamId: number): Promise<Map<number, Post>> => {
   const posts = await prisma.post.findMany({
-    where: {
-      teamId,
-    },
+    where: { teamId },
   })
   return new Map(posts.map(post => [post.id, post]))
 }

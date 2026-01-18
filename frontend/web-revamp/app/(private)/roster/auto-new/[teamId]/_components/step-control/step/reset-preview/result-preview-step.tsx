@@ -10,15 +10,19 @@ import { useAutoNewRosterStore } from "../store/auto-new-roster-store-provider";
 import { useState } from "react";
 import { createRosterAction } from "@/libs/roster/create/create-roster-action";
 import LoadingButton from "@/components/_general/_custom/button/loading-button";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import StepSkeleton from "../../step-skeleton";
 import { convertToRosterDto } from "@/libs/roster/roster-utils";
+import { toast } from "sonner";
+import { Path } from "@/libs/_general/path/path";
 
 export default function ResultPreviewStep() {
   const previousStep = useAutoNewRosterStore(state => state.previousStep)
   const roster = useAutoNewRosterStore(state => state.roster)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const router = useRouter()
 
   const { teamId: teamIdString } = useParams<{ teamId: string }>()
   const teamId = Number.parseInt(teamIdString)
@@ -33,9 +37,14 @@ export default function ResultPreviewStep() {
       teamId,
       rosterDto,
     })
-    console.log(response) // TODO
-
     
+    if (!response.isSuccess) {
+      toast.error(response.message)
+      return
+    }
+
+    toast.success('儲存值班表成功')
+    router.push(Path.ROSTER) // TODO: redirect to roster id page
   }
 
   return (
