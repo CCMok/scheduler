@@ -2,11 +2,15 @@
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table";
 import { closestCenter, DndContext, DragEndEvent, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { rectSwappingStrategy, SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useAutoNewRosterStore } from "../store/auto-new-roster-store-provider";
+import RosterTableSortableCell from "./roster-table-sortable-cell";
+import { swapAssignment } from "@/libs/roster/roster-utils";
 
 export default function RosterTable() {
-  const roster = useAutoNewRosterStore(state => state.roster)
+  const modifiedRoster = useAutoNewRosterStore(state => state.modifiedRoster)
+  const setModifiedRoster = useAutoNewRosterStore(state => state.setModifiedRoster)
+  const timeslots = useAutoNewRosterStore(state => state.timeslots)
 
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -26,51 +30,62 @@ export default function RosterTable() {
   );
 
   const onDragEnd = (event: DragEndEvent) => {
-    const { over, active } = event;
-    if (!over || !active || active.id === over.id) return;
+    const { active, over } = event;
+    if (!active || !over || active.id === over.id) return;
 
-    // TODO
-    // const swappedSchedules = swapSchedule(schedules, over.id, active.id)
-    // setSchedules(swappedSchedules);
+    const swappedRoster = swapAssignment(modifiedRoster, Number(over.id), Number(active.id))
+    setModifiedRoster(swappedRoster);
   }
 
-  const timeslots = roster ? roster[0].assignments.map(assignment => assignment.timeslot) : []
-
   return (
+    // DndContext generate div for drag and drop function, and tbody only accept tr children. So DndContext place outside of table
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragEnd={onDragEnd}
     >
-      {/* <SortableContext
-        items={}
-        strategy={rectSwappingStrategy}
-      > */}
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead />
-              {timeslots.map((timeslot) => (
-                <TableHead key={timeslot}>
-                  {timeslot}
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {roster.map((rosterPost) => (
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead />
+            {timeslots.map((timeslot) => (
+              <TableHead
+                key={timeslot}
+                className='text-center'
+              >
+                {timeslot}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <SortableContext
+            items={modifiedRoster.flatMap(rosterPost => rosterPost.assignments.map(assignment => assignment.id))}
+            strategy={rectSwappingStrategy}
+          >
+            {modifiedRoster.map((rosterPost) => (
               <TableRow key={rosterPost.post.id}>
                 <TableCell>{rosterPost.post.name}</TableCell>
-                {rosterPost.assignments.map((assignment) => (
-                  <TableCell key={assignment.timeslot}>
-                    {assignment.worker?.name}
-                  </TableCell>
-                ))}
+                {timeslots.map(timeslot => {
+                  const assignment = rosterPost.assignments.find(assignment => assignment.timeslot === timeslot)
+                  if (!assignment) {
+                    console.error(`Assignment not found for post: ${rosterPost.post.id} timeslot: ${timeslot}`);
+                    return <TableCell key={timeslot} />;
+                  }
+
+                  return (
+                    <RosterTableSortableCell
+                      key={timeslot}
+                      assignmentId={assignment.id}
+                      workerName={assignment.worker?.name}
+                    />
+                  )
+                })}
               </TableRow>
             ))}
-          </TableBody>
-        </Table>
-      {/* </SortableContext> */}
+          </SortableContext>
+        </TableBody>
+      </Table>
     </DndContext>
   )
 }

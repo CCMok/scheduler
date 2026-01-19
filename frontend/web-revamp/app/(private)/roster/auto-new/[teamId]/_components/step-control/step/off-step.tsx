@@ -35,7 +35,8 @@ export default function OffStep({
   const timeslots = useAutoNewRosterStore(state => state.timeslots)
   const offs = useAutoNewRosterStore(state => state.offs)
   const setOffs = useAutoNewRosterStore(state => state.setOffs)
-  const setRoster = useAutoNewRosterStore(state => state.setRoster)
+  const setInitialRoster = useAutoNewRosterStore(state => state.setInitialRoster)
+  const setModifiedRoster = useAutoNewRosterStore(state => state.setModifiedRoster)
 
   const [workerId, setWorkerId] = useState<number | undefined>(undefined)
   const [selectedTimeslots, setSelectedTimeslots] = useState<string[]>([])
@@ -61,7 +62,8 @@ export default function OffStep({
     }
 
     const rosterDisplay = convertToRosterDisplay(response.data, posts, workers)
-    setRoster(rosterDisplay)
+    setInitialRoster(rosterDisplay)
+    setModifiedRoster(rosterDisplay)
     toast.success('編排成功')
     nextStep()
   }

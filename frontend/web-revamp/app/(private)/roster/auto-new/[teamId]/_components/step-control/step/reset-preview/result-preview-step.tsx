@@ -18,7 +18,7 @@ import { Path } from "@/libs/_general/path/path";
 
 export default function ResultPreviewStep() {
   const previousStep = useAutoNewRosterStore(state => state.previousStep)
-  const roster = useAutoNewRosterStore(state => state.roster)
+  const modifiedRoster = useAutoNewRosterStore(state => state.modifiedRoster)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -32,7 +32,7 @@ export default function ResultPreviewStep() {
   }
 
   const submit = async () => {
-    const rosterDto = convertToRosterDto(roster)
+    const rosterDto = convertToRosterDto(modifiedRoster)
     const response = await createRosterAction({
       teamId,
       rosterDto,

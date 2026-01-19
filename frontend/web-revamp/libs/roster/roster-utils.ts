@@ -12,12 +12,15 @@ export const convertToRosterDisplay = (rosterDto: RosterDto, posts: Post[], work
     }
   }
 
+  let assignmentId = 0;
+
   return posts
     .toSorted((a, b) => a.displayOrder - b.displayOrder)
     .map((post): RosterPost => ({
       post: { id: post.id, name: post.name },
       assignments: (postAssignmentsMap.get(post.id) ?? []).map(
         ({ timeslot, workerId }): RosterPostAssignment => ({
+          id: assignmentId++,
           timeslot,
           worker: workerId ? workerMap.get(workerId) : undefined,
         })
@@ -37,5 +40,44 @@ export const convertToRosterDto = (rosterDisplay: RosterDisplay): RosterDto => {
   return Array.from(timeslotAssignmentsMap.entries()).map(([timeslot, assignments]) => ({
     timeslot,
     assignments,
+  }))
+}
+
+export const swapAssignment = (
+  rosterDisplay: RosterDisplay,
+  assignmentId1: number,
+  assignmentId2: number,
+): RosterDisplay => {
+  let worker1: { id: number; name: string } | undefined;
+  let worker2: { id: number; name: string } | undefined;
+
+  for (const rosterPost of rosterDisplay) {
+    for (const assignment of rosterPost.assignments) {
+      if (assignment.id === assignmentId1) {
+        worker1 = assignment.worker;
+      }
+      if (assignment.id === assignmentId2) {
+        worker2 = assignment.worker;
+      }
+      if (worker1 && worker2) {
+        break;
+      }
+    }
+  }
+
+  return rosterDisplay.map(rosterPost => ({
+    ...rosterPost,
+    assignments: rosterPost.assignments.map(assignment => ({
+      ...assignment,
+      worker: (() => {
+        if (assignment.id === assignmentId1) {
+          return worker2;
+        }
+        if (assignment.id === assignmentId2) {
+          return worker1;
+        }
+        return assignment.worker;
+      })(),
+    }))
   }))
 }

@@ -113,8 +113,9 @@ const insertTeam = async (tx: TransactionClient, ownerId: number) => {
 }
 
 const insertPost = async (tx: TransactionClient, teamId: number) => {
+  let displayOrder = 0;
   return await tx.post.createManyAndReturn({
-    data: postNames.map(name => ({ teamId, name })),
+    data: postNames.map(name => ({ teamId, name, displayOrder: displayOrder++ })),
   })
 }
 

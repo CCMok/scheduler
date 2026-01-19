@@ -18,6 +18,7 @@ export type RosterDto = z.infer<typeof rosterDtoSchema>
 
 // Display
 export type RosterPostAssignment = {
+  id: number;
   timeslot: string;
   worker?: {
     id: number;

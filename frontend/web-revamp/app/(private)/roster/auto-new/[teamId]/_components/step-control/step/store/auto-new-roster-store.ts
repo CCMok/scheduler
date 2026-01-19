@@ -6,7 +6,8 @@ export type AutoNewRosterState = {
   step: number;
   timeslots: string[];
   offs: Off[];
-  roster: RosterDisplay;
+  initialRoster: RosterDisplay;
+  modifiedRoster: RosterDisplay;
 }
 
 export type AutoNewRosterAction = {
@@ -14,7 +15,8 @@ export type AutoNewRosterAction = {
   previousStep: () => void;
   setTimeslots: (timeslots: string[]) => void;
   setOffs: (offs: Off[]) => void;
-  setRoster: (roster: RosterDisplay) => void;
+  setInitialRoster: (initialRoster: RosterDisplay) => void;
+  setModifiedRoster: (modifiedRoster: RosterDisplay) => void;
 }
 
 export type AutoNewRosterStore = AutoNewRosterState & AutoNewRosterAction
@@ -23,7 +25,8 @@ export const initState: AutoNewRosterState = {
   step: 0,
   timeslots: [],
   offs: [],
-  roster: [],
+  initialRoster: [],
+  modifiedRoster: [],
 }
 
 const filterValidTimeslots = (offs: Off[], timeslots: string[]) => {
@@ -43,6 +46,7 @@ export const createAutoNewRosterStore = () => {
       timeslots,
     })),
     setOffs: (offs) => set({ offs }),
-    setRoster: (roster) => set({ roster }),
+    setInitialRoster: (initialRoster) => set({ initialRoster }),
+    setModifiedRoster: (modifiedRoster) => set({ modifiedRoster }),
   }))
 }
