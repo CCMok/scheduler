@@ -26,7 +26,7 @@ export default function RosterTableEditCell({
     if (
       ref.current
       && !ref.current.contains(event.target as Node)
-      && !(event.target as HTMLElement).closest('[data-popover-content]') // TODO: fix this
+      && !(event.target as HTMLElement).closest('[data-slot="popover-content"]')
     ) {
       setIsEditing(false)
     }
@@ -45,7 +45,7 @@ export default function RosterTableEditCell({
   }
 
   return (
-    <TableCell ref={ref}>
+    <TableCell ref={ref} className="w-(--input-width)">
       <Combobox
         value={assignment.worker?.id}
         setValue={setValue}
@@ -54,6 +54,7 @@ export default function RosterTableEditCell({
         getOptionDisplay={(worker) => worker.name}
         isOptional={true}
         placeHolder="選擇職員"
+        defaultIsOpen={true}
       />
     </TableCell>
   )

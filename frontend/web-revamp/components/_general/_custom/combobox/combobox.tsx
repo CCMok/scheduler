@@ -16,6 +16,7 @@ export default function Combobox<T, V extends Key>({
   isOptional = false,
   placeHolder,
   icon,
+  defaultIsOpen = false,
 }: Readonly<{
   value: V | undefined;
   setValue: (value: V | undefined) => void;
@@ -25,8 +26,9 @@ export default function Combobox<T, V extends Key>({
   isOptional?: boolean;
   placeHolder?: string;
   icon?: ReactNode;
+  defaultIsOpen?: boolean;
 }>) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(defaultIsOpen)
   const selectedItem = options.find((option) => getOptionValue(option) === value)
   return (
     <Popover open={open} onOpenChange={setOpen}>
