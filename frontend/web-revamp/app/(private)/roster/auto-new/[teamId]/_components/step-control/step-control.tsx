@@ -45,7 +45,7 @@ export default function StepControl({
       {
         step: 2,
         title: '預覽編排結果',
-        children: <ResultPreviewStep />,
+        children: <ResultPreviewStep workersPromise={workersPromise} />,
       },
     ]
 

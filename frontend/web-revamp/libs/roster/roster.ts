@@ -17,13 +17,15 @@ export const rosterDtoSchema = rosterTimeslotSchema.array()
 export type RosterDto = z.infer<typeof rosterDtoSchema>
 
 // Display
+export type RosterPostAssignmentWorker = {
+  id: number;
+  name: string;
+}
+
 export type RosterPostAssignment = {
   id: number;
   timeslot: string;
-  worker?: {
-    id: number;
-    name: string;
-  },
+  worker?: RosterPostAssignmentWorker,
 }
 
 export type RosterPost = {

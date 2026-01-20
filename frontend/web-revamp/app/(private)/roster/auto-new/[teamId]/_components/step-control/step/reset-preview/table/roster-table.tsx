@@ -1,16 +1,20 @@
 'use client'
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table";
 import { closestCenter, DndContext, DragEndEvent, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { rectSwappingStrategy, SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
-import { useAutoNewRosterStore } from "../store/auto-new-roster-store-provider";
-import RosterTableSortableCell from "./roster-table-sortable-cell";
-import { swapAssignment } from "@/libs/roster/roster-utils";
+import { useAutoNewRosterStore } from "../../store/auto-new-roster-store-provider";
+import RosterTableCell from "./roster-table-cell";
+import { Worker } from "@/external/prisma/generated/client";
 
-export default function RosterTable() {
+export default function RosterTable({
+  workers,
+}: Readonly<{
+  workers: Worker[];
+}>) {
   const modifiedRoster = useAutoNewRosterStore(state => state.modifiedRoster)
-  const setModifiedRoster = useAutoNewRosterStore(state => state.setModifiedRoster)
   const timeslots = useAutoNewRosterStore(state => state.timeslots)
+  const swapAssignment = useAutoNewRosterStore(state => state.swapAssignment)
 
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -32,9 +36,7 @@ export default function RosterTable() {
   const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!active || !over || active.id === over.id) return;
-
-    const swappedRoster = swapAssignment(modifiedRoster, Number(over.id), Number(active.id))
-    setModifiedRoster(swappedRoster);
+    swapAssignment(Number(over.id), Number(active.id));
   }
 
   return (
@@ -45,6 +47,7 @@ export default function RosterTable() {
       onDragEnd={onDragEnd}
     >
       <Table>
+        <TableCaption>可以拖放，或連按兩次編輯。</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead />
@@ -74,10 +77,10 @@ export default function RosterTable() {
                   }
 
                   return (
-                    <RosterTableSortableCell
+                    <RosterTableCell
                       key={timeslot}
-                      assignmentId={assignment.id}
-                      workerName={assignment.worker?.name}
+                      workers={workers}
+                      assignment={assignment}
                     />
                   )
                 })}

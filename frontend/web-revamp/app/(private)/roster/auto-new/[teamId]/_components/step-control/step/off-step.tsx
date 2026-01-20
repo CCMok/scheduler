@@ -83,7 +83,6 @@ export default function OffStep({
                 options={workers.filter((worker) => !offs.some((wo) => wo.workerId === worker.id))}
                 getOptionValue={(worker) => worker.id}
                 getOptionDisplay={(worker) => worker.name}
-                isOptional={false}
                 placeHolder="選擇職員"
               />
               <FieldGroup>

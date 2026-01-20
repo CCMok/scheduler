@@ -5,9 +5,9 @@ import CustomButton from "@/components/_general/_custom/button/custom-button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/external/shadcn/components/ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Card, CardContent } from "@/external/shadcn/components/ui/card";
-import RosterTable from "./roster-table";
+import RosterTable from "./table/roster-table";
 import { useAutoNewRosterStore } from "../store/auto-new-roster-store-provider";
-import { useState } from "react";
+import { use, useState } from "react";
 import { createRosterAction } from "@/libs/roster/create/create-roster-action";
 import LoadingButton from "@/components/_general/_custom/button/loading-button";
 import { useParams, useRouter } from "next/navigation";
@@ -15,8 +15,15 @@ import StepSkeleton from "../../step-skeleton";
 import { convertToRosterDto } from "@/libs/roster/roster-utils";
 import { toast } from "sonner";
 import { Path } from "@/libs/_general/path/path";
+import { Worker } from "@/external/prisma/generated/client";
 
-export default function ResultPreviewStep() {
+export default function ResultPreviewStep({
+  workersPromise,
+}: Readonly<{
+  workersPromise: Promise<Worker[]>;
+}>) {
+  const workers = use(workersPromise)
+
   const previousStep = useAutoNewRosterStore(state => state.previousStep)
   const modifiedRoster = useAutoNewRosterStore(state => state.modifiedRoster)
 
@@ -37,7 +44,7 @@ export default function ResultPreviewStep() {
       teamId,
       rosterDto,
     })
-    
+
     if (!response.isSuccess) {
       toast.error(response.message)
       return
@@ -49,10 +56,11 @@ export default function ResultPreviewStep() {
 
   return (
     <div className='space-y-4'>
+      {/* TODO: roster name */}
       <p className='text-sm text-muted-foreground'>預覽結果還未儲存，離開頁面後需重新編排。</p>
       <Card>
         <CardContent>
-          <RosterTable />
+          <RosterTable workers={workers} />
         </CardContent>
       </Card>
       <div className='flex'>
