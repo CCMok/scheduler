@@ -56,8 +56,8 @@ export default function ResultPreviewStep({
 
   return (
     <div className='space-y-4'>
-      {/* TODO: roster name */}
       <p className='text-sm text-muted-foreground'>預覽結果還未儲存，離開頁面後需重新編排。</p>
+      {/* TODO: roster name */}
       <Card>
         <CardContent>
           <RosterTable workers={workers} />

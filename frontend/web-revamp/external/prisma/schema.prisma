@@ -249,9 +249,11 @@ model WorkerAffinityMemberAudit {
 model Roster {
   id        Int              @id @default(autoincrement())
   teamId    Int              @map("team_id")
+  name      String           @map("name")
   team      Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
   timeslots RosterTimeslot[]
 
+  @@unique([teamId, name])
   @@index([teamId])
   @@map("roster")
 }
@@ -262,6 +264,7 @@ model RosterAudit {
   auditAction    String   @map("audit_action")
   id             Int?
   teamId         Int?     @map("team_id")
+  name           String?  @map("name")
 
   @@map("roster_audit")
 }
