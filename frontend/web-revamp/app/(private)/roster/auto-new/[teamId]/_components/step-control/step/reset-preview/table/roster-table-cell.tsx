@@ -20,7 +20,7 @@ export default function RosterTableCell({
       <RosterTableEditCell
         workers={workers}
         assignment={assignment}
-        onValueChange={() => setIsEditing(false)}
+        setIsEditing={setIsEditing}
       />
     )
   }
