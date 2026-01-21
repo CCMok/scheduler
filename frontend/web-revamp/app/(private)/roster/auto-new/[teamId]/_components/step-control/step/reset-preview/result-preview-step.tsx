@@ -16,6 +16,10 @@ import { convertToRosterDto } from "@/libs/roster/roster-utils";
 import { toast } from "sonner";
 import { Path } from "@/libs/_general/path/path";
 import { Worker } from "@/external/prisma/generated/client";
+import { Param } from "../../../roster-auto-new-page-param";
+import { useAppForm } from "@/components/_general/form/utils/form-utils";
+import { FORM_FIELD, FORM_ID, formSchema } from "./create-roster-form-utils";
+import { revalidateLogic } from "@tanstack/react-form";
 
 export default function ResultPreviewStep({
   workersPromise,
@@ -27,12 +31,27 @@ export default function ResultPreviewStep({
   const previousStep = useAutoNewRosterStore(state => state.previousStep)
   const modifiedRoster = useAutoNewRosterStore(state => state.modifiedRoster)
 
+  const [isOpenConfirmDialog, setIsOpenConfirmDialog] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const router = useRouter()
 
-  const { teamId: teamIdString } = useParams<{ teamId: string }>()
+  const { teamId: teamIdString } = useParams<Param>()
   const teamId = Number.parseInt(teamIdString)
+
+  const form = useAppForm({
+    defaultValues: {
+      [FORM_FIELD.NAME]: '',
+    },
+    validationLogic: revalidateLogic(),
+    validators: {
+      onDynamic: formSchema,
+    },
+    onSubmit: async () => {
+      setIsOpenConfirmDialog(true)
+    },
+  })
+
   if (Number.isNaN(teamId)) {
     console.info('Invalid teamId', teamIdString)
     return <StepSkeleton />
@@ -42,6 +61,7 @@ export default function ResultPreviewStep({
     const rosterDto = convertToRosterDto(modifiedRoster)
     const response = await createRosterAction({
       teamId,
+      name: form.state.values[FORM_FIELD.NAME],
       rosterDto,
     })
 
@@ -55,75 +75,92 @@ export default function ResultPreviewStep({
   }
 
   return (
-    <div className='space-y-4'>
-      <p className='text-sm text-muted-foreground'>預覽結果還未儲存，離開頁面後需重新編排。</p>
-      {/* TODO: roster name */}
-      <Card>
-        <CardContent>
-          <RosterTable workers={workers} />
-        </CardContent>
-      </Card>
-      <div className='flex'>
-        <Dialog>
-          <DialogTrigger asChild>
-            <CustomButton>
-              <ChevronLeft />
-              修改資料
-            </CustomButton>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>修改資料</DialogTitle>
-              <DialogDescription />
-            </DialogHeader>
-            <p>預覽結果將不會儲存，請確定是否修改資料。</p>
-            <DialogFooter>
-              <DialogClose asChild>
-                <CustomButton variant="outline">取消</CustomButton>
-              </DialogClose>
-              <CustomButton
-                onClick={(e) => {
-                  e.preventDefault()
-                  previousStep()
-                }}
-              >
-                確定
+    <form
+      id={FORM_ID}
+      onSubmit={(e) => {
+        e.preventDefault();
+        form.handleSubmit();
+      }}
+    >
+      <div className='space-y-4'>
+        <p className='text-sm text-muted-foreground'>預覽結果還未儲存，離開頁面後需重新編排。</p>
+        <div >
+          <form.AppField name={FORM_FIELD.NAME}>
+            {(field) => (
+              <field.TextField
+                className='w-(--input-width)'
+                label="值班表名稱"
+                placeholder="請輸入值班表名稱"
+              />
+            )}
+          </form.AppField>
+        </div>
+        <Card>
+          <CardContent>
+            <RosterTable workers={workers} />
+          </CardContent>
+        </Card>
+        <div className='flex'>
+          <Dialog>
+            <DialogTrigger asChild>
+              <CustomButton>
+                <ChevronLeft />
+                修改資料
               </CustomButton>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-        <Dialog>
-          <DialogTrigger asChild>
-            <CustomButton className='ml-auto'>
-              <Save />
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>修改資料</DialogTitle>
+                <DialogDescription />
+              </DialogHeader>
+              <p>預覽結果將不會儲存，請確定是否修改資料。</p>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <CustomButton variant="outline">取消</CustomButton>
+                </DialogClose>
+                <CustomButton
+                  onClick={(e) => {
+                    e.preventDefault()
+                    previousStep()
+                  }}
+                >
+                  確定
+                </CustomButton>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <form.AppForm>
+            <form.SubmitButton className='ml-auto' icon={<Save />}>
               儲存
-            </CustomButton>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>儲存值班表</DialogTitle>
-              <DialogDescription />
-            </DialogHeader>
-            <p>確定要儲存值班表嗎？</p>
-            <DialogFooter>
-              <DialogClose asChild>
-                <CustomButton variant="outline">取消</CustomButton>
-              </DialogClose>
-              <LoadingButton
-                onClick={async (e) => {
-                  e.preventDefault()
-                  setIsSubmitting(true)
-                  await submit()
-                  setIsSubmitting(false)
-                }}
-                isLoading={isSubmitting}
-              >
-                確定
-              </LoadingButton>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </form.SubmitButton>
+          </form.AppForm>
+          <Dialog open={isOpenConfirmDialog} onOpenChange={setIsOpenConfirmDialog}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>儲存值班表</DialogTitle>
+                <DialogDescription />
+              </DialogHeader>
+              <p>確定要儲存值班表嗎？</p>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <CustomButton variant="outline">取消</CustomButton>
+                </DialogClose>
+                <LoadingButton
+                  onClick={async (e) => {
+                    e.preventDefault()
+                    setIsSubmitting(true)
+                    await submit()
+                    setIsSubmitting(false)
+                  }}
+                  isLoading={isSubmitting}
+                >
+                  確定
+                </LoadingButton>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
-    </div >
+    </form>
   )
 }

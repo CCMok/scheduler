@@ -19,6 +19,7 @@ import { useParams } from "next/navigation"
 import { useAutoNewRosterStore } from "./store/auto-new-roster-store-provider"
 import StepSkeleton from "../step-skeleton"
 import { convertToRosterDisplay } from "@/libs/roster/roster-utils"
+import { Param } from "../../roster-auto-new-page-param"
 
 export default function OffStep({
   postPromise,
@@ -42,7 +43,7 @@ export default function OffStep({
   const [selectedTimeslots, setSelectedTimeslots] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const { teamId: teamIdString } = useParams<{ teamId: string }>()
+  const { teamId: teamIdString } = useParams<Param>()
   const teamId = Number.parseInt(teamIdString)
   if (Number.isNaN(teamId)) {
     console.info('Invalid teamId', teamIdString)

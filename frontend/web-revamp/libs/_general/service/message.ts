@@ -5,4 +5,5 @@ export enum Message {
   REQUIRED = '必須填寫',
   FORMAT_NOT_VALID = '請輸入有效格式',
   INCORRECT = '不正確',
+  ALREADY_USED = '{0}已被使用',
 }

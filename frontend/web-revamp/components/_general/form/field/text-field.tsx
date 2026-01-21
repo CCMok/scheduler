@@ -6,11 +6,13 @@ import { useFieldContext } from "../utils/form-utils"
 import { HTMLInputAutoCompleteAttribute, HTMLInputTypeAttribute, ReactNode } from "react";
 
 export default function TextField({
+  className,
   label,
   placeholder,
-  autoComplete,
-  type,
+  autoComplete = 'off',
+  type = 'text',
 }: Readonly<{
+  className?: string;
   label?: ReactNode;
   placeholder?: string;
   autoComplete?: HTMLInputAutoCompleteAttribute;
@@ -20,6 +22,7 @@ export default function TextField({
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
   return (
     <FieldLayout
+      className={className}
       id={field.name}
       label={label}
       isInvalid={isInvalid}

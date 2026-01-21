@@ -10,11 +10,12 @@ import StepControl from "./_components/step-control/step-control";
 import { getWorkers } from "@/libs/worker/read/get-worker-service";
 import { AutoNewRosterStoreProvider } from "./_components/step-control/step/store/auto-new-roster-store-provider";
 import { getPosts } from "@/libs/post/read/get-post-service";
+import { Param } from "./_components/roster-auto-new-page-param";
 
 export default async function RosterAutoNewPage({
   params,
 }: Readonly<{
-  params: Promise<{ teamId: string }>;
+  params: Promise<Param>;
 }>) {
   const { teamId } = await params
   const teamIdNum = Number.parseInt(teamId)

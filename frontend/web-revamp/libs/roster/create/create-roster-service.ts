@@ -5,8 +5,8 @@ import { CreateResponseData, ServiceResponse } from '@/libs/_general/service/res
 import { checkCanAccessTeam } from '@/libs/auth/authorization/access-utils'
 import { Message } from '@/libs/_general/service/message'
 import prisma from '@/libs/_general/database/database-manager'
-import { Post, Worker } from '@/external/prisma/generated/client'
-import { isNil } from 'lodash'
+import { Post, Prisma, Worker } from '@/external/prisma/generated/client'
+import { PrismaErrorCode } from '@/libs/_general/database/prisma-error-code'
 
 export const createRoster = tryCatch(async (request: CreateRosterRequest): Promise<ServiceResponse<CreateResponseData>> => {
   const parsedRequest = createRosterRequestSchema.parse(request)
@@ -19,10 +19,24 @@ export const createRoster = tryCatch(async (request: CreateRosterRequest): Promi
 
   const postMap = await getPostMap(parsedRequest.teamId)
   const workerMap = await getWorkerMap(parsedRequest.teamId)
-  const id = await saveEntity(parsedRequest, postMap, workerMap)
-  if (isNil(id)) return {
-    isSuccess: false,
-    message: Message.SYSTEM_ERROR,
+
+  let id: number;
+  try {
+    id = await saveEntity(parsedRequest, postMap, workerMap)
+  } catch (e) {
+    if (!(e instanceof Prisma.PrismaClientKnownRequestError) || e.code !== PrismaErrorCode.UNIQUE_CONSTRAINT_VIOLATION) {
+      console.error('Failed to save roster')
+      console.error(e)
+      return {
+        isSuccess: false,
+        message: Message.SYSTEM_ERROR,
+      };
+    }
+
+    return {
+      isSuccess: false,
+      message: Message.ALREADY_USED.replaceAll('{0}', '名稱'),
+    }
   }
 
   return {
@@ -49,31 +63,27 @@ export const saveEntity = async (
   request: CreateRosterRequest,
   postMap: Map<number, Post>,
   workerMap: Map<number, Worker>,
-): Promise<number | undefined> => {
-  try {
-    const entity = await prisma.roster.create({
-      data: {
-        teamId: request.teamId,
-        timeslots: {
-          create: request.rosterDto.map(timeslot => ({
-            timeslot: timeslot.timeslot,
-            assignments: {
-              create: timeslot.assignments.map(assignment => ({
-                postId: assignment.postId,
-                workerId: assignment.workerId,
-                fallbackPostName: postMap.get(assignment.postId)?.name ?? '',
-                fallbackWorkerName: assignment.workerId
-                  ? (workerMap.get(assignment.workerId)?.name ?? '')
-                  : undefined,
-              })),
-            },
-          }))
-        },
-      }
-    })
-    return entity.id
-  } catch (e) {
-    console.error('Failed to save roster')
-    console.error(e)
-  }
+): Promise<number> => {
+  const entity = await prisma.roster.create({
+    data: {
+      teamId: request.teamId,
+      name: request.name,
+      timeslots: {
+        create: request.rosterDto.map(timeslot => ({
+          timeslot: timeslot.timeslot,
+          assignments: {
+            create: timeslot.assignments.map(assignment => ({
+              postId: assignment.postId,
+              workerId: assignment.workerId,
+              fallbackPostName: postMap.get(assignment.postId)?.name ?? '',
+              fallbackWorkerName: assignment.workerId
+                ? (workerMap.get(assignment.workerId)?.name ?? '')
+                : undefined,
+            })),
+          },
+        }))
+      },
+    }
+  })
+  return entity.id
 }
