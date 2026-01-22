@@ -7,7 +7,7 @@ import { Post, Worker } from "@/external/prisma/generated/client"
 import { Field, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/external/shadcn/components/ui/field"
 import { Checkbox } from "@/external/shadcn/components/ui/checkbox"
 import CustomButton from "@/components/_general/_custom/button/custom-button"
-import { ChevronLeft, Plus, Sparkles, X } from "lucide-react"
+import { ChevronLeft, Plus, WandSparkles, X } from "lucide-react"
 import { isNil } from "lodash"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/external/shadcn/components/ui/tooltip"
@@ -198,7 +198,7 @@ export default function OffStep({
         <Dialog>
           <DialogTrigger asChild>
             <CustomButton className='ml-auto'>
-              <Sparkles />
+              <WandSparkles />
               編排
             </CustomButton>
           </DialogTrigger>

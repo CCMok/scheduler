@@ -5,7 +5,7 @@ import { FieldGroup, FieldSet } from "@/external/shadcn/components/ui/field"
 import { use, useState } from "react"
 import { Roster, Team } from "@/external/prisma/generated/client"
 import Combobox from "@/components/_general/_custom/combobox/combobox"
-import { Calendar, ChevronLeft, ChevronRight, RefreshCcw, Sparkles, Users } from "lucide-react"
+import { Calendar, ChevronLeft, ChevronRight, Pencil, Users, WandSparkles } from "lucide-react"
 import CustomButton from "@/components/_general/_custom/button/custom-button"
 import CustomLink from "@/components/_general/_custom/link/custom-link"
 import { Path } from "@/libs/_general/path/path"
@@ -43,7 +43,7 @@ export default function RosterPageContent({
                 href={Path.ROSTER + Path.AUTO_NEW + '/' + selectedTeamId}
                 isDisabled={isNil(selectedTeamId)}
               >
-                <Sparkles />
+                <WandSparkles />
                 自動編排
               </CustomLink>
             </CustomButton>
@@ -52,7 +52,7 @@ export default function RosterPageContent({
                 href='' // TODO
                 isDisabled={isNil(selectedRosterId)}
               >
-                <RefreshCcw />
+                <Pencil />
                 更新值班表
               </CustomLink>
             </CustomButton>
