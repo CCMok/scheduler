@@ -5,7 +5,7 @@ import { FieldGroup, FieldSet } from "@/external/shadcn/components/ui/field"
 import { use, useState } from "react"
 import { Roster, Team } from "@/external/prisma/generated/client"
 import Combobox from "@/components/_general/_custom/combobox/combobox"
-import { Calendar, ChevronLeft, ChevronRight, Sparkles, Users } from "lucide-react"
+import { Calendar, ChevronLeft, ChevronRight, RefreshCcw, Sparkles, Users } from "lucide-react"
 import CustomButton from "@/components/_general/_custom/button/custom-button"
 import CustomLink from "@/components/_general/_custom/link/custom-link"
 import { Path } from "@/libs/_general/path/path"
@@ -37,15 +37,26 @@ export default function RosterPageContent({
               icon={<Users />}
             />
           </FieldLayout>
-          <CustomButton asChild>
-            <CustomLink
-              href={Path.ROSTER + Path.AUTO_NEW + '/' + selectedTeamId}
-              isDisabled={isNil(selectedTeamId)}
-            >
-              <Sparkles />
-              自動編排
-            </CustomLink>
-          </CustomButton>
+          <div className='ml-auto space-x-2'>
+            <CustomButton asChild>
+              <CustomLink
+                href={Path.ROSTER + Path.AUTO_NEW + '/' + selectedTeamId}
+                isDisabled={isNil(selectedTeamId)}
+              >
+                <Sparkles />
+                自動編排
+              </CustomLink>
+            </CustomButton>
+            <CustomButton asChild>
+              <CustomLink
+                href='' // TODO
+                isDisabled={isNil(selectedRosterId)}
+              >
+                <RefreshCcw />
+                更新值班表
+              </CustomLink>
+            </CustomButton>
+          </div>
         </FieldSet>
       </FieldGroup>
       <div className='space-x-4'>
