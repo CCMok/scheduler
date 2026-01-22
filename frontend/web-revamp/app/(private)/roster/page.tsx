@@ -4,9 +4,11 @@ import { getTeams } from "@/libs/team/read/get-team-service";
 import RosterPageContent from "./_components/roster-page-content";
 import { Suspense } from "react";
 import RosterPageContentSkeleton from "./_components/roster-page-content-skeleton";
+import { getFirstTeamRosters } from "@/libs/roster/read/get-roster-service";
 
 export default function RosterPage() {
   const teamsPromise = getTeams();
+  const rostersPromise = getFirstTeamRosters();
   return (
     <HeaderLayout
       title={(
@@ -20,7 +22,7 @@ export default function RosterPage() {
       )}
     >
       <Suspense fallback={<RosterPageContentSkeleton />}>
-        <RosterPageContent teamsPromise={teamsPromise} />
+        <RosterPageContent teamsPromise={teamsPromise} rostersPromise={rostersPromise} />
       </Suspense>
     </HeaderLayout>
   )

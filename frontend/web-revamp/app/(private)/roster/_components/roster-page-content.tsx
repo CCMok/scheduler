@@ -3,9 +3,9 @@
 import FieldLayout from "@/components/_general/form/field/field-layout"
 import { FieldGroup, FieldSet } from "@/external/shadcn/components/ui/field"
 import { use, useState } from "react"
-import { Team } from "@/external/prisma/generated/client"
+import { Roster, Team } from "@/external/prisma/generated/client"
 import Combobox from "@/components/_general/_custom/combobox/combobox"
-import { Sparkles, Users } from "lucide-react"
+import { Calendar, ChevronLeft, ChevronRight, Sparkles, Users } from "lucide-react"
 import CustomButton from "@/components/_general/_custom/button/custom-button"
 import CustomLink from "@/components/_general/_custom/link/custom-link"
 import { Path } from "@/libs/_general/path/path"
@@ -13,11 +13,15 @@ import { isNil } from "lodash"
 
 export default function RosterPageContent({
   teamsPromise,
+  rostersPromise,
 }: Readonly<{
   teamsPromise: Promise<Team[]>;
+  rostersPromise: Promise<Roster[]>;
 }>) {
   const teams = use(teamsPromise);
+  const rosters = use(rostersPromise);
   const [selectedTeamId, setSelectedTeamId] = useState<number | undefined>(teams[0]?.id);
+  const [selectedRosterId, setSelectedRosterId] = useState<number | undefined>(rosters[0]?.id);
   return (
     <div className='space-y-4'>
       <FieldGroup>
@@ -45,9 +49,41 @@ export default function RosterPageContent({
         </FieldSet>
       </FieldGroup>
       <div className='space-x-4'>
-        <span>Previous button</span>
-        <span>Roster Name (Click to Combobox search)</span>
-        <span>Next button</span>
+        <CustomButton
+          variant="outline"
+          size="icon"
+          disabled={!rosters.length || selectedRosterId === rosters[0]?.id}
+          onClick={(e) => {
+            e.preventDefault();
+            const currentIndex = rosters.findIndex(roster => roster.id === selectedRosterId)
+            if (!currentIndex) return
+            setSelectedRosterId(rosters[currentIndex - 1]?.id)
+          }}
+        >
+          <ChevronLeft />
+        </CustomButton>
+        <Combobox
+          placeHolder="選擇值班表"
+          value={selectedRosterId}
+          setValue={setSelectedRosterId}
+          options={rosters}
+          getOptionValue={(roster) => roster.id}
+          getOptionDisplay={(roster) => roster.name}
+          icon={<Calendar />}
+        />
+        <CustomButton
+          variant="outline"
+          size="icon"
+          disabled={!rosters.length || selectedRosterId === rosters.at(-1)?.id}
+          onClick={(e) => {
+            e.preventDefault();
+            const currentIndex = rosters.findIndex(roster => roster.id === selectedRosterId)
+            if (currentIndex === rosters.length - 1) return
+            setSelectedRosterId(rosters[currentIndex + 1]?.id)
+          }}
+        >
+          <ChevronRight />
+        </CustomButton>
       </div>
       <div>
         <p>Roster table</p>

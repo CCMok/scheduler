@@ -250,6 +250,7 @@ model Roster {
   id        Int              @id @default(autoincrement())
   teamId    Int              @map("team_id")
   name      String           @map("name")
+  createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
   team      Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
   timeslots RosterTimeslot[]
 
@@ -259,12 +260,13 @@ model Roster {
 }
 
 model RosterAudit {
-  auditId        Int      @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction    String   @map("audit_action")
+  auditId        Int       @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp DateTime  @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction    String    @map("audit_action")
   id             Int?
-  teamId         Int?     @map("team_id")
-  name           String?  @map("name")
+  teamId         Int?      @map("team_id")
+  name           String?   @map("name")
+  createdAt      DateTime? @map("created_at") @db.Timestamptz(3)
 
   @@map("roster_audit")
 }
