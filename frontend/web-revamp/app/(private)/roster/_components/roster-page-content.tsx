@@ -63,12 +63,12 @@ export default function RosterPageContent({
         <CustomButton
           variant="outline"
           size="icon"
-          disabled={!rosters.length || selectedRosterId === rosters[0]?.id}
+          disabled={!rosters.length || selectedRosterId === rosters.at(-1)?.id}
           onClick={(e) => {
             e.preventDefault();
             const currentIndex = rosters.findIndex(roster => roster.id === selectedRosterId)
-            if (!currentIndex) return
-            setSelectedRosterId(rosters[currentIndex - 1]?.id)
+            if (currentIndex === rosters.length - 1) return
+            setSelectedRosterId(rosters[currentIndex + 1]?.id)
           }}
         >
           <ChevronLeft />
@@ -85,12 +85,12 @@ export default function RosterPageContent({
         <CustomButton
           variant="outline"
           size="icon"
-          disabled={!rosters.length || selectedRosterId === rosters.at(-1)?.id}
+          disabled={!rosters.length || selectedRosterId === rosters[0]?.id}
           onClick={(e) => {
             e.preventDefault();
             const currentIndex = rosters.findIndex(roster => roster.id === selectedRosterId)
-            if (currentIndex === rosters.length - 1) return
-            setSelectedRosterId(rosters[currentIndex + 1]?.id)
+            if (!currentIndex) return
+            setSelectedRosterId(rosters[currentIndex - 1]?.id)
           }}
         >
           <ChevronRight />
