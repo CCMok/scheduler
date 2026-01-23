@@ -10,20 +10,28 @@ import CustomButton from "@/components/_general/_custom/button/custom-button"
 import CustomLink from "@/components/_general/_custom/link/custom-link"
 import { Path } from "@/libs/_general/path/path"
 import { isNil } from "lodash"
-import {  RosterJoin } from "@/libs/roster/roster"
+import { RosterJoin } from "@/libs/roster/roster"
+import RosterTable from "./roster-table/roster-table"
+import { Post, Worker } from "@/external/prisma/generated/client"
 
 export default function RosterPageContent({
   teamsPromise,
   rostersPromise,
   rosterPromise,
+  postsPromise,
+  workersPromise,
 }: Readonly<{
   teamsPromise: Promise<Team[]>;
   rostersPromise: Promise<Roster[]>;
   rosterPromise: Promise<RosterJoin | undefined>;
+  postsPromise: Promise<Post[]>;
+  workersPromise: Promise<Worker[]>;
 }>) {
   const teams = use(teamsPromise);
   const rosters = use(rostersPromise);
   const roster = use(rosterPromise);
+  const posts = use(postsPromise);
+  const workers = use(workersPromise);
 
   const [selectedTeamId, setSelectedTeamId] = useState<number | undefined>(teams[0]?.id);
   const [selectedRosterId, setSelectedRosterId] = useState<number | undefined>(roster?.id);
@@ -102,10 +110,11 @@ export default function RosterPageContent({
           <ChevronRight />
         </CustomButton>
       </div>
-      <div>
-        <p>Roster table</p>
-        <p>- Default show latest roster</p>
-      </div>
+      {roster && <RosterTable
+        roster={roster}
+        posts={posts}
+        workers={workers}
+      />}
     </div>
   )
 }

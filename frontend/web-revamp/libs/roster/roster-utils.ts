@@ -29,12 +29,50 @@ export const convertToRosterDisplay = (rosterDto: RosterDto, posts: Post[], work
     }));
 }
 
-export const convertToRosterDisplayByJoin = (roster: RosterJoin): RosterDisplay => {
+export const convertToRosterDisplayByDao = (roster: RosterJoin, posts: Post[], workers: Worker[]): RosterDisplay => {
+  const postMap = new Map(posts.map(post => [post.id, post]))
+  const workerMap = new Map(workers.map(worker => [worker.id, worker]))
+
+  const postAssignmentsMap = new Map<number, { timeslot: string; workerId?: number }[]>()
+
   for (const { timeslot, assignments } of roster.timeslots) {
     for (const assignment of assignments) {
+      const existing = postAssignmentsMap.get(assignment.postId) ?? []
+      postAssignmentsMap.set(assignment.postId, [...existing, { timeslot, workerId: assignment.workerId ?? undefined }])
 
+      if (!postMap.has(assignment.postId)) {
+        postMap.set(assignment.postId, {
+          id: assignment.postId,
+          name: assignment.fallbackPostName,
+          teamId: roster.teamId,
+          displayOrder: 1000,
+        })
+      }
+
+      if (!isNil(assignment.workerId) && !workerMap.has(assignment.workerId)) {
+        workerMap.set(assignment.workerId, {
+          id: assignment.workerId,
+          name: assignment.fallbackWorkerName ?? '',
+          teamId: roster.teamId,
+        })
+      }
     }
   }
+
+  let assignmentId = 0;
+
+  return posts
+    .toSorted((a, b) => a.displayOrder - b.displayOrder)
+    .map((post): RosterPost => ({
+      post: { id: post.id, name: post.name },
+      assignments: (postAssignmentsMap.get(post.id) ?? []).map(
+        ({ timeslot, workerId }): RosterPostAssignment => ({
+          id: assignmentId++,
+          timeslot,
+          worker: workerId ? workerMap.get(workerId) : undefined,
+        })
+      ),
+    }));
 }
 
 export const convertToRosterDto = (rosterDisplay: RosterDisplay): RosterDto => {

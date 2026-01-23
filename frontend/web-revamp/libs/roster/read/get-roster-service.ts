@@ -32,12 +32,7 @@ export const getFirstRoster = cache(async (): Promise<RosterJoin | undefined> =>
       include: {
         timeslots: {
           include: {
-            assignments: {
-              include: {
-                post: true,
-                worker: true,
-              },
-            },
+            assignments: true,
           },
         },
       },

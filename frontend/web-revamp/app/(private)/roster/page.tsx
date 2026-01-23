@@ -5,11 +5,15 @@ import RosterPageContent from "./_components/roster-page-content";
 import { Suspense } from "react";
 import RosterPageContentSkeleton from "./_components/roster-page-content-skeleton";
 import { getFirstRoster, getFirstTeamRosters } from "@/libs/roster/read/get-roster-service";
+import { getFirstTeamPosts } from "@/libs/post/read/get-post-service";
+import { getFirstTeamWorkers } from "@/libs/worker/read/get-worker-service";
 
 export default function RosterPage() {
   const teamsPromise = getTeams();
   const rostersPromise = getFirstTeamRosters();
   const rosterPromise = getFirstRoster();
+  const postsPromise = getFirstTeamPosts();
+  const workersPromise = getFirstTeamWorkers();
   return (
     <HeaderLayout
       title={(
@@ -27,6 +31,8 @@ export default function RosterPage() {
           teamsPromise={teamsPromise}
           rostersPromise={rostersPromise}
           rosterPromise={rosterPromise}
+          postsPromise={postsPromise}
+          workersPromise={workersPromise}
         />
       </Suspense>
     </HeaderLayout>

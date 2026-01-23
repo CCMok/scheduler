@@ -42,9 +42,6 @@ export type RosterDisplay = RosterPost[];
 // Dao
 export type RosterJoin = Roster & {
   timeslots: (RosterTimeslotDao & {
-    assignments: (RosterTimeslotAssignmentDao & {
-      post?: Post;
-      worker?: Worker;
-    })[];
+    assignments: RosterTimeslotAssignmentDao[];
   })[];
 }
