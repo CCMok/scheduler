@@ -10,18 +10,24 @@ import CustomButton from "@/components/_general/_custom/button/custom-button"
 import CustomLink from "@/components/_general/_custom/link/custom-link"
 import { Path } from "@/libs/_general/path/path"
 import { isNil } from "lodash"
+import {  RosterJoin } from "@/libs/roster/roster"
 
 export default function RosterPageContent({
   teamsPromise,
   rostersPromise,
+  rosterPromise,
 }: Readonly<{
   teamsPromise: Promise<Team[]>;
   rostersPromise: Promise<Roster[]>;
+  rosterPromise: Promise<RosterJoin | undefined>;
 }>) {
   const teams = use(teamsPromise);
   const rosters = use(rostersPromise);
+  const roster = use(rosterPromise);
+
   const [selectedTeamId, setSelectedTeamId] = useState<number | undefined>(teams[0]?.id);
-  const [selectedRosterId, setSelectedRosterId] = useState<number | undefined>(rosters[0]?.id);
+  const [selectedRosterId, setSelectedRosterId] = useState<number | undefined>(roster?.id);
+
   return (
     <div className='space-y-4'>
       <FieldGroup>

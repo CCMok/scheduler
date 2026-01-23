@@ -1,3 +1,4 @@
+import { Roster, RosterTimeslot as RosterTimeslotDao, RosterTimeslotAssignment as RosterTimeslotAssignmentDao, Post, Worker } from "@/external/prisma/generated/client";
 import { z } from "zod";
 
 // Communication
@@ -37,3 +38,13 @@ export type RosterPost = {
 }
 
 export type RosterDisplay = RosterPost[];
+
+// Dao
+export type RosterJoin = Roster & {
+  timeslots: (RosterTimeslotDao & {
+    assignments: (RosterTimeslotAssignmentDao & {
+      post?: Post;
+      worker?: Worker;
+    })[];
+  })[];
+}

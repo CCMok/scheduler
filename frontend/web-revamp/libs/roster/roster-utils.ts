@@ -1,5 +1,6 @@
 import { Post, Worker } from "@/external/prisma/generated/client";
-import { RosterDisplay, RosterDto, RosterPost, RosterPostAssignment, RosterPostAssignmentWorker, RosterTimeslotAssignment } from "./roster";
+import { RosterDisplay, RosterDto, RosterJoin, RosterPost, RosterPostAssignment, RosterTimeslotAssignment } from "./roster";
+import { isNil } from "lodash";
 
 export const convertToRosterDisplay = (rosterDto: RosterDto, posts: Post[], workers: Worker[]): RosterDisplay => {
   const workerMap = new Map(workers.map(worker => [worker.id, worker]))
@@ -26,6 +27,14 @@ export const convertToRosterDisplay = (rosterDto: RosterDto, posts: Post[], work
         })
       ),
     }));
+}
+
+export const convertToRosterDisplayByJoin = (roster: RosterJoin): RosterDisplay => {
+  for (const { timeslot, assignments } of roster.timeslots) {
+    for (const assignment of assignments) {
+
+    }
+  }
 }
 
 export const convertToRosterDto = (rosterDisplay: RosterDisplay): RosterDto => {
