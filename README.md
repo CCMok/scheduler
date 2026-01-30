@@ -43,7 +43,7 @@ scheduler/
 
 ## 🏗️ Tech Stack
 
-- **Framework**: [Next.js 15](https://nextjs.org/), [FastAPI 0.115](https://fastapi.tiangolo.com/)
+- **Framework**: [Next.js 15](https://nextjs.org/), [FastAPI](https://fastapi.tiangolo.com/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/), [Python](https://www.python.org/)
 - **Scheduling Engine**: [Google OR-Tools](https://developers.google.com/optimization)
 - **Styling**: [Shadcn](https://ui.shadcn.com/), [Radix UI](https://www.radix-ui.com/), [Tailwind CSS](https://tailwindcss.com/), [Lucide React](https://lucide.dev/)
