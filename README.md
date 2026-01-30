@@ -1,6 +1,6 @@
 <div align="center">
   <img src="public/favicon.png" alt="Schduler Logo" width="120" height="120">
-  <h1>🗓️ Scheduler</h1>
+  <h1>Scheduler</h1>
   <p><strong>Roster Management System</strong></p>
 
   [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
