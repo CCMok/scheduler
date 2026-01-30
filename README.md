@@ -8,7 +8,7 @@
   [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688)](https://fastapi.tiangolo.com/)
   [![Demo](https://img.shields.io/badge/demo-live-green)](https://scheduler.faithnology.com)
 
-  <img src="public/screenshot-1.png" width="75%" />
+  <img src="public/screenshot-1.png" />
 </div>
 
 ---
