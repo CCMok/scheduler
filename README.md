@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="favicon.png" alt="Schduler Logo" width="120" height="120">
+  <img src="public/favicon.png" alt="Schduler Logo" width="120" height="120">
   <h1>🗓️ Scheduler</h1>
   <p><strong>Roster Management System</strong></p>
 
