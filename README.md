@@ -34,7 +34,7 @@ scheduler/
 └── backend/           # FastAPI - Roster Engine
     └── sch/
         ├── routers/
-        └── services/
+        ├── services/
         └── ...
 ```
 
