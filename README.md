@@ -8,7 +8,7 @@
   [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688)](https://fastapi.tiangolo.com/)
   [![Demo](https://img.shields.io/badge/demo-live-green)](https://scheduler.faithnology.com)
 
-  <img src="public/screenshot-1.png" width="50%" />
+  <img src="public/screenshot-1.png" width="75%" />
 </div>
 
 ---
@@ -27,14 +27,14 @@ This full-stack application follows a clean separation of concerns:
 
 ```
 scheduler/
-├── backend/           # FastAPI - Roster Engine
-│   └── sch/
-│       ├── routers/
-│       └── services/
-|       └── ...  
-└── frontend/          # Next.js App - Dashboard & Interactions
-    └── web/
-        ├── app/
+├── frontend/          # Next.js App - Dashboard & Interactions
+│   └── web/
+│       ├── app/
+│       └── ...
+└── backend/           # FastAPI - Roster Engine
+    └── sch/
+        ├── routers/
+        └── services/
         └── ...
 ```
 
