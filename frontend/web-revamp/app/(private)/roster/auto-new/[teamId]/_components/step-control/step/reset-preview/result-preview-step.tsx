@@ -14,12 +14,12 @@ import { useParams, useRouter } from "next/navigation";
 import StepSkeleton from "../../step-skeleton";
 import { convertToRosterDto } from "@/libs/roster/roster-utils";
 import { toast } from "sonner";
-import { Path } from "@/libs/_general/path/path";
 import { Worker } from "@/external/prisma/generated/client";
 import { Param } from "../../../param";
 import { useAppForm } from "@/components/_general/form/utils/form-utils";
 import { FORM_FIELD, FORM_ID, formSchema } from "./create-roster-form-utils";
 import { revalidateLogic } from "@tanstack/react-form";
+import { buildRosterUrl } from "@/app/(private)/roster/_components/param";
 
 export default function ResultPreviewStep({
   workersPromise,
@@ -71,7 +71,7 @@ export default function ResultPreviewStep({
     }
 
     toast.success('儲存值班表成功')
-    router.push(Path.ROSTER) // TODO: redirect to roster id page
+    router.push(buildRosterUrl(teamId, response.data.id))
   }
 
   return (

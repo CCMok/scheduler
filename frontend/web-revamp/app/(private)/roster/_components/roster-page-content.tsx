@@ -21,15 +21,7 @@ import RosterTable from "./roster-table/roster-table";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { Card, CardContent } from "@/external/shadcn/components/ui/card";
-import { SearchParamKey } from "./param";
-
-function buildRosterUrl(teamId?: number, rosterId?: number): string {
-  const params = new URLSearchParams();
-  if (!isNil(teamId)) params.set(SearchParamKey.TEAM_ID, String(teamId));
-  if (!isNil(rosterId)) params.set(SearchParamKey.ROSTER_ID, String(rosterId));
-  const q = params.toString();
-  return q ? `${Path.ROSTER}?${q}` : Path.ROSTER;
-}
+import { buildRosterUrl } from "./param";
 
 export default function RosterPageContent({
   teams,
