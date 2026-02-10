@@ -1,68 +1,168 @@
-# Scheduler
+<div align="center">
+  <img src="public/favicon.png" alt="Schduler Logo" width="120" height="120">
+  <h1>Scheduler</h1>
+  <p><strong>Roster Management System</strong></p>
 
-## Deployment Strategy
-### Backend - SCH
-Render - supporting Python web apps
-- Deployment:
-  - Push FastAPI code to a GitHub repository.
-  - Create a Render Web Service, select Python 3 runtime, and specify pip install -r requirements.txt for the build command and gunicorn or uvicorn for the start command (e.g., gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app).
-  - Configure environment variables (e.g., database URL) in Render’s dashboard.
-- Cost:
-  - Free Tier: Free web services with 512 MB RAM, 0.5 CPU, and auto-scaling (sleeps after 15 minutes of inactivity). Suitable for UAT with low traffic.
-  - Paid Tier: Starts at $7/month for a Starter instance (1 GB RAM, 1 CPU) for production. Scales up to $425/month for higher resources.
-- UAT: Use the free tier for low-traffic testing.
-- Production: Use a Starter or higher instance for reliable performance and uptime.
-- Pros:
-  - Simple setup for FastAPI with automatic scaling.
-  - Free tier for UAT reduces costs.
-  - Built-in CI/CD with GitHub integration.
-- Cons:
-  - Free tier instances sleep, causing cold starts (~1-2 seconds delay).
-  - Limited resources in free tier may not suit high-traffic production.dev.tofreecodecamp.org
+  [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+  [![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
+  [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688)](https://fastapi.tiangolo.com/)
+  [![Demo](https://img.shields.io/badge/demo-live-green)](https://scheduler.faithnology.com)
 
-### Frontend - Web
-Vercel - optimized for Next.js
-- Deployment:
-  - Push your Next.js code to a GitHub repository.
-  - Connect the repository to Vercel, configure environment variables, and deploy - with npm run build.
-  - Vercel handles static site generation, server-side rendering, and client-side - rendering automatically.
-- Cost:
-  - Free Tier: Vercel’s Hobby plan is free for non-commercial use, includes 1 project, 1 user, and generous bandwidth (100 GB/month). Suitable for UAT.
-  - Paid Tier: Pro plan starts at $20/month per user, with higher bandwidth and team features for production.
-- UAT: Use the free Hobby plan with a separate Git branch (e.g., staging) for testing.
-- Production: Upgrade to the Pro plan for higher traffic, custom domains, and SLAs.
-- Pros:
-  - Excellent Next.js integration with zero-config deployment.
-  - Free tier sufficient for UAT and small-scale production.
-  - Automatic scaling with no server management.
-- Cons:
-  - Limited to frontend hosting; FastAPI requires a separate platform.
-  - File size limits (100 MB) may restrict backend deployments if bundled with Next.js.
+  <img src="public/screenshot-1.png" />
+</div>
+
+---
+
+## ✨ Key Features
+- 🧠 **Intelligent Optimization**: Auto-generate optimized roster in seconds
+- ⚙️ **Constraints Flexibilty**: Customize worker day-off and worker/post preferences
+- 🖱️ **Drag-and-drop editor**: Instant interact with preview result
+- 📤 **Easy Export**: Export finished rosters to **XLSX** (Excel) - ready for sharing
+- 👥 **Multi-team Support**: Manage multiple teams under one account
+- 🌙 **Dark Mode**: Eye-friendly dark theme perfect for calm planning
+
+## 🏯 Architecture
+
+This full-stack application follows a clean separation of concerns:
+
+```
+scheduler/
+├── frontend/          # Next.js App - Dashboard & Interactions
+│   └── web/
+│       ├── app/
+│       └── ...
+└── backend/           # FastAPI - Roster Engine
+    └── sch/
+        ├── routers/
+        ├── services/
+        └── ...
+```
+
+- **Frontend** (Next.js + TypeScript): Handles user interactions, previews, drag-and-drop editing, and UI rendering.
+- **Backend** (FastAPI + Python): Powers the core roster optimization engine using Google OR-Tools constraint solver, API endpoints, and data processing.
+
+## 🏗️ Tech Stack
+
+- **Framework**: [Next.js 15](https://nextjs.org/), [FastAPI](https://fastapi.tiangolo.com/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/), [Python](https://www.python.org/)
+- **Scheduling Engine**: [Google OR-Tools](https://developers.google.com/optimization)
+- **Styling**: [Shadcn](https://ui.shadcn.com/), [Radix UI](https://www.radix-ui.com/), [Tailwind CSS](https://tailwindcss.com/), [Lucide React](https://lucide.dev/)
+- **Drag-and-drop**: [Dnd Kit](https://dndkit.com/)
+- **ORM**: [Prisma](https://www.prisma.io/)
+- **Email API**: [Resend](https:///resend.com/)
+
+## 🚀 Getting Started
+
+Clone repository:
+
+```bash
+git clone git@github.com:CCMok/scheduler.git
+```
+
+### Frontend
+
+#### Prerequisites
+
+- Node.js 22+
+- yarn (corepack enable)
+
+#### Installation
+
+1. Install dependencies:
+
+```bash
+cd frontend/web
+yarn install
+```
+
+2. Create a `.env` file base on `.env.example`.
+ 
+3. Run the development server:
+
+```bash
+yarn dev
+```
+
+Your app is now running on http://localhost:3000.
+
+---
 
 ### Database
-Neon - serverless PostgreSQL platform
-- Deployment:
-  - Sign up at neon.tech and create a PostgreSQL project.
-  - Copy the DATABASE_URL from Neon’s dashboard.
-  - Configure Vercel and Render with the DATABASE_URL.
-  - Run Prisma migrations via GitHub Actions or locally, similar to Render.
-  - Neon supports branching (e.g., separate UAT and production databases), which aligns with your staging and main Git branches.
-- Cost:
-  - UAT: Free tier (0.5 GB storage, 10 compute hours/month, no expiration).
-  - Production: Pro plan ($15/month, 1 GB storage, 300 compute hours/month, scalable).
-- Prisma Compatibility:
-  - Neon is designed for serverless environments, with built-in connection pooling for Prisma in Vercel.
-  - Supports ?pgbouncer=true in DATABASE_URL for automatic connection management (e.g., postgres://user:password@host:port/dbname?pgbouncer=true).
-  - Official Prisma integration (Neon provides tutorials and CLI tools for migrations).
-- Integration:
-  - Works well with Vercel (low latency for serverless connections).
-  - FastAPI on Render can connect to Neon’s public endpoint, though latency may be slightly higher than Render’s internal networking.
-  - Branching allows isolated UAT and production databases without additional instances.
-- Pros:
-  - Generous free tier with no expiration, ideal for UAT.
-  - Serverless-native with built-in pooling, perfect for Prisma in Vercel.
-  - Database branching simplifies UAT/production separation.
-- Cons:
-  - Slightly higher production cost ($15/month vs. Render’s $7/month).
-  - External connections from Render may require public access or VPC peering (additional setup).
-- Suitability: Ideal for Prisma-heavy Next.js projects due to serverless compatibility and free tier flexibility. Great if you prioritize Prisma performance over Render ecosystem integration.
+
+1. Create a Postgres database
+
+```psql
+CREATE DATABSE scheduler;
+```
+
+2. Navigate to the frontend directory:
+
+```bash
+cd frontend/web
+```
+
+3. Update `.env`:
+
+```env
+DATABASE_URL=your_database_connection_string
+```
+
+4. Migrate database and generate latest prisma client.
+
+```bash
+yarn prisma migrate dev
+```
+
+5. Seed data
+
+```bash
+yarn seed-system
+```
+
+Your database is ready.
+
+---
+
+### Backend
+
+#### Prerequisites
+
+- Python 3.11+
+
+#### Installation
+
+1. Navigate to the backend directory:
+
+```bash
+cd backend/sch
+```
+
+2. Create and activate a virtual environment:
+
+```bash
+python -m venv venv
+venv\Scripts\activate  # Windows
+# source venv/bin/activate  # macOS/Linux
+```
+
+3. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+4. Create a `.env` file based on `.env.example`.
+
+5. Run the development server:
+
+```bash
+fastapi dev main.py
+```
+
+Your API is now running on http://localhost:8000.
+
+---
+
+<div align="center">
+  <p>Made with ❤️ by Hugo Mok</p>
+</div>
