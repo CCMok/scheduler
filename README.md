@@ -107,6 +107,11 @@ cd frontend/web
 DATABASE_URL=your_database_connection_string
 ```
 
+If database is not at UTC timezone, add timezone option in connection string, in order to prevent Prisma date handling issue.
+```env
+your_database_connection_string?options=-c%20timezone%3DUTC
+```
+
 4. Migrate database and generate latest prisma client.
 
 ```bash

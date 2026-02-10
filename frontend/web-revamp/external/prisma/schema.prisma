@@ -248,7 +248,7 @@ model Roster {
   id        Int              @id @default(autoincrement())
   teamId    Int              @map("team_id")
   name      String           @map("name")
-  createdAt DateTime         @default(dbgenerated("CURRENT_TIMESTAMP")) @map("created_at") @db.Timestamptz(3)
+  createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
   team      Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
   timeslots RosterTimeslot[]
 
