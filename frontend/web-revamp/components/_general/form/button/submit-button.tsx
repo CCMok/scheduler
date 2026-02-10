@@ -1,17 +1,17 @@
 import { ReactNode } from "react"
 import { useFormContext } from "../utils/form-utils"
-import CustomButton from "../../_custom/button/custom-button";
-import { Spinner } from "@/external/shadcn/components/ui/spinner";
 import LoadingButton from "../../_custom/button/loading-button";
 
 export default function SubmitButton({
   children,
   className,
   icon,
+  formId,
 }: Readonly<{
   children?: ReactNode;
   className?: string;
   icon?: ReactNode;
+  formId?: string;
 }>) {
   const form = useFormContext()
   return (
@@ -22,6 +22,7 @@ export default function SubmitButton({
           isLoading={isSubmitting}
           className={className}
           icon={icon}
+          form={formId}
         >
           {children}
         </LoadingButton>
