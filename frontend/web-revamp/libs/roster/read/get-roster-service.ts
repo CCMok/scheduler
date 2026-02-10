@@ -2,33 +2,25 @@ import 'server-only'
 import { cache } from "react";
 import prisma from '@/libs/_general/database/database-manager';
 import { Prisma, Roster } from '@/external/prisma/generated/client';
-import { getTeams } from '@/libs/team/read/get-team-service';
 import { RosterJoin } from '../roster';
 
-export const getFirstTeamRosters = cache(async (): Promise<Roster[]> => {
-  const teams = await getTeams();
-  const teamId = teams[0]?.id;
-  if (!teamId) return []
-
+export const getRosters = cache(async (teamId: number): Promise<Roster[]> => {
   try {
     return await prisma.roster.findMany({
       where: { teamId },
-      orderBy: { createdAt: Prisma.SortOrder.desc }
-    })
+      orderBy: { createdAt: Prisma.SortOrder.desc },
+    });
   } catch (e) {
     console.error('Fail to get rosters by team id');
     console.error(e);
-    return []
+    return [];
   }
-})
+});
 
-export const getFirstRoster = cache(async (): Promise<RosterJoin | undefined> => {
-  const rosters = await getFirstTeamRosters();
-  if (!rosters.length) return;
-
+export const getRosterById = cache(async (rosterId: number): Promise<RosterJoin | undefined> => {
   try {
     const roster = await prisma.roster.findUnique({
-      where: { id: rosters[0]?.id },
+      where: { id: rosterId },
       include: {
         timeslots: {
           include: {
@@ -36,10 +28,11 @@ export const getFirstRoster = cache(async (): Promise<RosterJoin | undefined> =>
           },
         },
       },
-    })
+    });
     return roster ?? undefined;
   } catch (e) {
-    console.error('Fail to get first roster');
+    console.error('Fail to get roster by id');
     console.error(e);
+    return undefined;
   }
-})
+});

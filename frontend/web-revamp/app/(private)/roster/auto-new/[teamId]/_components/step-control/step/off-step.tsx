@@ -19,7 +19,7 @@ import { useParams } from "next/navigation"
 import { useAutoNewRosterStore } from "./store/auto-new-roster-store-provider"
 import StepSkeleton from "../step-skeleton"
 import { convertToRosterDisplay } from "@/libs/roster/roster-utils"
-import { Param } from "../../roster-auto-new-page-param"
+import { Param } from "../../param"
 
 export default function OffStep({
   postPromise,

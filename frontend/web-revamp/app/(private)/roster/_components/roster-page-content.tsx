@@ -1,71 +1,106 @@
-'use client'
+"use client";
 
-import FieldLayout from "@/components/_general/form/field/field-layout"
-import { FieldGroup, FieldSet } from "@/external/shadcn/components/ui/field"
-import { use, useState } from "react"
-import { Roster, Team } from "@/external/prisma/generated/client"
-import Combobox from "@/components/_general/_custom/combobox/combobox"
-import { Calendar, ChevronLeft, ChevronRight, Pencil, Users, WandSparkles } from "lucide-react"
-import CustomButton from "@/components/_general/_custom/button/custom-button"
-import CustomLink from "@/components/_general/_custom/link/custom-link"
-import { Path } from "@/libs/_general/path/path"
-import { isNil } from "lodash"
-import { RosterJoin } from "@/libs/roster/roster"
-import RosterTable from "./roster-table/roster-table"
-import { Post, Worker } from "@/external/prisma/generated/client"
+import FieldLayout from "@/components/_general/form/field/field-layout";
+import { FieldGroup, FieldSet } from "@/external/shadcn/components/ui/field";
+import type { Post, Roster, Team, Worker } from "@/external/prisma/generated/client";
+import Combobox from "@/components/_general/_custom/combobox/combobox";
+import {
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Pencil,
+  Users,
+  WandSparkles,
+} from "lucide-react";
+import CustomButton from "@/components/_general/_custom/button/custom-button";
+import CustomLink from "@/components/_general/_custom/link/custom-link";
+import { Path } from "@/libs/_general/path/path";
+import { isNil } from "lodash";
+import { RosterJoin } from "@/libs/roster/roster";
+import RosterTable from "./roster-table/roster-table";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
+import { Card, CardContent } from "@/external/shadcn/components/ui/card";
+import { SearchParamKey } from "./param";
+
+function buildRosterUrl(teamId?: number, rosterId?: number): string {
+  const params = new URLSearchParams();
+  if (!isNil(teamId)) params.set(SearchParamKey.TEAM_ID, String(teamId));
+  if (!isNil(rosterId)) params.set(SearchParamKey.ROSTER_ID, String(rosterId));
+  const q = params.toString();
+  return q ? `${Path.ROSTER}?${q}` : Path.ROSTER;
+}
 
 export default function RosterPageContent({
-  teamsPromise,
-  rostersPromise,
-  rosterPromise,
-  postsPromise,
-  workersPromise,
+  teams,
+  rosters,
+  roster,
+  posts,
+  workers,
+  teamId,
+  rosterId,
 }: Readonly<{
-  teamsPromise: Promise<Team[]>;
-  rostersPromise: Promise<Roster[]>;
-  rosterPromise: Promise<RosterJoin | undefined>;
-  postsPromise: Promise<Post[]>;
-  workersPromise: Promise<Worker[]>;
+  teams: Team[];
+  rosters: Roster[];
+  roster?: RosterJoin;
+  posts: Post[];
+  workers: Worker[];
+  teamId?: number;
+  rosterId?: number;
 }>) {
-  const teams = use(teamsPromise);
-  const rosters = use(rostersPromise);
-  const roster = use(rosterPromise);
-  const posts = use(postsPromise);
-  const workers = use(workersPromise);
+  const router = useRouter();
 
-  const [selectedTeamId, setSelectedTeamId] = useState<number | undefined>(teams[0]?.id);
-  const [selectedRosterId, setSelectedRosterId] = useState<number | undefined>(roster?.id);
+  const setTeamId = useCallback((id?: number) => {
+    if (isNil(id) || teamId === id) return;
+    router.push(buildRosterUrl(id));
+  }, [router, teamId]);
+
+  const setRosterId = useCallback((id?: number) => {
+    if (isNil(teamId) || isNil(id) || rosterId === id) return;
+    router.push(buildRosterUrl(teamId, id));
+  }, [router, teamId, rosterId]);
+
+  const currentIndex = rosters.findIndex((r) => r.id === rosterId);
+  const prevRosterId = currentIndex >= 0 && currentIndex < rosters.length - 1 ? rosters[currentIndex + 1]?.id : undefined;
+  const nextRosterId = currentIndex > 0 ? rosters[currentIndex - 1]?.id : undefined;
+
+  const goPrev = useCallback(() => {
+    if (isNil(teamId) || isNil(prevRosterId)) return;
+    router.replace(buildRosterUrl(teamId, prevRosterId));
+  }, [router, teamId, prevRosterId]);
+
+  const goNext = useCallback(() => {
+    if (isNil(teamId) || isNil(nextRosterId)) return;
+    router.replace(buildRosterUrl(teamId, nextRosterId));
+  }, [router, teamId, nextRosterId]);
 
   return (
-    <div className='space-y-4'>
+    <div className="space-y-4">
       <FieldGroup>
-        <FieldSet className='flex flex-row items-end'>
-          <FieldLayout className='w-(--input-width)'>
+        <FieldSet className="flex flex-row flex-wrap items-end gap-4">
+          <FieldLayout className="w-(--input-width)">
             <Combobox
               placeHolder="選擇團隊"
-              value={selectedTeamId}
-              setValue={setSelectedTeamId}
+              value={teamId}
+              setValue={setTeamId}
               options={teams}
               getOptionValue={(team) => team.id}
               getOptionDisplay={(team) => team.name}
               icon={<Users />}
             />
           </FieldLayout>
-          <div className='ml-auto space-x-2'>
+          <div className="ml-auto flex flex-wrap gap-2">
             <CustomButton asChild>
               <CustomLink
-                href={Path.ROSTER + Path.AUTO_NEW + '/' + selectedTeamId}
-                isDisabled={isNil(selectedTeamId)}
+                href={Path.ROSTER + Path.AUTO_NEW + "/" + (teamId ?? "")}
+                isDisabled={isNil(teamId)}
               >
                 <WandSparkles />
                 自動編排
               </CustomLink>
             </CustomButton>
             <CustomButton asChild>
-              <CustomLink
-                href='' // TODO
-                isDisabled={isNil(selectedRosterId)}
-              >
+              <CustomLink href="" isDisabled={isNil(rosterId)}> {/* TODO */}
                 <Pencil />
                 更新值班表
               </CustomLink>
@@ -73,48 +108,48 @@ export default function RosterPageContent({
           </div>
         </FieldSet>
       </FieldGroup>
-      <div className='space-x-4'>
+
+      <div className="flex flex-wrap items-center gap-2">
         <CustomButton
           variant="outline"
           size="icon"
-          disabled={!rosters.length || selectedRosterId === rosters.at(-1)?.id}
-          onClick={(e) => {
-            e.preventDefault();
-            const currentIndex = rosters.findIndex(roster => roster.id === selectedRosterId)
-            if (currentIndex === rosters.length - 1) return
-            setSelectedRosterId(rosters[currentIndex + 1]?.id)
-          }}
+          disabled={isNil(prevRosterId)}
+          onClick={goPrev}
+          aria-label="上一個值班表"
         >
           <ChevronLeft />
         </CustomButton>
         <Combobox
           placeHolder="選擇值班表"
-          value={selectedRosterId}
-          setValue={setSelectedRosterId}
+          value={rosterId}
+          setValue={setRosterId}
           options={rosters}
-          getOptionValue={(roster) => roster.id}
-          getOptionDisplay={(roster) => roster.name}
+          getOptionValue={(r) => r.id}
+          getOptionDisplay={(r) => r.name}
           icon={<Calendar />}
         />
         <CustomButton
           variant="outline"
           size="icon"
-          disabled={!rosters.length || selectedRosterId === rosters[0]?.id}
-          onClick={(e) => {
-            e.preventDefault();
-            const currentIndex = rosters.findIndex(roster => roster.id === selectedRosterId)
-            if (!currentIndex) return
-            setSelectedRosterId(rosters[currentIndex - 1]?.id)
-          }}
+          disabled={isNil(nextRosterId)}
+          onClick={goNext}
+          aria-label="下一個值班表"
         >
           <ChevronRight />
         </CustomButton>
       </div>
-      {roster && <RosterTable
-        roster={roster}
-        posts={posts}
-        workers={workers}
-      />}
+
+      {roster && (
+        <Card>
+          <CardContent>
+            <RosterTable
+              roster={roster}
+              posts={posts}
+              workers={workers}
+            />
+          </CardContent>
+        </Card>
+      )}
     </div>
-  )
+  );
 }

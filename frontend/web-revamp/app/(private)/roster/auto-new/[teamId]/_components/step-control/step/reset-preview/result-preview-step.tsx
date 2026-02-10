@@ -16,7 +16,7 @@ import { convertToRosterDto } from "@/libs/roster/roster-utils";
 import { toast } from "sonner";
 import { Path } from "@/libs/_general/path/path";
 import { Worker } from "@/external/prisma/generated/client";
-import { Param } from "../../../roster-auto-new-page-param";
+import { Param } from "../../../param";
 import { useAppForm } from "@/components/_general/form/utils/form-utils";
 import { FORM_FIELD, FORM_ID, formSchema } from "./create-roster-form-utils";
 import { revalidateLogic } from "@tanstack/react-form";
