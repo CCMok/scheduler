@@ -19,7 +19,7 @@ export default function TimeslotStep() {
           <Calendar
             mode='multiple'
             numberOfMonths={2}
-            className="rounded-lg border shadow-sm"
+            className="rounded-lg border shadow-sm bg-card"
             selected={timeslots.map((timeslot) => new Date(timeslot))}
             onSelect={(timeslots) => {
               if (!timeslots) {

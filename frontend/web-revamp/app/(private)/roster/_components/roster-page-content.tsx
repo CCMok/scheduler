@@ -140,12 +140,13 @@ export default function RosterPageContent({
                   自動編排
                 </CustomLink>
               </CustomButton>
-              <CustomButton asChild variant="outline">
-                <CustomLink href="" isDisabled={isNil(rosterId)}> {/* TODO */}
+              {/* TODO */}
+              {/* <CustomButton asChild variant="outline">
+                <CustomLink href="" isDisabled={isNil(rosterId)}>
                   <Pencil />
                   更新
                 </CustomLink>
-              </CustomButton>
+              </CustomButton> */}
             </div>
           </div>
         </CardContent>
