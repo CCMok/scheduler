@@ -8,7 +8,6 @@ import {
   Calendar,
   ChevronLeft,
   ChevronRight,
-  Pencil,
   Users,
   WandSparkles,
 } from "lucide-react";
