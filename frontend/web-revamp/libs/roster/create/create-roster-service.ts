@@ -24,19 +24,19 @@ export const createRoster = tryCatch(async (request: CreateRosterRequest): Promi
   try {
     id = await saveEntity(parsedRequest, postMap, workerMap)
   } catch (e) {
-    if (!(e instanceof Prisma.PrismaClientKnownRequestError) || e.code !== PrismaErrorCode.UNIQUE_CONSTRAINT_VIOLATION) {
-      console.error('Failed to save roster')
-      console.error(e)
+    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === PrismaErrorCode.UNIQUE_CONSTRAINT_VIOLATION) {
       return {
         isSuccess: false,
-        message: Message.SYSTEM_ERROR,
-      };
+        message: Message.ALREADY_USED.replaceAll('{0}', '名稱'),
+      }
     }
 
+    console.error('Failed to save roster')
+    console.error(e)
     return {
       isSuccess: false,
-      message: Message.ALREADY_USED.replaceAll('{0}', '名稱'),
-    }
+      message: Message.SYSTEM_ERROR,
+    };
   }
 
   return {

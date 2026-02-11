@@ -6,4 +6,5 @@ export enum Message {
   FORMAT_NOT_VALID = '請輸入有效格式',
   INCORRECT = '不正確',
   ALREADY_USED = '{0}已被使用',
+  NOT_FOUND = '{0}不存在',
 }
