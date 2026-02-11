@@ -54,27 +54,25 @@ export default function LoginCard({
         </CardHeader>
         <CardContent>
           <FieldGroup>
-            <FieldSet>
-              <form.AppField name={FORM_FIELD.EMAIL}>
-                {(field) => (
-                  <field.TextField
-                    label="電郵"
-                    placeholder="m@example.com"
-                    autoComplete="email"
-                    type='email'
-                  />
-                )}
-              </form.AppField>
-              <form.AppField name={FORM_FIELD.PASSWORD}>
-                {(field) => (
-                  <field.TextField
-                    label="密碼"
-                    autoComplete="current-password"
-                    type='password'
-                  />
-                )}
-              </form.AppField>
-            </FieldSet>
+            <form.AppField name={FORM_FIELD.EMAIL}>
+              {(field) => (
+                <field.TextField
+                  label="電郵"
+                  placeholder="m@example.com"
+                  autoComplete="email"
+                  type='email'
+                />
+              )}
+            </form.AppField>
+            <form.AppField name={FORM_FIELD.PASSWORD}>
+              {(field) => (
+                <field.TextField
+                  label="密碼"
+                  autoComplete="current-password"
+                  type='password'
+                />
+              )}
+            </form.AppField>
           </FieldGroup>
         </CardContent>
         <CardFooter>

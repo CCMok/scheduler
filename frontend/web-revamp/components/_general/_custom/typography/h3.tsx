@@ -5,7 +5,7 @@ export default function H3({
   children,
   className,
 }: Readonly<{
-  children: ReactNode;
+  children?: ReactNode;
   className?: string;
 }>) {
   return (

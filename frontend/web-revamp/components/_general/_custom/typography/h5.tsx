@@ -1,7 +1,7 @@
 import { cn } from "@/external/shadcn/libs/utils";
 import { ReactNode } from "react";
 
-export default function H2({
+export default function H5({
   children,
   className,
 }: Readonly<{
@@ -9,8 +9,8 @@ export default function H2({
   className?: string;
 }>) {
   return (
-    <h2 className={cn("text-3xl font-semibold tracking-tight", className)}>
+    <h5 className={cn("font-semibold tracking-wider", className)}>
       {children}
-    </h2>
+    </h5>
   )
 }
