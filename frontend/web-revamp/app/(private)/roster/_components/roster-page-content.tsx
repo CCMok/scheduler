@@ -23,6 +23,7 @@ import { Card, CardContent, } from "@/external/shadcn/components/ui/card";
 import { buildRosterUrl } from "./param";
 import H5 from "@/components/_general/_custom/typography/h5";
 import { Separator } from "@/external/shadcn/components/ui/separator";
+import DeleteRosterDialog from "./delete-roster-dialog";
 
 const TEAM_SELECT_ID = 'team-select';
 const ROSTER_SELECT_ID = 'roster-select';
@@ -151,6 +152,11 @@ export default function RosterPageContent({
                   更新
                 </CustomLink>
               </CustomButton> */}
+              <DeleteRosterDialog
+                id={rosterId}
+                teamId={teamId}
+                rosterName={roster?.name}
+              />
             </div>
           </div>
         </CardContent>
