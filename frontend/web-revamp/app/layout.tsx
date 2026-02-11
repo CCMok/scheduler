@@ -30,7 +30,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <Toaster />
+          <Toaster closeButton />
         </ThemeProvider>
         <FormDevtools />
       </body>

@@ -12,7 +12,7 @@ export default function HomeLayout({
       <div className="absolute h-[500px] w-full overflow-hidden pointer-events-none">
         <Meteors />
       </div>
-      <div className='absolute top-4 right-4'>
+      <div className='absolute bottom-4 left-4'>
         <ThemeToggle />
       </div>
       {children}

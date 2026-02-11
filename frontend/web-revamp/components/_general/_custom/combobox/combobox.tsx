@@ -8,6 +8,7 @@ import { CheckIcon, ChevronDown } from "lucide-react"
 import { cn } from "@/external/shadcn/libs/utils"
 
 export default function Combobox<T, V extends Key>({
+  id,
   value,
   setValue,
   options,
@@ -18,6 +19,7 @@ export default function Combobox<T, V extends Key>({
   icon,
   defaultIsOpen = false,
 }: Readonly<{
+  id?: string;
   value: V | undefined;
   setValue: (value: V | undefined) => void;
   options: T[];
@@ -34,6 +36,7 @@ export default function Combobox<T, V extends Key>({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <CustomButton
+          id={id}
           variant="outline"
           role="combobox"
           aria-expanded={open}

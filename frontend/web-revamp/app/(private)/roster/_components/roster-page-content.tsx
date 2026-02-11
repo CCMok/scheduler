@@ -24,6 +24,9 @@ import { buildRosterUrl } from "./param";
 import H5 from "@/components/_general/_custom/typography/h5";
 import { Separator } from "@/external/shadcn/components/ui/separator";
 
+const TEAM_SELECT_ID = 'team-select';
+const ROSTER_SELECT_ID = 'roster-select';
+
 export default function RosterPageContent({
   teams,
   rosters,
@@ -76,8 +79,9 @@ export default function RosterPageContent({
               篩選條件
             </H5>
             <FieldGroup className='flex-row flex-wrap'>
-              <FieldLayout label="團隊" id="team-select" className="w-(--input-width)">
+              <FieldLayout label="團隊" id={TEAM_SELECT_ID} className="w-(--input-width)">
                 <Combobox
+                  id={TEAM_SELECT_ID}
                   placeHolder="請選擇團隊"
                   value={teamId}
                   setValue={setTeamId}
@@ -87,9 +91,10 @@ export default function RosterPageContent({
                   icon={<Users />}
                 />
               </FieldLayout>
-              <FieldLayout label="值班表" id="roster-select" className="w-(--input-width)">
+              <FieldLayout label="值班表" id={ROSTER_SELECT_ID} className="w-(--input-width)">
                 <div className="flex items-center gap-2">
                   <CustomButton
+                    id={ROSTER_SELECT_ID}
                     variant="outline"
                     size="icon"
                     disabled={isNil(prevRosterId)}
