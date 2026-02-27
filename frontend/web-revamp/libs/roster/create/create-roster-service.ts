@@ -83,6 +83,17 @@ export const saveEntity = async (
           },
         }))
       },
+      rosterOffWorkers: {
+        create: request.offs.map(off => ({
+          workerId: off.workerId,
+          fallbackWorkerName: workerMap.get(off.workerId)?.name ?? '',
+          rosterOffWorkerTimeslot: {
+            create: off.timeslots.map(timeslot => ({
+              timeslot,
+            })),
+          },
+        })),
+      },
     }
   })
   return entity.id

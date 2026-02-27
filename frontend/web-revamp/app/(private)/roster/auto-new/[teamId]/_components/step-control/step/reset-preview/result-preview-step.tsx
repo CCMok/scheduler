@@ -29,6 +29,7 @@ export default function ResultPreviewStep({
 
   const previousStep = useAutoNewRosterStore(state => state.previousStep)
   const modifiedRoster = useAutoNewRosterStore(state => state.modifiedRoster)
+  const offs = useAutoNewRosterStore(state => state.offs)
 
   const router = useRouter()
 
@@ -59,6 +60,10 @@ export default function ResultPreviewStep({
       teamId,
       name: form.state.values[FORM_FIELD.NAME],
       rosterDto,
+      offs: offs.map(off => ({
+        workerId: off.workerId,
+        timeslots: off.timeslots,
+      })),
     })
 
     if (!response.isSuccess) {
