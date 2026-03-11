@@ -245,14 +245,13 @@ model WorkerAffinityMemberAudit {
 }
 
 model Roster {
-  id            Int              @id @default(autoincrement())
-  teamId        Int              @map("team_id")
-  name          String           @map("name")
-  createdAt     DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
-  team          Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  timeslots     RosterTimeslot[]
-  rosterPosts   RosterPost[]
-  rosterWorkers RosterWorker[]
+  id          Int              @id @default(autoincrement())
+  teamId      Int              @map("team_id")
+  name        String           @map("name")
+  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  team        Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  timeslots   RosterTimeslot[]
+  rosterPosts RosterPost[]
 
   @@unique([teamId, name])
   @@index([teamId])
@@ -275,7 +274,6 @@ model RosterPost {
   id                  Int                  @id @default(autoincrement())
   rosterId            Int                  @map("roster_id")
   postId              Int                  @map("post_id")
-  fallbackName        String               @map("fallback_name")
   roster              Roster               @relation(fields: [rosterId], references: [id], onDelete: Cascade)
   rosterPostTimeslots RosterPostTimeslot[]
 
@@ -292,35 +290,8 @@ model RosterPostAudit {
   id             Int?
   rosterId       Int?     @map("roster_id")
   postId         Int?     @map("post_id")
-  fallbackName   String?  @map("fallback_name")
 
   @@map("roster_post_audit")
-}
-
-model RosterWorker {
-  id                       Int                       @id @default(autoincrement())
-  rosterId                 Int                       @map("roster_id")
-  workerId                 Int                       @map("worker_id")
-  fallbackName             String                    @map("fallback_name")
-  roster                   Roster                    @relation(fields: [rosterId], references: [id], onDelete: Cascade)
-  rosterWorkerOffTimeslots RosterWorkerOffTimeslot[]
-
-  @@unique([rosterId, workerId])
-  @@index([rosterId])
-  @@index([workerId])
-  @@map("roster_worker")
-}
-
-model RosterWorkerAudit {
-  auditId        Int      @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction    String   @map("audit_action")
-  id             Int?
-  rosterId       Int?     @map("roster_id")
-  workerId       Int?     @map("worker_id")
-  fallbackName   String?  @map("fallback_name")
-
-  @@map("roster_worker_audit")
 }
 
 model RosterTimeslot {
@@ -329,7 +300,7 @@ model RosterTimeslot {
   name                     String                    @map("name")
   roster                   Roster                    @relation(fields: [rosterId], references: [id], onDelete: Cascade)
   rosterPostTimeslots      RosterPostTimeslot[]
-  rosterWorkerOffTimeslots RosterWorkerOffTimeslot[]
+  rosterTimeslotOffWorkers RosterTimeslotOffWorker[]
 
   @@unique([rosterId, name])
   @@index([rosterId])
@@ -374,26 +345,25 @@ model RosterPostTimeslotAudit {
   @@map("roster_post_timeslot_audit")
 }
 
-model RosterWorkerOffTimeslot {
+model RosterTimeslotOffWorker {
   id               Int            @id @default(autoincrement())
-  rosterWorkerId   Int            @map("roster_worker_id")
   rosterTimeslotId Int            @map("roster_timeslot_id")
-  rosterWorker     RosterWorker   @relation(fields: [rosterWorkerId], references: [id], onDelete: Cascade)
+  rosterWorkerId   Int            @map("roster_worker_id")
   rosterTimeslot   RosterTimeslot @relation(fields: [rosterTimeslotId], references: [id], onDelete: Cascade)
 
-  @@unique([rosterWorkerId, rosterTimeslotId])
+  @@unique([rosterTimeslotId, rosterWorkerId])
   @@index([rosterWorkerId])
   @@index([rosterTimeslotId])
-  @@map("roster_worker_off_timeslot")
+  @@map("roster_timeslot_off_worker")
 }
 
-model RosterWorkerOffTimeslotAudit {
+model RosterTimeslotOffWorkerAudit {
   auditId          Int      @id @default(autoincrement()) @map("audit_id")
   auditTimestamp   DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
   auditAction      String   @map("audit_action")
   id               Int?
-  rosterWorkerId   Int?     @map("roster_worker_id")
   rosterTimeslotId Int?     @map("roster_timeslot_id")
+  rosterWorkerId   Int?     @map("roster_worker_id")
 
-  @@map("roster_worker_off_timeslot_audit")
+  @@map("roster_timeslot_off_worker_audit")
 }
