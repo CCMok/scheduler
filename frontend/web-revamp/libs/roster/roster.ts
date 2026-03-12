@@ -11,6 +11,23 @@ export const rosterDisplaySchema = z.object({
 
 export type RosterDisplay = z.infer<typeof rosterDisplaySchema>;
 
+export const rosterDto = z.object({
+  id: z.number(),
+  teamId: z.number(),
+  name: z.string(),
+  timeslots: z.object({
+    id: z.number(),
+    name: z.string(),
+    offWorkerId: z.number().array(),
+  }).array(),
+  posts: z.object({
+    id: z.number(),
+    timeslotId: z.number(),
+    workerId: z.number().optional(),
+  }).array(),
+})
+
+export type RosterDto = z.infer<typeof rosterDto>;
 
 // Communication
 // export const rosterTimeslotAssignmentSchema = z.object({
