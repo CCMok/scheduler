@@ -2,7 +2,6 @@ import 'server-only'
 import { cache } from "react";
 import prisma from '@/libs/_general/database/database-manager';
 import { Prisma, Roster } from '@/external/prisma/generated/client';
-import { RosterJoin } from '../roster';
 
 export const getRosters = cache(async (teamId: number): Promise<Roster[]> => {
   try {
@@ -17,17 +16,19 @@ export const getRosters = cache(async (teamId: number): Promise<Roster[]> => {
   }
 });
 
-export const getRosterById = cache(async (rosterId: number): Promise<RosterJoin | undefined> => {
+// TODO
+export const getRosterById = cache(async (rosterId: number): Promise<Roster | undefined> => {
   try {
     const roster = await prisma.roster.findUnique({
       where: { id: rosterId },
-      include: {
-        timeslots: {
-          include: {
-            assignments: true,
-          },
-        },
-      },
+      // TODO
+      // include: {
+      //   timeslots: {
+      //     include: {
+      //       assignments: true,
+      //     },
+      //   },
+      // },
     });
     return roster ?? undefined;
   } catch (e) {

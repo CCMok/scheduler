@@ -1,47 +1,58 @@
-import { Roster, RosterTimeslot as RosterTimeslotDao, RosterTimeslotAssignment as RosterTimeslotAssignmentDao, Post, Worker } from "@/external/prisma/generated/client";
 import { z } from "zod";
 
-// Communication
-export const rosterTimeslotAssignmentSchema = z.object({
+export const rosterDisplaySchema = z.object({
   postId: z.number(),
-  workerId: z.number().optional(),
-})
-export type RosterTimeslotAssignment = z.infer<typeof rosterTimeslotAssignmentSchema>
+  timeslots: z.object({
+    id: z.number(),
+    timeslot: z.string(),
+    workerId: z.number().optional(),
+  }).array(),
+}).array();
 
-export const rosterTimeslotSchema = z.object({
-  timeslot: z.string(),
-  assignments: rosterTimeslotAssignmentSchema.array(),
-})
-export type RosterTimeslot = z.infer<typeof rosterTimeslotSchema>
+export type RosterDisplay = z.infer<typeof rosterDisplaySchema>;
 
-export const rosterDtoSchema = rosterTimeslotSchema.array()
-export type RosterDto = z.infer<typeof rosterDtoSchema>
 
-// Display
-export type RosterPostAssignmentWorker = {
-  id: number;
-  name: string;
-}
+// Communication
+// export const rosterTimeslotAssignmentSchema = z.object({
+//   postId: z.number(),
+//   workerId: z.number().optional(),
+// })
+// export type RosterTimeslotAssignment = z.infer<typeof rosterTimeslotAssignmentSchema>
 
-export type RosterPostAssignment = {
-  id: number;
-  timeslot: string;
-  worker?: RosterPostAssignmentWorker,
-}
+// export const rosterTimeslotSchema = z.object({
+//   timeslot: z.string(),
+//   assignments: rosterTimeslotAssignmentSchema.array(),
+// })
+// export type RosterTimeslot = z.infer<typeof rosterTimeslotSchema>
 
-export type RosterPost = {
-  post: {
-    id: number;
-    name: string;
-  },
-  assignments: RosterPostAssignment[],
-}
+// export const rosterDtoSchema = rosterTimeslotSchema.array()
+// export type RosterDto = z.infer<typeof rosterDtoSchema>
 
-export type RosterDisplay = RosterPost[];
+// // Display
+// export type RosterPostAssignmentWorker = {
+//   id: number;
+//   name: string;
+// }
 
-// Dao
-export type RosterJoin = Roster & {
-  timeslots: (RosterTimeslotDao & {
-    assignments: RosterTimeslotAssignmentDao[];
-  })[];
-}
+// export type RosterPostAssignment = {
+//   id: number;
+//   timeslot: string;
+//   worker?: RosterPostAssignmentWorker,
+// }
+
+// export type RosterPost = {
+//   post: {
+//     id: number;
+//     name: string;
+//   },
+//   assignments: RosterPostAssignment[],
+// }
+
+// export type RosterDisplay = RosterPost[];
+
+// // Dao
+// export type RosterJoin = Roster & {
+//   timeslots: (RosterTimeslotDao & {
+//     assignments: RosterTimeslotAssignmentDao[];
+//   })[];
+// }

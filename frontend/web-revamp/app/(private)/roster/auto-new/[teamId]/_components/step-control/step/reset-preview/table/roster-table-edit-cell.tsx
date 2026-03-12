@@ -3,18 +3,18 @@
 import Combobox from "@/components/_general/_custom/combobox/combobox";
 import { Worker } from "@/external/prisma/generated/client";
 import { TableCell } from "@/external/shadcn/components/ui/table";
-import { RosterPostAssignment } from "@/libs/roster/roster";
-import { isNil } from "lodash";
 import { useAutoNewRosterStore } from "../../store/auto-new-roster-store-provider";
 import { useCallback, useEffect, useRef } from "react";
 
 export default function RosterTableEditCell({
+  assignmentId,
+  workerId,
   workers,
-  assignment,
   setIsEditing,
 }: Readonly<{
+  assignmentId: number;
+  workerId?: number;
   workers: Worker[];
-  assignment: RosterPostAssignment;
   setIsEditing: (isEditing: boolean) => void;
 }>) {
   const updateAssignmentWorker = useAutoNewRosterStore(state => state.updateAssignmentWorker)
@@ -37,17 +37,15 @@ export default function RosterTableEditCell({
     return () => document.removeEventListener('mousedown', onClickDocument);
   }, [onClickDocument])
 
-  const setValue = (workerId: number | undefined) => {
-    const worker = isNil(workerId) ? undefined : workers.find(worker => worker.id === workerId);
-    const assignmentWorker = worker ? { id: worker.id, name: worker.name } : undefined
-    updateAssignmentWorker(assignment.id, assignmentWorker);
+  const setValue = (workerId?: number) => {
+    updateAssignmentWorker(assignmentId, workerId);
     setIsEditing(false);
   }
 
   return (
     <TableCell ref={ref} className="w-(--input-width)">
       <Combobox
-        value={assignment.worker?.id}
+        value={workerId}
         setValue={setValue}
         options={workers}
         getOptionValue={(worker) => worker.id}

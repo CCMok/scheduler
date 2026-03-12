@@ -2,14 +2,14 @@ from models.arrange_roster_response import ArrangeRosterResponse
 from managers.db import DbSession
 from helpers.roster_model_helper import RosterModelHelper
 from models.arrange_roster_request import ArrangeRosterRequest
-from models.roster import RosterTimeslotAssignment, RosterTimeslot
+from models.roster import RosterPost, RosterPostTimeslot
 from models.roster_material import RosterMaterial
 from ortools.sat.python import cp_model
 
 
 class RosterService:
     @staticmethod
-    def arrange(request: ArrangeRosterRequest, db_session: DbSession) -> list[RosterTimeslot]:
+    def arrange(request: ArrangeRosterRequest, db_session: DbSession) -> ArrangeRosterResponse:
         material = RosterMaterial(db_session=db_session, request=request)
 
         RosterModelHelper.define_constraints(material)
@@ -28,13 +28,13 @@ class RosterService:
         material: RosterMaterial,
         solver: cp_model.CpSolver,
     ) -> ArrangeRosterResponse:
-        roster_timeslots: list[RosterTimeslot] = []
+        roster_posts: list[RosterPost] = []
 
-        for timeslot in material.request.timeslots:
-            roster_timeslot = RosterTimeslot(timeslot=timeslot, assignments=[])
-            roster_timeslots.append(roster_timeslot)
+        for post in material.posts:
+            roster_post = RosterPost(post_id=post.id, timeslots=[])
+            roster_posts.append(roster_post)
 
-            for post in material.posts:
+            for timeslot in material.request.timeslots:
                 result_worker_id = None
 
                 for worker in post.workers:
@@ -48,6 +48,7 @@ class RosterService:
                     result_worker_id = worker.id
                     break
 
-                roster_timeslot.assignments.append(RosterTimeslotAssignment(post_id=post.id, worker_id=result_worker_id))
+                roster_post.timeslots.append(RosterPostTimeslot(
+                    timeslot=timeslot, worker_id=result_worker_id))
 
-        return ArrangeRosterResponse(root=roster_timeslots)
+        return ArrangeRosterResponse(root=roster_posts)

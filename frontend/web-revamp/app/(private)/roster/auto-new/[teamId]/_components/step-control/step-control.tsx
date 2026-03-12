@@ -36,16 +36,16 @@ export default function StepControl({
         step: 1,
         title: '選擇職員休息時段',
         children: <Suspense fallback={<StepSkeleton />}>
-          <OffStep
-            postPromise={postPromise}
-            workersPromise={workersPromise}
-          />
+          <OffStep workersPromise={workersPromise}/>
         </Suspense>,
       },
       {
         step: 2,
         title: '預覽編排結果',
-        children: <ResultPreviewStep workersPromise={workersPromise} />,
+        children: <ResultPreviewStep
+          postPromise={postPromise}
+          workersPromise={workersPromise}
+        />,
       },
     ]
 

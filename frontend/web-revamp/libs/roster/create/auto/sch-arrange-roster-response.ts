@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 export const schArrangeRosterResponseSchema = z.object({
-  timeslot: z.string(),
-  assignments: z.object({
-    postId: z.number(),
+  postId: z.number(),
+  timeslots: z.object({
+    timeslot: z.string(),
     workerId: z.number().nullish(),
   }).array(),
 }).array()

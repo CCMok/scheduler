@@ -1,6 +1,6 @@
 import 'server-only'
 import { ServiceResponse } from "@/libs/_general/service/response";
-import { RosterDto } from "../../roster";
+import { RosterDisplay } from "../../roster";
 import { tryCatch } from '@/libs/_general/service/try-catch';
 import { Message } from '@/libs/_general/service/message';
 import { AutoCreateRosterRequest, autoCreateRosterRequestSchema } from './auto-create-roster-request';
@@ -10,7 +10,7 @@ import { checkCanAccessTeam } from '@/libs/auth/authorization/access-utils';
 const SCH_HOST = process.env.SCH_HOST ?? '';
 const SCH_API_KEY = process.env.SCH_API_KEY ?? '';
 
-export const autoCreateRoster = tryCatch(async (request: AutoCreateRosterRequest): Promise<ServiceResponse<RosterDto>> => {
+export const autoCreateRoster = tryCatch(async (request: AutoCreateRosterRequest): Promise<ServiceResponse<RosterDisplay>> => {
   const parsedRequest = autoCreateRosterRequestSchema.parse(request)
 
   const canAccess = await checkCanAccessTeam(parsedRequest.teamId)
@@ -25,7 +25,7 @@ export const autoCreateRoster = tryCatch(async (request: AutoCreateRosterRequest
     message: Message.SYSTEM_ERROR,
   }
 
-  const roster = await convertToRoster(response, parsedRequest.teamId)
+  const roster = await convertToRoster(response)
 
   return {
     isSuccess: true,
@@ -58,12 +58,14 @@ const sendArrangeRosterRequest = async (request: AutoCreateRosterRequest): Promi
   }
 }
 
-const convertToRoster = async (response: SchArrangeRosterResponse, teamId: number): Promise<RosterDto> => {
+const convertToRoster = async (response: SchArrangeRosterResponse): Promise<RosterDisplay> => {
+  let id = 0;
   return response.map(r => ({
-    timeslot: r.timeslot,
-    assignments: r.assignments.map(a => ({
-      postId: a.postId,
-      workerId: a.workerId ?? undefined,
+    postId: r.postId,
+    timeslots: r.timeslots.map(t => ({
+      id: ++id,
+      timeslot: t.timeslot,
+      workerId: t.workerId ?? undefined,
     })),
   }))
 }

@@ -1,6 +1,7 @@
-import { RosterDisplay, RosterPostAssignmentWorker } from "@/libs/roster/roster";
+import { RosterDisplay } from "@/libs/roster/roster";
 import { Off } from "../../off";
 import { createStore } from "zustand/vanilla";
+import { isNil } from "lodash";
 
 export type AutoNewRosterState = {
   step: number;
@@ -17,7 +18,7 @@ export type AutoNewRosterAction = {
   setOffs: (offs: Off[]) => void;
   setInitialRoster: (initialRoster: RosterDisplay) => void;
   setModifiedRoster: (modifiedRoster: RosterDisplay) => void;
-  updateAssignmentWorker: (assignmentId: number, worker: RosterPostAssignmentWorker | undefined) => void;
+  updateAssignmentWorker: (assignmentId: number, workerId?: number) => void;
   swapAssignment: (assignmentId1: number, assignmentId2: number) => void;
 }
 
@@ -41,53 +42,53 @@ const filterValidTimeslots = (offs: Off[], timeslots: string[]) => {
 const updateAssignmentWorker = (
   roster: RosterDisplay,
   assignmentId: number,
-  worker: RosterPostAssignmentWorker | undefined,
+  workerId?: number,
 ): RosterDisplay => {
-  return roster.map((rosterPost) => ({
+  return roster.map(rosterPost => ({
     ...rosterPost,
-    assignments: rosterPost.assignments.map(assignment => {
-      if (assignment.id === assignmentId) {
-        return { ...assignment, worker }
+    timeslots: rosterPost.timeslots.map(timeslot => {
+      if (timeslot.id === assignmentId) {
+        return { ...timeslot, workerId }
       }
-      return assignment;
+      return timeslot;
     })
   }))
 }
 
 const swapAssignment = (
-  rosterDisplay: RosterDisplay,
+  roster: RosterDisplay,
   assignmentId1: number,
   assignmentId2: number,
 ): RosterDisplay => {
-  let worker1: RosterPostAssignmentWorker | undefined;
-  let worker2: RosterPostAssignmentWorker | undefined;
+  let workerId1: number | undefined;
+  let workerId2: number | undefined;
 
-  for (const rosterPost of rosterDisplay) {
-    for (const assignment of rosterPost.assignments) {
-      if (assignment.id === assignmentId1) {
-        worker1 = assignment.worker;
+  for (const rosterPost of roster) {
+    for (const timeslot of rosterPost.timeslots) {
+      if (timeslot.id === assignmentId1) {
+        workerId1 = timeslot.workerId;
       }
-      if (assignment.id === assignmentId2) {
-        worker2 = assignment.worker;
+      if (timeslot.id === assignmentId2) {
+        workerId2 = timeslot.workerId;
       }
-      if (worker1 && worker2) {
+      if (!isNil(workerId1) && !isNil(workerId2)) {
         break;
       }
     }
   }
 
-  return rosterDisplay.map(rosterPost => ({
+  return roster.map(rosterPost => ({
     ...rosterPost,
-    assignments: rosterPost.assignments.map(assignment => ({
-      ...assignment,
-      worker: (() => {
-        if (assignment.id === assignmentId1) {
-          return worker2;
+    timeslots: rosterPost.timeslots.map(timeslot => ({
+      ...timeslot,
+      workerId: (() => {
+        if (timeslot.id === assignmentId1) {
+          return workerId2;
         }
-        if (assignment.id === assignmentId2) {
-          return worker1;
+        if (timeslot.id === assignmentId2) {
+          return workerId1;
         }
-        return assignment.worker;
+        return timeslot.workerId;
       })(),
     }))
   }))

@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { rosterDtoSchema } from "../roster";
+import { rosterDisplaySchema } from "../roster";
 
 export const createRosterRequestSchema = z.object({
   teamId: z.number(),
   name: z.string(),
-  rosterDto: rosterDtoSchema,
+  roster: rosterDisplaySchema,
   offs: z.object({
     workerId: z.number(),
     timeslots: z.string().array(),

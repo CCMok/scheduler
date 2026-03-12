@@ -18,17 +18,13 @@ import { toast } from "sonner"
 import { useParams } from "next/navigation"
 import { useAutoNewRosterStore } from "./store/auto-new-roster-store-provider"
 import StepSkeleton from "../step-skeleton"
-import { convertToRosterDisplay } from "@/libs/roster/roster-utils"
 import { Param } from "../../param"
 
 export default function OffStep({
-  postPromise,
   workersPromise,
 }: Readonly<{
-  postPromise: Promise<Post[]>;
   workersPromise: Promise<Worker[]>;
 }>) {
-  const posts = use(postPromise)
   const workers = use(workersPromise)
 
   const nextStep = useAutoNewRosterStore(state => state.nextStep)
@@ -62,9 +58,8 @@ export default function OffStep({
       return
     }
 
-    const rosterDisplay = convertToRosterDisplay(response.data, posts, workers)
-    setInitialRoster(rosterDisplay)
-    setModifiedRoster(rosterDisplay)
+    setInitialRoster(response.data)
+    setModifiedRoster(response.data)
     toast.success('編排成功')
     nextStep()
   }

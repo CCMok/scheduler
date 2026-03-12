@@ -1,6 +1,6 @@
 from pydantic import RootModel
-from .roster import RosterTimeslot
+from .roster import RosterPost
 
 
-class ArrangeRosterResponse(RootModel[list[RosterTimeslot]]):
+class ArrangeRosterResponse(RootModel[list[RosterPost]]):
     pass

@@ -64,39 +64,41 @@ export const saveEntity = async (
   postMap: Map<number, Post>,
   workerMap: Map<number, Worker>,
 ): Promise<number> => {
-  const entity = await prisma.roster.create({
-    data: {
-      teamId: request.teamId,
-      name: request.name,
-      timeslots: {
-        create: request.rosterDto.map(rosterTimeslot => ({
-          timeslot: rosterTimeslot.timeslot,
-          assignments: {
-            create: rosterTimeslot.assignments.map(assignment => ({
-              postId: assignment.postId,
-              workerId: assignment.workerId,
-              fallbackPostName: postMap.get(assignment.postId)?.name ?? '',
-              fallbackWorkerName: assignment.workerId
-                ? (workerMap.get(assignment.workerId)?.name ?? '')
-                : undefined,
-            })),
-          },
-          // TODO: add roster off timeslot
-        }))
-      },
-      // TODO
-      // rosterOffWorkers: {
-      //   create: request.offs.map(off => ({
-      //     workerId: off.workerId,
-      //     fallbackWorkerName: workerMap.get(off.workerId)?.name ?? '',
-      //     rosterOffWorkerTimeslot: {
-      //       create: off.timeslots.map(timeslot => ({
-      //         timeslot,
-      //       })),
-      //     },
-      //   })),
-      // },
-    }
-  })
-  return entity.id
+  // TODO
+  return 1;
+  // const entity = await prisma.roster.create({
+  //   data: {
+  //     teamId: request.teamId,
+  //     name: request.name,
+  //     timeslots: {
+  //       create: request.rosterDto.map(rosterTimeslot => ({
+  //         timeslot: rosterTimeslot.timeslot,
+  //         assignments: {
+  //           create: rosterTimeslot.assignments.map(assignment => ({
+  //             postId: assignment.postId,
+  //             workerId: assignment.workerId,
+  //             fallbackPostName: postMap.get(assignment.postId)?.name ?? '',
+  //             fallbackWorkerName: assignment.workerId
+  //               ? (workerMap.get(assignment.workerId)?.name ?? '')
+  //               : undefined,
+  //           })),
+  //         },
+  //         // TODO: add roster off timeslot
+  //       }))
+  //     },
+  //     // TODO
+  //     // rosterOffWorkers: {
+  //     //   create: request.offs.map(off => ({
+  //     //     workerId: off.workerId,
+  //     //     fallbackWorkerName: workerMap.get(off.workerId)?.name ?? '',
+  //     //     rosterOffWorkerTimeslot: {
+  //     //       create: off.timeslots.map(timeslot => ({
+  //     //         timeslot,
+  //     //       })),
+  //     //     },
+  //     //   })),
+  //     // },
+  //   }
+  // })
+  // return entity.id
 }

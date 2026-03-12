@@ -5,11 +5,15 @@ import { closestCenter, DndContext, DragEndEvent, KeyboardSensor, MouseSensor, T
 import { rectSwappingStrategy, SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useAutoNewRosterStore } from "../../store/auto-new-roster-store-provider";
 import RosterTableCell from "./roster-table-cell";
-import { Worker } from "@/external/prisma/generated/client";
+import { Post, Worker } from "@/external/prisma/generated/client";
+import { useMemo } from "react";
+import { isNil } from "lodash";
 
 export default function RosterTable({
+  posts,
   workers,
 }: Readonly<{
+  posts: Post[];
   workers: Worker[];
 }>) {
   const modifiedRoster = useAutoNewRosterStore(state => state.modifiedRoster)
@@ -39,6 +43,9 @@ export default function RosterTable({
     swapAssignment(Number(over.id), Number(active.id));
   }
 
+  const sortedPosts = useMemo(() => posts.toSorted((a, b) => a.displayOrder - b.displayOrder), [posts])
+  const workerMap = useMemo(() => new Map(workers.map(worker => [worker.id, worker])), [workers])
+
   return (
     // DndContext generate div for drag and drop function, and tbody only accept tr children. So DndContext place outside of table
     <DndContext
@@ -63,29 +70,34 @@ export default function RosterTable({
         </TableHeader>
         <TableBody>
           <SortableContext
-            items={modifiedRoster.flatMap(rosterPost => rosterPost.assignments.map(assignment => assignment.id))}
+            items={modifiedRoster.flatMap(rosterItem => rosterItem.timeslots.map(timeslotItem => timeslotItem.id))}
             strategy={rectSwappingStrategy}
           >
-            {modifiedRoster.map((rosterPost) => (
-              <TableRow key={rosterPost.post.id}>
-                <TableCell>{rosterPost.post.name}</TableCell>
-                {timeslots.map(timeslot => {
-                  const assignment = rosterPost.assignments.find(assignment => assignment.timeslot === timeslot)
-                  if (!assignment) {
-                    console.error(`Assignment not found for post: ${rosterPost.post.id} timeslot: ${timeslot}`);
-                    return <TableCell key={timeslot} />;
-                  }
+            {sortedPosts.map(post => {
+              const rosterPostItem = modifiedRoster.find(r => r.postId === post.id)
+              if (!rosterPostItem) return <></>
 
-                  return (
-                    <RosterTableCell
-                      key={timeslot}
-                      workers={workers}
-                      assignment={assignment}
-                    />
-                  )
-                })}
-              </TableRow>
-            ))}
+              return (
+                <TableRow key={post.id}>
+                  <TableCell>{post.name}</TableCell>
+                  {timeslots.map(timeslot => {
+                    const rosterTimeslotItem = rosterPostItem.timeslots.find(r => r.timeslot === timeslot)
+                    if (!rosterTimeslotItem) return <></>
+
+                    const worker = isNil(rosterTimeslotItem.workerId) ? undefined : workerMap.get(rosterTimeslotItem.workerId)
+
+                    return (
+                      <RosterTableCell
+                        key={timeslot}
+                        assignmentId={rosterTimeslotItem.id}
+                        worker={worker}
+                        workers={workers}
+                      />
+                    )
+                  })}
+                </TableRow>
+              )
+            })}
           </SortableContext>
         </TableBody>
       </Table>

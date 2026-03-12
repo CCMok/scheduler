@@ -11,9 +11,8 @@ import { use } from "react";
 import { createRosterAction } from "@/libs/roster/create/create-roster-action";
 import { useParams, useRouter } from "next/navigation";
 import StepSkeleton from "../../step-skeleton";
-import { convertToRosterDto } from "@/libs/roster/roster-utils";
 import { toast } from "sonner";
-import { Worker } from "@/external/prisma/generated/client";
+import { Post, Worker } from "@/external/prisma/generated/client";
 import { Param } from "../../../param";
 import { useAppForm } from "@/components/_general/form/utils/form-utils";
 import { FORM_FIELD, FORM_ID, formSchema } from "./create-roster-form-utils";
@@ -21,10 +20,13 @@ import { revalidateLogic } from "@tanstack/react-form";
 import { buildRosterUrl } from "@/app/(private)/roster/_components/param";
 
 export default function ResultPreviewStep({
+  postPromise,
   workersPromise,
 }: Readonly<{
+  postPromise: Promise<Post[]>;
   workersPromise: Promise<Worker[]>;
 }>) {
+  const posts = use(postPromise)
   const workers = use(workersPromise)
 
   const previousStep = useAutoNewRosterStore(state => state.previousStep)
@@ -55,11 +57,10 @@ export default function ResultPreviewStep({
   }
 
   const submit = async () => {
-    const rosterDto = convertToRosterDto(modifiedRoster)
     const response = await createRosterAction({
       teamId,
       name: form.state.values[FORM_FIELD.NAME],
-      rosterDto,
+      roster: modifiedRoster,
       offs: offs.map(off => ({
         workerId: off.workerId,
         timeslots: off.timeslots,
@@ -80,7 +81,10 @@ export default function ResultPreviewStep({
       <p className='text-sm text-muted-foreground'>預覽結果還未儲存，離開頁面後需重新編排。</p>
       <Card>
         <CardContent>
-          <RosterTable workers={workers} />
+          <RosterTable
+            posts={posts}
+            workers={workers}
+          />
         </CardContent>
       </Card>
       <div className='flex justify-between'>
