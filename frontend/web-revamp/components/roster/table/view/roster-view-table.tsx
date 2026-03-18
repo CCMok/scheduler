@@ -1,7 +1,7 @@
 import { Post, Worker } from "@/external/prisma/generated/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table";
 import { RosterItem, Timeslot } from "@/libs/roster/roster";
-import { useMemo } from "react";
+import { isNil } from "lodash";
 
 export default function RosterViewTable({
   timeslots,
@@ -41,14 +41,17 @@ export default function RosterViewTable({
         {sortedRoster.map(rosterItem => (
           <TableRow key={rosterItem.postId}>
             <TableCell>{postMap.get(rosterItem.postId)?.name}</TableCell>
-            {rosterItem.assignments.map(assignment => (
-              <TableCell
-                key={assignment.id}
-                className='text-center'
-              >
-                {assignment.worker?.}
-              </TableCell>
-            ))}
+            {rosterItem.assignments.map(assignment => {
+              const worker = isNil(assignment.workerId) ? undefined : workers.find(worker => worker.id === assignment.workerId)
+              return (
+                <TableCell
+                  key={assignment.id}
+                  className='text-center'
+                >
+                  {worker?.name ?? '-'}
+                </TableCell>
+              )
+            })}
           </TableRow>
         ))}
       </TableBody>

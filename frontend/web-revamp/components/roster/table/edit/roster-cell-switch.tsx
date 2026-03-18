@@ -5,6 +5,7 @@ import RosterSelectionCell from "./roster-selection-cell"
 import RosterDragableCell from "./roster-dragable-cell"
 import { Worker } from "@/external/prisma/generated/client"
 import { RosterItem } from "@/libs/roster/roster"
+import { isNil } from "lodash"
 
 export default function RosterCellSwitch({
   assignmentId,
@@ -39,7 +40,7 @@ export default function RosterCellSwitch({
   return (
     <RosterDragableCell 
       assignmentId={assignmentId}
-      workerName={workerId ? workerMap.get(workerId)?.name : undefined}
+      workerName={isNil(workerId) ? undefined : workerMap.get(workerId)?.name}
       onDoubleClick={() => setIsEditing(true)}
     />
   )
