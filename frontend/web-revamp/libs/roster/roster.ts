@@ -1,3 +1,4 @@
+import { Roster, RosterPost, RosterPostTimeslot, RosterTimeslot } from "@/external/prisma/generated/client";
 import { z } from "zod";
 
 export const rosterItemSchema = z.object({
@@ -24,3 +25,10 @@ export const offSchema = z.object({
 })
 
 export type Off = z.infer<typeof offSchema>;
+
+export type RosterJoin = Roster & {
+  timeslots: RosterTimeslot[];
+  posts: (RosterPost & {
+    timeslots: RosterPostTimeslot[]
+  })[];
+}

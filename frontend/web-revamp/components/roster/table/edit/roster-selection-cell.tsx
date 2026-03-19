@@ -42,7 +42,7 @@ export default function RosterSelectionCell({
   const setValue = (workerId?: number) => {
     const newRoster = roster.map(rosterItem => ({
       ...rosterItem,
-      timeslots: rosterItem.assignments.map(assignment => {
+      assignments: rosterItem.assignments.map(assignment => {
         if (assignment.id === assignmentId) {
           return { ...assignment, workerId }
         }

@@ -23,6 +23,7 @@ import H5 from "@/components/_general/_custom/typography/h5";
 import { Separator } from "@/external/shadcn/components/ui/separator";
 import DeleteRosterDialog from "./delete-roster-dialog";
 import RosterViewTable from "@/components/roster/table/view/roster-view-table";
+import { RosterJoin } from "@/libs/roster/roster";
 
 const TEAM_SELECT_ID = 'team-select';
 const ROSTER_SELECT_ID = 'roster-select';
@@ -164,10 +165,17 @@ export default function RosterPageContent({
         <CardContent>
           {roster ? (
             <RosterViewTable
-              timeslots={timeslots}
+              timeslots={roster.timeslots}
               posts={posts}
               workers={workers}
-              roster={roster}
+              roster={roster.posts.map(post => ({
+                postId: post.postId,
+                assignments: post.timeslots.map(timeslot => ({
+                  id: timeslot.id,
+                  timeslotId: timeslot.rosterTimeslotId,
+                  workerId: isNil(timeslot.workerId) ? undefined : timeslot.workerId,
+                }))
+              }))}
             />
           ) : (
             <div className="flex flex-col items-center justify-center space-y-3">

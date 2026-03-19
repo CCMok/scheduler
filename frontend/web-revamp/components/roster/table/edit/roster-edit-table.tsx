@@ -28,19 +28,19 @@ const swapWorker = (roster: RosterItem[], assignmentId1: UniqueIdentifier, assig
     }
   }
 
-  // update workerid
+  // update worker
   return roster.map(rosterItem => ({
     ...rosterItem,
-    timeslots: rosterItem.assignments.map(timeslot => ({
-      ...timeslot,
+    assignments: rosterItem.assignments.map(assignment => ({
+      ...assignment,
       workerId: (() => {
-        if (timeslot.id === assignmentId1) {
+        if (assignment.id === assignmentId1) {
           return workerId2;
         }
-        if (timeslot.id === assignmentId2) {
+        if (assignment.id === assignmentId2) {
           return workerId1;
         }
-        return timeslot.workerId;
+        return assignment.workerId;
       })(),
     }))
   }))
