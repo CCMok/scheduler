@@ -5,8 +5,9 @@ import { CreateResponseData, ServiceResponse } from '@/libs/_general/service/res
 import { checkCanAccessTeam } from '@/libs/auth/authorization/access-utils'
 import { Message } from '@/libs/_general/service/message'
 import prisma from '@/libs/_general/database/database-manager'
-import { Post, Prisma, Worker } from '@/external/prisma/generated/client'
+import { Prisma, RosterTimeslot } from '@/external/prisma/generated/client'
 import { PrismaErrorCode } from '@/libs/_general/database/prisma-error-code'
+import { isNil } from 'lodash'
 
 export const createRoster = tryCatch(async (request: CreateRosterRequest): Promise<ServiceResponse<CreateResponseData>> => {
   const parsedRequest = createRosterRequestSchema.parse(request)
@@ -17,12 +18,9 @@ export const createRoster = tryCatch(async (request: CreateRosterRequest): Promi
     message: Message.UNAUTHORIZED,
   }
 
-  const postMap = await getPostMap(parsedRequest.teamId)
-  const workerMap = await getWorkerMap(parsedRequest.teamId)
-
   let id: number;
   try {
-    id = await saveEntity(parsedRequest, postMap, workerMap)
+    id = await saveEntity(parsedRequest)
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === PrismaErrorCode.UNIQUE_CONSTRAINT_VIOLATION) {
       return {
@@ -45,60 +43,59 @@ export const createRoster = tryCatch(async (request: CreateRosterRequest): Promi
   }
 })
 
-const getPostMap = async (teamId: number): Promise<Map<number, Post>> => {
-  const posts = await prisma.post.findMany({
-    where: { teamId },
-  })
-  return new Map(posts.map(post => [post.id, post]))
-}
-
-const getWorkerMap = async (teamId: number): Promise<Map<number, Worker>> => {
-  const workers = await prisma.worker.findMany({
-    where: { teamId },
-  })
-  return new Map(workers.map(worker => [worker.id, worker]))
-}
-
 export const saveEntity = async (
   request: CreateRosterRequest,
-  postMap: Map<number, Post>,
-  workerMap: Map<number, Worker>,
 ): Promise<number> => {
-  // TODO
-  return 1;
-  // const entity = await prisma.roster.create({
-  //   data: {
-  //     teamId: request.teamId,
-  //     name: request.name,
-  //     timeslots: {
-  //       create: request.rosterDto.map(rosterTimeslot => ({
-  //         timeslot: rosterTimeslot.timeslot,
-  //         assignments: {
-  //           create: rosterTimeslot.assignments.map(assignment => ({
-  //             postId: assignment.postId,
-  //             workerId: assignment.workerId,
-  //             fallbackPostName: postMap.get(assignment.postId)?.name ?? '',
-  //             fallbackWorkerName: assignment.workerId
-  //               ? (workerMap.get(assignment.workerId)?.name ?? '')
-  //               : undefined,
-  //           })),
-  //         },
-  //         // TODO: add roster off timeslot
-  //       }))
-  //     },
-  //     // TODO
-  //     // rosterOffWorkers: {
-  //     //   create: request.offs.map(off => ({
-  //     //     workerId: off.workerId,
-  //     //     fallbackWorkerName: workerMap.get(off.workerId)?.name ?? '',
-  //     //     rosterOffWorkerTimeslot: {
-  //     //       create: off.timeslots.map(timeslot => ({
-  //     //         timeslot,
-  //     //       })),
-  //     //     },
-  //     //   })),
-  //     // },
-  //   }
-  // })
-  // return entity.id
+  return prisma.$transaction(async (tx) => {
+    // roster
+    const roster = await tx.roster.create({
+      data: {
+        teamId: request.teamId,
+        name: request.name,
+      },
+    })
+
+    // timeslot
+    // request timeslot id -> created timeslot
+    const timeslotMap = new Map<number, RosterTimeslot>();
+
+    // keep order
+    for (const requestTimeslot of request.timeslots) {
+      const createdTimeslot = await tx.rosterTimeslot.create({
+        data: {
+          rosterId: roster.id,
+          name: requestTimeslot.name,
+        },
+      })
+      timeslotMap.set(requestTimeslot.id, createdTimeslot);
+    }
+
+    // post
+    await Promise.all(request.roster.map((rosterItem) => (
+      tx.rosterPost.create({
+        data: {
+          rosterId: roster.id,
+          postId: rosterItem.postId,
+          timeslots: {
+            create: rosterItem.assignments.map(assignment => ({
+              rosterTimeslotId: timeslotMap.get(assignment.timeslotId)?.id ?? 0,
+              workerId: isNil(assignment.workerId) ? null : assignment.workerId,
+            })),
+          },
+        },
+      })
+    )))
+
+    // off
+    await Promise.all(request.offs.flatMap(off => off.timeslotIds.map(requestTimeslotId => (
+      tx.rosterTimeslotOffWorker.create({
+        data: {
+          rosterTimeslotId: timeslotMap.get(requestTimeslotId)?.id ?? 0,
+          workerId: off.workerId,
+        },
+      })
+    ))))
+
+    return roster.id;
+  })
 }

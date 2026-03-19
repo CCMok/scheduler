@@ -3,7 +3,7 @@
 import { use, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card"
 import Combobox from "@/components/_general/_custom/combobox/combobox"
-import { Post, Worker } from "@/external/prisma/generated/client"
+import { Worker } from "@/external/prisma/generated/client"
 import { Field, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "@/external/shadcn/components/ui/field"
 import { Checkbox } from "@/external/shadcn/components/ui/checkbox"
 import CustomButton from "@/components/_general/_custom/button/custom-button"
@@ -36,7 +36,7 @@ export default function OffStep({
   const setModifiedRoster = useAutoNewRosterStore(state => state.setModifiedRoster)
 
   const [workerId, setWorkerId] = useState<number | undefined>(undefined)
-  const [selectedTimeslots, setSelectedTimeslots] = useState<string[]>([])
+  const [selectedTimeslotIds, setSelectedTimeslotIds] = useState<number[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { teamId: teamIdString } = useParams<Param>()
@@ -88,21 +88,21 @@ export default function OffStep({
                   </FieldLegend>
                   <FieldGroup className='gap-3'>
                     {timeslots.map((timeslot) => (
-                      <Field key={timeslot} orientation="horizontal">
+                      <Field key={timeslot.id} orientation="horizontal">
                         <Checkbox
-                          id={timeslot}
-                          name={timeslot}
-                          checked={selectedTimeslots.includes(timeslot)}
+                          id={timeslot.id.toString()}
+                          name={timeslot.name}
+                          checked={selectedTimeslotIds.includes(timeslot.id)}
                           onCheckedChange={(checked) => {
                             if (checked) {
-                              setSelectedTimeslots([...selectedTimeslots, timeslot])
+                              setSelectedTimeslotIds([...selectedTimeslotIds, timeslot.id])
                               return
                             }
-                            setSelectedTimeslots(selectedTimeslots.filter((t) => t !== timeslot))
+                            setSelectedTimeslotIds(selectedTimeslotIds.filter((t) => t !== timeslot.id))
                           }}
                         />
-                        <FieldLabel htmlFor={timeslot} className='font-normal'>
-                          {timeslot}
+                        <FieldLabel htmlFor={timeslot.id.toString()} className='font-normal'>
+                          {timeslot.name}
                         </FieldLabel>
                       </Field>
                     ))}
@@ -112,13 +112,13 @@ export default function OffStep({
               <CustomButton
                 className='ml-auto'
                 variant='outline'
-                disabled={isNil(workerId) || !selectedTimeslots.length}
+                disabled={isNil(workerId) || !selectedTimeslotIds.length}
                 onClick={(e) => {
                   e.preventDefault()
                   if (isNil(workerId)) return
-                  setOffs([...offs, { workerId, timeslots: selectedTimeslots }])
+                  setOffs([...offs, { workerId, timeslotIds: selectedTimeslotIds }])
                   setWorkerId(undefined)
-                  setSelectedTimeslots([])
+                  setSelectedTimeslotIds([])
                 }}
               >
                 <Plus />
@@ -155,7 +155,7 @@ export default function OffStep({
                   <TooltipTrigger asChild>
                     <TableRow>
                       <TableCell>{workers.find((worker) => worker.id === off.workerId)?.name}</TableCell>
-                      <TableCell>{off.timeslots.length} 個時段</TableCell>
+                      <TableCell>{off.timeslotIds.length} 個時段</TableCell>
                       <TableCell>
                         <CustomButton
                           variant="ghost"
@@ -169,8 +169,8 @@ export default function OffStep({
                   </TooltipTrigger>
                   <TooltipContent>
                     <div className='space-y-1'>
-                      {off.timeslots.map((timeslot) => (
-                        <p key={timeslot}>{timeslot}</p>
+                      {off.timeslotIds.map((timeslotId) => (
+                        <p key={timeslotId}>{timeslots.find((timeslot) => timeslot.id === timeslotId)?.name}</p>
                       ))}
                     </div>
                   </TooltipContent>

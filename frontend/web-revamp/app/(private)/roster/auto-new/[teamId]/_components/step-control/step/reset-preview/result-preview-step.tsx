@@ -5,7 +5,6 @@ import CustomButton from "@/components/_general/_custom/button/custom-button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/external/shadcn/components/ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Card, CardContent } from "@/external/shadcn/components/ui/card";
-import RosterTable from "./table/roster-table";
 import { useAutoNewRosterStore } from "../store/auto-new-roster-store-provider";
 import { use } from "react";
 import { createRosterAction } from "@/libs/roster/create/create-roster-action";
@@ -18,6 +17,7 @@ import { useAppForm } from "@/components/_general/form/utils/form-utils";
 import { FORM_FIELD, FORM_ID, formSchema } from "./create-roster-form-utils";
 import { revalidateLogic } from "@tanstack/react-form";
 import { buildRosterUrl } from "@/app/(private)/roster/_components/param";
+import RosterEditTable from "@/components/roster/table/edit/roster-edit-table";
 
 export default function ResultPreviewStep({
   postPromise,
@@ -29,9 +29,11 @@ export default function ResultPreviewStep({
   const posts = use(postPromise)
   const workers = use(workersPromise)
 
-  const previousStep = useAutoNewRosterStore(state => state.previousStep)
   const modifiedRoster = useAutoNewRosterStore(state => state.modifiedRoster)
   const offs = useAutoNewRosterStore(state => state.offs)
+  const timeslots = useAutoNewRosterStore(state => state.timeslots)
+  const previousStep = useAutoNewRosterStore(state => state.previousStep)
+  const setModifiedRoster = useAutoNewRosterStore(state => state.setModifiedRoster)
 
   const router = useRouter()
 
@@ -60,11 +62,9 @@ export default function ResultPreviewStep({
     const response = await createRosterAction({
       teamId,
       name: form.state.values[FORM_FIELD.NAME],
+      timeslots,
       roster: modifiedRoster,
-      offs: offs.map(off => ({
-        workerId: off.workerId,
-        timeslots: off.timeslots,
-      })),
+      offs,
     })
 
     if (!response.isSuccess) {
@@ -81,9 +81,12 @@ export default function ResultPreviewStep({
       <p className='text-sm text-muted-foreground'>預覽結果還未儲存，離開頁面後需重新編排。</p>
       <Card>
         <CardContent>
-          <RosterTable
+          <RosterEditTable
+            timeslots={timeslots}
             posts={posts}
             workers={workers}
+            roster={modifiedRoster}
+            onChange={setModifiedRoster}
           />
         </CardContent>
       </Card>

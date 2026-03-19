@@ -1,16 +1,18 @@
 import 'server-only'
 import { ServiceResponse } from "@/libs/_general/service/response";
-import { RosterDisplay } from "../../roster";
 import { tryCatch } from '@/libs/_general/service/try-catch';
 import { Message } from '@/libs/_general/service/message';
 import { AutoCreateRosterRequest, autoCreateRosterRequestSchema } from './auto-create-roster-request';
 import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from './sch-arrange-roster-response';
 import { checkCanAccessTeam } from '@/libs/auth/authorization/access-utils';
+import { RosterItem, Timeslot } from '../../roster';
+import { isNil } from 'lodash';
+import { SchArrangeRosterRequest } from './sch-arrange-roster-reqeust';
 
 const SCH_HOST = process.env.SCH_HOST ?? '';
 const SCH_API_KEY = process.env.SCH_API_KEY ?? '';
 
-export const autoCreateRoster = tryCatch(async (request: AutoCreateRosterRequest): Promise<ServiceResponse<RosterDisplay>> => {
+export const autoCreateRoster = tryCatch(async (request: AutoCreateRosterRequest): Promise<ServiceResponse<RosterItem[]>> => {
   const parsedRequest = autoCreateRosterRequestSchema.parse(request)
 
   const canAccess = await checkCanAccessTeam(parsedRequest.teamId)
@@ -19,21 +21,23 @@ export const autoCreateRoster = tryCatch(async (request: AutoCreateRosterRequest
     message: Message.UNAUTHORIZED,
   }
 
-  const response = await sendArrangeRosterRequest(parsedRequest)
-  if (!response) return {
+  const arrangeReqeust = convertToArrangeRosterRequest(parsedRequest)
+
+  const arrangeResponse = await sendArrangeRosterRequest(arrangeReqeust)
+  if (!arrangeResponse) return {
     isSuccess: false,
     message: Message.SYSTEM_ERROR,
   }
 
-  const roster = await convertToRoster(response)
+  const serviceResponse = await convertToServiceResponse(arrangeResponse, parsedRequest.timeslots)
 
   return {
     isSuccess: true,
-    data: roster,
+    data: serviceResponse,
   }
 })
 
-const sendArrangeRosterRequest = async (request: AutoCreateRosterRequest): Promise<SchArrangeRosterResponse | undefined> => {
+const sendArrangeRosterRequest = async (request: SchArrangeRosterRequest): Promise<SchArrangeRosterResponse | undefined> => {
   try {
     const response = await fetch(`${SCH_HOST}/roster`, {
       method: 'POST',
@@ -58,14 +62,37 @@ const sendArrangeRosterRequest = async (request: AutoCreateRosterRequest): Promi
   }
 }
 
-const convertToRoster = async (response: SchArrangeRosterResponse): Promise<RosterDisplay> => {
-  let id = 0;
+const convertToArrangeRosterRequest = (request: AutoCreateRosterRequest): SchArrangeRosterRequest => {
+  // id -> name
+  const timeslotMap = new Map(request.timeslots.map(t => [t.id, t.name]))
+
+  return {
+    teamId: request.teamId,
+    timeslots: request.timeslots.map(t => t.name),
+    offs: request.offs.map(off => ({
+      workerId: off.workerId,
+      timeslots: off.timeslotIds.map(timeslotId => timeslotMap.get(timeslotId) ?? ''),
+    })),
+  }
+}
+
+const convertToServiceResponse = async (response: SchArrangeRosterResponse, timeslots: Timeslot[]): Promise<RosterItem[]> => {
+  // name -> id
+  const timeslotMap = new Map(timeslots.map(t => [t.name, t.id]))
+
+  let assignmentCounter = 0;
   return response.map(r => ({
     postId: r.postId,
-    timeslots: r.timeslots.map(t => ({
-      id: ++id,
-      timeslot: t.timeslot,
-      workerId: t.workerId ?? undefined,
-    })),
+    assignments: r.timeslots.map(t => {
+      const timeslotId = timeslotMap.get(t.timeslot)
+      if (isNil(timeslotId)) {
+        console.error('Timeslot not found', t.timeslot);
+      }
+      return {
+        id: ++assignmentCounter,
+        timeslotId: timeslotId ?? 0,
+        workerId: isNil(t.workerId) ? undefined : t.workerId,
+      }
+    }),
   }))
 }

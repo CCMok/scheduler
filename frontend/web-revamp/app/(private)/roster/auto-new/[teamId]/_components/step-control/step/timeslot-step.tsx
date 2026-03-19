@@ -20,7 +20,7 @@ export default function TimeslotStep() {
             mode='multiple'
             numberOfMonths={2}
             className="rounded-lg border shadow-sm bg-card"
-            selected={timeslots.map((timeslot) => new Date(timeslot))}
+            selected={timeslots.map((timeslot) => new Date(timeslot.name))}
             onSelect={(timeslots) => {
               if (!timeslots) {
                 setTimeslots([])
@@ -28,7 +28,10 @@ export default function TimeslotStep() {
               }
               setTimeslots(timeslots
                 .toSorted((a, b) => a.getTime() - b.getTime())
-                .map((timeslot) => formatDate(timeslot))
+                .map((timeslot, i) => ({
+                  id: i,
+                  name: formatDate(timeslot)
+                }))
               )
             }}
             locale={zhHK}
@@ -57,13 +60,13 @@ export default function TimeslotStep() {
             </TableHeader>
             <TableBody>
               {timeslots.map((timeslot) => (
-                <TableRow key={timeslot}>
-                  <TableCell>{timeslot}</TableCell>
+                <TableRow key={timeslot.id}>
+                  <TableCell>{timeslot.name}</TableCell>
                   <TableCell>
                     <CustomButton
                       variant="ghost"
                       size='icon-sm'
-                      onClick={() => setTimeslots(timeslots.filter((t) => t !== timeslot))}
+                      onClick={() => setTimeslots(timeslots.filter((t) => t.id !== timeslot.id))}
                     >
                       <X />
                     </CustomButton>

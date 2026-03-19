@@ -15,8 +15,6 @@ import CustomButton from "@/components/_general/_custom/button/custom-button";
 import CustomLink from "@/components/_general/_custom/link/custom-link";
 import { Path } from "@/libs/_general/path/path";
 import { isNil } from "lodash";
-import { RosterJoin } from "@/libs/roster/roster";
-import RosterTable from "./roster-table/roster-table";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { Card, CardContent, } from "@/external/shadcn/components/ui/card";
@@ -24,6 +22,7 @@ import { buildRosterUrl } from "./param";
 import H5 from "@/components/_general/_custom/typography/h5";
 import { Separator } from "@/external/shadcn/components/ui/separator";
 import DeleteRosterDialog from "./delete-roster-dialog";
+import RosterViewTable from "@/components/roster/table/view/roster-view-table";
 
 const TEAM_SELECT_ID = 'team-select';
 const ROSTER_SELECT_ID = 'roster-select';
@@ -164,10 +163,11 @@ export default function RosterPageContent({
       <Card>
         <CardContent>
           {roster ? (
-            <RosterTable
-              roster={roster}
+            <RosterViewTable
+              timeslots={timeslots}
               posts={posts}
               workers={workers}
+              roster={roster}
             />
           ) : (
             <div className="flex flex-col items-center justify-center space-y-3">
