@@ -41,11 +41,18 @@ export default function RosterViewTable({
         {sortedRoster.map(rosterItem => (
           <TableRow key={rosterItem.postId}>
             <TableCell>{postMap.get(rosterItem.postId)?.name}</TableCell>
-            {rosterItem.assignments.map(assignment => {
+            {timeslots.map(timeslot => {
+              const assignment = rosterItem.assignments.find(assignment => assignment.timeslotId === timeslot.id);
+              if (!assignment) {
+                console.error(`Assignment not found postId=${rosterItem.postId} timeslotId=${timeslot.id}`);
+                return <></>
+              }
+
               const worker = isNil(assignment.workerId) ? undefined : workers.find(worker => worker.id === assignment.workerId)
+
               return (
                 <TableCell
-                  key={assignment.id}
+                  key={timeslot.id}
                   className='text-center'
                 >
                   {worker?.name ?? '-'}

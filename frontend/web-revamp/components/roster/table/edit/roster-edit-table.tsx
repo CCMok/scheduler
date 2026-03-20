@@ -122,16 +122,24 @@ export default function RosterEditTable({
             {sortedRoster.map(rosterItem => (
               <TableRow key={rosterItem.postId}>
                 <TableCell>{postMap.get(rosterItem.postId)?.name}</TableCell>
-                {rosterItem.assignments.map(assignment => (
-                  <RosterCellSwitch
-                    key={assignment.id}
-                    assignmentId={assignment.id}
-                    workerId={assignment.workerId}
-                    workers={workers}
-                    roster={roster}
-                    onRosterChange={onChange}
-                  />
-                ))}
+                {timeslots.map(timeslot => {
+                  const assignment = rosterItem.assignments.find(assignment => assignment.timeslotId === timeslot.id);
+                  if (!assignment) {
+                    console.error(`Assignment not found postId=${rosterItem.postId} timeslotId=${timeslot.id}`);
+                    return <></>
+                  }
+
+                  return (
+                    <RosterCellSwitch
+                      key={assignment.id}
+                      assignmentId={assignment.id}
+                      workerId={assignment.workerId}
+                      workers={workers}
+                      roster={roster}
+                      onRosterChange={onChange}
+                    />
+                  )
+                })}
               </TableRow>
             ))}
           </SortableContext>

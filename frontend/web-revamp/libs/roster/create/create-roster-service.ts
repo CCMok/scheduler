@@ -71,19 +71,14 @@ export const saveEntity = async (
     }
 
     // post
-    await Promise.all(request.roster.map((rosterItem) => (
-      tx.rosterPost.create({
+    await Promise.all(request.roster.flatMap((rosterItem) => rosterItem.assignments.map(assignment => (
+      tx.rosterTimeslotPost.create({
         data: {
-          rosterId: roster.id,
+          rosterTimeslotId: timeslotMap.get(assignment.timeslotId)?.id ?? 0,
           postId: rosterItem.postId,
-          timeslots: {
-            create: rosterItem.assignments.map(assignment => ({
-              rosterTimeslotId: timeslotMap.get(assignment.timeslotId)?.id ?? 0,
-              workerId: isNil(assignment.workerId) ? null : assignment.workerId,
-            })),
-          },
+          workerId: isNil(assignment.workerId) ? null : assignment.workerId,
         },
-      })
+      }))
     )))
 
     // off

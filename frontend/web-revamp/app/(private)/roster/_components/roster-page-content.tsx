@@ -24,6 +24,7 @@ import { Separator } from "@/external/shadcn/components/ui/separator";
 import DeleteRosterDialog from "./delete-roster-dialog";
 import RosterViewTable from "@/components/roster/table/view/roster-view-table";
 import { RosterJoin } from "@/libs/roster/roster";
+import RosterTableSection from "./roster-table-section";
 
 const TEAM_SELECT_ID = 'team-select';
 const ROSTER_SELECT_ID = 'roster-select';
@@ -163,33 +164,11 @@ export default function RosterPageContent({
       </Card>
       <Card>
         <CardContent>
-          {roster ? (
-            <RosterViewTable
-              timeslots={roster.timeslots}
-              posts={posts}
-              workers={workers}
-              roster={roster.posts.map(post => ({
-                postId: post.postId,
-                assignments: post.timeslots.map(timeslot => ({
-                  id: timeslot.id,
-                  timeslotId: timeslot.rosterTimeslotId,
-                  workerId: isNil(timeslot.workerId) ? undefined : timeslot.workerId,
-                }))
-              }))}
-            />
-          ) : (
-            <div className="flex flex-col items-center justify-center space-y-3">
-              <Calendar className="h-12 w-12 text-muted-foreground" />
-              <div className='text-center'>
-                <p className="text-lg font-medium text-muted-foreground">
-                  未選擇值班表
-                </p>
-                <p className="text-sm text-muted-foreground/70">
-                  請先選擇團隊和值班表以查看詳細資訊
-                </p>
-              </div>
-            </div>
-          )}
+          <RosterTableSection
+            roster={roster}
+            posts={posts}
+            workers={workers}
+          />
         </CardContent>
       </Card>
     </div>

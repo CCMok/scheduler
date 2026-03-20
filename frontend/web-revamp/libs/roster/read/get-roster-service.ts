@@ -22,10 +22,10 @@ export const getRosterById = cache(async (rosterId: number): Promise<RosterJoin 
     const roster = await prisma.roster.findUnique({
       where: { id: rosterId },
       include: {
-        timeslots: true,
-        posts: {
+        timeslots: {
           include: {
-            timeslots: true,
+            posts: true,
+            offWorkers: true,
           },
         },
       },
