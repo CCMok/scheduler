@@ -1,4 +1,4 @@
-import { Roster, RosterTimeslot, RosterTimeslotOffWorker, RosterTimeslotPost } from "@/external/prisma/generated/client";
+import { Roster, RosterTimeslot, RosterTimeslotOffWorker, RosterTimeslotAssignment } from "@/external/prisma/generated/client";
 import { isNil } from "lodash";
 import { z } from "zod";
 
@@ -29,7 +29,7 @@ export type Off = z.infer<typeof offSchema>;
 
 export type RosterJoin = Roster & {
   timeslots: (RosterTimeslot & {
-    posts: RosterTimeslotPost[];
+    assignments: RosterTimeslotAssignment[];
     offWorkers: RosterTimeslotOffWorker[];
   })[];
 }
@@ -38,7 +38,7 @@ export const parseRosterItems = (roster: RosterJoin): RosterItem[] => {
   const postMap = new Map<number, RosterItem>();
 
   for (const timeslot of roster.timeslots) {
-    for (const assignment of timeslot.posts) {
+    for (const assignment of timeslot.assignments) {
       if (!postMap.has(assignment.postId)) {
         postMap.set(assignment.postId, {
           postId: assignment.postId,

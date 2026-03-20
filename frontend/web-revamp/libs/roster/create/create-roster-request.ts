@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const timeslotRequestSchema = z.object({
   name: z.string(),
-  posts: z.object({
+  assignments: z.object({
     postId: z.number(),
     workerId: z.number().optional(),
   }).array(),

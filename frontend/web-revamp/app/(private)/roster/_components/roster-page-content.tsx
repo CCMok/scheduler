@@ -22,7 +22,6 @@ import { buildRosterUrl } from "./param";
 import H5 from "@/components/_general/_custom/typography/h5";
 import { Separator } from "@/external/shadcn/components/ui/separator";
 import DeleteRosterDialog from "./delete-roster-dialog";
-import RosterViewTable from "@/components/roster/table/view/roster-view-table";
 import { RosterJoin } from "@/libs/roster/roster";
 import RosterTableSection from "./roster-table-section";
 

@@ -53,8 +53,8 @@ export const saveEntity = async (
       timeslots: {
         create: request.timeslots.map(timeslot => ({
           name: timeslot.name,
-          posts: {
-            create: timeslot.posts.map(post => ({
+          assignments: {
+            create: timeslot.assignments.map(post => ({
               postId: post.postId,
               workerId: isNil(post.workerId) ? null : post.workerId,
             })),

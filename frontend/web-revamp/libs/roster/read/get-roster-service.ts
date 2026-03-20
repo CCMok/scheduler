@@ -24,7 +24,7 @@ export const getRosterById = cache(async (rosterId: number): Promise<RosterJoin 
       include: {
         timeslots: {
           include: {
-            posts: true,
+            assignments: true,
             offWorkers: true,
           },
         },

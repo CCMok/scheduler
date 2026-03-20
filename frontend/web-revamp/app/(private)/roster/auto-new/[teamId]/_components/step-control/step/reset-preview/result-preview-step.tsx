@@ -30,7 +30,7 @@ export const getCreateRosterRequest = (
 ): CreateRosterRequest => {
   const timeslotMap = new Map<number, TimeslotRequest>(timeslots.map(timeslot => [timeslot.id, {
     name: timeslot.name,
-    posts: [],
+    assignments: [],
     offWorkerIds: [],
   }]))
 
@@ -42,7 +42,7 @@ export const getCreateRosterRequest = (
         continue;
       }
 
-      timeslotItem.posts.push({
+      timeslotItem.assignments.push({
         postId: rosterItem.postId,
         workerId: assignment.workerId,
       })

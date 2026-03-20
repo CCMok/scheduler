@@ -270,12 +270,12 @@ model RosterAudit {
 }
 
 model RosterTimeslot {
-  id         Int                       @id @default(autoincrement())
-  rosterId   Int                       @map("roster_id")
-  name       String                    @map("name")
-  roster     Roster                    @relation(fields: [rosterId], references: [id], onDelete: Cascade)
-  posts      RosterTimeslotPost[]
-  offWorkers RosterTimeslotOffWorker[]
+  id          Int                        @id @default(autoincrement())
+  rosterId    Int                        @map("roster_id")
+  name        String                     @map("name")
+  roster      Roster                     @relation(fields: [rosterId], references: [id], onDelete: Cascade)
+  assignments RosterTimeslotAssignment[]
+  offWorkers  RosterTimeslotOffWorker[]
 
   @@unique([rosterId, name])
   @@index([rosterId])
@@ -293,7 +293,7 @@ model RosterTimeslotAudit {
   @@map("roster_timeslot_audit")
 }
 
-model RosterTimeslotPost {
+model RosterTimeslotAssignment {
   id               Int            @id @default(autoincrement())
   rosterTimeslotId Int            @map("roster_timeslot_id")
   postId           Int            @map("post_id")
@@ -304,10 +304,10 @@ model RosterTimeslotPost {
   @@index([rosterTimeslotId])
   @@index([postId])
   @@index([workerId])
-  @@map("roster_timeslot_post")
+  @@map("roster_timeslot_assignment")
 }
 
-model RosterTimeslotPostAudit {
+model RosterTimeslotAssignmentAudit {
   auditId          Int      @id @default(autoincrement()) @map("audit_id")
   auditTimestamp   DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
   auditAction      String   @map("audit_action")
@@ -316,7 +316,7 @@ model RosterTimeslotPostAudit {
   postId           Int?     @map("post_id")
   workerId         Int?     @map("worker_id")
 
-  @@map("roster_timeslot_post_audit")
+  @@map("roster_timeslot_assignment_audit")
 }
 
 model RosterTimeslotOffWorker {
