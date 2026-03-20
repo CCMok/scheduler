@@ -18,6 +18,55 @@ import { FORM_FIELD, FORM_ID, formSchema } from "./create-roster-form-utils";
 import { revalidateLogic } from "@tanstack/react-form";
 import { buildRosterUrl } from "@/app/(private)/roster/_components/param";
 import RosterEditTable from "@/components/roster/table/edit/roster-edit-table";
+import { CreateRosterRequest, TimeslotRequest } from "@/libs/roster/create/create-roster-request";
+import { Off, RosterItem, Timeslot } from "@/libs/roster/roster";
+
+export const getCreateRosterRequest = (
+  teamId: number,
+  name: string,
+  timeslots: Timeslot[],
+  rosterItems: RosterItem[],
+  offs: Off[],
+): CreateRosterRequest => {
+  const timeslotMap = new Map<number, TimeslotRequest>(timeslots.map(timeslot => [timeslot.id, {
+    name: timeslot.name,
+    posts: [],
+    offWorkerIds: [],
+  }]))
+
+  for (const rosterItem of rosterItems) {
+    for (const assignment of rosterItem.assignments) {
+      const timeslotItem = timeslotMap.get(assignment.timeslotId)
+      if (!timeslotItem) {
+        console.error(`Timeslot not found when parsing assignment. timeslotId=${assignment.timeslotId}`);
+        continue;
+      }
+
+      timeslotItem.posts.push({
+        postId: rosterItem.postId,
+        workerId: assignment.workerId,
+      })
+    }
+  }
+
+  for (const off of offs) {
+    for (const timeslotId of off.timeslotIds) {
+      const timeslotItem = timeslotMap.get(timeslotId)
+      if (!timeslotItem) {
+        console.error(`Timeslot not found when parsing off. timeslotId=${timeslotId}`);
+        continue;
+      }
+
+      timeslotItem.offWorkerIds.push(off.workerId)
+    }
+  }
+
+  return {
+    teamId,
+    name,
+    timeslots: timeslots.filter(timeslot => timeslotMap.has(timeslot.id)).map(timeslot => timeslotMap.get(timeslot.id)!),
+  }
+}
 
 export default function ResultPreviewStep({
   postPromise,
@@ -59,13 +108,15 @@ export default function ResultPreviewStep({
   }
 
   const submit = async () => {
-    const response = await createRosterAction({
+    const request = getCreateRosterRequest(
       teamId,
-      name: form.state.values[FORM_FIELD.NAME],
+      form.state.values[FORM_FIELD.NAME],
       timeslots,
-      roster: modifiedRoster,
+      modifiedRoster,
       offs,
-    })
+    );
+
+    const response = await createRosterAction(request)
 
     if (!response.isSuccess) {
       toast.error(response.message)

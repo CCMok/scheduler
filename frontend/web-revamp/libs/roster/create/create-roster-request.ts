@@ -1,12 +1,20 @@
 import { z } from "zod";
-import { offSchema, rosterItemSchema, timeslotSchema } from "../roster";
+
+export const timeslotRequestSchema = z.object({
+  name: z.string(),
+  posts: z.object({
+    postId: z.number(),
+    workerId: z.number().optional(),
+  }).array(),
+  offWorkerIds: z.number().array(),
+})
+
+export type TimeslotRequest = z.infer<typeof timeslotRequestSchema>;
 
 export const createRosterRequestSchema = z.object({
   teamId: z.number(),
   name: z.string(),
-  timeslots: timeslotSchema.array(),
-  roster: rosterItemSchema.array(),
-  offs: offSchema.array(),
+  timeslots: timeslotRequestSchema.array(),
 })
 
 export type CreateRosterRequest = z.infer<typeof createRosterRequestSchema>;
