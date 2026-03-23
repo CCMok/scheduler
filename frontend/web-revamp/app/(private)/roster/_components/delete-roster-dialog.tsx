@@ -58,7 +58,7 @@ export default function DeleteRosterDialog({
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
-            <CustomButton variant="outline">取消</CustomButton>
+            <CustomButton variant="outline">返回</CustomButton>
           </DialogClose>
           <LoadingButton
             variant='destructive'

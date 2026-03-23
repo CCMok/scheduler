@@ -27,6 +27,9 @@ export const getRosterById = cache(async (rosterId: number): Promise<RosterJoin 
             assignments: true,
             offWorkers: true,
           },
+          orderBy: {
+            id: Prisma.SortOrder.asc,
+          },
         },
       },
     });

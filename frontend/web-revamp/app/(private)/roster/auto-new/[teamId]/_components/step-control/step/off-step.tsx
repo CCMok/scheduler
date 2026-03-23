@@ -205,7 +205,7 @@ export default function OffStep({
             <p>確定後系統將自動編排值班表。</p>
             <DialogFooter>
               <DialogClose asChild>
-                <CustomButton variant="outline">取消</CustomButton>
+                <CustomButton variant="outline">返回</CustomButton>
               </DialogClose>
               <LoadingButton
                 isLoading={isSubmitting}

@@ -5,6 +5,7 @@ export enum Path {
 
   // functions
   AUTO_NEW = '/auto-new',
+  EDIT = '/edit',
 }
 
 export const REDIRECT_PRIVATE_PATH = Path.ROSTER;

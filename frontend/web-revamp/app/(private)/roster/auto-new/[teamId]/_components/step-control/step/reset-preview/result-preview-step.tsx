@@ -14,20 +14,18 @@ import { toast } from "sonner";
 import { Post, Worker } from "@/external/prisma/generated/client";
 import { Param } from "../../../param";
 import { useAppForm } from "@/components/_general/form/utils/form-utils";
-import { FORM_FIELD, FORM_ID, formSchema } from "./create-roster-form-utils";
+import { FORM_FIELD, FORM_ID, FormInput, formSchema } from "./create-roster-form-utils";
 import { revalidateLogic } from "@tanstack/react-form";
 import { buildRosterUrl } from "@/app/(private)/roster/_components/param";
 import RosterEditTable from "@/components/roster/table/edit/roster-edit-table";
-import { CreateRosterRequest, TimeslotRequest } from "@/libs/roster/create/create-roster-request";
+import { TimeslotRequest } from "@/libs/roster/create/create-roster-request";
 import { Off, RosterItem, Timeslot } from "@/libs/roster/roster";
 
-export const getCreateRosterRequest = (
-  teamId: number,
-  name: string,
+export const getTimeslotRequests = (
   timeslots: Timeslot[],
   rosterItems: RosterItem[],
   offs: Off[],
-): CreateRosterRequest => {
+): TimeslotRequest[] => {
   const timeslotMap = new Map<number, TimeslotRequest>(timeslots.map(timeslot => [timeslot.id, {
     name: timeslot.name,
     assignments: [],
@@ -61,11 +59,7 @@ export const getCreateRosterRequest = (
     }
   }
 
-  return {
-    teamId,
-    name,
-    timeslots: timeslots.filter(timeslot => timeslotMap.has(timeslot.id)).map(timeslot => timeslotMap.get(timeslot.id)!),
-  }
+  return timeslots.filter(timeslot => timeslotMap.has(timeslot.id)).map(timeslot => timeslotMap.get(timeslot.id)!)
 }
 
 export default function ResultPreviewStep({
@@ -97,8 +91,8 @@ export default function ResultPreviewStep({
     validators: {
       onDynamic: formSchema,
     },
-    onSubmit: async () => {
-      await submit()
+    onSubmit: async ({ value }) => {
+      await submit(value)
     },
   })
 
@@ -107,16 +101,12 @@ export default function ResultPreviewStep({
     return <StepSkeleton />
   }
 
-  const submit = async () => {
-    const request = getCreateRosterRequest(
+  const submit = async (input: FormInput) => {
+    const response = await createRosterAction({
       teamId,
-      form.state.values[FORM_FIELD.NAME],
-      timeslots,
-      modifiedRoster,
-      offs,
-    );
-
-    const response = await createRosterAction(request)
+      name: input[FORM_FIELD.NAME],
+      timeslots: getTimeslotRequests(timeslots, modifiedRoster, offs),
+    })
 
     if (!response.isSuccess) {
       toast.error(response.message)
@@ -157,7 +147,7 @@ export default function ResultPreviewStep({
             <p>預覽結果將不會儲存，請確定是否修改資料。</p>
             <DialogFooter>
               <DialogClose asChild>
-                <CustomButton variant="outline">取消</CustomButton>
+                <CustomButton variant="outline">返回</CustomButton>
               </DialogClose>
               <CustomButton
                 onClick={(e) => {
@@ -202,7 +192,7 @@ export default function ResultPreviewStep({
               </form.AppField>
               <DialogFooter>
                 <DialogClose asChild onClick={() => form.reset()}>
-                  <CustomButton variant="outline">取消</CustomButton>
+                  <CustomButton variant="outline">返回</CustomButton>
                 </DialogClose>
                 <form.AppForm>
                   <form.SubmitButton formId={FORM_ID}>

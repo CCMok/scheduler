@@ -8,6 +8,7 @@ import {
   Calendar,
   ChevronLeft,
   ChevronRight,
+  Pencil,
   Users,
   WandSparkles,
 } from "lucide-react";
@@ -145,13 +146,12 @@ export default function RosterPageContent({
                   自動編排
                 </CustomLink>
               </CustomButton>
-              {/* TODO */}
-              {/* <CustomButton asChild variant="outline">
-                <CustomLink href="" isDisabled={isNil(rosterId)}>
+              <CustomButton asChild variant="outline">
+                <CustomLink href={Path.ROSTER + Path.EDIT + "/" + (rosterId ?? "")} isDisabled={isNil(rosterId)}>
                   <Pencil />
-                  更新
+                  更改
                 </CustomLink>
-              </CustomButton> */}
+              </CustomButton>
               <DeleteRosterDialog
                 id={rosterId}
                 teamId={teamId}
