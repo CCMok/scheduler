@@ -19,12 +19,13 @@ import { revalidateLogic } from "@tanstack/react-form";
 import { buildRosterUrl } from "@/app/(private)/roster/_components/param";
 import RosterEditTable from "@/components/roster/table/edit/roster-edit-table";
 import { TimeslotRequest } from "@/libs/roster/create/create-roster-request";
-import { Off, RosterItem, Timeslot } from "@/libs/roster/roster";
+import { OffPerTimeslot, OffPerWorker, RosterItem, Timeslot } from "@/libs/roster/roster";
+import OffTable from "@/components/off/table/off-table";
 
 export const getTimeslotRequests = (
   timeslots: Timeslot[],
   rosterItems: RosterItem[],
-  offs: Off[],
+  offs: OffPerWorker[],
 ): TimeslotRequest[] => {
   const timeslotMap = new Map<number, TimeslotRequest>(timeslots.map(timeslot => [timeslot.id, {
     name: timeslot.name,
@@ -60,6 +61,24 @@ export const getTimeslotRequests = (
   }
 
   return timeslots.filter(timeslot => timeslotMap.has(timeslot.id)).map(timeslot => timeslotMap.get(timeslot.id)!)
+}
+
+const parseOffPerTimeslot = (offs: OffPerWorker[]): OffPerTimeslot[] => {
+  const offPerTimeslotMap = new Map<number, OffPerTimeslot>()
+  for (const off of offs) {
+    for (const timeslotId of off.timeslotIds) {
+      if (!offPerTimeslotMap.has(timeslotId)) {
+        offPerTimeslotMap.set(timeslotId, {
+          timeslotId,
+          workerIds: [],
+        })
+      }
+
+      offPerTimeslotMap.get(timeslotId)!.workerIds.push(off.workerId)
+    }
+  }
+
+  return Array.from(offPerTimeslotMap.values())
 }
 
 export default function ResultPreviewStep({
@@ -120,6 +139,15 @@ export default function ResultPreviewStep({
   return (
     <div className='space-y-4'>
       <p className='text-sm text-muted-foreground'>預覽結果還未儲存，離開頁面後需重新編排。</p>
+      <Card>
+        <CardContent>
+          <OffTable
+            offs={parseOffPerTimeslot(offs)}
+            timeslots={timeslots}
+            workers={workers}
+          />
+        </CardContent>
+      </Card>
       <Card>
         <CardContent>
           <RosterEditTable

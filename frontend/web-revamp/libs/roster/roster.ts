@@ -20,12 +20,19 @@ export const timeslotSchema = z.object({
 
 export type Timeslot = z.infer<typeof timeslotSchema>;
 
-export const offSchema = z.object({
+export const offPerWorkerSchema = z.object({
   workerId: z.number(),
   timeslotIds: z.number().array(),
 })
 
-export type Off = z.infer<typeof offSchema>;
+export type OffPerWorker = z.infer<typeof offPerWorkerSchema>;
+
+export const offPerTimeslotSchema = z.object({
+  timeslotId: z.number(),
+  workerIds: z.number().array(),
+})
+
+export type OffPerTimeslot = z.infer<typeof offPerTimeslotSchema>;
 
 export type RosterJoin = Roster & {
   timeslots: (RosterTimeslot & {

@@ -1,10 +1,10 @@
-import { Off, RosterItem, Timeslot } from "@/libs/roster/roster";
+import { OffPerWorker, RosterItem, Timeslot } from "@/libs/roster/roster";
 import { createStore } from "zustand/vanilla";
 
 export type AutoNewRosterState = {
   step: number;
   timeslots: Timeslot[];
-  offs: Off[];
+  offs: OffPerWorker[];
   initialRoster: RosterItem[];
   modifiedRoster: RosterItem[];
 }
@@ -13,7 +13,7 @@ export type AutoNewRosterAction = {
   nextStep: () => void;
   previousStep: () => void;
   setTimeslots: (timeslots: Timeslot[]) => void;
-  setOffs: (offs: Off[]) => void;
+  setOffs: (offs: OffPerWorker[]) => void;
   setInitialRoster: (initialRoster: RosterItem[]) => void;
   setModifiedRoster: (modifiedRoster: RosterItem[]) => void;
 }
@@ -28,7 +28,7 @@ export const initState: AutoNewRosterState = {
   modifiedRoster: [],
 }
 
-const filterValidTimeslots = (offs: Off[], timeslots: Timeslot[]) => {
+const filterValidTimeslots = (offs: OffPerWorker[], timeslots: Timeslot[]) => {
   return offs.map(off => ({
     ...off,
     timeslots: off.timeslotIds.filter((timeslotId) => timeslots.some(t => t.id === timeslotId)),
