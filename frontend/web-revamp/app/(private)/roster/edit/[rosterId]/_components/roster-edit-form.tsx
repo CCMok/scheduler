@@ -1,10 +1,10 @@
 'use client'
 
-import { Card, CardContent } from "@/external/shadcn/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card"
 import { useMemo, useState } from "react"
 import RosterEditTableSection from "./roster-edit-table-section"
 import { parseRosterItems, RosterItem, RosterJoin } from "@/libs/roster/roster"
-import { Post, Worker } from "@/external/prisma/generated/client"
+import { Post, RosterTimeslot, Worker } from "@/external/prisma/generated/client"
 import { useAppForm } from "@/components/_general/form/utils/form-utils"
 import { FORM_FIELD, FORM_ID, formSchema } from "./roster-edit-form-utils"
 import { revalidateLogic } from "@tanstack/react-form"
@@ -19,10 +19,10 @@ import CustomLink from "@/components/_general/_custom/link/custom-link"
 import { ChevronLeft, Save } from "lucide-react"
 
 export const getTimeslotRequests = (
-  roster: RosterJoin,
+  timeslots: RosterTimeslot[],
   rosterItems: RosterItem[],
 ): TimeslotRequest[] => {
-  const timeslotMap = new Map<number, TimeslotRequest>(roster.timeslots.map(timeslot => [timeslot.id, {
+  const timeslotMap = new Map<number, TimeslotRequest>(timeslots.map(timeslot => [timeslot.id, {
     id: timeslot.id,
     assignments: [],
   }]))
@@ -42,7 +42,7 @@ export const getTimeslotRequests = (
     }
   }
 
-  return roster.timeslots.filter(timeslot => timeslotMap.has(timeslot.id)).map(timeslot => timeslotMap.get(timeslot.id)!)
+  return timeslots.filter(timeslot => timeslotMap.has(timeslot.id)).map(timeslot => timeslotMap.get(timeslot.id)!)
 }
 
 export default function RosterEditForm({
@@ -78,7 +78,7 @@ export default function RosterEditForm({
     const response = await updateRosterAction({
       id: roster.id,
       name: form.state.values[FORM_FIELD.NAME],
-      timeslots: getTimeslotRequests(roster, modifiedRoster),
+      timeslots: getTimeslotRequests(roster.timeslots, modifiedRoster),
     })
 
     if (!response.isSuccess) {
@@ -100,6 +100,9 @@ export default function RosterEditForm({
       className="space-y-3"
     >
       <Card>
+        <CardHeader>
+          <CardTitle>基本資料</CardTitle>
+        </CardHeader>
         <CardContent>
           <form.AppField name={FORM_FIELD.NAME}>
             {(field) => (
@@ -113,6 +116,9 @@ export default function RosterEditForm({
         </CardContent>
       </Card>
       <Card>
+        <CardHeader>
+          <CardTitle>值班表</CardTitle>
+        </CardHeader>
         <CardContent>
           <RosterEditTableSection
             postsPromise={postsPromise}
