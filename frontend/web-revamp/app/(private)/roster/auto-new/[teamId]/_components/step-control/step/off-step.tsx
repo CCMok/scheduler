@@ -70,7 +70,7 @@ export default function OffStep({
         <div className='w-full lg:w-120'>
           <Card>
             <CardHeader>
-              <CardTitle>新增休息時段</CardTitle>
+              <CardTitle>新增休假時段</CardTitle>
             </CardHeader>
             <CardContent className='flex flex-col gap-4'>
               <Combobox

@@ -4,7 +4,7 @@ import { ChevronLeft, Save } from "lucide-react";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/external/shadcn/components/ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
-import { Card, CardContent } from "@/external/shadcn/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
 import { useAutoNewRosterStore } from "../store/auto-new-roster-store-provider";
 import { use } from "react";
 import { createRosterAction } from "@/libs/roster/create/create-roster-action";
@@ -140,15 +140,9 @@ export default function ResultPreviewStep({
     <div className='space-y-4'>
       <p className='text-sm text-muted-foreground'>預覽結果還未儲存，離開頁面後需重新編排。</p>
       <Card>
-        <CardContent>
-          <OffTable
-            offs={parseOffPerTimeslot(offs)}
-            timeslots={timeslots}
-            workers={workers}
-          />
-        </CardContent>
-      </Card>
-      <Card>
+        <CardHeader>
+          <CardTitle>值班表</CardTitle>
+        </CardHeader>
         <CardContent>
           <RosterEditTable
             timeslots={timeslots}
@@ -156,6 +150,18 @@ export default function ResultPreviewStep({
             workers={workers}
             roster={modifiedRoster}
             onChange={setModifiedRoster}
+          />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>休假時段</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <OffTable
+            offs={parseOffPerTimeslot(offs)}
+            timeslots={timeslots}
+            workers={workers}
           />
         </CardContent>
       </Card>

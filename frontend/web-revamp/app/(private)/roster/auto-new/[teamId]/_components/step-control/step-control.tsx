@@ -34,7 +34,7 @@ export default function StepControl({
       },
       {
         step: 1,
-        title: '選擇職員休息時段',
+        title: '選擇職員休假時段',
         children: <Suspense fallback={<StepSkeleton />}>
           <OffStep workersPromise={workersPromise}/>
         </Suspense>,

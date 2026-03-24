@@ -1,6 +1,8 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/external/shadcn/components/ui/table";
 import { OffPerTimeslot, Timeslot } from "@/libs/roster/roster";
 import { Worker } from "@/external/prisma/generated/client";
+import { Badge } from "@/external/shadcn/components/ui/badge";
+import { User } from "lucide-react";
 
 export default function OffTable({
   offs,
@@ -27,11 +29,17 @@ export default function OffTable({
           return (
             <TableRow key={timeslot.id}>
               <TableCell>{timeslot.name}</TableCell>
-              <TableCell>
+              <TableCell className='space-x-2'>
                 {targetOff?.workerIds.map((workerId, i) => {
                   const worker = workerMap.get(workerId);
                   return (
-                    <span key={workerId}>{i > 0 && ', '}{worker?.name}</span>
+                    <Badge
+                      key={workerId}
+                      variant='secondary'
+                    >
+                      <User />
+                      {worker?.name}
+                    </Badge>
                   )
                 })}
               </TableCell>

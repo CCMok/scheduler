@@ -1,8 +1,7 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card"
-import { useMemo, useState } from "react"
-import RosterEditTableSection from "./roster-edit-table-section"
+import { use, useMemo, useState } from "react"
 import { parseRosterItems, RosterItem, RosterJoin } from "@/libs/roster/roster"
 import { Post, RosterTimeslot, Worker } from "@/external/prisma/generated/client"
 import { useAppForm } from "@/components/_general/form/utils/form-utils"
@@ -17,6 +16,11 @@ import { buildRosterUrl } from "../../../_components/param"
 import { TimeslotRequest } from "@/libs/roster/update/update-roster-request"
 import CustomLink from "@/components/_general/_custom/link/custom-link"
 import { ChevronLeft, Save } from "lucide-react"
+import OffTable from "@/components/off/table/off-table"
+import dynamic from "next/dynamic"
+
+// Dnd hydration mismatch
+const RosterEditTable = dynamic(() => import("@/components/roster/table/edit/roster-edit-table"), { ssr: false })
 
 export const getTimeslotRequests = (
   timeslots: RosterTimeslot[],
@@ -54,6 +58,9 @@ export default function RosterEditForm({
   postsPromise: Promise<Post[]>;
   workersPromise: Promise<Worker[]>;
 }>) {
+  const posts = use(postsPromise)
+  const workers = use(workersPromise)
+
   const form = useAppForm({
     defaultValues: {
       [FORM_FIELD.NAME]: roster.name,
@@ -120,12 +127,27 @@ export default function RosterEditForm({
           <CardTitle>值班表</CardTitle>
         </CardHeader>
         <CardContent>
-          <RosterEditTableSection
-            postsPromise={postsPromise}
-            workersPromise={workersPromise}
+          <RosterEditTable
+            posts={posts}
+            workers={workers}
             timeslots={roster.timeslots}
             roster={modifiedRoster}
             onChange={setModifiedRoster}
+          />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>休假時段</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <OffTable
+            offs={roster.timeslots.map(t => ({
+              timeslotId: t.id,
+              workerIds: t.offWorkers.map(ow => ow.workerId),
+            }))}
+            timeslots={roster.timeslots}
+            workers={workers}
           />
         </CardContent>
       </Card>
