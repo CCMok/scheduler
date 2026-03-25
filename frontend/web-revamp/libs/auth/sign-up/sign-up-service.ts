@@ -10,6 +10,8 @@ import { User } from '@/external/prisma/generated/client';
 import { handlePersistError } from '@/libs/_general/database/database-utils';
 import { PrismaErrorCode } from '@/libs/_general/database/prisma-error-code';
 import { DEFAULT_ROLE } from '../authorization/role';
+import { sendEmail } from '@/libs/_general/email/email-manager';
+import SignUpVerificationEmail, { EMAIL_SUBJECT } from '@/emails/sign-up-verification-email';
 
 export const signUp = tryCatch(async (request: SignUpRequest): Promise<ServiceResponse> => {
   const parsedRequest = signUpRequestSchema.parse(request)
@@ -19,14 +21,18 @@ export const signUp = tryCatch(async (request: SignUpRequest): Promise<ServiceRe
   const saveResult = await saveEntity(parsedRequest, encryptedPassword)
   if (!saveResult.isSuccess) return saveResult
 
-  // send verification email // TODO
+  const emailSent = await sendVerificationEmail(saveResult.data)
+  if (!emailSent) return {
+    isSuccess: false,
+    message: Message.SYSTEM_ERROR,
+  }
 
   return {
     isSuccess: true,
   }
 })
 
-export const saveEntity = async (request: SignUpRequest, encryptedPassword: string): Promise<ServiceResponse<number>> => {
+export const saveEntity = async (request: SignUpRequest, encryptedPassword: string): Promise<ServiceResponse<User>> => {
   let user: User;
   try {
     user = await prisma.user.create({
@@ -49,6 +55,19 @@ export const saveEntity = async (request: SignUpRequest, encryptedPassword: stri
 
   return {
     isSuccess: true,
-    data: user.id,
+    data: user,
   }
+}
+
+const sendVerificationEmail = async (user: User): Promise<boolean> => {
+  const verifyUrl = ''; // TODO
+
+  return await sendEmail(
+    user.email,
+    EMAIL_SUBJECT,
+    SignUpVerificationEmail({
+      userName: user.name || user.email,
+      verifyUrl,
+    }),
+  )
 }
