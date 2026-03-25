@@ -7,4 +7,5 @@ export enum Message {
   INCORRECT = '不正確',
   ALREADY_USED = '{0}已被使用',
   NOT_FOUND = '{0}不存在',
+  NOT_VERIFIED = '未驗證',
 }

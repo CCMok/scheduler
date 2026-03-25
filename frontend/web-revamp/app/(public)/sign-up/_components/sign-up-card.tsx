@@ -2,18 +2,19 @@
 
 import { Field, FieldGroup } from "@/external/shadcn/components/ui/field";
 import { revalidateLogic } from "@tanstack/react-form";
-import { FORM_FIELD, FORM_ID, formSchema } from "./login-form-utils";
+import { FORM_FIELD, FORM_ID, formSchema } from "./sign-up-form-utils";
 import { useAppForm } from "@/components/_general/form/utils/form-utils";
-import { loginAction } from "@/libs/auth/login/login-action";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { Path, REDIRECT_PRIVATE_PATH } from "@/libs/_general/path/path";
+import { Path } from "@/libs/_general/path/path";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
-import { LogIn } from "lucide-react";
+import { UserPen } from "lucide-react";
 import CustomLink from "@/components/_general/_custom/link/custom-link";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
+import MandatoryLabel from "@/components/_general/form/label/mandatory-label";
+import { signUpAction } from "@/libs/auth/sign-up/sign-up-action";
+import { toast } from "sonner";
 
-export default function LoginCard({
+export default function SignUpCard({
   className,
 }: Readonly<{
   className?: string;
@@ -24,20 +25,24 @@ export default function LoginCard({
     defaultValues: {
       [FORM_FIELD.EMAIL]: '',
       [FORM_FIELD.PASSWORD]: '',
+      [FORM_FIELD.CONFIRM_PASSWORD]: '',
+      [FORM_FIELD.NAME]: '',
     },
     validationLogic: revalidateLogic(),
     validators: {
       onDynamic: formSchema,
     },
     onSubmit: async ({ value }) => {
-      const response = await loginAction(value)
+      const response = await signUpAction(value)
       if (!response.isSuccess) {
-        // TODO: handle not verified
         toast.error(response.message)
         return;
       }
-      toast.success('登入成功')
-      router.push(REDIRECT_PRIVATE_PATH);
+      toast.success('註冊成功', {
+        description: '請前往電郵驗證您的帳號',
+      })
+      // TODO verify email path
+      // router.push(REDIRECT_PRIVATE_PATH);
     },
   })
 
@@ -52,15 +57,15 @@ export default function LoginCard({
     >
       <Card>
         <CardHeader className='text-center'>
-          <CardTitle className='text-xl'>登入</CardTitle>
-          <CardDescription>輸入您的登入資訊</CardDescription>
+          <CardTitle className='text-xl'>註冊</CardTitle>
+          <CardDescription>輸入您的帳號資訊</CardDescription>
         </CardHeader>
         <CardContent>
           <FieldGroup>
             <form.AppField name={FORM_FIELD.EMAIL}>
               {(field) => (
                 <field.TextField
-                  label="電郵"
+                  label={<MandatoryLabel>電郵</MandatoryLabel>}
                   placeholder="m@example.com"
                   autoComplete="email"
                   type='email'
@@ -70,9 +75,27 @@ export default function LoginCard({
             <form.AppField name={FORM_FIELD.PASSWORD}>
               {(field) => (
                 <field.TextField
-                  label="密碼"
-                  autoComplete="current-password"
+                  label={<MandatoryLabel>密碼</MandatoryLabel>}
+                  autoComplete="new-password"
                   type='password'
+                  // TODO: password policy
+                />
+              )}
+            </form.AppField>
+            <form.AppField name={FORM_FIELD.CONFIRM_PASSWORD}>
+              {(field) => (
+                <field.TextField
+                  label={<MandatoryLabel>確認密碼</MandatoryLabel>}
+                  autoComplete="new-password"
+                  type='password'
+                />
+              )}
+            </form.AppField>
+            <form.AppField name={FORM_FIELD.NAME}>
+              {(field) => (
+                <field.TextField
+                  label="名稱"
+                  autoComplete="name"
                 />
               )}
             </form.AppField>
@@ -81,18 +104,18 @@ export default function LoginCard({
         <CardFooter className='flex-col space-y-2'>
           <form.AppForm>
             <Field>
-              <form.SubmitButton icon={<LogIn />}>
-                登入
+              <form.SubmitButton icon={<UserPen />}>
+                註冊
               </form.SubmitButton>
             </Field>
           </form.AppForm>
           <p>
             <span className='text-sm text-muted-foreground font-medium'>
-              沒有帳號?
+              已有帳號?
             </span>
             <CustomButton asChild variant='link' size='sm'>
-              <CustomLink href={Path.SIGN_UP}>
-                立即註冊
+              <CustomLink href={Path.LOGIN}>
+                返回登入
               </CustomLink>
             </CustomButton>
           </p>

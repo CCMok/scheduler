@@ -9,10 +9,10 @@ export default function HomeLayout({
 }>) {
   return (
     <div className="relative">
-      <div className="absolute h-[500px] w-full overflow-hidden pointer-events-none">
+      <div className="absolute h-[500px] w-full overflow-hidden pointer-events-none z-[-50]">
         <Meteors />
       </div>
-      <div className='absolute bottom-4 left-4'>
+      <div className='fixed bottom-4 left-4'>
         <ThemeToggle />
       </div>
       {children}

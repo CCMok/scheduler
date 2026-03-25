@@ -1,4 +1,4 @@
-type FailResponse = {
+export type FailResponse = {
   isSuccess: false;
   message: string;
 }

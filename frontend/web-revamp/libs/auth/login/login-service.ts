@@ -24,6 +24,11 @@ export const login = tryCatch(async (request: LoginRequest): Promise<ServiceResp
     message: CREDENTIAL_ERROR,
   }
 
+  if (!user.isEmailVerified) return {
+    isSuccess: false,
+    message: Message.NOT_VERIFIED,
+  }
+
   await createSession(user)
 
   return {
