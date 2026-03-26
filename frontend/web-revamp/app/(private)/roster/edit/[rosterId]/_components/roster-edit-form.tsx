@@ -12,12 +12,13 @@ import CustomButton from "@/components/_general/_custom/button/custom-button"
 import { updateRosterAction } from "@/libs/roster/update/update-roster-action"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
-import { buildRosterUrl } from "../../../_components/param"
+import { SearchParamKey } from "../../../_components/param"
 import { TimeslotRequest } from "@/libs/roster/update/update-roster-request"
 import CustomLink from "@/components/_general/_custom/link/custom-link"
 import { ChevronLeft, Save } from "lucide-react"
 import OffTable from "@/components/off/table/off-table"
 import dynamic from "next/dynamic"
+import { ROUTE } from "@/libs/_general/route/route"
 
 // Dnd hydration mismatch
 const RosterEditTable = dynamic(() => import("@/components/roster/table/edit/roster-edit-table"), { ssr: false })
@@ -94,7 +95,10 @@ export default function RosterEditForm({
     }
 
     toast.success('更改值班表成功')
-    router.push(buildRosterUrl(roster.teamId, roster.id))
+    router.push(ROUTE.private.roster.base({ 
+      [SearchParamKey.TEAM_ID]: roster.teamId, 
+      [SearchParamKey.ROSTER_ID]: roster.id,
+    }));
   }
 
   return (
@@ -170,7 +174,10 @@ export default function RosterEditForm({
                 <CustomButton variant="outline">返回</CustomButton>
               </DialogClose>
               <CustomButton asChild>
-                <CustomLink href={buildRosterUrl(roster.teamId, roster.id)}>
+                <CustomLink href={ROUTE.private.roster.base({ 
+                  [SearchParamKey.TEAM_ID]: roster.teamId, 
+                  [SearchParamKey.ROSTER_ID]: roster.id,
+                })}>
                   確定
                 </CustomLink>
               </CustomButton>

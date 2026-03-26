@@ -16,11 +16,12 @@ import { Param } from "../../../param";
 import { useAppForm } from "@/components/_general/form/utils/form-utils";
 import { FORM_FIELD, FORM_ID, FormInput, formSchema } from "./create-roster-form-utils";
 import { revalidateLogic } from "@tanstack/react-form";
-import { buildRosterUrl } from "@/app/(private)/roster/_components/param";
+import { SearchParamKey } from "@/app/(private)/roster/_components/param";
 import RosterEditTable from "@/components/roster/table/edit/roster-edit-table";
 import { TimeslotRequest } from "@/libs/roster/create/create-roster-request";
 import { OffPerTimeslot, OffPerWorker, RosterItem, Timeslot } from "@/libs/roster/roster";
 import OffTable from "@/components/off/table/off-table";
+import { ROUTE } from "@/libs/_general/route/route";
 
 export const getTimeslotRequests = (
   timeslots: Timeslot[],
@@ -133,7 +134,10 @@ export default function ResultPreviewStep({
     }
 
     toast.success('儲存值班表成功')
-    router.push(buildRosterUrl(teamId, response.data.id))
+    router.push(ROUTE.private.roster.base({
+      [SearchParamKey.TEAM_ID]: teamId,
+      [SearchParamKey.ROSTER_ID]: response.data.id,
+    }));
   }
 
   return (

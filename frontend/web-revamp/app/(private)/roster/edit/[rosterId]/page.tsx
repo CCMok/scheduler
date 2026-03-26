@@ -1,6 +1,5 @@
 import HeaderLayout from "@/components/_general/header/header-layout";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/external/shadcn/components/ui/breadcrumb";
-import { Path } from "@/libs/_general/path/path";
 import { notFound } from "next/navigation";
 import { Param } from "./_components/param";
 import { getRosterById } from "@/libs/roster/read/get-roster-service";
@@ -11,6 +10,7 @@ import H3 from "@/components/_general/_custom/typography/h3";
 import { getPosts } from "@/libs/post/read/get-post-service";
 import { getWorkers } from "@/libs/worker/read/get-worker-service";
 import RosterEditForm from "./_components/roster-edit-form";
+import { ROUTE } from "@/libs/_general/route/route";
 
 export default async function RosterEditPage({
   params,
@@ -30,7 +30,7 @@ export default async function RosterEditPage({
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href={Path.ROSTER}>值班表</BreadcrumbLink>
+              <BreadcrumbLink href={ROUTE.private.roster.base()}>值班表</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>

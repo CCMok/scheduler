@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { REDIRECT_PRIVATE_PATH, PUBLIC_PATH_EXCLUDE_HOME, REDIRECT_PUBLIC_PATH, Path } from "./libs/_general/path/path";
 import { getSession, refreshSession } from "./libs/_general/session/session-manager";
+import { PUBLIC_ROUTE_EXCLUDE_HOME, REDIRECT_PRIVATE_ROUTE, REDIRECT_PUBLIC_ROUTE, ROUTE } from "./libs/_general/route/route";
 
 export default async function proxy(req: NextRequest) {
   const isPublicPath = checkIsPublicPath(req.nextUrl.pathname);
@@ -11,19 +11,19 @@ export default async function proxy(req: NextRequest) {
   }
 
   if (isPublicPath && session) {
-    return NextResponse.redirect(new URL(REDIRECT_PRIVATE_PATH, req.url))
+    return NextResponse.redirect(new URL(REDIRECT_PRIVATE_ROUTE, req.url))
   }
 
   if (!isPublicPath && !session) {
-    return NextResponse.redirect(new URL(REDIRECT_PUBLIC_PATH, req.url))
+    return NextResponse.redirect(new URL(REDIRECT_PUBLIC_ROUTE, req.url))
   }
 
   return NextResponse.next()
 }
 
 const checkIsPublicPath = (path: string): boolean => {
-  return PUBLIC_PATH_EXCLUDE_HOME.some(publicPath => 
-    path === Path.HOME || path.startsWith(publicPath)
+  return PUBLIC_ROUTE_EXCLUDE_HOME.some(publicRoute => 
+    path === ROUTE.public.home || path.startsWith(publicRoute)
   );
 }
 

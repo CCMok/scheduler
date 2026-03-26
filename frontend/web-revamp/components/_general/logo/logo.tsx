@@ -1,7 +1,7 @@
 import { cn } from "@/external/shadcn/libs/utils";
 import { Leckerli_One } from "next/font/google";
 import CustomLink from "../_custom/link/custom-link";
-import { Path } from "@/libs/_general/path/path";
+import { ROUTE } from "@/libs/_general/route/route";
 
 const leckerliOne = Leckerli_One({ weight: '400', subsets: ["latin"] });
 
@@ -14,7 +14,7 @@ export default function Logo({
 }>) {
   return (
     <CustomLink
-      href={Path.HOME}
+      href={ROUTE.public.home}
       isDisabled={!isRedirectHome}
       className={cn(
         'space-x-2 flex items-center',

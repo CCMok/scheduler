@@ -1,6 +1,6 @@
 import 'server-only'
 import { cookies } from "next/headers"
-import { Path } from '../path/path'
+import { ROUTE } from '../route/route'
 
 export const setCookie = async (key: string,value: string, expires?: Date) => {
   const cookieStore = await cookies()
@@ -10,6 +10,6 @@ export const setCookie = async (key: string,value: string, expires?: Date) => {
     secure: true,
     expires,
     sameSite: 'lax',
-    path: Path.HOME,
+    path: ROUTE.public.home,
   })
 }

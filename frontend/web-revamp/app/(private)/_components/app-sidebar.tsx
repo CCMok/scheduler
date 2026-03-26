@@ -2,11 +2,11 @@ import CustomLink from "@/components/_general/_custom/link/custom-link";
 import ThemeToggle from "@/components/_general/theme/theme-toggle";
 import { DropdownMenu, DropdownMenuContent } from "@/external/shadcn/components/ui/dropdown-menu";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/external/shadcn/components/ui/sidebar";
-import { Path } from "@/libs/_general/path/path";
 import { Calendar } from "lucide-react";
 import { ComponentProps } from "react";
 import LogoutDropdownMenuItem from "./logout-dropdown-menu-item";
 import UserDropdownMenuTrigger from "./user-dropdown-menu-trigger";
+import { ROUTE } from "@/libs/_general/route/route";
 
 export default async function AppSidebar(props: Readonly<ComponentProps<typeof Sidebar>>) {
   return (
@@ -29,7 +29,7 @@ export default async function AppSidebar(props: Readonly<ComponentProps<typeof S
             <SidebarMenu>
                <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <CustomLink href={Path.ROSTER}>
+                    <CustomLink href={ROUTE.private.roster.base()}>
                       <Calendar />
                       <span>值班表</span>
                     </CustomLink>

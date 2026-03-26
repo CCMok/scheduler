@@ -1,6 +1,6 @@
 import CustomButton from '@/components/_general/_custom/button/custom-button';
 import CustomLink from '@/components/_general/_custom/link/custom-link';
-import { Path } from '@/libs/_general/path/path';
+import { ROUTE } from '@/libs/_general/route/route';
 
 export default function HomePage() {
   return (
@@ -11,7 +11,7 @@ export default function HomePage() {
           簡化您的日程安排並有效率地管理您的團隊。
         </p>
         <CustomButton className='mt-6' >
-          <CustomLink href={Path.LOGIN}>
+          <CustomLink href={ROUTE.public.login}>
             開始使用
           </CustomLink>
         </CustomButton>

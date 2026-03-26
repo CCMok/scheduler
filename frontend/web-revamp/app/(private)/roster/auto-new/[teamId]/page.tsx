@@ -1,6 +1,5 @@
 import HeaderLayout from "@/components/_general/header/header-layout";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/external/shadcn/components/ui/breadcrumb";
-import { Path } from "@/libs/_general/path/path";
 import TeamTitle from "./_components/team-title";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -11,6 +10,7 @@ import { getWorkers } from "@/libs/worker/read/get-worker-service";
 import { AutoNewRosterStoreProvider } from "./_components/step-control/step/store/auto-new-roster-store-provider";
 import { getPosts } from "@/libs/post/read/get-post-service";
 import { Param } from "./_components/param";
+import { ROUTE } from "@/libs/_general/route/route";
 
 export default async function RosterAutoNewPage({
   params,
@@ -30,7 +30,7 @@ export default async function RosterAutoNewPage({
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href={Path.ROSTER}>值班表</BreadcrumbLink>
+              <BreadcrumbLink href={ROUTE.private.roster.base()}>值班表</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>

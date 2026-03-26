@@ -14,17 +14,17 @@ import {
 } from "lucide-react";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
 import CustomLink from "@/components/_general/_custom/link/custom-link";
-import { Path } from "@/libs/_general/path/path";
 import { isNil } from "lodash";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { Card, CardContent, } from "@/external/shadcn/components/ui/card";
-import { buildRosterUrl } from "./param";
+import { SearchParamKey } from "./param";
 import H5 from "@/components/_general/_custom/typography/h5";
 import { Separator } from "@/external/shadcn/components/ui/separator";
 import DeleteRosterDialog from "./delete-roster-dialog";
 import { RosterJoin } from "@/libs/roster/roster";
 import RosterTableSection from "./roster-table-section";
+import { ROUTE } from "@/libs/_general/route/route";
 
 const TEAM_SELECT_ID = 'team-select';
 const ROSTER_SELECT_ID = 'roster-select';
@@ -50,12 +50,15 @@ export default function RosterPageContent({
 
   const setTeamId = useCallback((id?: number) => {
     if (isNil(id) || teamId === id) return;
-    router.push(buildRosterUrl(id));
+    router.push(ROUTE.private.roster.base({ [SearchParamKey.TEAM_ID]: id }));
   }, [router, teamId]);
 
   const setRosterId = useCallback((id?: number) => {
     if (isNil(teamId) || isNil(id) || rosterId === id) return;
-    router.push(buildRosterUrl(teamId, id));
+    router.push(ROUTE.private.roster.base({
+      [SearchParamKey.TEAM_ID]: teamId,
+      [SearchParamKey.ROSTER_ID]: id,
+    }));
   }, [router, teamId, rosterId]);
 
   const currentIndex = rosters.findIndex((r) => r.id === rosterId);
@@ -64,12 +67,18 @@ export default function RosterPageContent({
 
   const goPrev = useCallback(() => {
     if (isNil(teamId) || isNil(prevRosterId)) return;
-    router.replace(buildRosterUrl(teamId, prevRosterId));
+    router.replace(ROUTE.private.roster.base({
+      [SearchParamKey.TEAM_ID]: teamId,
+      [SearchParamKey.ROSTER_ID]: prevRosterId,
+    }));
   }, [router, teamId, prevRosterId]);
 
   const goNext = useCallback(() => {
     if (isNil(teamId) || isNil(nextRosterId)) return;
-    router.replace(buildRosterUrl(teamId, nextRosterId));
+    router.replace(ROUTE.private.roster.base({
+      [SearchParamKey.TEAM_ID]: teamId,
+      [SearchParamKey.ROSTER_ID]: nextRosterId,
+    }));
   }, [router, teamId, nextRosterId]);
 
   return (
@@ -139,7 +148,7 @@ export default function RosterPageContent({
             <div className="flex flex-wrap gap-3">
               <CustomButton asChild variant="default">
                 <CustomLink
-                  href={Path.ROSTER + Path.AUTO_NEW + "/" + (teamId ?? "")}
+                  href={ROUTE.private.roster.autoNew(teamId ?? '')}
                   isDisabled={isNil(teamId)}
                 >
                   <WandSparkles />
@@ -147,7 +156,10 @@ export default function RosterPageContent({
                 </CustomLink>
               </CustomButton>
               <CustomButton asChild variant="outline">
-                <CustomLink href={Path.ROSTER + Path.EDIT + "/" + (rosterId ?? "")} isDisabled={isNil(rosterId)}>
+                <CustomLink
+                  href={ROUTE.private.roster.edit(rosterId ?? '')}
+                  isDisabled={isNil(rosterId)}
+                >
                   <Pencil />
                   更改
                 </CustomLink>

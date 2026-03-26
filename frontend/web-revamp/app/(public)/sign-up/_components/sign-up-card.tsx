@@ -5,7 +5,6 @@ import { revalidateLogic } from "@tanstack/react-form";
 import { FORM_FIELD, FORM_ID, formSchema } from "./sign-up-form-utils";
 import { useAppForm } from "@/components/_general/form/utils/form-utils";
 import { useRouter } from "next/navigation";
-import { Path } from "@/libs/_general/path/path";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
 import { UserPen } from "lucide-react";
 import CustomLink from "@/components/_general/_custom/link/custom-link";
@@ -13,6 +12,7 @@ import CustomButton from "@/components/_general/_custom/button/custom-button";
 import MandatoryLabel from "@/components/_general/form/label/mandatory-label";
 import { signUpAction } from "@/libs/auth/sign-up/sign-up-action";
 import { toast } from "sonner";
+import { ROUTE } from "@/libs/_general/route/route";
 
 export default function SignUpCard({
   className,
@@ -114,7 +114,7 @@ export default function SignUpCard({
               已有帳號?
             </span>
             <CustomButton asChild variant='link' size='sm'>
-              <CustomLink href={Path.LOGIN}>
+              <CustomLink href={ROUTE.public.login}>
                 返回登入
               </CustomLink>
             </CustomButton>

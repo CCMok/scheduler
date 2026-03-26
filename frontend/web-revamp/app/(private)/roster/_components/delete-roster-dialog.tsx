@@ -7,9 +7,10 @@ import { deleteRosterAction } from "@/libs/roster/delete/delete-roster-action";
 import { isNil } from "lodash";
 import { Trash } from "lucide-react";
 import { useState } from "react";
-import { buildRosterUrl } from "./param";
+import { SearchParamKey } from "./param";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { ROUTE } from "@/libs/_general/route/route";
 
 export default function DeleteRosterDialog({
   id,
@@ -34,7 +35,7 @@ export default function DeleteRosterDialog({
     }
 
     toast.success('刪除值班表成功');
-    router.push(buildRosterUrl(teamId));
+    router.push(ROUTE.private.roster.base({ [SearchParamKey.TEAM_ID]: teamId }));
     setIsOpen(false);
   }
 

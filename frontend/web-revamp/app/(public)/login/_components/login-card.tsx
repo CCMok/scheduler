@@ -7,11 +7,11 @@ import { useAppForm } from "@/components/_general/form/utils/form-utils";
 import { loginAction } from "@/libs/auth/login/login-action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { Path, REDIRECT_PRIVATE_PATH } from "@/libs/_general/path/path";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
 import { LogIn } from "lucide-react";
 import CustomLink from "@/components/_general/_custom/link/custom-link";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
+import { REDIRECT_PRIVATE_ROUTE, ROUTE } from "@/libs/_general/route/route";
 
 export default function LoginCard({
   className,
@@ -37,7 +37,7 @@ export default function LoginCard({
         return;
       }
       toast.success('登入成功')
-      router.push(REDIRECT_PRIVATE_PATH);
+      router.push(REDIRECT_PRIVATE_ROUTE);
     },
   })
 
@@ -91,7 +91,7 @@ export default function LoginCard({
               沒有帳號?
             </span>
             <CustomButton asChild variant='link' size='sm'>
-              <CustomLink href={Path.SIGN_UP}>
+              <CustomLink href={ROUTE.public.signUp}>
                 立即註冊
               </CustomLink>
             </CustomButton>
