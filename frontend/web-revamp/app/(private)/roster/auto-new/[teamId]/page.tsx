@@ -10,7 +10,7 @@ import { getWorkers } from "@/libs/worker/read/get-worker-service";
 import { AutoNewRosterStoreProvider } from "./_components/step-control/step/store/auto-new-roster-store-provider";
 import { getPosts } from "@/libs/post/read/get-post-service";
 import { Param } from "./_components/param";
-import { ROUTE } from "@/libs/_general/route/route";
+import { ROUTE } from "@/libs/_general/route/route-config";
 
 export default async function RosterAutoNewPage({
   params,

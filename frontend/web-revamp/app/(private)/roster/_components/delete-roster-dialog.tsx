@@ -10,7 +10,7 @@ import { useState } from "react";
 import { SearchParamKey } from "./param";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ROUTE } from "@/libs/_general/route/route";
+import { ROUTE } from "@/libs/_general/route/route-config";
 
 export default function DeleteRosterDialog({
   id,

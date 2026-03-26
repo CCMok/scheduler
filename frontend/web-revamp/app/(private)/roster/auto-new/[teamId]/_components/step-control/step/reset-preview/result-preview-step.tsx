@@ -21,7 +21,7 @@ import RosterEditTable from "@/components/roster/table/edit/roster-edit-table";
 import { TimeslotRequest } from "@/libs/roster/create/create-roster-request";
 import { OffPerTimeslot, OffPerWorker, RosterItem, Timeslot } from "@/libs/roster/roster";
 import OffTable from "@/components/off/table/off-table";
-import { ROUTE } from "@/libs/_general/route/route";
+import { ROUTE } from "@/libs/_general/route/route-config";
 
 export const getTimeslotRequests = (
   timeslots: Timeslot[],

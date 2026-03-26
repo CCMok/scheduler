@@ -1,7 +1,7 @@
 import { cn } from "@/external/shadcn/libs/utils";
 import { Leckerli_One } from "next/font/google";
 import CustomLink from "../_custom/link/custom-link";
-import { ROUTE } from "@/libs/_general/route/route";
+import { ROUTE } from "@/libs/_general/route/route-config";
 
 const leckerliOne = Leckerli_One({ weight: '400', subsets: ["latin"] });
 

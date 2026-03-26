@@ -1,6 +1,6 @@
 import CustomButton from '@/components/_general/_custom/button/custom-button';
 import CustomLink from '@/components/_general/_custom/link/custom-link';
-import { ROUTE } from '@/libs/_general/route/route';
+import { ROUTE } from '@/libs/_general/route/route-config';
 
 export default function HomePage() {
   return (

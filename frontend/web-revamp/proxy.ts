@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession, refreshSession } from "./libs/_general/session/session-manager";
-import { PUBLIC_ROUTE_EXCLUDE_HOME, REDIRECT_PRIVATE_ROUTE, REDIRECT_PUBLIC_ROUTE, ROUTE } from "./libs/_general/route/route";
+import { PUBLIC_ROUTE_EXCLUDE_HOME, REDIRECT_PRIVATE_ROUTE, REDIRECT_PUBLIC_ROUTE, ROUTE } from "./libs/_general/route/route-config";
 
 export default async function proxy(req: NextRequest) {
   const isPublicPath = checkIsPublicPath(req.nextUrl.pathname);

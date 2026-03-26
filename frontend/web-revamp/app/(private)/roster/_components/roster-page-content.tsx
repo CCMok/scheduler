@@ -24,7 +24,7 @@ import { Separator } from "@/external/shadcn/components/ui/separator";
 import DeleteRosterDialog from "./delete-roster-dialog";
 import { RosterJoin } from "@/libs/roster/roster";
 import RosterTableSection from "./roster-table-section";
-import { ROUTE } from "@/libs/_general/route/route";
+import { ROUTE } from "@/libs/_general/route/route-config";
 
 const TEAM_SELECT_ID = 'team-select';
 const ROSTER_SELECT_ID = 'roster-select';

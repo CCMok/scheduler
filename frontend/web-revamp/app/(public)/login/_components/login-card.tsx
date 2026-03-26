@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { LogIn } from "lucide-react";
 import CustomLink from "@/components/_general/_custom/link/custom-link";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
-import { REDIRECT_PRIVATE_ROUTE, ROUTE } from "@/libs/_general/route/route";
+import { REDIRECT_PRIVATE_ROUTE, ROUTE } from "@/libs/_general/route/route-config";
 
 export default function LoginCard({
   className,

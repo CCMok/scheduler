@@ -18,7 +18,7 @@ import CustomLink from "@/components/_general/_custom/link/custom-link"
 import { ChevronLeft, Save } from "lucide-react"
 import OffTable from "@/components/off/table/off-table"
 import dynamic from "next/dynamic"
-import { ROUTE } from "@/libs/_general/route/route"
+import { ROUTE } from "@/libs/_general/route/route-config"
 
 // Dnd hydration mismatch
 const RosterEditTable = dynamic(() => import("@/components/roster/table/edit/roster-edit-table"), { ssr: false })

@@ -4,7 +4,7 @@ import { getSessionPayload } from '../session/session-manager';
 import { encrypt } from '../jwt/jwt-manager';
 import { sendEmail } from './email-manager';
 import SignUpVerificationEmail, { EMAIL_SUBJECT } from '@/emails/sign-up-verification-email';
-import { ROUTE } from '../route/route';
+import { ROUTE } from '../route/route-config';
 
 const EXPIRATION_TIME = 15 * 60 * 1000
 

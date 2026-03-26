@@ -12,7 +12,7 @@ import CustomButton from "@/components/_general/_custom/button/custom-button";
 import MandatoryLabel from "@/components/_general/form/label/mandatory-label";
 import { signUpAction } from "@/libs/auth/sign-up/sign-up-action";
 import { toast } from "sonner";
-import { ROUTE } from "@/libs/_general/route/route";
+import { ROUTE } from "@/libs/_general/route/route-config";
 
 export default function SignUpCard({
   className,
@@ -41,8 +41,7 @@ export default function SignUpCard({
       toast.success('註冊成功', {
         description: '請前往電郵驗證您的帳號',
       })
-      // TODO verify email path
-      // router.push(REDIRECT_PRIVATE_PATH);
+      router.push(ROUTE.public.verifyEmailSent);
     },
   })
 

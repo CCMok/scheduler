@@ -6,7 +6,7 @@ import { Calendar } from "lucide-react";
 import { ComponentProps } from "react";
 import LogoutDropdownMenuItem from "./logout-dropdown-menu-item";
 import UserDropdownMenuTrigger from "./user-dropdown-menu-trigger";
-import { ROUTE } from "@/libs/_general/route/route";
+import { ROUTE } from "@/libs/_general/route/route-config";
 
 export default async function AppSidebar(props: Readonly<ComponentProps<typeof Sidebar>>) {
   return (
