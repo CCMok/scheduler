@@ -10,8 +10,7 @@ import { User } from '@/external/prisma/generated/client';
 import { handlePersistError } from '@/libs/_general/database/database-utils';
 import { PrismaErrorCode } from '@/libs/_general/database/prisma-error-code';
 import { DEFAULT_ROLE } from '../authorization/role';
-import { sendEmail } from '@/libs/_general/email/email-manager';
-import SignUpVerificationEmail, { EMAIL_SUBJECT } from '@/emails/sign-up-verification-email';
+import { sendEmailVerification } from '@/libs/_general/email/email-verification-manager';
 
 export const signUp = tryCatch(async (request: SignUpRequest): Promise<ServiceResponse> => {
   const parsedRequest = signUpRequestSchema.parse(request)
@@ -21,7 +20,7 @@ export const signUp = tryCatch(async (request: SignUpRequest): Promise<ServiceRe
   const saveResult = await saveEntity(parsedRequest, encryptedPassword)
   if (!saveResult.isSuccess) return saveResult
 
-  const emailSent = await sendVerificationEmail(saveResult.data)
+  const emailSent = await sendEmailVerification(saveResult.data)
   if (!emailSent) return {
     isSuccess: false,
     message: Message.SYSTEM_ERROR,
@@ -57,17 +56,4 @@ export const saveEntity = async (request: SignUpRequest, encryptedPassword: stri
     isSuccess: true,
     data: user,
   }
-}
-
-const sendVerificationEmail = async (user: User): Promise<boolean> => {
-  const verifyUrl = ''; // TODO
-
-  return await sendEmail(
-    user.email,
-    EMAIL_SUBJECT,
-    SignUpVerificationEmail({
-      userName: user.name || user.email,
-      verifyUrl,
-    }),
-  )
 }

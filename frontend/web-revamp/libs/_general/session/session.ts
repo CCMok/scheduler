@@ -1,10 +1,10 @@
 import { z } from "zod";
 
-export const sessionSchema = z.object({
+export const sessionPayloadSchema = z.object({
   userId: z.number(),
   email: z.string(),
   name: z.string().optional(),
   roleId: z.number(),
 })
 
-export type Session = z.infer<typeof sessionSchema>
+export type SessionPayload = z.infer<typeof sessionPayloadSchema>

@@ -1,5 +1,5 @@
 import 'server-only'
-import { Session, sessionSchema } from './session'
+import { SessionPayload, sessionPayloadSchema } from './session'
 import { User } from '@/external/prisma/generated/client'
 import { decrypt, encrypt } from '../jwt/jwt-manager'
 import { setCookie } from '../cookie/cookie-manager'
@@ -10,24 +10,19 @@ const COOKIE_NAME = 'session'
 
 export const createSession = async (user: User) => {
   const expirationTime = new Date(Date.now() + EXPIRATION_TIME)
-  const payload: Session = {
-    userId: user.id,
-    email: user.email,
-    name: user.name ?? undefined,
-    roleId: user.roleId,
-  }
+  const payload = getSessionPayload(user)
   const jwt = await encrypt(payload, expirationTime)
   await setCookie(COOKIE_NAME, jwt, expirationTime)
 }
 
-export const getSession = async (): Promise<Session | undefined> => {
+export const getSession = async (): Promise<SessionPayload | undefined> => {
   const jwt = (await cookies()).get(COOKIE_NAME)?.value
   if (!jwt) return
 
   const payload = await decrypt(jwt)
   if (!payload) return
 
-  const parseResult = sessionSchema.safeParse(payload)
+  const parseResult = sessionPayloadSchema.safeParse(payload)
   if (!parseResult.success) {
     console.error('Invalid session payload')
     console.error(parseResult.error)
@@ -48,4 +43,13 @@ export const refreshSession = async (): Promise<void> => {
   const expirationTime = new Date(Date.now() + EXPIRATION_TIME)
   const jwt = await encrypt(session, expirationTime)
   await setCookie(COOKIE_NAME, jwt, expirationTime)
+}
+
+export const getSessionPayload = (user: User): SessionPayload => {
+  return {
+    userId: user.id,
+    email: user.email,
+    name: user.name ?? undefined,
+    roleId: user.roleId,
+  }
 }
