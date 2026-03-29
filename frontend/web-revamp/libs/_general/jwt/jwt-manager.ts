@@ -19,7 +19,7 @@ export const decrypt = async (jwt: string | Uint8Array): Promise<JWTPayload | un
     })
     return payload
   } catch (error) {
-    console.error('Failed to verify JWT')
-    console.error(error)
+    console.info('Failed to verify JWT')
+    console.info(error)
   }
 }

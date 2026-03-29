@@ -6,7 +6,7 @@ import { sendEmail } from './email-manager';
 import SignUpVerificationEmail, { EMAIL_SUBJECT } from '@/emails/sign-up-verification-email';
 import { ROUTE } from '../route/route-config';
 
-const EXPIRATION_TIME = 15 * 60 * 1000
+const EXPIRATION_TIME = '15m'
 
 const BASE_URL = (() => {
   if (process.env.SITE_DOMAIN) {
