@@ -23,7 +23,8 @@ enum Segment {
   LOGIN = '/login',
   SIGN_UP = '/sign-up',
   VERIFY_EMAIL = '/verify-email',
-  VERIFY_EMAIL_SENT = '/verify-email-sent',
+  SENT = '/sent',
+  FAIL = '/fail',
 
   // Function
   AUTO_NEW = '/auto-new',
@@ -42,16 +43,18 @@ export const ROUTE = {
     home: '/',
     login: Segment.LOGIN,
     signUp: Segment.SIGN_UP,
-    verifyEmailSent: Segment.VERIFY_EMAIL_SENT,
-    verifyEmail: (token: string) => `${Segment.VERIFY_EMAIL}/${token}` as Route,
+    verifyEmail: {
+      token: (token: string) => `${Segment.VERIFY_EMAIL}/${token}` as Route,
+      fail: `${Segment.VERIFY_EMAIL}${Segment.FAIL}`,
+      sent: `${Segment.VERIFY_EMAIL}${Segment.SENT}`,
+    }
   },
 } as const;
 
 export const REDIRECT_PRIVATE_ROUTE = ROUTE.private.roster.base();
 export const REDIRECT_PUBLIC_ROUTE = ROUTE.public.login;
 export const PUBLIC_ROUTE_EXCLUDE_HOME = [
-  ROUTE.public.login,
-  ROUTE.public.signUp,
-  ROUTE.public.verifyEmailSent,
-  ROUTE.public.verifyEmail(''),
+  Segment.LOGIN,
+  Segment.SIGN_UP,
+  Segment.VERIFY_EMAIL,
 ] as const;

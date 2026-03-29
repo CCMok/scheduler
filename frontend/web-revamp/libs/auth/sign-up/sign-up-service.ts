@@ -10,7 +10,7 @@ import { User } from '@/external/prisma/generated/client';
 import { handlePersistError } from '@/libs/_general/database/database-utils';
 import { PrismaErrorCode } from '@/libs/_general/database/prisma-error-code';
 import { DEFAULT_ROLE } from '../authorization/role';
-import { sendEmailVerification } from '@/libs/_general/email/email-verification-manager';
+import { sendSignUpVerification } from '@/libs/_general/email/email-verification-manager';
 
 export const signUp = tryCatch(async (request: SignUpRequest): Promise<ServiceResponse> => {
   const parsedRequest = signUpRequestSchema.parse(request)
@@ -20,7 +20,7 @@ export const signUp = tryCatch(async (request: SignUpRequest): Promise<ServiceRe
   const saveResult = await saveEntity(parsedRequest, encryptedPassword)
   if (!saveResult.isSuccess) return saveResult
 
-  const emailSent = await sendEmailVerification(saveResult.data)
+  const emailSent = await sendSignUpVerification(saveResult.data)
   if (!emailSent) return {
     isSuccess: false,
     message: Message.SYSTEM_ERROR,

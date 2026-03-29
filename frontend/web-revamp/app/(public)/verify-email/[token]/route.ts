@@ -5,23 +5,28 @@ import { NextRequest } from "next/server";
 import { SessionPayload, sessionPayloadSchema } from '@/libs/_general/session/session';
 import { User } from '@/external/prisma/generated/client';
 import { createSession } from '@/libs/_general/session/session-manager';
-// TODO: redirect
+import { redirect } from 'next/navigation';
+import { ROUTE } from '@/libs/_general/route/route-config';
+
 export async function GET(_req: NextRequest, ctx: RouteContext<'/verify-email/[token]'>) {
   const { token } = await ctx.params;
 
   const payload = await decryptToken(token)
-  if (!payload) return Response.json({ message: 'Unauthorized' });
+  if (!payload) {
+    redirect(ROUTE.public.verifyEmail.fail)
+  }
 
-  const user = await getUser(payload.userId)
-  if (!user) return Response.json({ message: 'User not found' });
+  let user = await getUser(payload.userId)
+  if (!user) {
+    redirect(ROUTE.public.verifyEmail.fail)
+  }
 
-  if (user.isEmailVerified) return Response.json({ message: 'Email already verified' });
+  if (!user.isEmailVerified) {
+    user = await updateUserVerified(payload.userId)
+  }
 
-  const updatedUser = await updateUserVerified(payload.userId)
-
-  await createSession(updatedUser)
-
-  return Response.json({ message: 'Verified' });
+  await createSession(user)
+  redirect(ROUTE.private.roster.base())
 }
 
 const decryptToken = async (token: string): Promise<SessionPayload | undefined> => {

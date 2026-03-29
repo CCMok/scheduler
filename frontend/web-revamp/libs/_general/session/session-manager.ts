@@ -2,21 +2,20 @@ import 'server-only'
 import { SessionPayload, sessionPayloadSchema } from './session'
 import { User } from '@/external/prisma/generated/client'
 import { decrypt, encrypt } from '../jwt/jwt-manager'
-import { setCookie } from '../cookie/cookie-manager'
+import { CookieName, setCookie } from '../cookie/cookie-manager'
 import { cookies } from 'next/headers'
 
 const EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000
-const COOKIE_NAME = 'session'
 
 export const createSession = async (user: User) => {
   const expirationTime = new Date(Date.now() + EXPIRATION_TIME)
   const payload = getSessionPayload(user)
   const jwt = await encrypt(payload, expirationTime)
-  await setCookie(COOKIE_NAME, jwt, expirationTime)
+  await setCookie(CookieName.SESSION, jwt, expirationTime)
 }
 
 export const getSession = async (): Promise<SessionPayload | undefined> => {
-  const jwt = (await cookies()).get(COOKIE_NAME)?.value
+  const jwt = (await cookies()).get(CookieName.SESSION)?.value
   if (!jwt) return
 
   const payload = await decrypt(jwt)
@@ -33,7 +32,7 @@ export const getSession = async (): Promise<SessionPayload | undefined> => {
 }
 
 export const deleteSession = async (): Promise<void> => {
-  (await cookies()).delete(COOKIE_NAME)
+  (await cookies()).delete(CookieName.SESSION)
 }
 
 export const refreshSession = async (): Promise<void> => {
@@ -42,7 +41,7 @@ export const refreshSession = async (): Promise<void> => {
 
   const expirationTime = new Date(Date.now() + EXPIRATION_TIME)
   const jwt = await encrypt(session, expirationTime)
-  await setCookie(COOKIE_NAME, jwt, expirationTime)
+  await setCookie(CookieName.SESSION, jwt, expirationTime)
 }
 
 export const getSessionPayload = (user: User): SessionPayload => {

@@ -18,10 +18,10 @@ const BASE_URL = (() => {
   return 'http://localhost:3000'
 })()
 
-export const sendEmailVerification = async (user: User): Promise<boolean> => {
+export const sendSignUpVerification = async (user: User): Promise<boolean> => {
   const payload = getSessionPayload(user)
   const token = await encrypt(payload, EXPIRATION_TIME)
-  const verifyUrl = `${BASE_URL}${ROUTE.public.verifyEmail(token)}`;
+  const verifyUrl = `${BASE_URL}${ROUTE.public.verifyEmail.token(token)}`;
 
   return await sendEmail(
     user.email,

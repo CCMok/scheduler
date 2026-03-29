@@ -38,10 +38,7 @@ export default function SignUpCard({
         toast.error(response.message)
         return;
       }
-      toast.success('註冊成功', {
-        description: '請前往電郵驗證您的帳號',
-      })
-      router.push(ROUTE.public.verifyEmailSent);
+      router.push(ROUTE.public.verifyEmail.sent);
     },
   })
 
