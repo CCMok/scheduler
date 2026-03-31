@@ -24,7 +24,6 @@ enum Segment {
   SIGN_UP = '/sign-up',
   VERIFY_EMAIL = '/verify-email',
   SENT = '/sent',
-  FAIL = '/fail',
 
   // Function
   AUTO_NEW = '/auto-new',
@@ -45,7 +44,6 @@ export const ROUTE = {
     signUp: Segment.SIGN_UP,
     verifyEmail: {
       token: (token: string) => `${Segment.VERIFY_EMAIL}/${token}` as Route,
-      fail: `${Segment.VERIFY_EMAIL}${Segment.FAIL}`,
       sent: `${Segment.VERIFY_EMAIL}${Segment.SENT}`,
     }
   },
