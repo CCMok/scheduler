@@ -11,12 +11,14 @@ export default function TextField({
   placeholder,
   autoComplete = 'off',
   type = 'text',
+  showError,
 }: Readonly<{
   className?: string;
   label?: ReactNode;
   placeholder?: string;
   autoComplete?: HTMLInputAutoCompleteAttribute;
   type?: HTMLInputTypeAttribute;
+  showError?: boolean;
 }>) {
   const field = useFieldContext<string>()
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
@@ -27,6 +29,7 @@ export default function TextField({
       label={label}
       isInvalid={isInvalid}
       errors={field.state.meta.errors}
+      showError={showError}
     >
       <Input
         id={field.name}

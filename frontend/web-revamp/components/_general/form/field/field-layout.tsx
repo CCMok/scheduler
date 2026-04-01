@@ -8,6 +8,7 @@ export default function FieldLayout({
   label,
   isInvalid,
   errors,
+  showError = true,
 }: Readonly<{
   children?: ReactNode;
   className?: string;
@@ -15,12 +16,13 @@ export default function FieldLayout({
   label?: ReactNode;
   isInvalid?: boolean;
   errors?: ({ message?: string } | undefined)[];
+  showError?: boolean;
 }>) {
   return (
     <Field className={className} data-invalid={isInvalid}>
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
       {children}
-      {isInvalid && (
+      {isInvalid && showError && (
         <FieldError errors={errors} />
       )}
     </Field>

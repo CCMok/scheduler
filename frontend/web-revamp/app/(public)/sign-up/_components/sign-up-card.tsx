@@ -13,6 +13,7 @@ import MandatoryLabel from "@/components/_general/form/label/mandatory-label";
 import { signUpAction } from "@/libs/auth/sign-up/sign-up-action";
 import { toast } from "sonner";
 import { ROUTE } from "@/libs/_general/route/route-config";
+import PasswordRequirement from "./password-requirement";
 
 export default function SignUpCard({
   className,
@@ -70,12 +71,15 @@ export default function SignUpCard({
             </form.AppField>
             <form.AppField name={FORM_FIELD.PASSWORD}>
               {(field) => (
-                <field.TextField
-                  label={<MandatoryLabel>密碼</MandatoryLabel>}
-                  autoComplete="new-password"
-                  type='password'
-                  // TODO: password policy
-                />
+                <div className='space-y-2'>
+                  <field.TextField
+                    label={<MandatoryLabel>密碼</MandatoryLabel>}
+                    autoComplete="new-password"
+                    type='password'
+                    showError={false}
+                  />
+                  <PasswordRequirement value={field.state.value} />
+                </div>
               )}
             </form.AppField>
             <form.AppField name={FORM_FIELD.CONFIRM_PASSWORD}>
