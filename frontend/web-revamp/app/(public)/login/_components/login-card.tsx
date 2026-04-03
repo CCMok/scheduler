@@ -71,6 +71,13 @@ export default function LoginCard({
               {(field) => (
                 <field.TextField
                   label="密碼"
+                  labelAddOn={
+                    <CustomButton asChild variant='link' className='h-fit p-0'>
+                      <CustomLink href={'/'}> {/*TODO*/}
+                        忘記密碼
+                      </CustomLink>
+                    </CustomButton>
+                  }
                   autoComplete="current-password"
                   type='password'
                 />

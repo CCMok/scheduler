@@ -8,6 +8,7 @@ import { HTMLInputAutoCompleteAttribute, HTMLInputTypeAttribute, ReactNode } fro
 export default function TextField({
   className,
   label,
+  labelAddOn,
   placeholder,
   autoComplete = 'off',
   type = 'text',
@@ -15,6 +16,7 @@ export default function TextField({
 }: Readonly<{
   className?: string;
   label?: ReactNode;
+  labelAddOn?: ReactNode;
   placeholder?: string;
   autoComplete?: HTMLInputAutoCompleteAttribute;
   type?: HTMLInputTypeAttribute;
@@ -27,6 +29,7 @@ export default function TextField({
       className={className}
       id={field.name}
       label={label}
+      labelAddOn={labelAddOn}
       isInvalid={isInvalid}
       errors={field.state.meta.errors}
       showError={showError}
