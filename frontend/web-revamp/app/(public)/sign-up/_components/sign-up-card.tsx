@@ -39,7 +39,7 @@ export default function SignUpCard({
         toast.error(response.message)
         return;
       }
-      router.push(ROUTE.public.verifyEmail.sent);
+      router.push(ROUTE.public.signUp.verifyEmail.sent);
     },
   })
 

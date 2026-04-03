@@ -21,7 +21,7 @@ const BASE_URL = (() => {
 export const sendSignUpVerification = async (user: User): Promise<boolean> => {
   const payload = getSessionPayload(user)
   const token = await encrypt(payload, EXPIRATION_TIME)
-  const verifyUrl = `${BASE_URL}${ROUTE.public.verifyEmail.token(token)}`;
+  const verifyUrl = `${BASE_URL}${ROUTE.public.signUp.verifyEmail.token(token)}`;
 
   return await sendEmail(
     user.email,

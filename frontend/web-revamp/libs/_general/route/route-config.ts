@@ -41,11 +41,13 @@ export const ROUTE = {
   public: {
     home: '/',
     login: Segment.LOGIN,
-    signUp: Segment.SIGN_UP,
-    verifyEmail: {
-      token: (token: string) => `${Segment.VERIFY_EMAIL}/${token}` as Route,
-      sent: `${Segment.VERIFY_EMAIL}${Segment.SENT}`,
-    }
+    signUp: {
+      base: Segment.SIGN_UP,
+      verifyEmail: {
+        token: (token: string) => `${Segment.SIGN_UP}${Segment.VERIFY_EMAIL}/${token}` as Route,
+        sent: `${Segment.SIGN_UP}${Segment.VERIFY_EMAIL}${Segment.SENT}`,
+      },
+    },
   },
 } as const;
 

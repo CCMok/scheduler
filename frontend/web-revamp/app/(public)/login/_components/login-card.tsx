@@ -98,7 +98,7 @@ export default function LoginCard({
               沒有帳號?
             </span>
             <CustomButton asChild variant='link' size='sm'>
-              <CustomLink href={ROUTE.public.signUp}>
+              <CustomLink href={ROUTE.public.signUp.base}>
                 立即註冊
               </CustomLink>
             </CustomButton>
