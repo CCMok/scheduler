@@ -40,7 +40,7 @@ export const getUserByEmail = async (email: string) => {
 
 const sendVerificationEmail = async (user: User): Promise<boolean> => {
   const token = await createToken(user)
-  const verifyUrl = `${BASE_URL}${ROUTE.public.resetPassword.verifyEmail.token(token)}`;
+  const verifyUrl = `${BASE_URL}${ROUTE.public.resetPassword.verification.token(token)}`;
   return await sendEmail(
     user.email,
     EMAIL_SUBJECT,

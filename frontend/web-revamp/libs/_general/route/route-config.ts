@@ -23,7 +23,7 @@ enum Segment {
   LOGIN = '/login',
   SIGN_UP = '/sign-up',
   RESET_PASSWORD = '/reset-password',
-  VERIFY_EMAIL = '/verify-email',
+  VERIFICATION = '/verification',
   SENT = '/sent',
 
   // Function
@@ -44,16 +44,16 @@ export const ROUTE = {
     login: Segment.LOGIN,
     resetPassword: {
       base: Segment.RESET_PASSWORD,
-      verifyEmail: {
-        sent: `${Segment.RESET_PASSWORD}${Segment.VERIFY_EMAIL}${Segment.SENT}`,
-        token: (token: string) => `${Segment.RESET_PASSWORD}${Segment.VERIFY_EMAIL}/${token}` as Route,
+      verification: {
+        sent: `${Segment.RESET_PASSWORD}${Segment.VERIFICATION}${Segment.SENT}`,
+        token: (token: string) => `${Segment.RESET_PASSWORD}${Segment.VERIFICATION}/${token}` as Route,
       },
     },
     signUp: {
       base: Segment.SIGN_UP,
-      verifyEmail: {
-        token: (token: string) => `${Segment.SIGN_UP}${Segment.VERIFY_EMAIL}/${token}` as Route,
-        sent: `${Segment.SIGN_UP}${Segment.VERIFY_EMAIL}${Segment.SENT}`,
+      verification: {
+        sent: `${Segment.SIGN_UP}${Segment.VERIFICATION}${Segment.SENT}`,
+        token: (token: string) => `${Segment.SIGN_UP}${Segment.VERIFICATION}/${token}` as Route,
       },
     },
   },

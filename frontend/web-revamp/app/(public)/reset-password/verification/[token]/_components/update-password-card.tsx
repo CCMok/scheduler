@@ -2,7 +2,6 @@
 
 import { Field, FieldGroup } from "@/external/shadcn/components/ui/field";
 import { revalidateLogic } from "@tanstack/react-form";
-import { FORM_FIELD, FORM_ID, formSchema } from "./sign-up-form-utils";
 import { useAppForm } from "@/components/_general/form/utils/form-utils";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
@@ -10,12 +9,10 @@ import { UserPen } from "lucide-react";
 import CustomLink from "@/components/_general/_custom/link/custom-link";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
 import MandatoryLabel from "@/components/_general/form/label/mandatory-label";
-import { signUpAction } from "@/libs/auth/sign-up/sign-up-action";
-import { toast } from "sonner";
 import { ROUTE } from "@/libs/_general/route/route-config";
-import PasswordRequirement from "../../../../components/auth/password-requirement";
+import { FORM_ID } from "./update-password-form-utils";
 
-export default function SignUpCard({
+export default function UpdatePasswordCard({
   className,
 }: Readonly<{
   className?: string;
@@ -24,22 +21,21 @@ export default function SignUpCard({
 
   const form = useAppForm({
     defaultValues: {
-      [FORM_FIELD.EMAIL]: '',
-      [FORM_FIELD.PASSWORD]: '',
-      [FORM_FIELD.CONFIRM_PASSWORD]: '',
-      [FORM_FIELD.NAME]: '',
+      // [FORM_FIELD.EMAIL]: '',
+      // [FORM_FIELD.PASSWORD]: '',
+      // [FORM_FIELD.CONFIRM_PASSWORD]: '',
     },
     validationLogic: revalidateLogic(),
-    validators: {
-      onDynamic: formSchema,
-    },
+    // validators: {
+    //   onDynamic: formSchema,
+    // },
     onSubmit: async ({ value }) => {
-      const response = await signUpAction(value)
-      if (!response.isSuccess) {
-        toast.error(response.message)
-        return;
-      }
-      router.push(ROUTE.public.signUp.verification.sent);
+      // const response = await signUpAction(value)
+      // if (!response.isSuccess) {
+      //   toast.error(response.message)
+      //   return;
+      // }
+      // router.push(ROUTE.public.signUp.verification.sent);
     },
   })
 
@@ -54,12 +50,13 @@ export default function SignUpCard({
     >
       <Card>
         <CardHeader className='text-center'>
-          <CardTitle className='text-xl'>註冊</CardTitle>
-          <CardDescription>輸入您的帳號資訊</CardDescription>
+          {/* <CardTitle className='text-xl' /> */}
+          <CardDescription>輸入您的新密碼</CardDescription>
         </CardHeader>
         <CardContent>
           <FieldGroup>
-            <form.AppField name={FORM_FIELD.EMAIL}>
+            {/* TODO */}
+            {/* <form.AppField name={FORM_FIELD.EMAIL}>
               {(field) => (
                 <field.TextField
                   label={<MandatoryLabel>電郵</MandatoryLabel>}
@@ -98,11 +95,11 @@ export default function SignUpCard({
                   autoComplete="name"
                 />
               )}
-            </form.AppField>
+            </form.AppField> */}
           </FieldGroup>
         </CardContent>
         <CardFooter className='flex-col space-y-2'>
-          <form.AppForm>
+          {/* <form.AppForm>
             <Field>
               <form.SubmitButton icon={<UserPen />}>
                 註冊
@@ -118,7 +115,7 @@ export default function SignUpCard({
                 返回登入
               </CustomLink>
             </CustomButton>
-          </p>
+          </p> */}
         </CardFooter>
       </Card>
     </form>

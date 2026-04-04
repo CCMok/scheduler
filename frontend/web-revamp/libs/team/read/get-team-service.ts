@@ -1,7 +1,7 @@
 import { Prisma, Team } from '@/external/prisma/generated/client'
 import prisma from '@/libs/_general/database/database-manager'
 import { getSession } from '@/libs/_general/session/session-manager'
-import { Role } from '@/libs/auth/authorization/role'
+import { Role } from '@/libs/auth/general/role'
 import { cache } from 'react'
 import 'server-only'
 

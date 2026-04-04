@@ -6,7 +6,7 @@ import prisma from '@/libs/_general/database/database-manager';
 import { Message } from '@/libs/_general/service/message';
 import { compare } from 'bcryptjs';
 import { createSession } from '@/libs/_general/session/session-manager';
-import { Role } from '../authorization/role';
+import { Role } from '../general/role';
 
 const CREDENTIAL_ERROR = '電郵地址或密碼' + Message.INCORRECT
 

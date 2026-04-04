@@ -3,7 +3,7 @@ import { cache } from "react";
 import { Prisma, Worker } from '@/external/prisma/generated/client';
 import { getSession } from '@/libs/_general/session/session-manager';
 import prisma from '@/libs/_general/database/database-manager';
-import { Role } from '@/libs/auth/authorization/role';
+import { Role } from '@/libs/auth/general/role';
 
 export const getWorkers = cache(async (teamId: number): Promise<Worker[]> => {
   const session = await getSession();

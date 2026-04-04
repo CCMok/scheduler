@@ -18,7 +18,7 @@ import { isNil } from "lodash";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { Card, CardContent, } from "@/external/shadcn/components/ui/card";
-import { SearchParamKey } from "./param";
+import { searchParamKey } from "./param";
 import H5 from "@/components/_general/_custom/typography/h5";
 import { Separator } from "@/external/shadcn/components/ui/separator";
 import DeleteRosterDialog from "./delete-roster-dialog";
@@ -50,14 +50,14 @@ export default function RosterPageContent({
 
   const setTeamId = useCallback((id?: number) => {
     if (isNil(id) || teamId === id) return;
-    router.push(ROUTE.private.roster.base({ [SearchParamKey.TEAM_ID]: id }));
+    router.push(ROUTE.private.roster.base({ [searchParamKey.TEAM_ID]: id }));
   }, [router, teamId]);
 
   const setRosterId = useCallback((id?: number) => {
     if (isNil(teamId) || isNil(id) || rosterId === id) return;
     router.push(ROUTE.private.roster.base({
-      [SearchParamKey.TEAM_ID]: teamId,
-      [SearchParamKey.ROSTER_ID]: id,
+      [searchParamKey.TEAM_ID]: teamId,
+      [searchParamKey.ROSTER_ID]: id,
     }));
   }, [router, teamId, rosterId]);
 
@@ -68,16 +68,16 @@ export default function RosterPageContent({
   const goPrev = useCallback(() => {
     if (isNil(teamId) || isNil(prevRosterId)) return;
     router.replace(ROUTE.private.roster.base({
-      [SearchParamKey.TEAM_ID]: teamId,
-      [SearchParamKey.ROSTER_ID]: prevRosterId,
+      [searchParamKey.TEAM_ID]: teamId,
+      [searchParamKey.ROSTER_ID]: prevRosterId,
     }));
   }, [router, teamId, prevRosterId]);
 
   const goNext = useCallback(() => {
     if (isNil(teamId) || isNil(nextRosterId)) return;
     router.replace(ROUTE.private.roster.base({
-      [SearchParamKey.TEAM_ID]: teamId,
-      [SearchParamKey.ROSTER_ID]: nextRosterId,
+      [searchParamKey.TEAM_ID]: teamId,
+      [searchParamKey.ROSTER_ID]: nextRosterId,
     }));
   }, [router, teamId, nextRosterId]);
 

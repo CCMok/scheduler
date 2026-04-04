@@ -4,7 +4,7 @@ import { tryCatch } from '@/libs/_general/service/try-catch';
 import { Message } from '@/libs/_general/service/message';
 import { AutoCreateRosterRequest, autoCreateRosterRequestSchema } from './auto-create-roster-request';
 import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from './sch-arrange-roster-response';
-import { checkCanAccessTeam } from '@/libs/auth/authorization/access-utils';
+import { checkCanAccessTeam } from '@/libs/auth/general/access-utils';
 import { RosterItem, Timeslot } from '../../roster';
 import { isNil } from 'lodash';
 import { SchArrangeRosterRequest } from './sch-arrange-roster-reqeust';

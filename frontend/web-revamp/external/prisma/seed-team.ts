@@ -1,4 +1,4 @@
-import { Role } from "@/libs/auth/authorization/role";
+import { Role } from "@/libs/auth/general/role";
 import { Post, PrismaClient, Worker } from "./generated/client";
 import { PrismaPg } from '@prisma/adapter-pg'
 import 'dotenv/config'

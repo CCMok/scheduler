@@ -9,7 +9,7 @@ import { SALT_ROUNDS } from '@/libs/_general/bcrypt/bcrypt-utils';
 import { User } from '@/external/prisma/generated/client';
 import { handlePersistError } from '@/libs/_general/database/database-utils';
 import { PrismaErrorCode } from '@/libs/_general/database/prisma-error-code';
-import { DEFAULT_ROLE } from '../authorization/role';
+import { DEFAULT_ROLE } from '../general/role';
 import { BASE_URL, createToken } from '@/libs/_general/session/email-session-utils';
 import { ROUTE } from '@/libs/_general/route/route-config';
 import { sendEmail } from '@/libs/_general/email/email-manager';
@@ -65,7 +65,7 @@ const saveEntity = async (request: SignUpRequest, encryptedPassword: string): Pr
 
 const sendVerificationEmail = async (user: User): Promise<boolean> => {
   const token = await createToken(user)
-  const verifyUrl = `${BASE_URL}${ROUTE.public.signUp.verifyEmail.token(token)}`;
+  const verifyUrl = `${BASE_URL}${ROUTE.public.signUp.verification.token(token)}`;
   return await sendEmail(
     user.email,
     EMAIL_SUBJECT,

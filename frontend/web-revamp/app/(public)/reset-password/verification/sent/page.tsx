@@ -1,6 +1,6 @@
 import Logo from "@/components/_general/logo/logo";
 
-export default function ResetPasswordVerifyEmailSentPage() {
+export default function ResetPasswordVerificationSentPage() {
   return (
     <div className='flex flex-col items-center justify-center min-h-screen'>
       <Logo />

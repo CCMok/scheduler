@@ -1,7 +1,7 @@
 import { tryCatch } from '@/libs/_general/service/try-catch'
 import 'server-only'
 import { ServiceResponse } from '@/libs/_general/service/response'
-import { checkCanAccessTeam } from '@/libs/auth/authorization/access-utils'
+import { checkCanAccessTeam } from '@/libs/auth/general/access-utils'
 import { Message } from '@/libs/_general/service/message'
 import prisma from '@/libs/_general/database/database-manager'
 import { PrismaErrorCode } from '@/libs/_general/database/prisma-error-code'

@@ -1,7 +1,7 @@
 import SubmitVerifyButton from "./_components/submit-verify-button";
 import Logo from "@/components/_general/logo/logo";
 
-export default async function SignUpVerifyEmailTokenPage() {
+export default async function SignUpVerificationTokenPage() {
   return (
     <div className='flex flex-col items-center justify-center min-h-screen'>
       <Logo />

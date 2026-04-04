@@ -32,7 +32,7 @@ export default function ResetPasswordCard({
         toast.error(response.message)
         return;
       }
-      router.push(ROUTE.public.resetPassword.verifyEmail.sent);
+      router.push(ROUTE.public.resetPassword.verification.sent);
     },
   })
 

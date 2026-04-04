@@ -1,6 +1,6 @@
 import { Body, Button, Container, Head, Html, Section, Tailwind, Text } from "@react-email/components";
 
-export const EMAIL_SUBJECT = 'Scheduler - 驗證您的電郵地址';
+export const EMAIL_SUBJECT = 'Scheduler - 密碼重設驗證';
 
 type Props = {
   userName: string;
