@@ -32,8 +32,7 @@ export default function ResetPasswordCard({
         toast.error(response.message)
         return;
       }
-      toast.success('已發送密碼重設電郵，請檢查您的電郵。')
-      router.push(ROUTE.public.resetPassword.sent);
+      router.push(ROUTE.public.resetPassword.verifyEmail.sent);
     },
   })
 

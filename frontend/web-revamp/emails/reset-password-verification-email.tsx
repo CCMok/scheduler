@@ -7,7 +7,7 @@ type Props = {
   verifyUrl: string;
 }
 
-export default function SignUpVerificationEmail({
+export default function ResetPasswordVerificationEmail({
   userName,
   verifyUrl,
 }: Readonly<Props>) {
@@ -24,7 +24,7 @@ export default function SignUpVerificationEmail({
                 您好 {userName}，
               </Text>
               <Text>
-                感謝您註冊 Scheduler 帳號。為完成註冊手續，請點擊以下按鈕驗證您的電郵地址：
+                最近有人要求更改您的 Scheduler 帳號密碼。如果您是請求者，可以在這裡設定新密碼：
               </Text>
               <Button
                 href={verifyUrl}
@@ -33,7 +33,7 @@ export default function SignUpVerificationEmail({
                 驗證電郵地址
               </Button>
               <Text>
-                如果您沒有提出註冊帳號的請求，請忽略並刪除此訊息。
+                如果您不想更改密碼或沒有提出更改密碼的請求，請忽略並刪除此訊息。
               </Text>
               <Text>
                 為了確保您的帳號安全，請勿將此郵件轉發給任何人。
@@ -49,7 +49,7 @@ export default function SignUpVerificationEmail({
   )
 }
 
-SignUpVerificationEmail.PreviewProps = {
+ResetPasswordVerificationEmail.PreviewProps = {
   userName: 'Eren Yeager',
-  verifyUrl: 'localhost:3000/sign-up/verify-email/1234567890',
+  verifyUrl: 'localhost:3000/reset-password/verify-email/1234567890',
 } as Props;

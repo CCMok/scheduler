@@ -44,7 +44,10 @@ export const ROUTE = {
     login: Segment.LOGIN,
     resetPassword: {
       base: Segment.RESET_PASSWORD,
-      sent: `${Segment.RESET_PASSWORD}${Segment.SENT}`,
+      verifyEmail: {
+        sent: `${Segment.RESET_PASSWORD}${Segment.VERIFY_EMAIL}${Segment.SENT}`,
+        token: (token: string) => `${Segment.RESET_PASSWORD}${Segment.VERIFY_EMAIL}/${token}` as Route,
+      },
     },
     signUp: {
       base: Segment.SIGN_UP,

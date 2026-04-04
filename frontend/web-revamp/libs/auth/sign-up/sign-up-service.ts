@@ -10,7 +10,10 @@ import { User } from '@/external/prisma/generated/client';
 import { handlePersistError } from '@/libs/_general/database/database-utils';
 import { PrismaErrorCode } from '@/libs/_general/database/prisma-error-code';
 import { DEFAULT_ROLE } from '../authorization/role';
-import { sendSignUpVerification } from '@/libs/_general/email/email-verification-manager';
+import { BASE_URL, createToken } from '@/libs/_general/session/email-session-utils';
+import { ROUTE } from '@/libs/_general/route/route-config';
+import { sendEmail } from '@/libs/_general/email/email-manager';
+import SignUpVerificationEmail, { EMAIL_SUBJECT } from '@/emails/sign-up-verification-email';
 
 export const signUp = tryCatch(async (request: SignUpRequest): Promise<ServiceResponse> => {
   const parsedRequest = signUpRequestSchema.parse(request)
@@ -20,7 +23,9 @@ export const signUp = tryCatch(async (request: SignUpRequest): Promise<ServiceRe
   const saveResult = await saveEntity(parsedRequest, encryptedPassword)
   if (!saveResult.isSuccess) return saveResult
 
-  const emailSent = await sendSignUpVerification(saveResult.data)
+  const user = saveResult.data
+
+  const emailSent = await sendVerificationEmail(user);
   if (!emailSent) return {
     isSuccess: false,
     message: Message.SYSTEM_ERROR,
@@ -56,4 +61,17 @@ const saveEntity = async (request: SignUpRequest, encryptedPassword: string): Pr
     isSuccess: true,
     data: user,
   }
+}
+
+const sendVerificationEmail = async (user: User): Promise<boolean> => {
+  const token = await createToken(user)
+  const verifyUrl = `${BASE_URL}${ROUTE.public.signUp.verifyEmail.token(token)}`;
+  return await sendEmail(
+    user.email,
+    EMAIL_SUBJECT,
+    SignUpVerificationEmail({
+      userName: user.name || user.email,
+      verifyUrl,
+    }),
+  )
 }
