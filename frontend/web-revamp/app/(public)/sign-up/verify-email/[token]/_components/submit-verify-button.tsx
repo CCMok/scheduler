@@ -4,7 +4,7 @@ import CustomButton from "@/components/_general/_custom/button/custom-button";
 import { Check } from "lucide-react";
 import { notFound, useParams, useRouter } from "next/navigation";
 import { Param, ParamKey } from "./param";
-import { verifyEmailAction } from "@/libs/auth/verify-email/verify-email-action";
+import { signUpVerifyEmailAction } from "@/libs/auth/sign-up/verify-email/sign-up-verify-email-action";
 import { toast } from "sonner";
 import { REDIRECT_PRIVATE_ROUTE } from "@/libs/_general/route/route-config";
 
@@ -20,7 +20,7 @@ export default function SubmitVerifyButton({
   if (!token) notFound();
 
   const onClick = async () => {
-    const response = await verifyEmailAction({
+    const response = await signUpVerifyEmailAction({
       token,
     })
     if (!response.isSuccess) {

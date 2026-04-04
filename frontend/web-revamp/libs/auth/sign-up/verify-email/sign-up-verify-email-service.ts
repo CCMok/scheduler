@@ -1,5 +1,5 @@
 import 'server-only'
-import { VerifyEmailRequest, verifyEmailRequestSchema } from './verify-email-request'
+import { SignUpVerifyEmailRequest, signUpVerifyEmailRequestSchema } from './sign-up-verify-email-request'
 import { ServiceResponse } from '@/libs/_general/service/response'
 import { SessionPayload, sessionPayloadSchema } from '@/libs/_general/session/session'
 import { decrypt } from '@/libs/_general/jwt/jwt-manager'
@@ -8,8 +8,8 @@ import prisma from '@/libs/_general/database/database-manager'
 import { Message } from '@/libs/_general/service/message'
 import { createSession } from '@/libs/_general/session/session-manager'
 
-export const verifyEmail = async (request: VerifyEmailRequest): Promise<ServiceResponse> => {
-  const parsedRequest = verifyEmailRequestSchema.parse(request)
+export const signUpVerifyEmail = async (request: SignUpVerifyEmailRequest): Promise<ServiceResponse> => {
+  const parsedRequest = signUpVerifyEmailRequestSchema.parse(request)
 
   const payload = await decryptToken(parsedRequest.token)
   if (!payload) return {

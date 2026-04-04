@@ -32,7 +32,6 @@ export default function LoginCard({
     onSubmit: async ({ value }) => {
       const response = await loginAction(value)
       if (!response.isSuccess) {
-        // TODO: handle not verified
         toast.error(response.message)
         return;
       }
@@ -73,7 +72,7 @@ export default function LoginCard({
                   label="密碼"
                   labelAddOn={
                     <CustomButton asChild variant='link' className='h-fit p-0'>
-                      <CustomLink href={'/'}> {/*TODO*/}
+                      <CustomLink href={ROUTE.public.resetPassword.base}>
                         忘記密碼
                       </CustomLink>
                     </CustomButton>

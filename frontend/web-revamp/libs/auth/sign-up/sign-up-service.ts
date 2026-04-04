@@ -31,7 +31,7 @@ export const signUp = tryCatch(async (request: SignUpRequest): Promise<ServiceRe
   }
 })
 
-export const saveEntity = async (request: SignUpRequest, encryptedPassword: string): Promise<ServiceResponse<User>> => {
+const saveEntity = async (request: SignUpRequest, encryptedPassword: string): Promise<ServiceResponse<User>> => {
   let user: User;
   try {
     user = await prisma.user.create({

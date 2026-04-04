@@ -22,6 +22,7 @@ enum Segment {
   ROSTER = '/roster',
   LOGIN = '/login',
   SIGN_UP = '/sign-up',
+  RESET_PASSWORD = '/reset-password',
   VERIFY_EMAIL = '/verify-email',
   SENT = '/sent',
 
@@ -41,6 +42,10 @@ export const ROUTE = {
   public: {
     home: '/',
     login: Segment.LOGIN,
+    resetPassword: {
+      base: Segment.RESET_PASSWORD,
+      sent: `${Segment.RESET_PASSWORD}${Segment.SENT}`,
+    },
     signUp: {
       base: Segment.SIGN_UP,
       verifyEmail: {
@@ -55,6 +60,6 @@ export const REDIRECT_PRIVATE_ROUTE = ROUTE.private.roster.base();
 export const REDIRECT_PUBLIC_ROUTE = ROUTE.public.login;
 export const PUBLIC_ROUTE_EXCLUDE_HOME = [
   Segment.LOGIN,
+  Segment.RESET_PASSWORD,
   Segment.SIGN_UP,
-  Segment.VERIFY_EMAIL,
 ] as const;
