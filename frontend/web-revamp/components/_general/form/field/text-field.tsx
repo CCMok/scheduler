@@ -13,6 +13,7 @@ export default function TextField({
   autoComplete = 'off',
   type = 'text',
   showError,
+  disabled,
 }: Readonly<{
   className?: string;
   label?: ReactNode;
@@ -21,6 +22,7 @@ export default function TextField({
   autoComplete?: HTMLInputAutoCompleteAttribute;
   type?: HTMLInputTypeAttribute;
   showError?: boolean;
+  disabled?: boolean;
 }>) {
   const field = useFieldContext<string>()
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
@@ -44,6 +46,7 @@ export default function TextField({
         placeholder={placeholder}
         autoComplete={autoComplete}
         type={type}
+        disabled={disabled}
       />
     </FieldLayout>
   )

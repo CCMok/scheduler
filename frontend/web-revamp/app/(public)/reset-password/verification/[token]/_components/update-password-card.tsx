@@ -5,30 +5,33 @@ import { revalidateLogic } from "@tanstack/react-form";
 import { useAppForm } from "@/components/_general/form/utils/form-utils";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
-import { UserPen } from "lucide-react";
-import CustomLink from "@/components/_general/_custom/link/custom-link";
-import CustomButton from "@/components/_general/_custom/button/custom-button";
+import { Check } from "lucide-react";
 import MandatoryLabel from "@/components/_general/form/label/mandatory-label";
-import { ROUTE } from "@/libs/_general/route/route-config";
-import { FORM_ID } from "./update-password-form-utils";
+import { FORM_FIELD, FORM_ID, formSchema } from "./update-password-form-utils";
+import { UserOmitPassword } from "@/libs/user/user";
+import PasswordRequirement from "@/components/auth/password-requirement";
 
 export default function UpdatePasswordCard({
   className,
+  user,
+  token,
 }: Readonly<{
   className?: string;
+  user: UserOmitPassword;
+  token: string;
 }>) {
   const router = useRouter()
 
   const form = useAppForm({
     defaultValues: {
-      // [FORM_FIELD.EMAIL]: '',
-      // [FORM_FIELD.PASSWORD]: '',
-      // [FORM_FIELD.CONFIRM_PASSWORD]: '',
+      [FORM_FIELD.EMAIL]: user.email,
+      [FORM_FIELD.PASSWORD]: '',
+      [FORM_FIELD.CONFIRM_PASSWORD]: '',
     },
     validationLogic: revalidateLogic(),
-    // validators: {
-    //   onDynamic: formSchema,
-    // },
+    validators: {
+      onDynamic: formSchema,
+    },
     onSubmit: async ({ value }) => {
       // const response = await signUpAction(value)
       // if (!response.isSuccess) {
@@ -50,19 +53,19 @@ export default function UpdatePasswordCard({
     >
       <Card>
         <CardHeader className='text-center'>
-          {/* <CardTitle className='text-xl' /> */}
-          <CardDescription>輸入您的新密碼</CardDescription>
+          <CardTitle className='text-xl'>密碼重設</CardTitle>
+          <CardDescription>電郵驗證成功，請輸入您的新密碼</CardDescription>
         </CardHeader>
         <CardContent>
           <FieldGroup>
-            {/* TODO */}
-            {/* <form.AppField name={FORM_FIELD.EMAIL}>
+            <form.AppField name={FORM_FIELD.EMAIL}>
               {(field) => (
                 <field.TextField
                   label={<MandatoryLabel>電郵</MandatoryLabel>}
                   placeholder="m@example.com"
                   autoComplete="email"
                   type='email'
+                  disabled
                 />
               )}
             </form.AppField>
@@ -88,34 +91,16 @@ export default function UpdatePasswordCard({
                 />
               )}
             </form.AppField>
-            <form.AppField name={FORM_FIELD.NAME}>
-              {(field) => (
-                <field.TextField
-                  label="名稱"
-                  autoComplete="name"
-                />
-              )}
-            </form.AppField> */}
           </FieldGroup>
         </CardContent>
         <CardFooter className='flex-col space-y-2'>
-          {/* <form.AppForm>
+          <form.AppForm>
             <Field>
-              <form.SubmitButton icon={<UserPen />}>
-                註冊
+              <form.SubmitButton icon={<Check />}>
+                確定
               </form.SubmitButton>
             </Field>
           </form.AppForm>
-          <p>
-            <span className='text-sm text-muted-foreground font-medium'>
-              已有帳號?
-            </span>
-            <CustomButton asChild variant='link' size='sm'>
-              <CustomLink href={ROUTE.public.login}>
-                返回登入
-              </CustomLink>
-            </CustomButton>
-          </p> */}
         </CardFooter>
       </Card>
     </form>
