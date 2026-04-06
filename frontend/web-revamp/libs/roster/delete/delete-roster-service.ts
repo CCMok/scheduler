@@ -4,8 +4,8 @@ import { ServiceResponse } from '@/libs/_general/service/response'
 import { checkCanAccessRoster } from '@/libs/auth/general/access-utils'
 import { Message } from '@/libs/_general/service/message'
 import prisma from '@/libs/_general/database/database-manager'
-import { Prisma } from '@/external/prisma/generated/client'
 import { PrismaErrorCode } from '@/libs/_general/database/prisma-error-code'
+import { handlePersistError } from '@/libs/_general/database/database-utils'
 
 export const deleteRoster = tryCatch(async (id: number): Promise<ServiceResponse> => {
   const canAccess = await checkCanAccessRoster(id)
@@ -14,27 +14,29 @@ export const deleteRoster = tryCatch(async (id: number): Promise<ServiceResponse
     message: Message.UNAUTHORIZED,
   }
 
-  try {
-    await prisma.roster.delete({
-      where: { id },
-    })
-  } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === PrismaErrorCode.NOT_FOUND) {
-      return {
-        isSuccess: false,
-        message: Message.NOT_FOUND.replaceAll('{0}', '值班表'),
-      }
-    }
-
-    console.error('Failed to delete roster')
-    console.error(e)
-    return {
-      isSuccess: false,
-      message: Message.SYSTEM_ERROR,
-    };
-  }
+  const deleteResult = await deleteEntity(id)
+  if (!deleteResult.isSuccess) return deleteResult
 
   return {
     isSuccess: true,
   }
 })
+
+const deleteEntity = async (id: number): Promise<ServiceResponse> => {
+  try {
+    await prisma.roster.delete({
+      where: { id },
+    })
+  } catch (e) {
+    return handlePersistError(e, new Map([
+      [PrismaErrorCode.NOT_FOUND, () => ({
+        isSuccess: false,
+        message: Message.NOT_FOUND.replaceAll('{0}', '值班表'),
+      })],
+    ]))
+  }
+
+  return {
+    isSuccess: true,
+  }
+}

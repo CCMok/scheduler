@@ -10,6 +10,9 @@ import MandatoryLabel from "@/components/_general/form/label/mandatory-label";
 import { FORM_FIELD, FORM_ID, formSchema } from "./update-password-form-utils";
 import { UserOmitPassword } from "@/libs/user/user";
 import PasswordRequirement from "@/components/auth/password-requirement";
+import { resetUpdatePasswordAction } from "@/libs/auth/reset-password/update-password/reset-update-password-action";
+import { toast } from "sonner";
+import { REDIRECT_PRIVATE_ROUTE } from "@/libs/_general/route/route-config";
 
 export default function UpdatePasswordCard({
   className,
@@ -33,12 +36,16 @@ export default function UpdatePasswordCard({
       onDynamic: formSchema,
     },
     onSubmit: async ({ value }) => {
-      // const response = await signUpAction(value)
-      // if (!response.isSuccess) {
-      //   toast.error(response.message)
-      //   return;
-      // }
-      // router.push(ROUTE.public.signUp.verification.sent);
+      const response = await resetUpdatePasswordAction({
+        token,
+        password: value[FORM_FIELD.PASSWORD],
+      })
+      if (!response.isSuccess) {
+        toast.error(response.message)
+        return;
+      }
+      toast.success('密碼重設成功')
+      router.push(REDIRECT_PRIVATE_ROUTE);
     },
   })
 
