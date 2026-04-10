@@ -25,6 +25,8 @@ enum Segment {
   RESET_PASSWORD = '/reset-password',
   VERIFICATION = '/verification',
   SENT = '/sent',
+  SETTING = '/setting',
+  USER = '/user',
 
   // Function
   AUTO_NEW = '/auto-new',
@@ -37,6 +39,9 @@ export const ROUTE = {
       base: (searchParam?: SearchParam) => buildSearchParam(Segment.ROSTER, searchParam) as Route,
       autoNew: (teamId: string | number) => `${Segment.ROSTER}${Segment.AUTO_NEW}/${teamId}` as Route,
       edit: (rosterId: string | number) => `${Segment.ROSTER}${Segment.EDIT}/${rosterId}` as Route,
+    },
+    setting: {
+      user: `${Segment.SETTING}${Segment.USER}`,
     },
   },
   public: {
