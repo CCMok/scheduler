@@ -1,16 +1,47 @@
 'use client'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card"
-import { FORM_ID } from "./update-password-form-utils"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card"
+import { FORM_FIELD, FORM_ID, formSchema } from "./update-password-form-utils"
+import { useAppForm } from "@/components/_general/form/utils/form-utils"
+import { revalidateLogic } from "@tanstack/react-form"
+import { Field, FieldGroup } from "@/external/shadcn/components/ui/field"
+import PasswordRequirement from "@/components/auth/password-requirement"
+import { Check } from "lucide-react"
+import { updatePasswordAction } from "@/libs/auth/update-password/update-password-action"
+import { toast } from "sonner"
 
 export default function UpdatePasswordCard() {
+  const form = useAppForm({
+    defaultValues: {
+      [FORM_FIELD.CURRENT_PASSWORD]: '',
+      [FORM_FIELD.NEW_PASSWORD]: '',
+      [FORM_FIELD.CONFIRM_PASSWORD]: '',
+    },
+    validationLogic: revalidateLogic(),
+    validators: {
+      onDynamic: formSchema,
+    },
+    onSubmit: async ({ value, formApi }) => {
+      const response = await updatePasswordAction({
+        currentPassword: value[FORM_FIELD.CURRENT_PASSWORD],
+        newPassword: value[FORM_FIELD.NEW_PASSWORD],
+      })
+      if (!response.isSuccess) {
+        toast.error(response.message)
+        return;
+      }
+      toast.success('更改密碼成功')
+      formApi.reset();
+    },
+  })
+
   return (
     <form
       id={FORM_ID}
-    // onSubmit={(e) => {
-    //   e.preventDefault();
-    //   form.handleSubmit();
-    // }}
+      onSubmit={(e) => {
+        e.preventDefault();
+        form.handleSubmit();
+      }}
     >
       <Card>
         <CardHeader>
@@ -18,54 +49,49 @@ export default function UpdatePasswordCard() {
           <CardDescription>請輸入您的新密碼</CardDescription>
         </CardHeader>
         <CardContent>
-          {/* <FieldGroup>
-            <form.AppField name={FORM_FIELD.EMAIL}>
+          <FieldGroup className='lg:w-(--input-width)'>
+            <form.AppField name={FORM_FIELD.CURRENT_PASSWORD}>
               {(field) => (
                 <field.TextField
-                  label="電郵"
-                  placeholder="m@example.com"
-                  autoComplete="email"
-                  type='email'
-                />
-              )}
-            </form.AppField>
-            <form.AppField name={FORM_FIELD.PASSWORD}>
-              {(field) => (
-                <field.TextField
-                  label="密碼"
-                  labelAddOn={
-                    <CustomButton asChild variant='link' className='h-fit p-0'>
-                      <CustomLink href={ROUTE.public.resetPassword.base}>
-                        忘記密碼
-                      </CustomLink>
-                    </CustomButton>
-                  }
+                  label="舊密碼"
                   autoComplete="current-password"
                   type='password'
                 />
               )}
             </form.AppField>
-          </FieldGroup> */}
+            <form.AppField name={FORM_FIELD.NEW_PASSWORD}>
+              {(field) => (
+                <div className='space-y-2'>
+                  <field.TextField
+                    label="新密碼"
+                    autoComplete="new-password"
+                    type='password'
+                    showError={false}
+                  />
+                  <PasswordRequirement value={field.state.value} />
+                </div>
+              )}
+            </form.AppField>
+            <form.AppField name={FORM_FIELD.CONFIRM_PASSWORD}>
+              {(field) => (
+                <field.TextField
+                  label="確認密碼"
+                  autoComplete="new-password"
+                  type='password'
+                />
+              )}
+            </form.AppField>
+          </FieldGroup>
         </CardContent>
-        {/* <CardFooter className='flex-col space-y-2'>
+        <CardFooter>
           <form.AppForm>
-            <Field>
-              <form.SubmitButton icon={<LogIn />}>
-                登入
+            <Field className="[&>*]:w-full lg:[&>*]:w-fit">
+              <form.SubmitButton icon={<Check />}>
+                確定
               </form.SubmitButton>
             </Field>
           </form.AppForm>
-          <p>
-            <span className='text-sm text-muted-foreground font-medium'>
-              沒有帳號?
-            </span>
-            <CustomButton asChild variant='link' size='sm'>
-              <CustomLink href={ROUTE.public.signUp.base}>
-                立即註冊
-              </CustomLink>
-            </CustomButton>
-          </p>
-        </CardFooter> */}
+        </CardFooter>
       </Card>
     </form>
   )
