@@ -57,7 +57,7 @@ export default async function AppSidebar(props: Readonly<ComponentProps<typeof S
                       </SidebarMenuSubItem>
                       <SidebarMenuSubItem>
                         <SidebarMenuSubButton asChild>
-                          <CustomLink href={ROUTE.private.setting.team}>
+                          <CustomLink href={ROUTE.private.setting.team()}>
                             <UsersRound />
                             <span>團隊</span>
                           </CustomLink>

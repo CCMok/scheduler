@@ -12,11 +12,11 @@ import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 
 export default function UpdateNameCard({
-  getUserNamePromise,
+  userNamePromise,
 }: Readonly<{
-  getUserNamePromise: Promise<string | undefined>;
+  userNamePromise: Promise<string | undefined>;
 }>) {
-  const userName = use(getUserNamePromise);
+  const userName = use(userNamePromise);
 
   const router = useRouter();
   

@@ -42,7 +42,7 @@ export const ROUTE = {
       edit: (rosterId: string | number) => `${Segment.ROSTER}${Segment.EDIT}/${rosterId}` as Route,
     },
     setting: {
-      team: `${Segment.SETTING}${Segment.TEAM}`,
+      team: (searchParam?: SearchParam) => buildSearchParam(`${Segment.SETTING}${Segment.TEAM}`, searchParam) as Route,
       user: `${Segment.SETTING}${Segment.USER}`,
     },
   },

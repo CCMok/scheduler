@@ -24,7 +24,7 @@ export default function UserSettingPage() {
       <div className='space-y-2'>
         <UpdatePasswordCard />
         <UpdateNameCard 
-          getUserNamePromise={getUserName()}
+          userNamePromise={getUserName()}
         />
       </div>
     </HeaderLayout>

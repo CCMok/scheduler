@@ -9,7 +9,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Pencil,
-  Users,
+  UsersRound,
   WandSparkles,
 } from "lucide-react";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
@@ -100,7 +100,7 @@ export default function RosterPageContent({
                   options={teams}
                   getOptionValue={(team) => team.id}
                   getOptionDisplay={(team) => team.name}
-                  icon={<Users />}
+                  icon={<UsersRound />}
                 />
               </FieldLayout>
               <FieldLayout label="值班表" id={ROSTER_SELECT_ID} className="w-(--input-width)">
