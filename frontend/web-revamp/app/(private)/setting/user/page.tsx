@@ -1,6 +1,8 @@
 import HeaderLayout from "@/components/_general/header/header-layout";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/external/shadcn/components/ui/breadcrumb";
-import UpdatePasswordCard from "./_components/update-password-card";
+import UpdatePasswordCard from "./_components/update-password/update-password-card";
+import UpdateNameCard from "./_components/update-name/update-name-card";
+import { getUserName } from "@/libs/user/read/get-user-service";
 
 export default function UserSettingPage() {
   return (
@@ -19,7 +21,12 @@ export default function UserSettingPage() {
         </Breadcrumb>
       }
     >
-      <UpdatePasswordCard />
+      <div className='space-y-2'>
+        <UpdatePasswordCard />
+        <UpdateNameCard 
+          getUserNamePromise={getUserName()}
+        />
+      </div>
     </HeaderLayout>
   )
 }
