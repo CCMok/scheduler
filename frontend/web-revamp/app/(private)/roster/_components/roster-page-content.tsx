@@ -17,7 +17,7 @@ import CustomLink from "@/components/_general/_custom/link/custom-link";
 import { isNil } from "lodash";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { Card, CardContent, } from "@/external/shadcn/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, } from "@/external/shadcn/components/ui/card";
 import { searchParamKey } from "./param";
 import H5 from "@/components/_general/_custom/typography/h5";
 import { Separator } from "@/external/shadcn/components/ui/separator";
@@ -25,6 +25,7 @@ import DeleteRosterDialog from "./delete-roster-dialog";
 import { RosterJoin } from "@/libs/roster/roster";
 import RosterTableSection from "./roster-table-section";
 import { ROUTE } from "@/libs/_general/route/route-config";
+import OffTable from "@/components/off/table/off-table";
 
 const TEAM_SELECT_ID = 'team-select';
 const ROSTER_SELECT_ID = 'roster-select';
@@ -174,10 +175,30 @@ export default function RosterPageContent({
         </CardContent>
       </Card>
       <Card>
+        <CardHeader>
+          <CardTitle>
+            值班表
+          </CardTitle>
+        </CardHeader>
         <CardContent>
           <RosterTableSection
             roster={roster}
             posts={posts}
+            workers={workers}
+          />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>休假時段</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <OffTable
+            offs={roster ? roster.timeslots.map(t => ({
+              timeslotId: t.id,
+              workerIds: t.offWorkers.map(ow => ow.workerId),
+            })) : []}
+            timeslots={roster ? roster.timeslots : []}
             workers={workers}
           />
         </CardContent>
