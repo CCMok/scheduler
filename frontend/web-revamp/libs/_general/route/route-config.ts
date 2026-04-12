@@ -27,6 +27,7 @@ enum Segment {
   SENT = '/sent',
   SETTING = '/setting',
   USER = '/user',
+  TEAM = '/team',
 
   // Function
   AUTO_NEW = '/auto-new',
@@ -41,6 +42,7 @@ export const ROUTE = {
       edit: (rosterId: string | number) => `${Segment.ROSTER}${Segment.EDIT}/${rosterId}` as Route,
     },
     setting: {
+      team: `${Segment.SETTING}${Segment.TEAM}`,
       user: `${Segment.SETTING}${Segment.USER}`,
     },
   },

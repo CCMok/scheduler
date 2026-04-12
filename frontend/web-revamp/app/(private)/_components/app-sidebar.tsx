@@ -2,7 +2,7 @@ import CustomLink from "@/components/_general/_custom/link/custom-link";
 import ThemeToggle from "@/components/_general/theme/theme-toggle";
 import { DropdownMenu, DropdownMenuContent } from "@/external/shadcn/components/ui/dropdown-menu";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem } from "@/external/shadcn/components/ui/sidebar";
-import { Calendar, ChevronRight, Settings, UserPen } from "lucide-react";
+import { Calendar, ChevronRight, Settings, UserPen, UsersRound } from "lucide-react";
 import { ComponentProps } from "react";
 import LogoutDropdownMenuItem from "./logout-dropdown-menu-item";
 import UserDropdownMenuTrigger from "./user-dropdown-menu-trigger";
@@ -52,6 +52,14 @@ export default async function AppSidebar(props: Readonly<ComponentProps<typeof S
                           <CustomLink href={ROUTE.private.setting.user}>
                             <UserPen />
                             <span>用戶</span>
+                          </CustomLink>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild>
+                          <CustomLink href={ROUTE.private.setting.team}>
+                            <UsersRound />
+                            <span>團隊</span>
                           </CustomLink>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
