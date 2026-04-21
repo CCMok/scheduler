@@ -1,24 +1,29 @@
-import { Card, CardContent } from "@/external/shadcn/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/external/shadcn/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/external/shadcn/components/ui/tabs";
+import TeamInfoSettingSection from "./info/team-info-setting-section";
 
-const TAB_VALUES = [
-  { id: 'info', label: '基本資料' },
-  { id: 'workers', label: '成員' },
-  { id: 'posts', label: '職位' },
-]
+enum TabId {
+  WORKERS = 'workers',
+  POSTS = 'posts',
+  INFO = 'info',
+}
 
 export default function TeamDetailPanel() {
   return (
-    <Card>
-      <CardContent>
-        <Tabs defaultValue={TAB_VALUES[0].id}>
-          <TabsList>
-            {TAB_VALUES.map((tab) => (
-              <TabsTrigger key={tab.id} value={tab.id}>{tab.label}</TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
-      </CardContent>
-    </Card>
+    <Tabs defaultValue={TabId.WORKERS}>
+      <TabsList>
+        <TabsTrigger value={TabId.WORKERS}>職員</TabsTrigger>
+        <TabsTrigger value={TabId.POSTS}>職位</TabsTrigger>
+        <TabsTrigger value={TabId.INFO}>基本資料</TabsTrigger>
+      </TabsList>
+      <TabsContent value={TabId.WORKERS}>
+        <div>Workers</div>
+      </TabsContent>
+      <TabsContent value={TabId.POSTS}>
+        <div>Posts</div>
+      </TabsContent>
+      <TabsContent value={TabId.INFO}>
+        <TeamInfoSettingSection />
+      </TabsContent>
+    </Tabs>
   )
 }
