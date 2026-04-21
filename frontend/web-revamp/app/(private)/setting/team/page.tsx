@@ -2,9 +2,23 @@ import HeaderLayout from "@/components/_general/header/header-layout";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/external/shadcn/components/ui/breadcrumb";
 import TeamSelector from "./_components/team-selector";
 import TeamDetailPanel from "./_components/team-detail-panel";
-import { getTeams } from "@/libs/team/read/get-team-service";
+import { getTeamById, getTeams } from "@/libs/team/read/get-team-service";
+import { SearchParam } from "./_components/param";
+import { Team } from "@/external/prisma/generated/client";
 
-export default function TeamSettingPage() {
+export default async function TeamSettingPage({
+  searchParams,
+}: Readonly<{
+  searchParams: Promise<SearchParam>;
+}>) {
+  const awaitedParams = await searchParams;
+  const teamId = Number.parseInt(awaitedParams.teamId ?? '');
+
+  let team: Team | undefined;
+  if (!Number.isNaN(teamId)) {
+    team = await getTeamById(teamId);
+  }
+
   return (
     <HeaderLayout
       title={
@@ -23,7 +37,7 @@ export default function TeamSettingPage() {
     >
       <div className='space-y-2'>
         <TeamSelector teamsPromise={getTeams()} />
-        <TeamDetailPanel />
+        {team && <TeamDetailPanel team={team} />}
       </div>
     </HeaderLayout>
   )

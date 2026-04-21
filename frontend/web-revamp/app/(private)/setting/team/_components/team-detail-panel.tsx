@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/external/shadcn/components/ui/tabs";
 import TeamInfoSettingSection from "./info/team-info-setting-section";
+import { Team } from "@/external/prisma/generated/browser";
 
 enum TabId {
   WORKERS = 'workers',
@@ -7,7 +8,11 @@ enum TabId {
   INFO = 'info',
 }
 
-export default function TeamDetailPanel() {
+export default function TeamDetailPanel({
+  team,
+}: Readonly<{
+  team: Team;
+}>) {
   return (
     <Tabs defaultValue={TabId.WORKERS}>
       <TabsList>
@@ -22,7 +27,7 @@ export default function TeamDetailPanel() {
         <div>Posts</div>
       </TabsContent>
       <TabsContent value={TabId.INFO}>
-        <TeamInfoSettingSection />
+        <TeamInfoSettingSection team={team} />
       </TabsContent>
     </Tabs>
   )
