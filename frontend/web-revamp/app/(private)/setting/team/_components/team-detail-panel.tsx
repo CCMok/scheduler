@@ -23,7 +23,7 @@ export default async function TeamDetailPanel({
         <TabsTrigger value={TabId.POSTS}>職位</TabsTrigger>
         <TabsTrigger value={TabId.INFO}>基本資料</TabsTrigger>
       </TabsList>
-      <TabsContent value={TabId.WORKERS}>
+      <TabsContent value={TabId.WORKERS} className='h-full'>
         <TeamWorkerSettingSection workers={workers} />
       </TabsContent>
       <TabsContent value={TabId.POSTS}>
