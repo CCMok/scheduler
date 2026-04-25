@@ -6,6 +6,7 @@ import { Fragment, useState } from "react";
 import { Worker } from "@/external/prisma/generated/browser";
 import { Item, ItemContent, ItemGroup, ItemMedia, ItemSeparator, ItemTitle } from "@/external/shadcn/components/ui/item";
 import { CircleUserRound } from "lucide-react";
+import { ScrollArea } from "@/external/shadcn/components/ui/scroll-area";
 
 const WORKER_NAME_INPUT_ID = 'worker-name';
 
@@ -28,23 +29,25 @@ export default function TeamWorkerSettingSection({
             placeholder="搜尋..."
             autoComplete="off"
           />
-          <ItemGroup className='rounded-[var(--radius)] border'>
-            {filteredWorkers.map((worker, index) => (
-              <Fragment key={worker.id}>
-                {index > 0 && (
-                  <ItemSeparator />
-                )}
-                <Item>
-                  <ItemMedia>
-                    <CircleUserRound size={20} />
-                  </ItemMedia>
-                  <ItemContent>
-                    <ItemTitle>{worker.name}</ItemTitle>
-                  </ItemContent>
-                </Item>
-              </Fragment>
-            ))}
-          </ItemGroup>
+          <ScrollArea className='h-80'>
+            <ItemGroup className='rounded-[var(--radius)] border border-[var(--border)]'>
+              {filteredWorkers.map((worker, index) => (
+                <Fragment key={worker.id}>
+                  {index > 0 && (
+                    <ItemSeparator />
+                  )}
+                  <Item>
+                    <ItemMedia>
+                      <CircleUserRound size={20} />
+                    </ItemMedia>
+                    <ItemContent>
+                      <ItemTitle>{worker.name}</ItemTitle>
+                    </ItemContent>
+                  </Item>
+                </Fragment>
+              ))}
+            </ItemGroup>
+          </ScrollArea>
         </CardContent>
       </Card>
       <Card className='w-3/4'>
