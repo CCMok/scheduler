@@ -1,47 +1,47 @@
 import { tryCatch } from '@/libs/_general/service/try-catch'
 import 'server-only'
 import { ServiceResponse } from '@/libs/_general/service/response'
-import { UpdateTeamNameRequest, updateTeamNameRequestSchema } from './update-team-name-request'
-import { checkCanAccessTeam } from '@/libs/auth/general/access-utils'
+import { checkCanAccessWorker } from '@/libs/auth/general/access-utils'
 import { Message } from '@/libs/_general/service/message'
 import prisma from '@/libs/_general/database/database-manager'
 import { handlePersistError } from '@/libs/_general/database/database-utils'
 import { PrismaErrorCode } from '@/libs/_general/database/prisma-error-code'
+import { UpdateWorkerRequest, updateWorkerRequestSchema } from './update-worker-request'
 
-export const updateTeamName = tryCatch(async (request: UpdateTeamNameRequest): Promise<ServiceResponse> => {
-  const parsedRequest = updateTeamNameRequestSchema.parse(request)
+export const updateWorker = tryCatch(async (request: UpdateWorkerRequest): Promise<ServiceResponse> => {
+  const parsedRequest = updateWorkerRequestSchema.parse(request)
 
-  const canAccess = await checkCanAccessTeam(parsedRequest.id)
+  const canAccess = await checkCanAccessWorker(parsedRequest.id)
   if (!canAccess) return {
     isSuccess: false,
     message: Message.UNAUTHORIZED,
   }
 
-  const team = await getTeam(parsedRequest.id)
-  if (!team) return {
+  const worker = await getWorker(parsedRequest.id)
+  if (!worker) return {
     isSuccess: false,
-    message: Message.NOT_FOUND.replaceAll('{0}', '團隊'),
+    message: Message.NOT_FOUND.replaceAll('{0}', '職員'),
   }
 
-  if (team.name === parsedRequest.name) return {
+  if (worker.name === parsedRequest.name) return {
     isSuccess: false,
     message: '名稱沒有更改',
   }
 
-  return await saveEntity(parsedRequest.id, parsedRequest.name);
+  return await saveEntity(parsedRequest);
 })
 
-const getTeam = async (id: number) => {
-  return await prisma.team.findUnique({
+const getWorker = async (id: number) => {
+  return await prisma.worker.findUnique({
     where: { id },
   })
 }
 
-const saveEntity = async (id: number, name: string): Promise<ServiceResponse> => {
+const saveEntity = async (request: UpdateWorkerRequest): Promise<ServiceResponse> => {
   try {
-    await prisma.team.update({
-      where: { id },
-      data: { name },
+    await prisma.worker.update({
+      where: { id: request.id },
+      data: { name: request.name },
     })
   } catch (e) {
     return handlePersistError(e, new Map([

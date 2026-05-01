@@ -35,9 +35,9 @@ export default async function TeamSettingPage({
         </Breadcrumb>
       }
     >
-      <div className='space-y-2 h-full'>
+      <div className='space-y-2 h-full flex flex-col'>
         <TeamSelector teamsPromise={getTeams()} />
-        {team && <TeamDetailPanel team={team} />}
+        {team && <TeamDetailPanel team={team} className="flex-1" />}
       </div>
     </HeaderLayout>
   )
