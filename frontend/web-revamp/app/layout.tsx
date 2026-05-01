@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="zh-Hant-HK" suppressHydrationWarning>
       <body
-        className={cn(noto.className, 'antialiased')}
+        className={cn(noto.className, 'antialiased h-screen')}
       >
         <ThemeProvider
           attribute="class"

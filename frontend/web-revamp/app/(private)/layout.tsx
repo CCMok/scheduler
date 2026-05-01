@@ -8,7 +8,7 @@ export default function PrivateLayout({
   children: ReactNode;
 }>) {
   return (
-    <SidebarProvider>
+    <SidebarProvider className='h-full'>
       <AppSidebar variant='inset' />
       <SidebarInset>
         {children}
