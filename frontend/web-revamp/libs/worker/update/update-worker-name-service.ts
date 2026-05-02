@@ -6,10 +6,10 @@ import { Message } from '@/libs/_general/service/message'
 import prisma from '@/libs/_general/database/database-manager'
 import { handlePersistError } from '@/libs/_general/database/database-utils'
 import { PrismaErrorCode } from '@/libs/_general/database/prisma-error-code'
-import { UpdateWorkerRequest, updateWorkerRequestSchema } from './update-worker-request'
+import { UpdateWorkerNameRequest, updateWorkerNameRequestSchema } from './update-worker-name-request'
 
-export const updateWorker = tryCatch(async (request: UpdateWorkerRequest): Promise<ServiceResponse> => {
-  const parsedRequest = updateWorkerRequestSchema.parse(request)
+export const updateWorkerName = tryCatch(async (request: UpdateWorkerNameRequest): Promise<ServiceResponse> => {
+  const parsedRequest = updateWorkerNameRequestSchema.parse(request)
 
   const canAccess = await checkCanAccessWorker(parsedRequest.id)
   if (!canAccess) return {
@@ -37,7 +37,7 @@ const getWorker = async (id: number) => {
   })
 }
 
-const saveEntity = async (request: UpdateWorkerRequest): Promise<ServiceResponse> => {
+const saveEntity = async (request: UpdateWorkerNameRequest): Promise<ServiceResponse> => {
   try {
     await prisma.worker.update({
       where: { id: request.id },

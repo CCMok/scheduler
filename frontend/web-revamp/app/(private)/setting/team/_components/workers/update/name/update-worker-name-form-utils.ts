@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const FORM_ID = 'update-worker-form';
+export const FORM_ID = 'update-worker-name-form';
 
 export enum FORM_FIELD {
   NAME = 'name',
