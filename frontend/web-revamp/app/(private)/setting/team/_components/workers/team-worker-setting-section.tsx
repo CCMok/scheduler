@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { Post } from "@/external/prisma/generated/browser";
-import SelectWorkerPanel from "./select-worker-panel";
-import UpdateWorkerPanel from "./update/update-worker-panel";
 import { WorkerPost } from "@/libs/worker/worker";
+import WorkerSettingDesktop from "./worker-setting-desktop";
+import { useIsMobile } from "@/external/shadcn/hooks/use-mobile";
+import WorkerSettingMobile from "./worker-setting-mobile";
 
 export default function TeamWorkerSettingSection({
   workers,
@@ -14,24 +15,26 @@ export default function TeamWorkerSettingSection({
   posts: Post[];
 }>) {
   const [selectedWorkerId, setSelectedWorkerId] = useState<number | undefined>();
-  const selectedWorker = workers.find(worker => worker.id === selectedWorkerId);
-  return (
-    <div className='flex space-x-2 h-full'>
-      {/* TODO: responsive */}
-      <SelectWorkerPanel
-        className="w-80"
+
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <WorkerSettingMobile
         workers={workers}
+        posts={posts}
         selectedWorkerId={selectedWorkerId}
         setSelectedWorkerId={setSelectedWorkerId}
       />
-      {selectedWorker && (
-        <UpdateWorkerPanel
-          key={selectedWorker.id} // re-mount when selectedWorkerId changes. To update form initial value.
-          className="flex-1"
-          worker={selectedWorker}
-          posts={posts}
-        />
-      )}
-    </div>
-  );
+    )
+  }
+
+  return (
+    <WorkerSettingDesktop
+      workers={workers}
+      posts={posts}
+      selectedWorkerId={selectedWorkerId}
+      setSelectedWorkerId={setSelectedWorkerId}
+    />
+  )
 }
