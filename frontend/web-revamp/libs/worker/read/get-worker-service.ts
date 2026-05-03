@@ -1,20 +1,29 @@
 import 'server-only';
 import { cache } from "react";
-import { Prisma, Worker } from '@/external/prisma/generated/client';
+import { Worker, Post, PostWorker, Prisma } from '@/external/prisma/generated/client';
 import { getSession } from '@/libs/_general/session/session-manager';
 import prisma from '@/libs/_general/database/database-manager';
 import { Role } from '@/libs/auth/general/role';
+import { WorkerPost } from '../worker';
 
-export const getWorkers = cache(async (teamId: number): Promise<Worker[]> => {
+export const getWorkers = cache(async (teamId: number): Promise<WorkerPost[]> => {
   const session = await getSession();
   if (!session) return [];
 
+  let workers: (Worker & { posts: (PostWorker & { post: Post })[] })[] = [];
   try {
-    return await prisma.worker.findMany({
+    workers = await prisma.worker.findMany({
       where: {
         teamId,
         team: {
           ownerId: session.roleId === Role.SYSTEM_ADMIN ? undefined : session.userId,
+        },
+      },
+      include: {
+        posts: {
+          include: {
+            post: true,
+          },
         },
       },
       orderBy: {
@@ -26,4 +35,9 @@ export const getWorkers = cache(async (teamId: number): Promise<Worker[]> => {
     console.error(e);
     return [];
   }
+
+  return workers.map(w => ({
+    ...w,
+    posts: w.posts.map(p => p.post),
+  }))
 })

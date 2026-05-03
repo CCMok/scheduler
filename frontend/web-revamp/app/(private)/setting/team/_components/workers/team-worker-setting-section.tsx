@@ -1,14 +1,17 @@
 'use client'
 
 import { useState } from "react";
-import { Worker } from "@/external/prisma/generated/browser";
+import { Post } from "@/external/prisma/generated/browser";
 import SelectWorkerPanel from "./select-worker-panel";
 import UpdateWorkerPanel from "./update/update-worker-panel";
+import { WorkerPost } from "@/libs/worker/worker";
 
 export default function TeamWorkerSettingSection({
   workers,
+  posts,
 }: Readonly<{
-  workers: Worker[];
+  workers: WorkerPost[];
+  posts: Post[];
 }>) {
   const [selectedWorkerId, setSelectedWorkerId] = useState<number | undefined>();
   const selectedWorker = workers.find(worker => worker.id === selectedWorkerId);
@@ -24,8 +27,9 @@ export default function TeamWorkerSettingSection({
       {selectedWorker && (
         <UpdateWorkerPanel
           key={selectedWorker.id} // re-mount when selectedWorkerId changes. To update form initial value.
-          className="flex-1 h-fit"
+          className="flex-1"
           worker={selectedWorker}
+          posts={posts}
         />
       )}
     </div>

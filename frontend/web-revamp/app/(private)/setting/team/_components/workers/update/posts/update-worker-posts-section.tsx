@@ -1,43 +1,45 @@
 'use client'
 
 import { useAppForm } from "@/components/_general/form/utils/form-utils";
-import { Worker } from "@/external/prisma/generated/browser";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
-import { useRouter } from "next/navigation";
-import { FORM_FIELD, FORM_ID, formSchema } from "./update-worker-name-form-utils"
+import { FORM_FIELD, FORM_ID, formSchema } from "./update-worker-posts-form-utils"
 import { revalidateLogic } from "@tanstack/react-form";
 import { Field, FieldGroup } from "@/external/shadcn/components/ui/field";
 import { Check } from "lucide-react";
-import { updateWorkerNameAction } from "@/libs/worker/update/name/update-worker-name-action";
+import { Post } from "@/external/prisma/generated/client";
+import { WorkerPost } from "@/libs/worker/worker";
+import { updateWorkerPostsAction } from "@/libs/worker/update/posts/update-worker-posts-action";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
-export default function UpdateWorderNameSection({
+export default function UpdateWorkerPostsSection({
   className,
   worker,
+  posts,
 }: Readonly<{
   className?: string;
-  worker: Worker;
+  worker: WorkerPost;
+  posts: Post[];
 }>) {
   const router = useRouter();
-
   const form = useAppForm({
     defaultValues: {
-      [FORM_FIELD.NAME]: worker.name,
+      [FORM_FIELD.POSTS]: worker.posts.map((post) => post.id),
     },
     validationLogic: revalidateLogic(),
     validators: {
       onDynamic: formSchema,
     },
     onSubmit: async ({ value }) => {
-      const response = await updateWorkerNameAction({
+      const response = await updateWorkerPostsAction({
         id: worker.id,
-        name: value[FORM_FIELD.NAME],
+        posts: value[FORM_FIELD.POSTS],
       })
       if (!response.isSuccess) {
         toast.error(response.message)
         return;
       }
-      toast.success('更改職員名稱成功')
+      toast.success('更改職員的職位成功')
       // refresh with new data
       router.refresh();
     },
@@ -54,16 +56,19 @@ export default function UpdateWorderNameSection({
     >
       <Card>
         <CardHeader>
-          <CardTitle>更改名稱</CardTitle>
-          <CardDescription>請輸入職員的新名稱</CardDescription>
+          <CardTitle>更改職位</CardTitle>
+          <CardDescription>請選擇職員的職位</CardDescription>
         </CardHeader>
         <CardContent>
           <FieldGroup className='lg:w-(--input-width)'>
-            <form.AppField name={FORM_FIELD.NAME}>
+            <form.AppField name={FORM_FIELD.POSTS}>
               {(field) => (
-                <field.TextField
-                  label="名稱"
-                  autoComplete="name"
+                <field.MultipleComboboxField
+                  label="職位"
+                  options={posts}
+                  getOptionValue={(post) => post.id}
+                  getOptionDisplay={(post) => post.name}
+                  placeholder="請選擇職位"
                 />
               )}
             </form.AppField>

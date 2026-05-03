@@ -4,6 +4,7 @@ import { Team } from "@/external/prisma/generated/browser";
 import TeamWorkerSettingSection from "./workers/team-worker-setting-section";
 import { getWorkers } from "@/libs/worker/read/get-worker-service";
 import { cn } from "@/external/shadcn/libs/utils";
+import { getPosts } from "@/libs/post/read/get-post-service";
 
 enum TabId {
   WORKERS = 'workers',
@@ -19,6 +20,7 @@ export default async function TeamDetailPanel({
   className?: string;
 }>) {
   const workers = await getWorkers(team.id);
+  const posts = await getPosts(team.id);
 
   return (
     <Tabs className={cn('min-h-0', className)} defaultValue={TabId.WORKERS}>
@@ -28,7 +30,7 @@ export default async function TeamDetailPanel({
         <TabsTrigger value={TabId.INFO}>基本資料</TabsTrigger>
       </TabsList>
       <TabsContent value={TabId.WORKERS} className='min-h-0'>
-         <TeamWorkerSettingSection workers={workers} />
+         <TeamWorkerSettingSection workers={workers} posts={posts} />
       </TabsContent>
       <TabsContent value={TabId.POSTS}>
         <div>Posts</div>
