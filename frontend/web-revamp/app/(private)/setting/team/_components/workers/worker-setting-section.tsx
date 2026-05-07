@@ -6,15 +6,18 @@ import { WorkerPost } from "@/libs/worker/worker";
 import WorkerSettingDesktop from "./worker-setting-desktop";
 import { useIsMobile } from "@/external/shadcn/hooks/use-mobile";
 import WorkerSettingMobile from "./worker-setting-mobile";
+import { DetailPanelMode, DetailPanelState } from "./detail-panel-state";
 
-export default function TeamWorkerSettingSection({
+export default function WorkerSettingSection({
   workers,
   posts,
+  teamId,
 }: Readonly<{
   workers: WorkerPost[];
   posts: Post[];
+  teamId: number;
 }>) {
-  const [selectedWorkerId, setSelectedWorkerId] = useState<number | undefined>();
+  const [detailPanelState, setDetailPanelState] = useState<DetailPanelState>({ mode: DetailPanelMode.IDLE });
 
   const isMobile = useIsMobile();
 
@@ -23,8 +26,9 @@ export default function TeamWorkerSettingSection({
       <WorkerSettingMobile
         workers={workers}
         posts={posts}
-        selectedWorkerId={selectedWorkerId}
-        setSelectedWorkerId={setSelectedWorkerId}
+        detailPanelState={detailPanelState}
+        setDetailPanelState={setDetailPanelState}
+        teamId={teamId}
       />
     )
   }
@@ -33,8 +37,9 @@ export default function TeamWorkerSettingSection({
     <WorkerSettingDesktop
       workers={workers}
       posts={posts}
-      selectedWorkerId={selectedWorkerId}
-      setSelectedWorkerId={setSelectedWorkerId}
+      detailPanelState={detailPanelState}
+      setDetailPanelState={setDetailPanelState}
+      teamId={teamId}
     />
   )
 }

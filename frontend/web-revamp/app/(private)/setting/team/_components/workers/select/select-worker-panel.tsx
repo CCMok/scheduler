@@ -5,28 +5,31 @@ import { Input } from "@/external/shadcn/components/ui/input"
 import { Fragment, useState } from "react";
 import { Worker } from "@/external/prisma/generated/browser";
 import { Item, ItemContent, ItemGroup, ItemMedia, ItemSeparator, ItemTitle } from "@/external/shadcn/components/ui/item";
-import { CircleUserRound } from "lucide-react";
+import { CircleUserRound, Plus } from "lucide-react";
 import { ScrollArea } from "@/external/shadcn/components/ui/scroll-area";
 import { cn } from "@/external/shadcn/libs/utils";
+import CustomButton from "@/components/_general/_custom/button/custom-button";
+import { DetailPanelMode, DetailPanelState } from "../detail-panel-state";
 
 const WORKER_NAME_INPUT_ID = 'worker-name';
 
 export default function SelectWorkerPanel({
   className,
   workers,
-  selectedWorkerId,
-  setSelectedWorkerId,
+  detailPanelState,
+  setDetailPanelState
 }: Readonly<{
   className?: string;
   workers: Worker[];
-  selectedWorkerId?: number;
-  setSelectedWorkerId: (workerId: number) => void;
+  detailPanelState: DetailPanelState;
+  setDetailPanelState: (state: DetailPanelState) => void;
 }>) {
   const [inputName, setInputName] = useState('');
   const filteredWorkers = workers.filter(worker => worker.name.toLowerCase().includes(inputName.toLowerCase()));
   return (
     <Card className={className}>
       <CardContent className='space-y-2 flex-1 min-h-0 flex flex-col'>
+        <div className='flex space-x-2'>
         <Input
           id={WORKER_NAME_INPUT_ID}
           name={WORKER_NAME_INPUT_ID}
@@ -35,6 +38,14 @@ export default function SelectWorkerPanel({
           placeholder="搜尋..."
           autoComplete="off"
         />
+        <CustomButton 
+          variant='outline'
+           size='icon'
+           onClick={() => setDetailPanelState({ mode: DetailPanelMode.CREATE })}
+           >
+          <Plus />
+        </CustomButton>
+        </div>
         <ScrollArea className='flex-1 min-h-0 border rounded-md'>
           <ItemGroup>
             {filteredWorkers.map((worker, index) => (
@@ -45,9 +56,9 @@ export default function SelectWorkerPanel({
                 <Item
                   className={cn(
                     'cursor-pointer rounded-none',
-                    selectedWorkerId === worker.id && 'bg-accent'
+                    detailPanelState.mode === DetailPanelMode.UPDATE && detailPanelState.workerId === worker.id && 'bg-accent'
                   )}
-                  onClick={() => setSelectedWorkerId(worker.id)}
+                  onClick={() => setDetailPanelState({ mode: DetailPanelMode.UPDATE, workerId: worker.id })}
                 >
                   <ItemMedia>
                     <CircleUserRound size={20} />

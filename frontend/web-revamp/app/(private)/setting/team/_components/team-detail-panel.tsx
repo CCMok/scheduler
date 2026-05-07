@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/external/shadcn/components/ui/tabs";
 import TeamInfoSettingSection from "./info/team-info-setting-section";
 import { Team } from "@/external/prisma/generated/browser";
-import TeamWorkerSettingSection from "./workers/team-worker-setting-section";
+import WorkerSettingSection from "./workers/worker-setting-section";
 import { getWorkers } from "@/libs/worker/read/get-worker-service";
 import { cn } from "@/external/shadcn/libs/utils";
 import { getPosts } from "@/libs/post/read/get-post-service";
@@ -30,7 +30,11 @@ export default async function TeamDetailPanel({
         <TabsTrigger value={TabId.INFO}>基本資料</TabsTrigger>
       </TabsList>
       <TabsContent value={TabId.WORKERS} className='min-h-0'>
-         <TeamWorkerSettingSection workers={workers} posts={posts} />
+        <WorkerSettingSection
+          workers={workers}
+          posts={posts}
+          teamId={team.id}
+        />
       </TabsContent>
       <TabsContent value={TabId.POSTS}>
         <div>Posts</div>
