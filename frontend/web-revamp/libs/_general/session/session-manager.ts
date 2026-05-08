@@ -49,6 +49,6 @@ export const getSessionPayload = (user: User): SessionPayload => {
     userId: user.id,
     email: user.email,
     name: user.name ?? undefined,
-    roleId: user.roleId,
+    role: user.role,
   }
 }

@@ -25,7 +25,7 @@ export const login = tryCatch(async (request: LoginRequest): Promise<ServiceResp
     message: CREDENTIAL_ERROR,
   }
 
-  if (user.roleId !== Role.SYSTEM_ADMIN) {
+  if (user.role !== Role.SYSTEM_ADMIN) {
     if (!user.isEmailVerified) return {
       isSuccess: false,
       message: Message.NOT_VERIFIED,

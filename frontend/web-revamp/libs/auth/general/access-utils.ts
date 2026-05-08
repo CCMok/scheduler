@@ -7,7 +7,7 @@ export const checkCanAccessTeam = async (teamId: number): Promise<boolean> => {
   const session = await getSession()
 
   if (!session) return false
-  if (session.roleId === Role.SYSTEM_ADMIN) return true
+  if (session.role === Role.SYSTEM_ADMIN) return true
 
   const team = await prisma.team.findUnique({
     select: {
@@ -26,7 +26,7 @@ export const checkCanAccessRoster = async (rosterId: number): Promise<boolean> =
   const session = await getSession()
 
   if (!session) return false
-  if (session.roleId === Role.SYSTEM_ADMIN) return true
+  if (session.role === Role.SYSTEM_ADMIN) return true
 
   const roster = await prisma.roster.findUnique({
     select: {
@@ -46,7 +46,7 @@ export const checkCanAccessWorker = async (workerId: number): Promise<boolean> =
   const session = await getSession()
 
   if (!session) return false
-  if (session.roleId === Role.SYSTEM_ADMIN) return true
+  if (session.role === Role.SYSTEM_ADMIN) return true
 
   const worker = await prisma.worker.findUnique({
     select: {

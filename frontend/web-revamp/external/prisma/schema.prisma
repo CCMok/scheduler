@@ -12,7 +12,7 @@ model User {
   email           String  @unique
   password        String
   name            String?
-  roleId          Int     @map("role_id")
+  role            Int     @map("role")
   isEmailVerified Boolean @default(false) @map("is_email_verified")
   teams           Team[]
 

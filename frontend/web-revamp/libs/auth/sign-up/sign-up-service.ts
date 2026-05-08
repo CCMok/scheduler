@@ -44,7 +44,7 @@ const saveEntity = async (request: SignUpRequest, encryptedPassword: string): Pr
         email: request.email,
         password: encryptedPassword,
         name: request.name,
-        roleId: DEFAULT_ROLE,
+        role: DEFAULT_ROLE,
         isEmailVerified: false,
       },
     })

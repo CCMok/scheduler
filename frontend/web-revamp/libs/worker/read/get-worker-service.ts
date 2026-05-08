@@ -16,7 +16,7 @@ export const getWorkers = cache(async (teamId: number): Promise<WorkerPost[]> =>
       where: {
         teamId,
         team: {
-          ownerId: session.roleId === Role.SYSTEM_ADMIN ? undefined : session.userId,
+          ownerId: session.role === Role.SYSTEM_ADMIN ? undefined : session.userId,
         },
       },
       include: {

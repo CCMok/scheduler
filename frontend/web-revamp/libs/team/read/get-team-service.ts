@@ -12,7 +12,7 @@ export const getTeams = cache(async (): Promise<Team[]> => {
   try {
     return await prisma.team.findMany({
       where: {
-        ownerId: session.roleId === Role.SYSTEM_ADMIN ? undefined : session.userId,
+        ownerId: session.role === Role.SYSTEM_ADMIN ? undefined : session.userId,
       },
       orderBy: {
         name: Prisma.SortOrder.asc,
@@ -34,7 +34,7 @@ export const getTeamById = cache(async (id: number): Promise<Team | undefined> =
       where: { id },
     })
   
-    if (!team || (session.roleId !== Role.SYSTEM_ADMIN && team.ownerId !== session.userId))
+    if (!team || (session.role !== Role.SYSTEM_ADMIN && team.ownerId !== session.userId))
       return undefined
   
     return team

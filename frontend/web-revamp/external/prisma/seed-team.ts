@@ -97,7 +97,7 @@ const prisma = new PrismaClient({
 const findSystemAdmin = async (tx: TransactionClient) => {
   return await tx.user.findFirst({
     where: {
-      roleId: Role.SYSTEM_ADMIN,
+      role: Role.SYSTEM_ADMIN,
     },
   })
 }
