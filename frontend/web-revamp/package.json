@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed-team": "tsx external/prisma/seed-team.ts",
     "email-dev": "email dev"
   },
   "dependencies": {
