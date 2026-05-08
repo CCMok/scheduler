@@ -21,7 +21,7 @@ const SheetBase = ({
       open={open}
       onOpenChange={(open) => !open && setDetailPanelState({ mode: DetailPanelMode.IDLE })}
     >
-      <SheetContent side='bottom' className='h-[90dvh] px-2'>
+      <SheetContent side='bottom' className='px-2 pb-2'>
         {children}
       </SheetContent>
     </Sheet>
@@ -89,6 +89,7 @@ export default function WorkerSettingMobile({
           className="flex-1"
           posts={posts}
           teamId={teamId}
+          onSuccess={() => setDetailPanelState({ mode: DetailPanelMode.IDLE })}
         />
       </SheetBase>
     </div>

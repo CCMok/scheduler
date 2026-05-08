@@ -43,7 +43,8 @@ export default function MultipleCombobox<T, V extends Key>({
   }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    // Using modal popover to avoid scroll not work inside sheet
+    <Popover modal open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <CustomButton
           id={id}

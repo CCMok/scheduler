@@ -33,7 +33,8 @@ export default function Combobox<T, V extends Key>({
   const [open, setOpen] = useState(defaultIsOpen)
   const selectedItem = options.find((option) => getOptionValue(option) === value)
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    // Using modal popover to avoid scroll not work inside sheet
+    <Popover modal open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <CustomButton
           id={id}

@@ -42,6 +42,7 @@ export default function WorkerSettingDesktop({
           className='flex-1'
           posts={posts}
           teamId={teamId}
+          onSuccess={(id) => setDetailPanelState({ mode: DetailPanelMode.UPDATE, workerId: id })}
         />
       )}
     </div>
