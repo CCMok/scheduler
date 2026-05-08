@@ -1,6 +1,6 @@
 import { Post } from "@/external/prisma/generated/browser";
 import SelectWorkerPanel from "./select/select-worker-panel";
-import UpdateWorkerPanel from "./update/update-worker-panel";
+import WorkerDetailPanel from "./worker-detail-panel";
 import { WorkerPost } from "@/libs/worker/worker";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/external/shadcn/components/ui/sheet";
 import { DetailPanelMode, DetailPanelState } from "./detail-panel-state";
@@ -65,11 +65,12 @@ export default function WorkerSettingMobile({
           </SheetDescription>
         </SheetHeader>
         {selectedWorker && (
-          <UpdateWorkerPanel
+          <WorkerDetailPanel
             key={selectedWorker.id} // re-mount when selectedWorkerId changes. To update form initial value.
             className="flex-1"
             worker={selectedWorker}
             posts={posts}
+            onDeleteSuccess={() => setDetailPanelState({ mode: DetailPanelMode.IDLE })}
           />
         )}
       </SheetBase>

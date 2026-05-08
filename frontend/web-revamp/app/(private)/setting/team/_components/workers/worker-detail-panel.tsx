@@ -1,18 +1,21 @@
-import UpdateWorkerNameSection from "./name/update-worker-name-section";
-import UpdateWorkerPostsSection from "./posts/update-worker-posts-section";
+import UpdateWorkerNameSection from "./update/name/update-worker-name-section";
+import UpdateWorkerPostsSection from "./update/posts/update-worker-posts-section";
 import { cn } from "@/external/shadcn/libs/utils";
 import { Post } from "@/external/prisma/generated/client";
 import { WorkerPost } from "@/libs/worker/worker";
 import { ScrollArea } from "@/external/shadcn/components/ui/scroll-area";
+import DeleteWorkerSection from "./delete/delete-worker-section";
 
-export default function UpdateWorkerPanel({
+export default function WorkerDetailPanel({
   className,
   worker,
   posts,
+  onDeleteSuccess,
 }: Readonly<{
   className?: string;
   worker: WorkerPost;
   posts: Post[];
+  onDeleteSuccess?: () => void;
 }>) {
   return (
     <ScrollArea className={cn('h-full', className)}>
@@ -23,6 +26,10 @@ export default function UpdateWorkerPanel({
         <UpdateWorkerPostsSection
           worker={worker}
           posts={posts}
+        />
+        <DeleteWorkerSection
+          workerId={worker.id}
+          onSuccess={onDeleteSuccess}
         />
       </div>
     </ScrollArea>

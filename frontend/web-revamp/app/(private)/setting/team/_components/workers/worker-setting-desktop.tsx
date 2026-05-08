@@ -1,6 +1,6 @@
 import { Post } from "@/external/prisma/generated/browser";
 import SelectWorkerPanel from "./select/select-worker-panel";
-import UpdateWorkerPanel from "./update/update-worker-panel";
+import WorkerDetailPanel from "./worker-detail-panel";
 import { WorkerPost } from "@/libs/worker/worker";
 import { DetailPanelMode, DetailPanelState } from "./detail-panel-state";
 import CreateWorkerPanel from "./create/create-worker-panel";
@@ -30,11 +30,12 @@ export default function WorkerSettingDesktop({
         setDetailPanelState={setDetailPanelState}
       />
       {selectedWorker && (
-        <UpdateWorkerPanel
+        <WorkerDetailPanel
           key={selectedWorker.id} // re-mount when selectedWorkerId changes. To update form initial value.
           className="flex-1"
           worker={selectedWorker}
           posts={posts}
+          onDeleteSuccess={() => setDetailPanelState({ mode: DetailPanelMode.IDLE })}
         />
       )}
       {detailPanelState.mode === DetailPanelMode.CREATE && (
