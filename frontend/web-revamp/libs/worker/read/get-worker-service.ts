@@ -5,8 +5,9 @@ import { getSession } from '@/libs/_general/session/session-manager';
 import prisma from '@/libs/_general/database/database-manager';
 import { Role } from '@/libs/auth/general/role';
 import { WorkerPost } from '../worker';
+import { WorkerStatus } from '../worker-status';
 
-export const getWorkers = cache(async (teamId: number): Promise<WorkerPost[]> => {
+export const getWorkers = cache(async (teamId: number, activeOnly: boolean = false): Promise<WorkerPost[]> => {
   const session = await getSession();
   if (!session) return [];
 
@@ -15,6 +16,7 @@ export const getWorkers = cache(async (teamId: number): Promise<WorkerPost[]> =>
     workers = await prisma.worker.findMany({
       where: {
         teamId,
+        status: activeOnly ? WorkerStatus.ACTIVE : undefined,
         team: {
           ownerId: session.role === Role.SYSTEM_ADMIN ? undefined : session.userId,
         },

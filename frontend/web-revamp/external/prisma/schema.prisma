@@ -12,7 +12,7 @@ model User {
   email           String  @unique
   password        String
   name            String?
-  role            Int     @map("role")
+  role            Int     @map("role") @default(2)
   isEmailVerified Boolean @default(false) @map("is_email_verified")
   teams           Team[]
 
@@ -27,7 +27,7 @@ model UserAudit {
   email           String?
   password        String?
   name            String?
-  roleId          Int?     @map("role_id")
+  role            Int?     @map("role")
   isEmailVerified Boolean? @map("is_email_verified")
 
   @@map("user_audit")
@@ -92,6 +92,7 @@ model Worker {
   id              Int                    @id @default(autoincrement())
   teamId          Int                    @map("team_id")
   name            String
+  status          Int                    @default(1)
   team            Team                   @relation(fields: [teamId], references: [id], onDelete: Cascade)
   posts           PostWorker[]
   affinityMembers WorkerAffinityMember[]
@@ -108,6 +109,7 @@ model WorkerAudit {
   id             Int?
   teamId         Int?     @map("team_id")
   name           String?
+  status         Int?
 
   @@map("worker_audit")
 }

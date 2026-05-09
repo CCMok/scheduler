@@ -55,6 +55,7 @@ class Worker(SQLModel, table=True):
     id: int = Field(primary_key=True)
     team_id: int = Field(foreign_key='team.id')
     name: str
+    status: int
 
     posts: list['Post'] = Relationship(
         back_populates='workers', link_model=PostWorker)

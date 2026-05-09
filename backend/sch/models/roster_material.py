@@ -1,4 +1,5 @@
 from sqlmodel import select
+from enums.worker_status import WorkerStatus
 from models.dao import Team, PostWorker, Worker, Post
 from managers.db import DbSession
 from models.arrange_roster_request import ArrangeRosterRequest
@@ -53,7 +54,7 @@ class RosterMaterial:
     def __find_workers(self) -> list[Worker]:
         return self.db_session.exec(
             select(Worker)
-            .where(Worker.team_id == self.request.team_id)
+            .where(Worker.team_id == self.request.team_id, Worker.status == WorkerStatus.ACTIVE.value)
         ).all()
 
     # Run after post fetching
