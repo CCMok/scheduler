@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import { resetPasswordAction } from "@/libs/auth/reset-password/reset-password-action";
 import { toast } from "sonner";
 import { ROUTE } from "@/libs/_general/route/route-config";
+import CustomButton from "@/components/_general/_custom/button/custom-button";
+import CustomLink from "@/components/_general/_custom/link/custom-link";
 
 export default function ResetPasswordCard({
   className,
@@ -72,6 +74,11 @@ export default function ResetPasswordCard({
               </form.SubmitButton>
             </Field>
           </form.AppForm>
+          <CustomButton asChild variant='link' size='sm'>
+            <CustomLink href={ROUTE.public.login}>
+              返回登入
+            </CustomLink>
+          </CustomButton>
         </CardFooter>
       </Card>
     </form>

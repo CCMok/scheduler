@@ -72,7 +72,7 @@ export default function LoginCard({
                   label="密碼"
                   labelAddOn={
                     <CustomButton asChild variant='link' className='h-fit p-0'>
-                      <CustomLink href={ROUTE.public.resetPassword.base}>
+                      <CustomLink href={ROUTE.public.resetPassword.base} tabIndex={-1}>
                         忘記密碼
                       </CustomLink>
                     </CustomButton>
