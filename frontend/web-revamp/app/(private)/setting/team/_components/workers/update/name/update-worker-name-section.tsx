@@ -54,16 +54,16 @@ export default function UpdateWorderNameSection({
     >
       <Card>
         <CardHeader>
-          <CardTitle>更改名稱</CardTitle>
-          <CardDescription>請輸入職員的新名稱</CardDescription>
+          <CardTitle>名稱</CardTitle>
+          <CardDescription>在值班表顯示的名稱。</CardDescription>
         </CardHeader>
         <CardContent>
           <FieldGroup className='lg:w-(--input-width)'>
             <form.AppField name={FORM_FIELD.NAME}>
               {(field) => (
                 <field.TextField
-                  label="名稱"
                   autoComplete="name"
+                  showLabel={false}
                 />
               )}
             </form.AppField>

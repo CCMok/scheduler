@@ -23,7 +23,7 @@ export const updateUserName = tryCatch(async (request: UpdateUserNameRequest): P
 
   if (user.name === parsedRequest.name) return {
     isSuccess: false,
-    message: '名稱沒有更改',
+    message: `名稱${Message.NOT_CHANGE}`,
   }
 
   const savedUser = await saveEntity(session.userId, parsedRequest.name);

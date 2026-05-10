@@ -1,7 +1,7 @@
 'use client'
 
 import MultipleCombobox from "@/components/_general/_custom/combobox/multiple-combobox"
-import { Key, ReactNode } from "react"
+import { ComponentProps, Key, ReactNode } from "react"
 import FieldLayout from "./field-layout"
 import { useFieldContext } from "../utils/form-utils"
 
@@ -15,6 +15,8 @@ export default function MultipleComboboxField<T, V extends Key>({
   placeholder,
   icon,
   showError,
+  showLabel,
+  orientation,
 }: Readonly<{
   className?: string;
   label?: ReactNode;
@@ -25,6 +27,8 @@ export default function MultipleComboboxField<T, V extends Key>({
   placeholder?: string;
   icon?: ReactNode;
   showError?: boolean;
+  showLabel?: boolean;
+  orientation?: ComponentProps<typeof FieldLayout>["orientation"];
 }>) {
   const field = useFieldContext<V[]>()
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
@@ -38,6 +42,7 @@ export default function MultipleComboboxField<T, V extends Key>({
       isInvalid={isInvalid}
       errors={field.state.meta.errors}
       showError={showError}
+      showLabel={showLabel}
     >
       <MultipleCombobox
         id={field.name}

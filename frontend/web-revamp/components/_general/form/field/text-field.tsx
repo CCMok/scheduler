@@ -3,7 +3,7 @@
 import { Input } from "@/external/shadcn/components/ui/input"
 import FieldLayout from "./field-layout"
 import { useFieldContext } from "../utils/form-utils"
-import { HTMLInputAutoCompleteAttribute, HTMLInputTypeAttribute, ReactNode } from "react";
+import { ComponentProps, HTMLInputAutoCompleteAttribute, HTMLInputTypeAttribute, ReactNode } from "react";
 
 export default function TextField({
   className,
@@ -13,7 +13,9 @@ export default function TextField({
   autoComplete = 'off',
   type = 'text',
   showError,
+  showLabel,
   disabled,
+  orientation,
 }: Readonly<{
   className?: string;
   label?: ReactNode;
@@ -22,7 +24,9 @@ export default function TextField({
   autoComplete?: HTMLInputAutoCompleteAttribute;
   type?: HTMLInputTypeAttribute;
   showError?: boolean;
+  showLabel?: boolean;
   disabled?: boolean;
+  orientation?: ComponentProps<typeof FieldLayout>["orientation"];
 }>) {
   const field = useFieldContext<string>()
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
@@ -35,6 +39,7 @@ export default function TextField({
       isInvalid={isInvalid}
       errors={field.state.meta.errors}
       showError={showError}
+      showLabel={showLabel}
     >
       <Input
         id={field.name}

@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-const description = '請確認是否要刪除此職員。刪除後將移除相關設定，值班表將不會顯示該職員，且無法恢復。'
+const description = '刪除後將移除相關設定，值班表將不會顯示該職員，且無法恢復。'
 
 export default function DeleteWorkerSection({
   className,
@@ -63,7 +63,7 @@ export default function DeleteWorkerSection({
             <DialogTitle>刪除職員</DialogTitle>
             <DialogDescription />
           </DialogHeader>
-          <p>請確認是否要刪除此職員。刪除後將移除相關設定，值班表將不會顯示該職員，且無法恢復。</p>
+          <p>{description}</p>
           <DialogFooter>
             <DialogClose asChild>
               <CustomButton variant="outline">返回</CustomButton>

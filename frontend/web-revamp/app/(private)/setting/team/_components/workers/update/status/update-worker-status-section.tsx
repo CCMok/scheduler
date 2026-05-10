@@ -2,44 +2,42 @@
 
 import { useAppForm } from "@/components/_general/form/utils/form-utils";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
-import { FORM_FIELD, FORM_ID, formSchema } from "./update-worker-posts-form-utils"
 import { revalidateLogic } from "@tanstack/react-form";
 import { Field, FieldGroup } from "@/external/shadcn/components/ui/field";
 import { Check } from "lucide-react";
-import { Post } from "@/external/prisma/generated/client";
-import { WorkerPost } from "@/libs/worker/worker";
-import { updateWorkerPostsAction } from "@/libs/worker/update/posts/update-worker-posts-action";
-import { toast } from "sonner";
+import { Worker } from "@/external/prisma/generated/client";
 import { useRouter } from "next/navigation";
+import { FORM_FIELD, FORM_ID, formSchema } from "./update-worker-status-form-utils";
+import { WorkerStatus } from "@/libs/worker/worker-status";
+import { updateWorkerStatusAction } from "@/libs/worker/update/status/update-worker-status-action";
+import { toast } from "sonner";
 
-export default function UpdateWorkerPostsSection({
+export default function UpdateWorkerStatusSection({
   className,
   worker,
-  posts,
 }: Readonly<{
   className?: string;
-  worker: WorkerPost;
-  posts: Post[];
+  worker: Worker;
 }>) {
   const router = useRouter();
   const form = useAppForm({
     defaultValues: {
-      [FORM_FIELD.POSTS]: worker.posts.map((post) => post.id),
+      [FORM_FIELD.STATUS]: worker.status === WorkerStatus.ACTIVE,
     },
     validationLogic: revalidateLogic(),
     validators: {
       onDynamic: formSchema,
     },
     onSubmit: async ({ value }) => {
-      const response = await updateWorkerPostsAction({
+      const response = await updateWorkerStatusAction({
         id: worker.id,
-        posts: value[FORM_FIELD.POSTS],
+        status: value[FORM_FIELD.STATUS] ? WorkerStatus.ACTIVE : WorkerStatus.INACTIVE,
       })
       if (!response.isSuccess) {
         toast.error(response.message)
         return;
       }
-      toast.success('更改職員的職位成功')
+      toast.success('更改職員的狀態成功')
       // refresh with new data
       router.refresh();
     },
@@ -56,19 +54,15 @@ export default function UpdateWorkerPostsSection({
     >
       <Card>
         <CardHeader>
-          <CardTitle>職位</CardTitle>
-          <CardDescription>將會依照設定，自動編排值班表。可選多於一個職位。</CardDescription>
+          <CardTitle>狀態</CardTitle>
+          <CardDescription>若設為停用，在自動編排值班表中，將不會考慮該職員。</CardDescription>
         </CardHeader>
         <CardContent>
-          <FieldGroup className='lg:w-(--input-width)'>
-            <form.AppField name={FORM_FIELD.POSTS}>
+          <FieldGroup className='w-20'>
+            <form.AppField name={FORM_FIELD.STATUS}>
               {(field) => (
-                <field.MultipleComboboxField
-                  options={posts}
-                  getOptionValue={(post) => post.id}
-                  getOptionDisplay={(post) => post.name}
-                  placeholder="請選擇職位"
-                  showLabel={false}
+                <field.SwitchField
+                  label='啟用'
                 />
               )}
             </form.AppField>

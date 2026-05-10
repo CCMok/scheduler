@@ -25,7 +25,7 @@ export const updateTeamName = tryCatch(async (request: UpdateTeamNameRequest): P
 
   if (team.name === parsedRequest.name) return {
     isSuccess: false,
-    message: '名稱沒有更改',
+    message: `名稱${Message.NOT_CHANGE}`,
   }
 
   return await saveEntity(parsedRequest.id, parsedRequest.name);

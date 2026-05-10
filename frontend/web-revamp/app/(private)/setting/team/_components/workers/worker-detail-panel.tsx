@@ -5,6 +5,7 @@ import { Post } from "@/external/prisma/generated/client";
 import { WorkerPost } from "@/libs/worker/worker";
 import { ScrollArea } from "@/external/shadcn/components/ui/scroll-area";
 import DeleteWorkerSection from "./delete/delete-worker-section";
+import UpdateWorkerStatusSection from "./update/status/update-worker-status-section";
 
 export default function WorkerDetailPanel({
   className,
@@ -26,6 +27,9 @@ export default function WorkerDetailPanel({
         <UpdateWorkerPostsSection
           worker={worker}
           posts={posts}
+        />
+        <UpdateWorkerStatusSection
+          worker={worker}
         />
         <DeleteWorkerSection
           workerId={worker.id}
