@@ -4,6 +4,7 @@ import { ReactNode } from "react"
 import FieldLayout from "./field-layout"
 import { useFieldContext } from "../utils/form-utils"
 import { Switch } from "@/external/shadcn/components/ui/switch"
+import { cn } from "@/external/shadcn/libs/utils"
 
 export default function SwitchField({
   className,
@@ -23,7 +24,7 @@ export default function SwitchField({
 
   return (
     <FieldLayout
-      className={className}
+      className={cn('[&>input]:!fixed', className)}
       id={field.name}
       label={label}
       labelAddOn={labelAddOn}
