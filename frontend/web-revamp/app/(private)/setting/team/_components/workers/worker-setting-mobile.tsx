@@ -6,22 +6,25 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "
 import { DetailPanelMode, DetailPanelState } from "./detail-panel-state";
 import { ReactNode } from "react";
 import CreateWorkerPanel from "./create/create-worker-panel";
+import { cn } from "@/external/shadcn/libs/utils";
 
 const SheetBase = ({
   open,
   setDetailPanelState,
   children,
+  className,
 }: {
   open: boolean;
   setDetailPanelState: (state: DetailPanelState) => void;
   children?: ReactNode;
+  className?: string;
 }) => {
   return (
     <Sheet
       open={open}
       onOpenChange={(open) => !open && setDetailPanelState({ mode: DetailPanelMode.IDLE })}
     >
-      <SheetContent side='bottom' className='px-2 pb-2'>
+      <SheetContent side='bottom' className={cn('px-2 pb-2', className)}>
         {children}
       </SheetContent>
     </Sheet>
@@ -55,6 +58,7 @@ export default function WorkerSettingMobile({
       <SheetBase
         open={selectedWorker !== undefined}
         setDetailPanelState={setDetailPanelState}
+        className="h-(--sheet-max-height)"
       >
         <SheetHeader>
           <SheetTitle>
@@ -67,7 +71,7 @@ export default function WorkerSettingMobile({
         {selectedWorker && (
           <WorkerDetailPanel
             key={selectedWorker.id} // re-mount when selectedWorkerId changes. To update form initial value.
-            className="flex-1"
+            className="flex-1 min-h-0"
             worker={selectedWorker}
             posts={posts}
             onDeleteSuccess={() => setDetailPanelState({ mode: DetailPanelMode.IDLE })}
@@ -87,7 +91,7 @@ export default function WorkerSettingMobile({
           </SheetDescription>
         </SheetHeader>
         <CreateWorkerPanel
-          className="flex-1"
+          className="flex-1 min-h-0"
           posts={posts}
           teamId={teamId}
           onSuccess={() => setDetailPanelState({ mode: DetailPanelMode.IDLE })}
