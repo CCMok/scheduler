@@ -40,7 +40,7 @@ export default async function RosterAutoNewPage({
         </Breadcrumb>
       )}
     >
-      <div className='h-full flex flex-col'>
+      <div className='flex flex-col'>
         <Suspense fallback={<TitleSkeleton />}>
           <TeamTitle id={teamIdNum} />
         </Suspense>
