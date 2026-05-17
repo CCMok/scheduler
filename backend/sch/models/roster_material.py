@@ -1,5 +1,6 @@
 from sqlmodel import select
 from sqlalchemy.orm import selectinload, with_loader_criteria
+from enums.post_status import PostStatus
 from enums.worker_status import WorkerStatus
 from models.dao import Team, PostWorker, Worker, Post
 from managers.db import DbSession
@@ -56,12 +57,22 @@ class RosterMaterial:
                     Worker.status == WorkerStatus.ACTIVE.value,
                 ),
             )
-            .where(Post.team_id == self.request.team_id)
+            .where(
+                Post.team_id == self.request.team_id,
+                Post.status == PostStatus.ACTIVE.value,
+            )
         ).all()
 
     def __find_workers(self) -> list[Worker]:
         return self.db_session.exec(
             select(Worker)
+            .options(
+                selectinload(Worker.posts),
+                with_loader_criteria(
+                    Post,
+                    Post.status == PostStatus.ACTIVE.value,
+                ),
+            )
             .where(
                 Worker.team_id == self.request.team_id,
                 Worker.status == WorkerStatus.ACTIVE.value,
@@ -77,9 +88,11 @@ class RosterMaterial:
         post_workers = self.db_session.exec(
             select(PostWorker)
             .join(Worker, PostWorker.worker_id == Worker.id)
+            .join(Post, PostWorker.post_id == Post.id)
             .where(
                 PostWorker.post_id.in_(post_ids),
                 Worker.status == WorkerStatus.ACTIVE.value,
+                Post.status == PostStatus.ACTIVE.value,
             )
         ).all()
 

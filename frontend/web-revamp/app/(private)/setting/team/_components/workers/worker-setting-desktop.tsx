@@ -2,7 +2,7 @@ import { Post } from "@/external/prisma/generated/browser";
 import SelectWorkerPanel from "./select/select-worker-panel";
 import WorkerDetailPanel from "./worker-detail-panel";
 import { WorkerPost } from "@/libs/worker/worker";
-import { DetailPanelMode, DetailPanelState } from "./detail-panel-state";
+import { DetailPanelMode, DetailPanelState } from "../detail-panel-state";
 import CreateWorkerPanel from "./create/create-worker-panel";
 
 export default function WorkerSettingDesktop({
@@ -19,7 +19,7 @@ export default function WorkerSettingDesktop({
   teamId: number;
 }>) {
   const selectedWorker = workers.find(worker =>
-    detailPanelState.mode === DetailPanelMode.UPDATE && worker.id === detailPanelState.workerId
+    detailPanelState.mode === DetailPanelMode.UPDATE && worker.id === detailPanelState.id
   );
   return (
     <div className='flex space-x-2 h-full'>
@@ -43,7 +43,7 @@ export default function WorkerSettingDesktop({
           className='flex-1'
           posts={posts}
           teamId={teamId}
-          onSuccess={(id) => setDetailPanelState({ mode: DetailPanelMode.UPDATE, workerId: id })}
+          onSuccess={(id) => setDetailPanelState({ mode: DetailPanelMode.UPDATE, id })}
         />
       )}
     </div>

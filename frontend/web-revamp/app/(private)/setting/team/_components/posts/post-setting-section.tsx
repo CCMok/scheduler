@@ -1,20 +1,20 @@
 'use client'
 
-import { useState } from "react";
-import { Post } from "@/external/prisma/generated/browser";
-import { WorkerPost } from "@/libs/worker/worker";
-import WorkerSettingDesktop from "./worker-setting-desktop";
 import { useIsMobile } from "@/external/shadcn/hooks/use-mobile";
-import WorkerSettingMobile from "./worker-setting-mobile";
+import { useState } from "react";
 import { DetailPanelMode, DetailPanelState } from "../detail-panel-state";
+import { PostWorker } from "@/libs/post/post";
+import { Worker } from "@/external/prisma/generated/browser";
+import PostSettingDesktop from "./post-setting-desktop";
+import PostSettingMobile from "./post-setting-mobile";
 
-export default function WorkerSettingSection({
-  workers,
+export default function PostSettingSection({
   posts,
+  workers,
   teamId,
 }: Readonly<{
-  workers: WorkerPost[];
-  posts: Post[];
+  posts: PostWorker[];
+  workers: Worker[];
   teamId: number;
 }>) {
   const [detailPanelState, setDetailPanelState] = useState<DetailPanelState>({ mode: DetailPanelMode.IDLE });
@@ -23,9 +23,9 @@ export default function WorkerSettingSection({
 
   if (isMobile) {
     return (
-      <WorkerSettingMobile
-        workers={workers}
+      <PostSettingMobile
         posts={posts}
+        workers={workers}
         detailPanelState={detailPanelState}
         setDetailPanelState={setDetailPanelState}
         teamId={teamId}
@@ -34,9 +34,9 @@ export default function WorkerSettingSection({
   }
 
   return (
-    <WorkerSettingDesktop
-      workers={workers}
+    <PostSettingDesktop
       posts={posts}
+      workers={workers}
       detailPanelState={detailPanelState}
       setDetailPanelState={setDetailPanelState}
       teamId={teamId}

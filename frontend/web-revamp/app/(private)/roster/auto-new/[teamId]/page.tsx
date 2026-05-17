@@ -22,7 +22,7 @@ export default async function RosterAutoNewPage({
   if (Number.isNaN(teamIdNum)) notFound()
 
   const workersPromise = getWorkers(teamIdNum, true)
-  const postsPromise = getPosts(teamIdNum)
+  const postsPromise = getPosts(teamIdNum, true)
 
   return (
     <HeaderLayout

@@ -1,43 +1,43 @@
 'use client'
 
 import { useAppForm } from "@/components/_general/form/utils/form-utils";
-import { Worker } from "@/external/prisma/generated/browser";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
-import { useRouter } from "next/navigation";
-import { FORM_FIELD, FORM_ID, formSchema } from "./update-worker-name-form-utils"
 import { revalidateLogic } from "@tanstack/react-form";
 import { Field, FieldGroup } from "@/external/shadcn/components/ui/field";
 import { Check } from "lucide-react";
-import { updateWorkerNameAction } from "@/libs/worker/update/name/update-worker-name-action";
+import { Post } from "@/external/prisma/generated/client";
+import { useRouter } from "next/navigation";
+import { FORM_FIELD, FORM_ID, formSchema } from "./update-post-status-form-utils";
+import { PostStatus } from "@/libs/post/post-status";
+import { updatePostStatusAction } from "@/libs/post/update/status/update-post-status-action";
 import { toast } from "sonner";
 
-export default function UpdateWorkerNameSection({
+export default function UpdatePostStatusSection({
   className,
-  worker,
+  post,
 }: Readonly<{
   className?: string;
-  worker: Worker;
+  post: Post;
 }>) {
   const router = useRouter();
-
   const form = useAppForm({
     defaultValues: {
-      [FORM_FIELD.NAME]: worker.name,
+      [FORM_FIELD.STATUS]: post.status === PostStatus.ACTIVE,
     },
     validationLogic: revalidateLogic(),
     validators: {
       onDynamic: formSchema,
     },
     onSubmit: async ({ value }) => {
-      const response = await updateWorkerNameAction({
-        id: worker.id,
-        name: value[FORM_FIELD.NAME],
+      const response = await updatePostStatusAction({
+        id: post.id,
+        status: value[FORM_FIELD.STATUS] ? PostStatus.ACTIVE : PostStatus.INACTIVE,
       })
       if (!response.isSuccess) {
         toast.error(response.message)
         return;
       }
-      toast.success('更改職員名稱成功')
+      toast.success('更改職位的狀態成功')
       // refresh with new data
       router.refresh();
     },
@@ -54,16 +54,15 @@ export default function UpdateWorkerNameSection({
     >
       <Card>
         <CardHeader>
-          <CardTitle>名稱</CardTitle>
-          <CardDescription>在值班表顯示的名稱。</CardDescription>
+          <CardTitle>狀態</CardTitle>
+          <CardDescription>若設為停用，在自動編排值班表中，將不會考慮該職位。</CardDescription>
         </CardHeader>
         <CardContent>
-          <FieldGroup className='lg:w-(--input-width)'>
-            <form.AppField name={FORM_FIELD.NAME}>
+          <FieldGroup className='w-20'>
+            <form.AppField name={FORM_FIELD.STATUS}>
               {(field) => (
-                <field.TextField
-                  autoComplete="name"
-                  showLabel={false}
+                <field.SwitchField
+                  label='啟用'
                 />
               )}
             </form.AppField>

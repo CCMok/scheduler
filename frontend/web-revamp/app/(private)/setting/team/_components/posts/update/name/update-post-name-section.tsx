@@ -1,43 +1,43 @@
 'use client'
 
 import { useAppForm } from "@/components/_general/form/utils/form-utils";
-import { Worker } from "@/external/prisma/generated/browser";
+import { Post } from "@/external/prisma/generated/browser";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
 import { useRouter } from "next/navigation";
-import { FORM_FIELD, FORM_ID, formSchema } from "./update-worker-name-form-utils"
+import { FORM_FIELD, FORM_ID, formSchema } from "./update-post-name-form-utils"
 import { revalidateLogic } from "@tanstack/react-form";
 import { Field, FieldGroup } from "@/external/shadcn/components/ui/field";
 import { Check } from "lucide-react";
-import { updateWorkerNameAction } from "@/libs/worker/update/name/update-worker-name-action";
+import { updatePostNameAction } from "@/libs/post/update/name/update-post-name-action";
 import { toast } from "sonner";
 
-export default function UpdateWorkerNameSection({
+export default function UpdatePostNameSection({
   className,
-  worker,
+  post,
 }: Readonly<{
   className?: string;
-  worker: Worker;
+  post: Post;
 }>) {
   const router = useRouter();
 
   const form = useAppForm({
     defaultValues: {
-      [FORM_FIELD.NAME]: worker.name,
+      [FORM_FIELD.NAME]: post.name,
     },
     validationLogic: revalidateLogic(),
     validators: {
       onDynamic: formSchema,
     },
     onSubmit: async ({ value }) => {
-      const response = await updateWorkerNameAction({
-        id: worker.id,
+      const response = await updatePostNameAction({
+        id: post.id,
         name: value[FORM_FIELD.NAME],
       })
       if (!response.isSuccess) {
         toast.error(response.message)
         return;
       }
-      toast.success('更改職員名稱成功')
+      toast.success('更改職位名稱成功')
       // refresh with new data
       router.refresh();
     },

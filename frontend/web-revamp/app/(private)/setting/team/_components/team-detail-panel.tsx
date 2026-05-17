@@ -5,6 +5,7 @@ import WorkerSettingSection from "./workers/worker-setting-section";
 import { getWorkers } from "@/libs/worker/read/get-worker-service";
 import { cn } from "@/external/shadcn/libs/utils";
 import { getPosts } from "@/libs/post/read/get-post-service";
+import PostSettingSection from "./posts/post-setting-section";
 
 enum TabId {
   WORKERS = 'workers',
@@ -36,8 +37,12 @@ export default async function TeamDetailPanel({
           teamId={team.id}
         />
       </TabsContent>
-      <TabsContent value={TabId.POSTS}>
-        <div>Posts</div>
+      <TabsContent value={TabId.POSTS} className='min-h-0'>
+        <PostSettingSection 
+          posts={posts}
+          workers={workers}
+          teamId={team.id}
+        />
       </TabsContent>
       <TabsContent value={TabId.INFO}>
         <TeamInfoSettingSection team={team} />

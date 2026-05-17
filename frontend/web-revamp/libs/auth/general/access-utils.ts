@@ -62,3 +62,24 @@ export const checkCanAccessWorker = async (workerId: number): Promise<boolean> =
 
   return worker !== null;
 }
+
+export const checkCanAccessPost = async (postId: number): Promise<boolean> => {
+  const session = await getSession()
+
+  if (!session) return false
+  if (session.role === Role.SYSTEM_ADMIN) return true
+
+  const post = await prisma.post.findUnique({
+    select: {
+      id: true,
+    },
+    where: {
+      id: postId,
+      team: {
+        ownerId: session.userId,
+      },
+    },
+  })
+
+  return post !== null;
+}

@@ -1,53 +1,53 @@
-import { Post } from "@/external/prisma/generated/browser";
-import SelectWorkerPanel from "./select/select-worker-panel";
-import WorkerDetailPanel from "./worker-detail-panel";
-import { WorkerPost } from "@/libs/worker/worker";
-import { SheetDescription, SheetHeader, SheetTitle } from "@/external/shadcn/components/ui/sheet";
+import { Worker } from "@/external/prisma/generated/browser";
 import { DetailPanelMode, DetailPanelState } from "../detail-panel-state";
-import CreateWorkerPanel from "./create/create-worker-panel";
+import { PostWorker } from "@/libs/post/post";
+import SelectPostPanel from "./select/select-post-panel";
 import SheetBase from "../sheet-base";
+import { SheetDescription, SheetHeader, SheetTitle } from "@/external/shadcn/components/ui/sheet";
+import PostDetailPanel from "./post-detail-panel";
+import CreatePostPanel from "./create/create-post-panel";
 
-export default function WorkerSettingMobile({
-  workers,
+export default function PostSettingMobile({
   posts,
+  workers,
   detailPanelState,
   setDetailPanelState,
   teamId,
 }: Readonly<{
-  workers: WorkerPost[];
-  posts: Post[];
+  posts: PostWorker[];
+  workers: Worker[];
   detailPanelState: DetailPanelState;
   setDetailPanelState: (state: DetailPanelState) => void;
   teamId: number;
 }>) {
-  const selectedWorker = workers.find(worker =>
-    detailPanelState.mode === DetailPanelMode.UPDATE && worker.id === detailPanelState.id
+  const selectedPost = posts.find(p =>
+    detailPanelState.mode === DetailPanelMode.UPDATE && p.id === detailPanelState.id
   );
   return (
     <div className='flex h-full'>
-      <SelectWorkerPanel
+      <SelectPostPanel
         className='w-full'
-        workers={workers}
+        posts={posts}
         detailPanelState={detailPanelState}
         setDetailPanelState={setDetailPanelState}
       />
       <SheetBase
-        open={selectedWorker !== undefined}
+        open={selectedPost !== undefined}
         setDetailPanelState={setDetailPanelState}
         className="h-(--sheet-max-height)"
       >
         <SheetHeader>
           <SheetTitle>
-            更改職員資料
+            更改職位資料
           </SheetTitle>
           <SheetDescription />
         </SheetHeader>
-        {selectedWorker && (
-          <WorkerDetailPanel
-            key={selectedWorker.id} // re-mount when selectedWorkerId changes. To update form initial value.
+        {selectedPost && (
+          <PostDetailPanel
+            key={selectedPost.id} // re-mount when selectedPostId changes. To update form initial value.
             className="flex-1 min-h-0"
-            worker={selectedWorker}
-            posts={posts}
+            post={selectedPost}
+            workers={workers}
             onDeleteSuccess={() => setDetailPanelState({ mode: DetailPanelMode.IDLE })}
           />
         )}
@@ -58,13 +58,13 @@ export default function WorkerSettingMobile({
       >
         <SheetHeader>
           <SheetTitle>
-            新增職員
+            新增職位
           </SheetTitle>
           <SheetDescription />
         </SheetHeader>
-        <CreateWorkerPanel
+        <CreatePostPanel
           className="flex-1 min-h-0"
-          posts={posts}
+          workers={workers}
           teamId={teamId}
           onSuccess={() => setDetailPanelState({ mode: DetailPanelMode.IDLE })}
         />
