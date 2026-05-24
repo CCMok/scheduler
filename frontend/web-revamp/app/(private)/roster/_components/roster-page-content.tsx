@@ -26,6 +26,7 @@ import { RosterJoin } from "@/libs/roster/roster";
 import RosterTableSection from "./roster-table-section";
 import { ROUTE } from "@/libs/_general/route/route-config";
 import OffTable from "@/components/off/table/off-table";
+import ExportButton from "./export-button";
 
 const TEAM_SELECT_ID = 'team-select';
 const ROSTER_SELECT_ID = 'roster-select';
@@ -165,6 +166,11 @@ export default function RosterPageContent({
                   更改
                 </CustomLink>
               </CustomButton>
+              <ExportButton
+                roster={roster}
+                posts={posts}
+                workers={workers}
+              />
               <DeleteRosterDialog
                 id={rosterId}
                 teamId={teamId}
