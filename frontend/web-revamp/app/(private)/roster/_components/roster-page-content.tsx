@@ -84,99 +84,89 @@ export default function RosterPageContent({
   }, [router, teamId, nextRosterId]);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       <Card>
-        <CardContent className='space-y-4'>
-          <div className="space-y-4">
-            <H5 className="text-muted-foreground">
-              篩選條件
-            </H5>
-            <FieldGroup className='flex-row flex-wrap'>
-              <FieldLayout label="團隊" id={TEAM_SELECT_ID} className="w-(--input-width)">
-                <Combobox
-                  id={TEAM_SELECT_ID}
-                  placeHolder="請選擇團隊"
-                  value={teamId}
-                  setValue={setTeamId}
-                  options={teams}
-                  getOptionValue={(team) => team.id}
-                  getOptionDisplay={(team) => team.name}
-                  icon={<UsersRound />}
-                />
-              </FieldLayout>
-              <FieldLayout label="值班表" id={ROSTER_SELECT_ID} className="w-(--input-width)">
-                <div className="flex items-center gap-2">
-                  <CustomButton
-                    id={ROSTER_SELECT_ID}
-                    variant="outline"
-                    size="icon"
-                    disabled={isNil(prevRosterId)}
-                    onClick={goPrev}
-                    aria-label="上一個值班表"
-                    title="上一個值班表"
-                  >
-                    <ChevronLeft />
-                  </CustomButton>
-                  <div className="flex-1">
-                    <Combobox
-                      placeHolder="請選擇值班表"
-                      value={rosterId}
-                      setValue={setRosterId}
-                      options={rosters}
-                      getOptionValue={(r) => r.id}
-                      getOptionDisplay={(r) => r.name}
-                      icon={<Calendar />}
-                    />
-                  </div>
-                  <CustomButton
-                    variant="outline"
-                    size="icon"
-                    disabled={isNil(nextRosterId)}
-                    onClick={goNext}
-                    aria-label="下一個值班表"
-                    title="下一個值班表"
-                  >
-                    <ChevronRight />
-                  </CustomButton>
+        <CardContent className='space-y-3'>
+          <FieldGroup className='flex-row flex-wrap'>
+            <FieldLayout label="團隊" id={TEAM_SELECT_ID} className="w-(--input-width)">
+              <Combobox
+                id={TEAM_SELECT_ID}
+                placeHolder="請選擇團隊"
+                value={teamId}
+                setValue={setTeamId}
+                options={teams}
+                getOptionValue={(team) => team.id}
+                getOptionDisplay={(team) => team.name}
+                icon={<UsersRound />}
+              />
+            </FieldLayout>
+            <FieldLayout label="值班表" id={ROSTER_SELECT_ID} className="w-(--input-width)">
+              <div className="flex items-center gap-2">
+                <CustomButton
+                  id={ROSTER_SELECT_ID}
+                  variant="outline"
+                  size="icon"
+                  disabled={isNil(prevRosterId)}
+                  onClick={goPrev}
+                  aria-label="上一個值班表"
+                  title="上一個值班表"
+                >
+                  <ChevronLeft />
+                </CustomButton>
+                <div className="flex-1">
+                  <Combobox
+                    placeHolder="請選擇值班表"
+                    value={rosterId}
+                    setValue={setRosterId}
+                    options={rosters}
+                    getOptionValue={(r) => r.id}
+                    getOptionDisplay={(r) => r.name}
+                    icon={<Calendar />}
+                  />
                 </div>
-              </FieldLayout>
-            </FieldGroup>
-          </div>
+                <CustomButton
+                  variant="outline"
+                  size="icon"
+                  disabled={isNil(nextRosterId)}
+                  onClick={goNext}
+                  aria-label="下一個值班表"
+                  title="下一個值班表"
+                >
+                  <ChevronRight />
+                </CustomButton>
+              </div>
+            </FieldLayout>
+          </FieldGroup>
           <Separator />
-          <div className="space-y-4">
-            <H5 className="text-muted-foreground">
-              操作
-            </H5>
-            <div className="flex flex-wrap gap-3">
-              <CustomButton asChild variant="default">
-                <CustomLink
-                  href={ROUTE.private.roster.autoNew(teamId ?? '')}
-                  isDisabled={isNil(teamId)}
-                >
-                  <WandSparkles />
-                  自動編排
-                </CustomLink>
-              </CustomButton>
-              <CustomButton asChild variant="outline">
-                <CustomLink
-                  href={ROUTE.private.roster.edit(rosterId ?? '')}
-                  isDisabled={isNil(rosterId)}
-                >
-                  <Pencil />
-                  更改
-                </CustomLink>
-              </CustomButton>
-              <ExportButton
-                roster={roster}
-                posts={posts}
-                workers={workers}
-              />
-              <DeleteRosterDialog
-                id={rosterId}
-                teamId={teamId}
-                rosterName={roster?.name}
-              />
-            </div>
+          <div className="flex flex-wrap gap-3">
+            <CustomButton asChild variant="default">
+              <CustomLink
+                href={ROUTE.private.roster.autoNew(teamId ?? '')}
+                isDisabled={isNil(teamId)}
+              >
+                <WandSparkles />
+                自動編排
+              </CustomLink>
+            </CustomButton>
+            <CustomButton asChild variant="outline">
+              <CustomLink
+                href={ROUTE.private.roster.edit(rosterId ?? '')}
+                isDisabled={isNil(rosterId)}
+              >
+                <Pencil />
+                更改
+              </CustomLink>
+            </CustomButton>
+            <ExportButton
+              roster={roster}
+              posts={posts}
+              workers={workers}
+            />
+            <DeleteRosterDialog
+              id={rosterId}
+              teamId={teamId}
+              rosterName={roster?.name}
+            />
           </div>
         </CardContent>
       </Card>

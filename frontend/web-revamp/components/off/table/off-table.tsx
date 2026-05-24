@@ -2,7 +2,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { OffPerTimeslot, Timeslot } from "@/libs/roster/roster";
 import { Worker } from "@/external/prisma/generated/client";
 import { Badge } from "@/external/shadcn/components/ui/badge";
-import { User } from "lucide-react";
+import { UserRound } from "lucide-react";
 
 export default function OffTable({
   offs,
@@ -37,7 +37,7 @@ export default function OffTable({
                       key={workerId}
                       variant='secondary'
                     >
-                      <User />
+                      <UserRound />
                       {worker?.name}
                     </Badge>
                   )

@@ -30,6 +30,7 @@ enum Segment {
   TEAM = '/team',
 
   // Function
+  NEW = '/new',
   AUTO_NEW = '/auto-new',
   EDIT = '/edit',
 }
@@ -42,7 +43,10 @@ export const ROUTE = {
       edit: (rosterId: string | number) => `${Segment.ROSTER}${Segment.EDIT}/${rosterId}` as Route,
     },
     setting: {
-      team: (searchParam?: SearchParam) => buildSearchParam(`${Segment.SETTING}${Segment.TEAM}`, searchParam) as Route,
+      team: {
+        base: (searchParam?: SearchParam) => buildSearchParam(`${Segment.SETTING}${Segment.TEAM}`, searchParam) as Route,
+        new: `${Segment.SETTING}${Segment.TEAM}${Segment.NEW}`,
+      },
       user: `${Segment.SETTING}${Segment.USER}`,
     },
   },

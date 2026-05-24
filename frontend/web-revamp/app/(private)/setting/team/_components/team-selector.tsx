@@ -5,11 +5,14 @@ import FieldLayout from "@/components/_general/form/field/field-layout";
 import { Team } from "@/external/prisma/generated/client";
 import { Card, CardContent } from "@/external/shadcn/components/ui/card";
 import { FieldGroup } from "@/external/shadcn/components/ui/field";
-import { Users } from "lucide-react";
+import { Plus, UsersRound } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { use } from "react";
 import { searchParamKey } from "./param";
 import { ROUTE } from "@/libs/_general/route/route-config";
+import { Separator } from "@/external/shadcn/components/ui/separator";
+import CustomButton from "@/components/_general/_custom/button/custom-button";
+import CustomLink from "@/components/_general/_custom/link/custom-link";
 
 const TEAM_SELECT_ID = 'team-select';
 
@@ -28,12 +31,12 @@ export default function TeamSelector({
 
   const setTeamId = (id?: number) => {
     if (teamId === id) return;
-    router.replace(ROUTE.private.setting.team({ [searchParamKey.TEAM_ID]: id }));
+    router.replace(ROUTE.private.setting.team.base({ [searchParamKey.TEAM_ID]: id }));
   }
 
   return (
     <Card>
-      <CardContent>
+      <CardContent className='space-y-3'>
         <FieldGroup className='flex-row flex-wrap'>
           <FieldLayout label="團隊" id={TEAM_SELECT_ID} className="w-(--input-width)">
             <Combobox
@@ -44,11 +47,22 @@ export default function TeamSelector({
               options={teams}
               getOptionValue={(team) => team.id}
               getOptionDisplay={(team) => team.name}
-              icon={<Users />}
+              icon={<UsersRound />}
               isOptional
             />
           </FieldLayout>
         </FieldGroup>
+        <Separator />
+        <div className="flex flex-wrap gap-3">
+          <CustomButton asChild variant="outline">
+            <CustomLink
+              href={ROUTE.private.setting.team.new}
+            >
+              <Plus />
+              新增
+            </CustomLink>
+          </CustomButton>
+        </div>
       </CardContent>
     </Card>
   )
