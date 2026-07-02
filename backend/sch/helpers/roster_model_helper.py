@@ -1,6 +1,7 @@
 from sqlmodel import select
 from models.dao import PostAffinity, Worker, WorkerAffinity
 from managers.db import DbSession
+from models.roster import RosterPost
 from models.roster_material import RosterMaterial
 from ortools.sat.python import cp_model
 
@@ -68,6 +69,28 @@ class RosterModelHelper:
 
     @staticmethod
     def define_objective(material: RosterMaterial) -> None:
+        material.model.maximize(
+            RosterModelHelper.__create_base_objective(material)
+        )
+
+    @staticmethod
+    def define_modify_objective(
+        material: RosterMaterial,
+        original_roster: list[RosterPost],
+    ) -> None:
+        # Heavily weighted so keeping the original arrangement dominates all
+        # other rewards; only the (hard) off constraints force changes.
+        preservation_reward = RosterModelHelper.__create_original_roster_preservation_reward(
+            material, original_roster
+        )
+
+        material.model.maximize(
+            RosterModelHelper.__create_base_objective(material)
+            + preservation_reward * 100
+        )
+
+    @staticmethod
+    def __create_base_objective(material: RosterMaterial) -> cp_model.LinearExpr:
         total_assignment_reward = RosterModelHelper.__create_total_assignment_reward(
             material
         )
@@ -88,13 +111,44 @@ class RosterModelHelper:
             material
         )
 
-        material.model.maximize(
+        return (
             total_assignment_reward
             + post_affinity_reward
             + worker_affinity_reward
             + worker_variety_reward
             - worker_balancing_penalty
         )
+
+    @staticmethod
+    def __create_original_roster_preservation_reward(
+        material: RosterMaterial,
+        original_roster: list[RosterPost],
+    ) -> cp_model.LinearExpr:
+        """
+        Rewards keeping the same worker on the same post and timeslot as the
+        original roster. Assignments that conflict with the updated off
+        requests are excluded by the hard off constraints, so the solver only
+        changes what it must.
+        """
+        rewards: list[cp_model.IntVar] = []
+
+        for roster_post in original_roster:
+            for roster_timeslot in roster_post.timeslots:
+                if roster_timeslot.worker_id is None:
+                    continue
+
+                key = (
+                    roster_timeslot.timeslot,
+                    roster_post.post_id,
+                    roster_timeslot.worker_id,
+                )
+
+                if key not in material.shifts:
+                    continue
+
+                rewards.append(material.shifts[key])
+
+        return sum(rewards)
 
     @staticmethod
     def __create_total_assignment_reward(material: RosterMaterial) -> cp_model.LinearExpr:

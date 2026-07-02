@@ -2,6 +2,7 @@ from models.arrange_roster_response import ArrangeRosterResponse
 from managers.db import DbSession
 from helpers.roster_model_helper import RosterModelHelper
 from models.arrange_roster_request import ArrangeRosterRequest
+from models.modify_roster_request import ModifyRosterRequest
 from models.roster import RosterPost, RosterPostTimeslot
 from models.roster_material import RosterMaterial
 from ortools.sat.python import cp_model
@@ -14,6 +15,22 @@ class RosterService:
 
         RosterModelHelper.define_constraints(material)
         RosterModelHelper.define_objective(material)
+
+        solver = cp_model.CpSolver()
+        status = solver.solve(material.model)
+
+        if status != cp_model.OPTIMAL:
+            return []
+
+        return RosterService.__map_resposne(material, solver)
+
+    @staticmethod
+    def modify(request: ModifyRosterRequest, db_session: DbSession) -> ArrangeRosterResponse:
+        material = RosterMaterial(db_session=db_session, request=request)
+
+        RosterModelHelper.define_constraints(material)
+        RosterModelHelper.define_modify_objective(
+            material, request.original_roster)
 
         solver = cp_model.CpSolver()
         status = solver.solve(material.model)
