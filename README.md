@@ -116,12 +116,13 @@ your_database_connection_string?options=-c%20timezone%3DUTC
 
 ```bash
 yarn prisma migrate dev
+yarn prisma generate
 ```
 
 5. Seed data
 
 ```bash
-yarn seed-system
+yarn prisma db seed
 ```
 
 Your database is ready.
@@ -145,9 +146,9 @@ cd backend/sch
 2. Create and activate a virtual environment:
 
 ```bash
-python -m venv venv
-venv\Scripts\activate  # Windows
-# source venv/bin/activate  # macOS/Linux
+python -m venv .venv
+.venv\Scripts\activate  # Windows
+# source .venv/bin/activate  # macOS/Linux
 ```
 
 3. Install dependencies:
