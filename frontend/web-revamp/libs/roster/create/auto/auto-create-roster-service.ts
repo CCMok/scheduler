@@ -76,7 +76,7 @@ const convertToArrangeRosterRequest = (request: AutoCreateRosterRequest): SchArr
   }
 }
 
-const convertToServiceResponse = async (response: SchArrangeRosterResponse, timeslots: Timeslot[]): Promise<RosterItem[]> => {
+export const convertToServiceResponse = async (response: SchArrangeRosterResponse, timeslots: Timeslot[]): Promise<RosterItem[]> => {
   // name -> id
   const timeslotMap = new Map(timeslots.map(t => [t.name, t.id]))
 

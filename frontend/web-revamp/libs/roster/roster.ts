@@ -34,6 +34,25 @@ export const offPerTimeslotSchema = z.object({
 
 export type OffPerTimeslot = z.infer<typeof offPerTimeslotSchema>;
 
+export const toOffsPerWorker = (offs: OffPerTimeslot[]): OffPerWorker[] => {
+  const offPerWorkerMap = new Map<number, OffPerWorker>();
+
+  for (const off of offs) {
+    for (const workerId of off.workerIds) {
+      if (!offPerWorkerMap.has(workerId)) {
+        offPerWorkerMap.set(workerId, {
+          workerId,
+          timeslotIds: [],
+        });
+      }
+
+      offPerWorkerMap.get(workerId)!.timeslotIds.push(off.timeslotId);
+    }
+  }
+
+  return Array.from(offPerWorkerMap.values());
+}
+
 export type RosterJoin = Roster & {
   timeslots: (RosterTimeslot & {
     assignments: RosterTimeslotAssignment[];

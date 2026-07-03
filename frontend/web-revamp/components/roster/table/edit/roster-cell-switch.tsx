@@ -10,14 +10,18 @@ import { isNil } from "lodash"
 export default function RosterCellSwitch({
   assignmentId,
   workerId,
+  originalWorkerId,
   workers,
   roster,
+  isHighlighted = false,
   onRosterChange,
 }: Readonly<{
   assignmentId: number;
   workerId?: number;
+  originalWorkerId?: number;
   workers: Worker[];
   roster: RosterItem[];
+  isHighlighted?: boolean;
   onRosterChange: (roster: RosterItem[]) => void;
 }>) {
   const [isEditing, setIsEditing] = useState(false)
@@ -41,6 +45,9 @@ export default function RosterCellSwitch({
     <RosterDragableCell 
       assignmentId={assignmentId}
       workerName={isNil(workerId) ? undefined : workerMap.get(workerId)?.name}
+      originalWorkerName={isNil(originalWorkerId) ? undefined : workerMap.get(originalWorkerId)?.name}
+      showOriginalValue={isHighlighted}
+      className={isHighlighted ? 'bg-primary/10' : undefined}
       onDoubleClick={() => setIsEditing(true)}
     />
   )

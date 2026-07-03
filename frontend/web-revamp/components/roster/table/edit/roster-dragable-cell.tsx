@@ -10,10 +10,14 @@ export default function RosterDragableCell({
   className,
   assignmentId,
   workerName,
+  originalWorkerName,
+  showOriginalValue = false,
   ...props
 }: Readonly<{
   assignmentId: number;
   workerName?: string;
+  originalWorkerName?: string;
+  showOriginalValue?: boolean;
 } & ComponentProps<typeof TableCell>>) {
   const {
     attributes,
@@ -45,7 +49,12 @@ export default function RosterDragableCell({
       {...listeners}
       {...props}
     >
-      {workerName ?? '-'}
+      {showOriginalValue ? (
+        <div className='flex flex-col items-center leading-tight'>
+          <span>{workerName ?? '-'}</span>
+          <span className='text-[11px] text-muted-foreground'>原：{originalWorkerName ?? '-'}</span>
+        </div>
+      ) : (workerName ?? '-')}
     </TableCell>
   )
 }

@@ -1,8 +1,8 @@
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card"
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card"
 import { use, useMemo, useState } from "react"
-import { parseRosterItems, RosterItem, RosterJoin } from "@/libs/roster/roster"
+import { OffPerTimeslot, parseRosterItems, RosterItem, RosterJoin, toOffsPerWorker } from "@/libs/roster/roster"
 import { Post, RosterTimeslot, Worker } from "@/external/prisma/generated/client"
 import { useAppForm } from "@/components/_general/form/utils/form-utils"
 import { FORM_FIELD, FORM_ID, formSchema } from "./roster-edit-form-utils"
@@ -15,8 +15,10 @@ import { useRouter } from "next/navigation"
 import { searchParamKey } from "../../../_components/param"
 import { TimeslotRequest } from "@/libs/roster/update/update-roster-request"
 import CustomLink from "@/components/_general/_custom/link/custom-link"
-import { ChevronLeft, Save } from "lucide-react"
-import OffTable from "@/components/off/table/off-table"
+import { ChevronLeft, Save, WandSparkles } from "lucide-react"
+import OffEditTable from "@/components/off/table/off-edit-table"
+import LoadingButton from "@/components/_general/_custom/button/loading-button"
+import { autoModifyRosterAction } from "@/libs/roster/update/auto/auto-modify-roster-action"
 import dynamic from "next/dynamic"
 import { ROUTE } from "@/libs/_general/route/route-config"
 
@@ -26,10 +28,12 @@ const RosterEditTable = dynamic(() => import("@/components/roster/table/edit/ros
 export const getTimeslotRequests = (
   timeslots: RosterTimeslot[],
   rosterItems: RosterItem[],
+  offs: OffPerTimeslot[],
 ): TimeslotRequest[] => {
   const timeslotMap = new Map<number, TimeslotRequest>(timeslots.map(timeslot => [timeslot.id, {
     id: timeslot.id,
     assignments: [],
+    offWorkerIds: [],
   }]))
 
   for (const rosterItem of rosterItems) {
@@ -45,6 +49,16 @@ export const getTimeslotRequests = (
         workerId: assignment.workerId,
       })
     }
+  }
+
+  for (const off of offs) {
+    const timeslotItem = timeslotMap.get(off.timeslotId)
+    if (!timeslotItem) {
+      console.error(`Timeslot not found when parsing off. timeslotId=${off.timeslotId}`);
+      continue;
+    }
+
+    timeslotItem.offWorkerIds.push(...off.workerIds)
   }
 
   return timeslots.filter(timeslot => timeslotMap.has(timeslot.id)).map(timeslot => timeslotMap.get(timeslot.id)!)
@@ -78,15 +92,38 @@ export default function RosterEditForm({
   const router = useRouter()
 
   const rosterItems = useMemo(() => parseRosterItems(roster), [roster])
+  const originalOffs = useMemo<OffPerTimeslot[]>(() => roster.timeslots.map(t => ({
+    timeslotId: t.id,
+    workerIds: t.offWorkers.map(ow => ow.workerId),
+  })), [roster])
 
   const [modifiedRoster, setModifiedRoster] = useState<RosterItem[]>(rosterItems)
+  const [modifiedOffs, setModifiedOffs] = useState<OffPerTimeslot[]>(originalOffs)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isGenerateDialogOpen, setIsGenerateDialogOpen] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
+
+  const generate = async () => {
+    const response = await autoModifyRosterAction({
+      rosterId: roster.id,
+      offs: toOffsPerWorker(modifiedOffs),
+    })
+
+    if (!response.isSuccess) {
+      toast.error(response.message)
+      return
+    }
+
+    setModifiedRoster(response.data)
+    setIsGenerateDialogOpen(false)
+    toast.success('編排成功')
+  }
 
   const submit = async () => {
     const response = await updateRosterAction({
       id: roster.id,
       name: form.state.values[FORM_FIELD.NAME],
-      timeslots: getTimeslotRequests(roster.timeslots, modifiedRoster),
+      timeslots: getTimeslotRequests(roster.timeslots, modifiedRoster, modifiedOffs),
     })
 
     if (!response.isSuccess) {
@@ -128,7 +165,62 @@ export default function RosterEditForm({
       </Card>
       <Card>
         <CardHeader>
+          <CardTitle>休假時段</CardTitle>
+          <CardDescription>更改休假時段後，可自動編排值班表。與已儲存資料不同的職員會以顏色標示。</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <OffEditTable
+            offs={modifiedOffs}
+            originalOffs={originalOffs}
+            timeslots={roster.timeslots}
+            workers={workers}
+            onChange={setModifiedOffs}
+          />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
           <CardTitle>值班表</CardTitle>
+          <CardDescription>與已儲存資料不同的班次會以顏色標示。</CardDescription>
+          <CardAction>
+            <Dialog
+              open={isGenerateDialogOpen}
+              onOpenChange={setIsGenerateDialogOpen}
+            >
+              <DialogTrigger asChild>
+                <CustomButton variant="outline">
+                  <WandSparkles />
+                  自動編排
+                </CustomButton>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>自動編排值班表</DialogTitle>
+                  <DialogDescription />
+                </DialogHeader>
+                <div className='space-y-2'>
+                  <p>編排前，請先確認休假時段已更改完成。</p>
+                  <p>編排結果將覆蓋尚未儲存的值班表修改，確定要自動編排嗎？</p>
+                </div>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <CustomButton variant="outline">返回</CustomButton>
+                  </DialogClose>
+                  <LoadingButton
+                    isLoading={isGenerating}
+                    onClick={async (e) => {
+                      e.preventDefault()
+                      setIsGenerating(true)
+                      await generate()
+                      setIsGenerating(false)
+                    }}
+                  >
+                    確定
+                  </LoadingButton>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </CardAction>
         </CardHeader>
         <CardContent>
           <RosterEditTable
@@ -136,22 +228,8 @@ export default function RosterEditForm({
             workers={workers}
             timeslots={roster.timeslots}
             roster={modifiedRoster}
+            originalRoster={rosterItems}
             onChange={setModifiedRoster}
-          />
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>休假時段</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <OffTable
-            offs={roster.timeslots.map(t => ({
-              timeslotId: t.id,
-              workerIds: t.offWorkers.map(ow => ow.workerId),
-            }))}
-            timeslots={roster.timeslots}
-            workers={workers}
           />
         </CardContent>
       </Card>

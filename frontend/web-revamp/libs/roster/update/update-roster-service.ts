@@ -66,6 +66,20 @@ export const saveEntity = async (
           })),
           skipDuplicates: true,
         })
+
+        await tx.rosterTimeslotOffWorker.deleteMany({
+          where: {
+            rosterTimeslotId: timeslot.id,
+          },
+        })
+
+        await tx.rosterTimeslotOffWorker.createMany({
+          data: timeslot.offWorkerIds.map(workerId => ({
+            rosterTimeslotId: timeslot.id,
+            workerId,
+          })),
+          skipDuplicates: true,
+        })
       }
     })
   } catch (e) {

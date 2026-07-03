@@ -51,12 +51,14 @@ export default function RosterEditTable({
   posts,
   workers,
   roster,
+  originalRoster,
   onChange,
 }: Readonly<{
   timeslots: Timeslot[];
   posts: Post[];
   workers: Worker[];
   roster: RosterItem[];
+  originalRoster?: RosterItem[];
   onChange: (roster: RosterItem[]) => void;
 }>) {
   const sensors = useSensors(
@@ -86,11 +88,22 @@ export default function RosterEditTable({
 
   const postMap = useMemo(() => new Map(posts.map(post => [post.id, post])), [posts])
 
+  // `${postId}-${timeslotId}` -> workerId
+  const originalWorkerMap = useMemo(() => {
+    const map = new Map<string, number | undefined>();
+    for (const rosterItem of originalRoster ?? []) {
+      for (const assignment of rosterItem.assignments) {
+        map.set(`${rosterItem.postId}-${assignment.timeslotId}`, assignment.workerId);
+      }
+    }
+    return map;
+  }, [originalRoster])
+
   const sortedRoster = useMemo(() => roster.toSorted((a, b) => {
     const aPosition = postMap.get(a.postId)?.displayOrder ?? Infinity;
     const bPosition = postMap.get(b.postId)?.displayOrder ?? Infinity;
     return aPosition - bPosition;
-  }), [roster])
+  }), [roster, postMap])
 
   return (
     // DndContext generate div for drag and drop function, and tbody only accept tr children. So DndContext place outside of table
@@ -129,13 +142,18 @@ export default function RosterEditTable({
                     return <></>
                   }
 
+                  const isChanged = !isNil(originalRoster)
+                    && originalWorkerMap.get(`${rosterItem.postId}-${timeslot.id}`) !== assignment.workerId;
+
                   return (
                     <RosterCellSwitch
                       key={assignment.id}
                       assignmentId={assignment.id}
                       workerId={assignment.workerId}
+                      originalWorkerId={originalWorkerMap.get(`${rosterItem.postId}-${timeslot.id}`)}
                       workers={workers}
                       roster={roster}
+                      isHighlighted={isChanged}
                       onRosterChange={onChange}
                     />
                   )

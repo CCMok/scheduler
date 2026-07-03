@@ -6,6 +6,7 @@ export const timeslotRequestSchema = z.object({
     postId: z.number(),
     workerId: z.number().optional(),
   }).array(),
+  offWorkerIds: z.number().array(),
 })
 
 export type TimeslotRequest = z.infer<typeof timeslotRequestSchema>;

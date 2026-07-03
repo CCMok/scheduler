@@ -47,7 +47,7 @@ export default async function RosterEditPage({
         </div>
         <div className="space-y-3">
           <H3>更改值班表</H3>
-          <p className='text-sm text-muted-foreground'>離開頁面後，未儲存的修改將會遺失。</p>
+          <p className='text-sm text-muted-foreground'>與已儲存資料不同的變更會以顏色標示。離開頁面後，未儲存的修改將會遺失。</p>
         </div>
         <RosterEditForm
           roster={roster}
