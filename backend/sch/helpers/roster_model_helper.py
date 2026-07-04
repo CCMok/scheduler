@@ -84,9 +84,16 @@ class RosterModelHelper:
             material, original_roster
         )
 
+        # Weight must exceed the largest possible per-assignment reward
+        # ((2 + priority) * 10) so preservation always wins over reassigning
+        # or filling an originally-empty slot.
+        max_priority = max(
+            material.post_worker_priorities.values(), default=0)
+        preservation_weight = max(100, (2 + max_priority) * 10 * 2)
+
         material.model.maximize(
             RosterModelHelper.__create_base_objective(material)
-            + preservation_reward * 100
+            + preservation_reward * preservation_weight
         )
 
     @staticmethod
@@ -111,8 +118,12 @@ class RosterModelHelper:
             material
         )
 
+        # Total assignment is weighted heavily so that maximizing coverage
+        # (filling every timeslot) always dominates the balancing penalty and
+        # the other soft rewards. Evenness is then optimized among the
+        # maximum-coverage solutions.
         return (
-            total_assignment_reward
+            total_assignment_reward * 10
             + post_affinity_reward
             + worker_affinity_reward
             + worker_variety_reward
@@ -126,15 +137,42 @@ class RosterModelHelper:
     ) -> cp_model.LinearExpr:
         """
         Rewards keeping the same worker on the same post and timeslot as the
-        original roster. Assignments that conflict with the updated off
-        requests are excluded by the hard off constraints, so the solver only
-        changes what it must.
+        original roster. Timeslots that were unassigned (worker_id is None) in
+        the original roster are also rewarded for staying unassigned, so the
+        solver only changes what it must. Assignments that conflict with the
+        updated off requests are excluded by the hard off constraints.
         """
         rewards: list[cp_model.IntVar] = []
 
+        posts_by_id = {post.id: post for post in material.posts}
+
         for roster_post in original_roster:
+            post = posts_by_id.get(roster_post.post_id)
+
             for roster_timeslot in roster_post.timeslots:
                 if roster_timeslot.worker_id is None:
+                    if post is None or roster_timeslot.timeslot not in material.request.timeslots:
+                        continue
+
+                    slot_shifts = [
+                        material.shifts[(
+                            roster_timeslot.timeslot, post.id, worker.id)]
+                        for worker in post.workers
+                        if (roster_timeslot.timeslot, post.id, worker.id) in material.shifts
+                    ]
+
+                    slot_empty = material.model.new_bool_var(
+                        f'preserve_empty_{roster_timeslot.timeslot}_{post.id}'
+                    )
+
+                    material.model.add(
+                        sum(slot_shifts) == 0
+                    ).only_enforce_if(slot_empty)
+                    material.model.add(
+                        sum(slot_shifts) >= 1
+                    ).only_enforce_if(slot_empty.Not())
+
+                    rewards.append(slot_empty)
                     continue
 
                 key = (
@@ -152,12 +190,15 @@ class RosterModelHelper:
 
     @staticmethod
     def __create_total_assignment_reward(material: RosterMaterial) -> cp_model.LinearExpr:
+        # Integer coefficients only (CP-SAT requirement): base weight of 2 per
+        # assignment plus the post-worker priority (same 2:1 ratio as the
+        # previous 1 + priority * 0.5 weighting).
         return sum(
             material.shifts[(timeslot, post.id, worker.id)] * (
-                1 + material.post_worker_priorities.get(
+                2 + material.post_worker_priorities.get(
                     (post.id, worker.id),
                     0  # default priority
-                ) * 0.5
+                )
             )
             for timeslot in material.request.timeslots
             for post in material.posts
