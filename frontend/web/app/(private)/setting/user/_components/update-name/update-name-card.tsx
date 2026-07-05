@@ -28,7 +28,7 @@ export default function UpdateNameCard({
     validators: {
       onDynamic: formSchema,
     },
-    onSubmit: async ({ value, formApi }) => {
+    onSubmit: async ({ value }) => {
       const response = await updateUserNameAction({
         name: value[FORM_FIELD.NAME],
       })

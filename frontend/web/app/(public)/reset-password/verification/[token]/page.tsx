@@ -36,7 +36,7 @@ export default function ResetPasswordVerificationTokenPage() {
       setVerifyMessage('');
       setUser(response.data);
     })()
-  }, [])
+  }, [token])
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen'>

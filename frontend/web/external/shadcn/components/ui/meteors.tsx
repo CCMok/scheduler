@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useMemo } from "react"
 
 import { cn } from "@/external/shadcn/libs/utils"
 
@@ -23,22 +23,29 @@ export const Meteors = ({
   angle = 215,
   className,
 }: MeteorsProps) => {
-  const [meteorStyles, setMeteorStyles] = useState<Array<React.CSSProperties>>(
-    []
-  )
+  const seededUnit = (index: number, salt: number) => {
+    const x = Math.sin((index + 1) * 12.9898 + salt * 78.233) * 43758.5453
+    return x - Math.floor(x)
+  }
 
-  useEffect(() => {
-    const styles = [...new Array(number)].map(() => ({
-      "--angle": -angle + "deg",
-      top: "-5%",
-      left: `calc(0% + ${Math.floor(Math.random() * window.innerWidth)}px)`,
-      animationDelay: Math.random() * (maxDelay - minDelay) + minDelay + "s",
-      animationDuration:
-        Math.floor(Math.random() * (maxDuration - minDuration) + minDuration) +
-        "s",
-    }))
-    setMeteorStyles(styles)
-  }, [number, minDelay, maxDelay, minDuration, maxDuration, angle])
+  const meteorStyles = useMemo<Array<React.CSSProperties>>(
+    () =>
+      [...new Array(number)].map((_, index) => {
+        const leftPercent = Math.floor(seededUnit(index, angle) * 100)
+        const delay = seededUnit(index, minDelay + maxDelay)
+        const duration = seededUnit(index, minDuration + maxDuration)
+        return {
+          "--angle": -angle + "deg",
+          top: "-5%",
+          left: `${leftPercent}%`,
+          animationDelay: delay * (maxDelay - minDelay) + minDelay + "s",
+          animationDuration:
+            Math.floor(duration * (maxDuration - minDuration) + minDuration) +
+            "s",
+        }
+      }),
+    [number, minDelay, maxDelay, minDuration, maxDuration, angle]
+  )
 
   return (
     <>

@@ -30,7 +30,7 @@ export default function OffTable({
             <TableRow key={timeslot.id}>
               <TableCell>{timeslot.name}</TableCell>
               <TableCell className='space-x-2'>
-                {targetOff?.workerIds.map((workerId, i) => {
+                {targetOff?.workerIds.map((workerId) => {
                   const worker = workerMap.get(workerId);
                   return (
                     <Badge

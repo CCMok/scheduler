@@ -1,7 +1,7 @@
 import { Message } from "./message";
 import { ServiceResponse } from "./response";
 
-export const tryCatch = <R, A extends any[]>(
+export const tryCatch = <R, A extends unknown[]>(
   fn: (...args: A) => Promise<ServiceResponse<R>>,
 ): (...args: A) => Promise<ServiceResponse<R>> =>
   async (...args) => {

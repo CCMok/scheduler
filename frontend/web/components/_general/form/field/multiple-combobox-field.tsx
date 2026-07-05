@@ -39,6 +39,7 @@ export default function MultipleComboboxField<T, V extends Key>({
       id={field.name}
       label={label}
       labelAddOn={labelAddOn}
+      orientation={orientation}
       isInvalid={isInvalid}
       errors={field.state.meta.errors}
       showError={showError}

@@ -19,7 +19,6 @@ import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle, } from "@/external/shadcn/components/ui/card";
 import { searchParamKey } from "./param";
-import H5 from "@/components/_general/_custom/typography/h5";
 import { Separator } from "@/external/shadcn/components/ui/separator";
 import DeleteRosterDialog from "./delete-roster-dialog";
 import { RosterJoin } from "@/libs/roster/roster";

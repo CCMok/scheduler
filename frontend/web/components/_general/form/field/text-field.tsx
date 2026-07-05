@@ -36,6 +36,7 @@ export default function TextField({
       id={field.name}
       label={label}
       labelAddOn={labelAddOn}
+      orientation={orientation}
       isInvalid={isInvalid}
       errors={field.state.meta.errors}
       showError={showError}
