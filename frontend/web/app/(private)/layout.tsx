@@ -1,13 +1,15 @@
-import { SidebarInset, SidebarProvider } from "@/external/shadcn/components/ui/sidebar"
-import { ChildrenProps } from "@/libs/_general/props/children-props"
-import { PrivateSidebar } from "./_components/sidebar/private-sidebar"
+import { SidebarInset, SidebarProvider } from "@/external/shadcn/components/ui/sidebar";
+import { ReactNode } from "react";
+import AppSidebar from "./_components/app-sidebar";
 
 export default function PrivateLayout({
   children,
-}: Readonly<ChildrenProps>) {
+}: Readonly<{
+  children: ReactNode;
+}>) {
   return (
-    <SidebarProvider>
-      <PrivateSidebar variant='inset' />
+    <SidebarProvider className='h-full'>
+      <AppSidebar variant='inset' />
       <SidebarInset>
         {children}
       </SidebarInset>

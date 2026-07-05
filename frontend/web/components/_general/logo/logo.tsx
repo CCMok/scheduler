@@ -1,22 +1,20 @@
 import { cn } from "@/external/shadcn/libs/utils";
-import { ClassNameProps } from "@/libs/_general/props/class-name-props";
-import { PATH } from "@/libs/_general/enums/path";
 import { Leckerli_One } from "next/font/google";
-import CustomLink from "../link/custom-link";
+import CustomLink from "../_custom/link/custom-link";
+import { ROUTE } from "@/libs/_general/route/route-config";
 
 const leckerliOne = Leckerli_One({ weight: '400', subsets: ["latin"] });
-
-type Props = ClassNameProps & {
-  isRedirectHome?: boolean;
-}
 
 export default function Logo({
   className,
   isRedirectHome = true,
-}: Readonly<Props>) {
+}: Readonly<{
+  className?: string;
+  isRedirectHome?: boolean;
+}>) {
   return (
     <CustomLink
-      href={PATH.home}
+      href={ROUTE.public.home}
       isDisabled={!isRedirectHome}
       className={cn(
         'space-x-2 flex items-center',

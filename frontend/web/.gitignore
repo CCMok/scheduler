@@ -42,8 +42,4 @@ yarn-error.log*
 next-env.d.ts
 
 # prisma
-prisma-generated
-
-# sonarqube
-.scannerwork
-sonarqube-scan.bat
+/external/prisma/generated

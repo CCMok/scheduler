@@ -1,30 +1,38 @@
 import type { Metadata } from "next";
-import "./globals.css";
-import { ChildrenProps } from "@/libs/_general/props/children-props";
 import { Noto_Sans_HK } from "next/font/google";
+import "./globals.css";
+import { ThemeProvider } from "@/components/_general/theme/theme-provider";
 import { cn } from "@/external/shadcn/libs/utils";
+import FormDevtools from "@/components/_general/form/devtools/form-devtools";
 import { Toaster } from "sonner";
-import { ThemeProvider } from "./_components/theme-provider";
+
+const noto = Noto_Sans_HK({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: "Scheduler",
   description: "Application for scheduling",
 };
 
-const noto = Noto_Sans_HK({ subsets: ['latin'] });
-
 export default function RootLayout({
   children,
-}: Readonly<ChildrenProps>) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="zh-Hant-HK" suppressHydrationWarning>
       <body
-        className={cn('antialiased', noto.className)}
+        className={cn(noto.className, 'antialiased h-screen')}
       >
-        <ThemeProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           {children}
-          <Toaster />
+          <Toaster closeButton />
         </ThemeProvider>
+        <FormDevtools />
       </body>
     </html>
   );

@@ -1,50 +1,32 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { deleteSession, getSession, refreshSession } from './libs/access/managers/session-manager';
-import { SessionPayload } from './libs/access/models/session-payload';
-import { EXCLUDE_HOME_PUBLIC_PATHS, PATH, REDIRECT_PRIVATE_PATH, REDIRECT_PUBLIC_PATH } from './libs/_general/enums/path';
-import { checkCanAccess } from './libs/access/utils/route-access-utils';
+import { NextRequest, NextResponse } from "next/server";
+import { getSession, refreshSession } from "./libs/_general/session/session-manager";
+import { PUBLIC_ROUTE_EXCLUDE_HOME, REDIRECT_PRIVATE_ROUTE, REDIRECT_PUBLIC_ROUTE, ROUTE } from "./libs/_general/route/route-config";
 
-export default async function proxy(request: NextRequest) {
-  const path = request.nextUrl.pathname
+export default async function proxy(req: NextRequest) {
+  const isPublicPath = checkIsPublicPath(req.nextUrl.pathname);
+  const session = await getSession()
 
-  const isPrivatePath = checkIsPrivatePath(path);
-  const sessionPayload = await getSession();
-
-  if (isPrivatePath) {
-    return await handlePrivatePath(request, sessionPayload, path)
+  if (session) {
+    await refreshSession()
   }
 
-  return handlePublicPath(request, sessionPayload)
+  if (isPublicPath && session) {
+    return NextResponse.redirect(new URL(REDIRECT_PRIVATE_ROUTE, req.url))
+  }
+
+  if (!isPublicPath && !session) {
+    return NextResponse.redirect(new URL(REDIRECT_PUBLIC_ROUTE, req.url))
+  }
+
+  return NextResponse.next()
+}
+
+const checkIsPublicPath = (path: string): boolean => {
+  return PUBLIC_ROUTE_EXCLUDE_HOME.some(publicRoute => 
+    path === ROUTE.public.home || path.startsWith(publicRoute)
+  );
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.ico$|.*\\.png$).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|.*devtools.*|.*\\.ico$|.*\\.png$).*)'],
 }
-
-const checkIsPrivatePath = (path: string): boolean => {
-  if (path === PATH.home) return false;
-
-  return !EXCLUDE_HOME_PUBLIC_PATHS.some(publicPath => path.startsWith(publicPath));
-}
-
-const handlePrivatePath = async (request: NextRequest, sessionPayload: SessionPayload | undefined, path: string): Promise<NextResponse> => {
-  if (sessionPayload) {
-    await refreshSession(sessionPayload)
-    return await checkAuthorized(request, path)
-  }
-
-  await deleteSession();
-  return NextResponse.redirect(new URL(REDIRECT_PUBLIC_PATH, request.url))
-}
-
-const checkAuthorized = async (request: NextRequest, path: string) => {
-  const hasAccess = await checkCanAccess(path);
-  return hasAccess
-    ? NextResponse.next()
-    : NextResponse.redirect(new URL(REDIRECT_PRIVATE_PATH, request.url))
-}
-
-const handlePublicPath = (request: NextRequest, sessionPayload: SessionPayload | undefined): NextResponse =>
-  sessionPayload
-    ? NextResponse.redirect(new URL(REDIRECT_PRIVATE_PATH, request.url))
-    : NextResponse.next()

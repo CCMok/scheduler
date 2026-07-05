@@ -6,10 +6,15 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from "lucide-react"
-import { DayButton, DayPicker, getDefaultClassNames } from "react-day-picker"
+import {
+  DayPicker,
+  getDefaultClassNames,
+  type DayButton,
+} from "react-day-picker"
 
 import { cn } from "@/external/shadcn/libs/utils"
 import { Button, buttonVariants } from "@/external/shadcn/components/ui/button"
+import { zhHK } from "date-fns/locale"
 
 function Calendar({
   className,
@@ -193,7 +198,7 @@ function CalendarDayButton({
       ref={ref}
       variant="ghost"
       size="icon"
-      data-day={day.date.toLocaleDateString()}
+      data-day={day.date.toLocaleDateString(zhHK.code)} // Customize: Workaround for hydration missmatch
       data-selected-single={
         modifiers.selected &&
         !modifiers.range_start &&

@@ -1,46 +1,21 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../prisma-generated"
+  provider = "prisma-client"
+  output   = "./generated"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-model Role {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  enum  Int    @unique
-  users User[]
-
-  @@map("role")
-}
-
-model RoleAudit {
-  auditId        Int      @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction    String   @map("audit_action")
-  id             Int?
-  name           String?
-  enum           Int?
-
-  @@map("role_audit")
 }
 
 model User {
-  id                     Int                @id @default(autoincrement())
-  email                  String             @unique
-  password               String
-  name                   String?
-  roleId                 Int                @map("role_id")
-  isEmailVerified        Boolean            @default(false) @map("is_email_verified")
-  role                   Role               @relation(fields: [roleId], references: [id])
-  userOrganizations      UserOrganization[]
-  createdRosterHistories RosterHistory[]    @relation("CreatedBy")
-  updatedRosterHistories RosterHistory[]    @relation("UpdatedBy")
+  id              Int     @id @default(autoincrement())
+  email           String  @unique
+  password        String
+  name            String?
+  role            Int     @map("role") @default(2)
+  isEmailVerified Boolean @default(false) @map("is_email_verified")
+  teams           Team[]
 
-  @@index([roleId])
   @@map("user")
 }
 
@@ -52,128 +27,80 @@ model UserAudit {
   email           String?
   password        String?
   name            String?
-  roleId          Int?     @map("role_id")
+  role            Int?     @map("role")
   isEmailVerified Boolean? @map("is_email_verified")
 
   @@map("user_audit")
 }
 
-model Organization {
-  id                Int                @id @default(autoincrement())
-  name              String             @unique
-  maxHistoryCount   Int?               @map("max_history_count")
-  userOrganizations UserOrganization[]
-  departments       Department[]
+model Team {
+  id                       Int              @id @default(autoincrement())
+  ownerId                  Int              @map("owner_id")
+  name                     String
+  maxWorkerAssignPerRoster Int?             @map("max_worker_assign_per_roster")
+  owner                    User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  workers                  Worker[]
+  posts                    Post[]
+  workerAffinities         WorkerAffinity[]
+  postAffinities           PostAffinity[]
+  rosters                  Roster[]
 
-  @@map("organization")
+  @@unique([ownerId, name])
+  @@index([ownerId])
+  @@map("team")
 }
 
-model OrganizationAudit {
-  auditId         Int      @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp  DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction     String   @map("audit_action")
-  id              Int?
-  name            String?
-  maxHistoryCount Int?     @map("max_history_count")
+model TeamAudit {
+  auditId                  Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp           DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction              String   @map("audit_action")
+  id                       Int?
+  ownerId                  Int?     @map("owner_id")
+  name                     String?
+  maxWorkerAssignPerRoster Int?     @map("max_worker_assign_per_roster")
 
-  @@map("organization_audit")
-}
-
-model UserOrganization {
-  id             Int          @id @default(autoincrement())
-  userId         Int          @map("user_id")
-  organizationId Int          @map("organization_id")
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, organizationId])
-  @@index([userId])
-  @@index([organizationId])
-  @@map("user_organization")
-}
-
-model UserOrganizationAudit {
-  auditId        Int      @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction    String   @map("audit_action")
-  id             Int?
-  userId         Int?     @map("user_id")
-  organizationId Int?     @map("organization_id")
-
-  @@map("user_organization_audit")
-}
-
-model Department {
-  id                     Int                @id @default(autoincrement())
-  organizationId         Int                @map("organization_id")
-  name                   String
-  maxWorkerPostPerRoster Int?               @map("max_worker_post_per_roster")
-  posts                  Post[]
-  workers                Worker[]
-  postConstraints        PostConstraint[]
-  workerConstraints      WorkerConstraint[]
-  rosterHistories        RosterHistory[]
-  organization           Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  @@unique([organizationId, name])
-  @@index([organizationId])
-  @@map("department")
-}
-
-model DepartmentAudit {
-  auditId                Int      @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp         DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction            String   @map("audit_action")
-  id                     Int?
-  organizationId         Int?     @map("organization_id")
-  name                   String?
-  maxWorkerPostPerRoster Int?     @map("max_worker_post_per_roster")
-
-  @@map("department_audit")
+  @@map("team_audit")
 }
 
 model Post {
-  id                                Int                                @id @default(autoincrement())
-  departmentId                      Int                                @map("department_id")
-  name                              String
-  isDeleted                         Boolean                            @default(false) @map("is_deleted")
-  displayPosition                   Int                                @default(0) @map("display_position")
-  department                        Department                         @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-  postWorkers                       PostWorker[]
-  postConstraintPosts               PostConstraintPost[]
-  rosterHistoryScheduleArrangements RosterHistoryScheduleArrangement[]
+  id              Int                  @id @default(autoincrement())
+  teamId          Int                  @map("team_id")
+  name            String
+  displayOrder    Int                  @default(0) @map("display_order")
+  status          Int                  @default(1)
+  team            Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  workers         PostWorker[]
+  affinityMembers PostAffinityMember[]
 
-  // Unique index defined at migration 20250812063939
-  @@index([departmentId])
+  @@unique([teamId, name])
+  @@index([teamId])
   @@map("post")
 }
 
 model PostAudit {
-  auditId         Int      @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp  DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction     String   @map("audit_action")
-  id              Int?
-  departmentId    Int?     @map("department_id")
-  name            String?
-  isDeleted       Boolean? @map("is_deleted")
-  displayPosition Int?     @map("display_position")
+  auditId        Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction    String   @map("audit_action")
+  id             Int?
+  teamId         Int?     @map("team_id")
+  name           String?
+  displayOrder   Int?     @map("display_order")
+  status         Int?
 
   @@map("post_audit")
 }
 
 model Worker {
-  id                                Int                                @id @default(autoincrement())
-  departmentId                      Int                                @map("department_id")
-  name                              String
-  isDeleted                         Boolean                            @default(false) @map("is_deleted")
-  department                        Department                         @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-  postWorkers                       PostWorker[]
-  workerConstraintWorkers           WorkerConstraintWorker[]
-  rosterHistoryScheduleArrangements RosterHistoryScheduleArrangement[]
-  rosterHistoryOffWorkers           RosterHistoryOffWorker[]
+  id              Int                    @id @default(autoincrement())
+  teamId          Int                    @map("team_id")
+  name            String
+  status          Int                    @default(1)
+  team            Team                   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  posts           PostWorker[]
+  affinityMembers WorkerAffinityMember[]
 
-  // Unique index defined at migration 20250812063939
-  @@index([departmentId])
+  @@unique([teamId, name])
+  @@index([teamId])
   @@map("worker")
 }
 
@@ -182,9 +109,9 @@ model WorkerAudit {
   auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
   auditAction    String   @map("audit_action")
   id             Int?
-  departmentId   Int?     @map("department_id")
+  teamId         Int?     @map("team_id")
   name           String?
-  isDeleted      Boolean? @map("is_deleted")
+  status         Int?
 
   @@map("worker_audit")
 }
@@ -193,9 +120,9 @@ model PostWorker {
   id       Int    @id @default(autoincrement())
   postId   Int    @map("post_id")
   workerId Int    @map("worker_id")
+  priority Int    @default(0) @map("priority")
   post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   worker   Worker @relation(fields: [workerId], references: [id], onDelete: Cascade)
-  priority Int    @default(0) @map("priority")
 
   @@unique([postId, workerId])
   @@index([postId])
@@ -215,269 +142,188 @@ model PostWorkerAudit {
   @@map("post_worker_audit")
 }
 
-model PostConstraintType {
-  id              Int              @id @default(autoincrement())
-  name            String           @unique
-  enum            Int              @unique
-  postConstraints PostConstraint[]
+model PostAffinity {
+  id      Int                  @id @default(autoincrement())
+  teamId  Int                  @map("team_id")
+  team    Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  members PostAffinityMember[]
 
-  @@map("post_constraint_type")
+  @@index([teamId])
+  @@map("post_affinity")
 }
 
-model PostConstraintTypeAudit {
+model PostAffinityAudit {
   auditId        Int      @id @default(autoincrement()) @map("audit_id")
   auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
   auditAction    String   @map("audit_action")
   id             Int?
-  name           String?
-  enum           Int?
+  teamId         Int?     @map("team_id")
 
-  @@map("post_constraint_type_audit")
+  @@map("post_affinity_audit")
 }
 
-model PostConstraint {
-  id                   Int                  @id @default(autoincrement())
-  departmentId         Int                  @map("department_id")
-  postConstraintTypeId Int                  @map("post_constraint_type_id")
-  weighting            Decimal
-  department           Department           @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-  postConstraintType   PostConstraintType   @relation(fields: [postConstraintTypeId], references: [id])
-  postConstraintPosts  PostConstraintPost[]
+model PostAffinityMember {
+  id             Int          @id @default(autoincrement())
+  postAffinityId Int          @map("post_affinity_id")
+  postId         Int          @map("post_id")
+  affinity       PostAffinity @relation(fields: [postAffinityId], references: [id], onDelete: Cascade)
+  post           Post         @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-  @@index([departmentId])
-  @@index([postConstraintTypeId])
-  @@map("post_constraint")
-}
-
-model PostConstraintAudit {
-  auditId              Int      @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp       DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction          String   @map("audit_action")
-  id                   Int?
-  departmentId         Int?     @map("department_id")
-  postConstraintTypeId Int?     @map("post_constraint_type_id")
-  weighting            Decimal?
-
-  @@map("post_constraint_audit")
-}
-
-model PostConstraintPost {
-  id               Int            @id @default(autoincrement())
-  postConstraintId Int            @map("post_constraint_id")
-  postId           Int            @map("post_id")
-  postConstraint   PostConstraint @relation(fields: [postConstraintId], references: [id], onDelete: Cascade)
-  post             Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
-
-  @@unique([postConstraintId, postId])
-  @@index([postConstraintId])
+  @@unique([postAffinityId, postId])
+  @@index([postAffinityId])
   @@index([postId])
-  @@map("post_constraint_post")
+  @@map("post_affinity_member")
 }
 
-model PostConstraintPostAudit {
+model PostAffinityMemberAudit {
+  auditId        Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction    String   @map("audit_action")
+  id             Int?
+  postAffinityId Int?     @map("post_affinity_id")
+  postId         Int?     @map("post_id")
+
+  @@map("post_affinity_member_audit")
+}
+
+model WorkerAffinity {
+  id      Int                    @id @default(autoincrement())
+  teamId  Int                    @map("team_id")
+  team    Team                   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  members WorkerAffinityMember[]
+
+  @@index([teamId])
+  @@map("worker_affinity")
+}
+
+model WorkerAffinityAudit {
+  auditId        Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction    String   @map("audit_action")
+  id             Int?
+  teamId         Int?     @map("team_id")
+
+  @@map("worker_affinity_audit")
+}
+
+model WorkerAffinityMember {
+  id               Int            @id @default(autoincrement())
+  workerAffinityId Int            @map("worker_affinity_id")
+  workerId         Int            @map("worker_id")
+  affinity         WorkerAffinity @relation(fields: [workerAffinityId], references: [id], onDelete: Cascade)
+  worker           Worker         @relation(fields: [workerId], references: [id], onDelete: Cascade)
+
+  @@unique([workerAffinityId, workerId])
+  @@index([workerAffinityId])
+  @@index([workerId])
+  @@map("worker_affinity_member")
+}
+
+model WorkerAffinityMemberAudit {
   auditId          Int      @id @default(autoincrement()) @map("audit_id")
   auditTimestamp   DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
   auditAction      String   @map("audit_action")
   id               Int?
-  postConstraintId Int?     @map("post_constraint_id")
-  postId           Int?     @map("post_id")
+  workerAffinityId Int?     @map("worker_affinity_id")
+  workerId         Int?     @map("worker_id")
 
-  @@map("post_constraint_post_audit")
+  @@map("worker_affinity_member_audit")
 }
 
-model WorkerConstraintType {
-  id                Int                @id @default(autoincrement())
-  name              String             @unique
-  enum              Int                @unique
-  workerConstraints WorkerConstraint[]
+model Roster {
+  id        Int              @id @default(autoincrement())
+  teamId    Int              @map("team_id")
+  name      String           @map("name")
+  createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  team      Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  timeslots RosterTimeslot[]
 
-  @@map("worker_constraint_type")
+  @@unique([teamId, name])
+  @@index([teamId])
+  @@map("roster")
 }
 
-model WorkerConstraintTypeAudit {
+model RosterAudit {
+  auditId        Int       @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp DateTime  @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction    String    @map("audit_action")
+  id             Int?
+  teamId         Int?      @map("team_id")
+  name           String?   @map("name")
+  createdAt      DateTime? @map("created_at") @db.Timestamptz(3)
+
+  @@map("roster_audit")
+}
+
+model RosterTimeslot {
+  id          Int                        @id @default(autoincrement())
+  rosterId    Int                        @map("roster_id")
+  name        String                     @map("name")
+  roster      Roster                     @relation(fields: [rosterId], references: [id], onDelete: Cascade)
+  assignments RosterTimeslotAssignment[]
+  offWorkers  RosterTimeslotOffWorker[]
+
+  @@unique([rosterId, name])
+  @@index([rosterId])
+  @@map("roster_timeslot")
+}
+
+model RosterTimeslotAudit {
   auditId        Int      @id @default(autoincrement()) @map("audit_id")
   auditTimestamp DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
   auditAction    String   @map("audit_action")
   id             Int?
-  name           String?
-  enum           Int?
+  rosterId       Int?     @map("roster_id")
+  name           String?  @map("name")
 
-  @@map("worker_constraint_type_audit")
+  @@map("roster_timeslot_audit")
 }
 
-model WorkerConstraint {
-  id                      Int                      @id @default(autoincrement())
-  departmentId            Int                      @map("department_id")
-  workerConstraintTypeId  Int                      @map("worker_constraint_type_id")
-  weighting               Decimal
-  department              Department               @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-  workerConstraintType    WorkerConstraintType     @relation(fields: [workerConstraintTypeId], references: [id])
-  workerConstraintWorkers WorkerConstraintWorker[]
+model RosterTimeslotAssignment {
+  id               Int            @id @default(autoincrement())
+  rosterTimeslotId Int            @map("roster_timeslot_id")
+  postId           Int            @map("post_id")
+  workerId         Int?           @map("worker_id")
+  timeslot         RosterTimeslot @relation(fields: [rosterTimeslotId], references: [id], onDelete: Cascade)
 
-  @@index([departmentId])
-  @@index([workerConstraintTypeId])
-  @@map("worker_constraint")
-}
-
-model WorkerConstraintAudit {
-  auditId                Int      @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp         DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction            String   @map("audit_action")
-  id                     Int?
-  departmentId           Int?     @map("department_id")
-  workerConstraintTypeId Int?     @map("worker_constraint_type_id")
-  weighting              Decimal?
-
-  @@map("worker_constraint_audit")
-}
-
-model WorkerConstraintWorker {
-  id                 Int              @id @default(autoincrement())
-  workerConstraintId Int              @map("worker_constraint_id")
-  workerId           Int              @map("worker_id")
-  workerConstraint   WorkerConstraint @relation(fields: [workerConstraintId], references: [id], onDelete: Cascade)
-  worker             Worker           @relation(fields: [workerId], references: [id], onDelete: Cascade)
-
-  @@unique([workerConstraintId, workerId])
-  @@index([workerConstraintId])
-  @@index([workerId])
-  @@map("worker_constraint_worker")
-}
-
-model WorkerConstraintWorkerAudit {
-  auditId            Int      @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp     DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction        String   @map("audit_action")
-  id                 Int?
-  workerConstraintId Int?     @map("worker_constraint_id")
-  workerId           Int?     @map("worker_id")
-
-  @@map("worker_constraint_worker_audit")
-}
-
-model RosterHistory {
-  id                      Int                      @id @default(autoincrement())
-  departmentId            Int                      @map("department_id")
-  createdAt               DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
-  createdByUserId         Int                      @map("created_by_user_id")
-  updatedAt               DateTime?                @map("updated_at") @db.Timestamptz(3)
-  updatedByUserId         Int?                     @map("updated_by_user_id")
-  department              Department               @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-  createdByUser           User                     @relation("CreatedBy", fields: [createdByUserId], references: [id])
-  updatedByUser           User?                    @relation("UpdatedBy", fields: [updatedByUserId], references: [id])
-  rosterHistorySchedules  RosterHistorySchedule[]
-  rosterHistoryOffWorkers RosterHistoryOffWorker[]
-
-  @@index([departmentId])
-  @@index([createdByUserId])
-  @@index([updatedByUserId])
-  @@map("roster_history")
-}
-
-model RosterHistoryAudit {
-  auditId         Int       @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp  DateTime  @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction     String    @map("audit_action")
-  id              Int?
-  departmentId    Int?      @map("department_id")
-  createdAt       DateTime? @map("created_at") @db.Timestamptz(3)
-  createdByUserId Int?      @map("created_by_user_id")
-  updatedAt       DateTime? @map("updated_at") @db.Timestamptz(3)
-  updatedByUserId Int?      @map("updated_by_user_id")
-
-  @@map("roster_history_audit")
-}
-
-model RosterHistorySchedule {
-  id                                Int                                @id @default(autoincrement())
-  rosterHistoryId                   Int                                @map("roster_history_id")
-  day                               DateTime                           @db.Timestamptz(3)
-  rosterHistory                     RosterHistory                      @relation(fields: [rosterHistoryId], references: [id], onDelete: Cascade)
-  rosterHistoryScheduleArrangements RosterHistoryScheduleArrangement[]
-
-  @@index([rosterHistoryId])
-  @@map("roster_history_schedule")
-}
-
-model RosterHistoryScheduleAudit {
-  auditId         Int       @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp  DateTime  @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction     String    @map("audit_action")
-  id              Int?
-  rosterHistoryId Int?      @map("roster_history_id")
-  day             DateTime? @db.Timestamptz(3)
-
-  @@map("roster_history_schedule_audit")
-}
-
-model RosterHistoryScheduleArrangement {
-  id                      Int                   @id @default(autoincrement())
-  rosterHistoryScheduleId Int                   @map("roster_history_schedule_id")
-  postId                  Int                   @map("post_id")
-  workerId                Int?                  @map("worker_id")
-  rosterHistorySchedule   RosterHistorySchedule @relation(fields: [rosterHistoryScheduleId], references: [id], onDelete: Cascade)
-  post                    Post                  @relation(fields: [postId], references: [id], onDelete: Cascade)
-  worker                  Worker?               @relation(fields: [workerId], references: [id], onDelete: Cascade)
-
-  @@index([rosterHistoryScheduleId])
+  @@unique([rosterTimeslotId, postId])
+  @@index([rosterTimeslotId])
   @@index([postId])
   @@index([workerId])
-  @@map("roster_history_schedule_arrangement")
+  @@map("roster_timeslot_assignment")
 }
 
-model RosterHistoryScheduleArrangementAudit {
-  auditId                 Int      @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp          DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction             String   @map("audit_action")
-  id                      Int?
-  rosterHistoryScheduleId Int?     @map("roster_history_schedule_id")
-  postId                  Int?     @map("post_id")
-  workerId                Int?     @map("worker_id")
+model RosterTimeslotAssignmentAudit {
+  auditId          Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp   DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction      String   @map("audit_action")
+  id               Int?
+  rosterTimeslotId Int?     @map("roster_timeslot_id")
+  postId           Int?     @map("post_id")
+  workerId         Int?     @map("worker_id")
 
-  @@map("roster_history_schedule_arrangement_audit")
+  @@map("roster_timeslot_assignment_audit")
 }
 
-model RosterHistoryOffWorker {
-  id                         Int                         @id @default(autoincrement())
-  rosterHistoryId            Int                         @map("roster_history_id")
-  workerId                   Int                         @map("worker_id")
-  rosterHistory              RosterHistory               @relation(fields: [rosterHistoryId], references: [id], onDelete: Cascade)
-  worker                     Worker                      @relation(fields: [workerId], references: [id], onDelete: Cascade)
-  rosterHistoryOffWorkerDays RosterHistoryOffWorkerDay[]
+model RosterTimeslotOffWorker {
+  id               Int            @id @default(autoincrement())
+  rosterTimeslotId Int            @map("roster_timeslot_id")
+  workerId         Int            @map("worker_id")
+  timeslot         RosterTimeslot @relation(fields: [rosterTimeslotId], references: [id], onDelete: Cascade)
 
-  @@index([rosterHistoryId])
+  @@unique([rosterTimeslotId, workerId])
   @@index([workerId])
-  @@map("roster_history_off_worker")
+  @@index([rosterTimeslotId])
+  @@map("roster_timeslot_off_worker")
 }
 
-model RosterHistoryOffWorkerAudit {
-  auditId         Int      @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp  DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction     String   @map("audit_action")
-  id              Int?
-  rosterHistoryId Int?     @map("roster_history_id")
-  workerId        Int?     @map("worker_id")
+model RosterTimeslotOffWorkerAudit {
+  auditId          Int      @id @default(autoincrement()) @map("audit_id")
+  auditTimestamp   DateTime @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
+  auditAction      String   @map("audit_action")
+  id               Int?
+  rosterTimeslotId Int?     @map("roster_timeslot_id")
+  workerId         Int?     @map("worker_id")
 
-  @@map("roster_history_off_worker_audit")
-}
-
-model RosterHistoryOffWorkerDay {
-  id                       Int                    @id @default(autoincrement())
-  rosterHistoryOffWorkerId Int                    @map("roster_history_off_worker_id")
-  day                      DateTime               @db.Timestamptz(3)
-  rosterHistoryOffWorker   RosterHistoryOffWorker @relation(fields: [rosterHistoryOffWorkerId], references: [id], onDelete: Cascade)
-
-  @@index([rosterHistoryOffWorkerId])
-  @@map("roster_history_off_worker_day")
-}
-
-model RosterHistoryOffWorkerDayAudit {
-  auditId                  Int       @id @default(autoincrement()) @map("audit_id")
-  auditTimestamp           DateTime  @default(now()) @map("audit_timestamp") @db.Timestamptz(3)
-  auditAction              String    @map("audit_action")
-  id                       Int?
-  rosterHistoryOffWorkerId Int?      @map("roster_history_off_worker_id")
-  day                      DateTime? @db.Timestamptz(3)
-
-  @@map("roster_history_off_worker_day_audit")
+  @@map("roster_timeslot_off_worker_audit")
 }
