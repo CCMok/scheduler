@@ -11,6 +11,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import CustomButton from "@/components/_general/_custom/button/custom-button"
 import { updateRosterAction } from "@/libs/roster/update/update-roster-action"
 import { toast } from "sonner"
+import { Message } from "@/libs/_general/service/message"
 import { useRouter } from "next/navigation"
 import { searchParamKey } from "../../../_components/param"
 import { TimeslotRequest } from "@/libs/roster/update/update-roster-request"
@@ -114,9 +115,13 @@ export default function RosterEditForm({
       return
     }
 
-    setModifiedRoster(response.data)
+    setModifiedRoster(response.data.items)
     setIsGenerateDialogOpen(false)
-    toast.success('編排成功')
+    if (response.data.status === 'FEASIBLE') {
+      toast.warning(Message.ROSTER_FEASIBLE_APPROXIMATE)
+    } else {
+      toast.success('編排成功')
+    }
   }
 
   const submit = async () => {

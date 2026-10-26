@@ -10,7 +10,7 @@ export default function PrivateLayout({
   return (
     <SidebarProvider className='h-full'>
       <AppSidebar variant='inset' />
-      <SidebarInset>
+      <SidebarInset className="app-shell-main">
         {children}
       </SidebarInset>
     </SidebarProvider>

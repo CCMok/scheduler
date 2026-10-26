@@ -1,11 +1,15 @@
-from models.arrange_roster_response import ArrangeRosterResponse
+from models.arrange_roster_response import ArrangeRosterMeta, ArrangeRosterResponse
 from managers.db import DbSession
 from helpers.roster_model_helper import RosterModelHelper
 from models.arrange_roster_request import ArrangeRosterRequest
 from models.modify_roster_request import ModifyRosterRequest
 from models.roster import RosterPost, RosterPostTimeslot
 from models.roster_material import RosterMaterial
+from enums.solver_status import SolverStatus
 from ortools.sat.python import cp_model
+
+# Soft limit so OR-Tools can return FEASIBLE (usable approximate) instead of only OPTIMAL / empty.
+SOLVE_TIME_LIMIT_SECONDS = 30.0
 
 
 class RosterService:
@@ -16,13 +20,10 @@ class RosterService:
         RosterModelHelper.define_constraints(material)
         RosterModelHelper.define_objective(material)
 
-        solver = cp_model.CpSolver()
+        solver = RosterService.__create_solver()
         status = solver.solve(material.model)
 
-        if status != cp_model.OPTIMAL:
-            return []
-
-        return RosterService.__map_resposne(material, solver)
+        return RosterService.__to_response(material, solver, status)
 
     @staticmethod
     def modify(request: ModifyRosterRequest, db_session: DbSession) -> ArrangeRosterResponse:
@@ -32,19 +33,54 @@ class RosterService:
         RosterModelHelper.define_modify_objective(
             material, request.original_roster)
 
-        solver = cp_model.CpSolver()
+        solver = RosterService.__create_solver()
         status = solver.solve(material.model)
 
-        if status != cp_model.OPTIMAL:
-            return []
-
-        return RosterService.__map_resposne(material, solver)
+        return RosterService.__to_response(material, solver, status)
 
     @staticmethod
-    def __map_resposne(
+    def __create_solver() -> cp_model.CpSolver:
+        solver = cp_model.CpSolver()
+        solver.parameters.max_time_in_seconds = SOLVE_TIME_LIMIT_SECONDS
+        return solver
+
+    @staticmethod
+    def map_solver_status(status: int) -> SolverStatus:
+        if status == cp_model.OPTIMAL:
+            return SolverStatus.OPTIMAL
+        if status == cp_model.FEASIBLE:
+            return SolverStatus.FEASIBLE
+        if status == cp_model.INFEASIBLE:
+            return SolverStatus.INFEASIBLE
+        return SolverStatus.ERROR
+
+    @staticmethod
+    def __to_response(
         material: RosterMaterial,
         solver: cp_model.CpSolver,
+        status: int,
     ) -> ArrangeRosterResponse:
+        solver_status = RosterService.map_solver_status(status)
+        meta = ArrangeRosterMeta(solve_ms=int(solver.WallTime() * 1000))
+
+        if solver_status in (SolverStatus.OPTIMAL, SolverStatus.FEASIBLE):
+            return ArrangeRosterResponse(
+                status=solver_status,
+                posts=RosterService.__map_posts(material, solver),
+                meta=meta,
+            )
+
+        return ArrangeRosterResponse(
+            status=solver_status,
+            posts=None,
+            meta=meta,
+        )
+
+    @staticmethod
+    def __map_posts(
+        material: RosterMaterial,
+        solver: cp_model.CpSolver,
+    ) -> list[RosterPost]:
         roster_posts: list[RosterPost] = []
 
         for post in material.posts:
@@ -68,4 +104,4 @@ class RosterService:
                 roster_post.timeslots.append(RosterPostTimeslot(
                     timeslot=timeslot, worker_id=result_worker_id))
 
-        return ArrangeRosterResponse(root=roster_posts)
+        return roster_posts

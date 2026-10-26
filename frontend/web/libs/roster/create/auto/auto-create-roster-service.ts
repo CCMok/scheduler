@@ -3,16 +3,16 @@ import { ServiceResponse } from "@/libs/_general/service/response";
 import { tryCatch } from '@/libs/_general/service/try-catch';
 import { Message } from '@/libs/_general/service/message';
 import { AutoCreateRosterRequest, autoCreateRosterRequestSchema } from './auto-create-roster-request';
-import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from './sch-arrange-roster-response';
+import { interpretSchArrangeResponse } from './sch-arrange-roster-response';
 import { checkCanAccessTeam } from '@/libs/auth/general/access-utils';
-import { RosterItem, Timeslot } from '../../roster';
-import { isNil } from 'lodash';
 import { SchArrangeRosterRequest } from './sch-arrange-roster-reqeust';
+import { mapSchPostsToRosterItems } from './map-sch-posts-to-roster-items';
+import { AutoArrangeResult } from './auto-arrange-result';
 
 const SCH_HOST = process.env.SCH_HOST ?? '';
 const SCH_API_KEY = process.env.SCH_API_KEY ?? '';
 
-export const autoCreateRoster = tryCatch(async (request: AutoCreateRosterRequest): Promise<ServiceResponse<RosterItem[]>> => {
+export const autoCreateRoster = tryCatch(async (request: AutoCreateRosterRequest): Promise<ServiceResponse<AutoArrangeResult>> => {
   const parsedRequest = autoCreateRosterRequestSchema.parse(request)
 
   const canAccess = await checkCanAccessTeam(parsedRequest.teamId)
@@ -21,23 +21,33 @@ export const autoCreateRoster = tryCatch(async (request: AutoCreateRosterRequest
     message: Message.UNAUTHORIZED,
   }
 
-  const arrangeReqeust = convertToArrangeRosterRequest(parsedRequest)
+  const arrangeRequest = convertToArrangeRosterRequest(parsedRequest)
 
-  const arrangeResponse = await sendArrangeRosterRequest(arrangeReqeust)
+  const arrangeResponse = await sendArrangeRosterRequest(arrangeRequest)
   if (!arrangeResponse) return {
     isSuccess: false,
     message: Message.SYSTEM_ERROR,
   }
 
-  const serviceResponse = await convertToServiceResponse(arrangeResponse, parsedRequest.timeslots)
+  if (arrangeResponse.kind === 'failure') {
+    return {
+      isSuccess: false,
+      message: arrangeResponse.status === 'INFEASIBLE'
+        ? Message.ROSTER_INFEASIBLE
+        : Message.ROSTER_SOLVER_ERROR,
+    }
+  }
 
   return {
     isSuccess: true,
-    data: serviceResponse,
+    data: {
+      status: arrangeResponse.status,
+      items: mapSchPostsToRosterItems(arrangeResponse.posts, parsedRequest.timeslots),
+    },
   }
 })
 
-const sendArrangeRosterRequest = async (request: SchArrangeRosterRequest): Promise<SchArrangeRosterResponse | undefined> => {
+const sendArrangeRosterRequest = async (request: SchArrangeRosterRequest) => {
   try {
     const response = await fetch(`${SCH_HOST}/roster`, {
       method: 'POST',
@@ -54,7 +64,7 @@ const sendArrangeRosterRequest = async (request: SchArrangeRosterRequest): Promi
     }
 
     const responseBody = await response.json()
-    return schArrangeRosterResponseSchema.parse(responseBody)
+    return interpretSchArrangeResponse(responseBody)
   } catch (e) {
     console.error('Fail to send SCH arrange roster request');
     console.error(e);
@@ -63,7 +73,6 @@ const sendArrangeRosterRequest = async (request: SchArrangeRosterRequest): Promi
 }
 
 const convertToArrangeRosterRequest = (request: AutoCreateRosterRequest): SchArrangeRosterRequest => {
-  // id -> name
   const timeslotMap = new Map(request.timeslots.map(t => [t.id, t.name]))
 
   return {
@@ -74,25 +83,4 @@ const convertToArrangeRosterRequest = (request: AutoCreateRosterRequest): SchArr
       timeslots: off.timeslotIds.map(timeslotId => timeslotMap.get(timeslotId) ?? ''),
     })),
   }
-}
-
-export const convertToServiceResponse = async (response: SchArrangeRosterResponse, timeslots: Timeslot[]): Promise<RosterItem[]> => {
-  // name -> id
-  const timeslotMap = new Map(timeslots.map(t => [t.name, t.id]))
-
-  let assignmentCounter = 0;
-  return response.map(r => ({
-    postId: r.postId,
-    assignments: r.timeslots.map(t => {
-      const timeslotId = timeslotMap.get(t.timeslot)
-      if (isNil(timeslotId)) {
-        console.error('Timeslot not found', t.timeslot);
-      }
-      return {
-        id: ++assignmentCounter,
-        timeslotId: timeslotId ?? 0,
-        workerId: isNil(t.workerId) ? undefined : t.workerId,
-      }
-    }),
-  }))
 }

@@ -86,7 +86,7 @@ Design direction (avoid common AI template looks):
 
 | Layer | Gap |
 |-------|-----|
-| Domain | Timeslot is only a `name` string; no ISO date; hard to sort / swap / export reliably |
+| Domain | Timeslot is opaque `name` (keep — not date-bound); sorting / display / export formatting live in UI |
 | UX | Painful off entry; grid is not spreadsheet-like; **no whole-day column ops**; no draft on preview; failure becomes empty “success” |
 | Product | Affinity / priority / `maxWorkerAssignPerRoster` almost no UI |
 | Design | Shadcn new-york + neutral tokens; feature-led, weak brand |
@@ -175,30 +175,19 @@ Preview vs saved: keep `initialRoster` (auto result) and `workingRoster` (manual
 
 ## 5. Domain & data model changes
 
-### 5.1 Timeslots must resolve to dates
+### 5.1 Timeslot stays opaque `name` (no `date` column)
 
-**Problem:** `RosterTimeslot.name` is a localized display string (e.g. `2026年10月26日`); sch treats it as opaque; sorting, export, and day-swap logic are fragile.
+**Decision (locked):** Do **not** migrate `RosterTimeslot.name` → `date`. Timeslots are not guaranteed to be calendar days forever (future units may be shifts, periods, etc.). Keep `name` as the opaque timeslot key end-to-end (Prisma ↔ web ↔ sch).
 
-**Proposal (Prisma):**
+**Implications:**
 
-```prisma
-model RosterTimeslot {
-  id        Int      @id @default(autoincrement())
-  rosterId  Int
-  date      DateTime @db.Date   // canonical day
-  label     String?             // optional display override; default from date format
-  // ...
-  @@unique([rosterId, date])
-}
-```
+- sch continues to treat timeslot strings as opaque labels (no schema change for “date keys”).
+- Near-term product UX may still *feel* day-based when the user picks calendar dates (display / sort / “day column” ops live in the frontend presentation layer).
+- Sorting, export formatting, and column labels are frontend concerns; do not bake “must be a date” into the DB.
 
-Migration: parse old `name` where possible; otherwise fix via tool / manual.
+### 5.2 Timeslot set
 
-**For sch:** send ISO date strings `YYYY-MM-DD` in requests (still opaque to the solver, but consistent system-wide). Display formatting stays on the frontend only.
-
-### 5.2 Date set
-
-A roster’s dates remain an **arbitrary list of days** (as today), sorted by `date`.
+A roster’s timeslots remain an **arbitrary list of named slots** (as today). When the UI creates slots from a calendar, it may store display-friendly or stable strings in `name` — that is a product convention, not a schema constraint.
 
 ### 5.3 Complete team settings (ship the product promise)
 
@@ -231,21 +220,24 @@ Day swap is client/persist-first. Below are changes still needed for trust and c
 
 | Item | Today | Change |
 |------|-------|--------|
-| Non-OPTIMAL return | `[]` | Structured `{ status, roster?, conflicts? }`; HTTP 200 + status or 422 |
-| Timeslot key | Localized name | Unified `YYYY-MM-DD` |
-| Error messaging | Frontend “system error” | sch returns machine-readable code + optional human message |
+| Non-OPTIMAL return | `[]` | Structured `{ status, posts?, meta? }`; **breaking** — no empty-array failure; no backward compat |
+| Timeslot key | Opaque `name` string | **Keep** opaque `name` (no forced ISO date) |
+| Error messaging | Frontend “system error” | sch returns machine-readable `status` (+ optional `meta` / message) |
+
+**Why structured status (independent of `name` / `date`):**  
+Today, when the solver is not `OPTIMAL`, sch returns `[]`. The web client parses that as a valid empty roster and can show an empty grid as if arrange “succeeded.” Structured status makes failure explicit (`INFEASIBLE` / error) so the UI never celebrates a blank sheet.
 
 Suggested response shape:
 
 ```json
 {
   "status": "OPTIMAL",
-  "posts": [{ "postId": 1, "timeslots": [{ "date": "2026-10-27", "workerId": 3 }] }],
+  "posts": [{ "postId": 1, "timeslots": [{ "timeslot": "2026年10月27日", "workerId": 3 }] }],
   "meta": { "solveMs": 120 }
 }
 ```
 
-On `INFEASIBLE`, omit `posts`; `meta.hints`: `["insufficient_workers", "off_coverage"]`, etc. (when inferable).
+On `INFEASIBLE`, omit `posts` (or leave empty) **and** set `status`; never rely on “empty array means failure.” Optional later: `meta.hints` e.g. `["insufficient_workers", "off_coverage"]`.
 
 ### 6.2 Strongly recommended (usability)
 
@@ -341,17 +333,26 @@ Do not open the next phase to external users until the current phase **exit crit
 
 | Layer | Use for |
 |-------|---------|
-| Unit | Day-swap pure functions, date parse, off-matrix helpers, undo stack |
-| Contract | sch arrange / modify response shape (`status`; never treat `[]` as success) |
-| Integration | Prisma save / load ISO dates; draft persist |
+| Unit | Day-swap pure functions, off-matrix helpers, undo stack, status→UI mapping |
+| Contract | sch arrange / modify response shape (`status`; never treat bare `[]` as success) |
+| Integration | Prisma save / load; draft persist |
 | E2E / scripted manual | Workspace happy path; keyboard; day swap; edit existing |
 | UX trial | Real users: time and willingness vs Excel / old wizard |
+
+**Phase 0 test skeleton (recommended):**
+
+| Side | Tool | First tests |
+|------|------|-------------|
+| `frontend/web` | Vitest (+ zod fixtures) | Parse `OPTIMAL` → grid data; parse `INFEASIBLE` / transport error → typed failure (not empty success) |
+| `backend/sch` | pytest | Non-optimal solve returns structured `status`, not `[]`; optimal still returns posts |
+
+Do **not** add Playwright / full E2E in Phase 0 (no Workspace yet). Wire `yarn test` / `pytest` into scripts so later phases have a place to land.
 
 ### 9.1 Cross-phase expectations (user value)
 
 | Phase | What users get | Vs Excel |
 |-------|----------------|----------|
-| 0 | Trustworthy engine + data foundation | — |
+| 0 | Trustworthy solver status + visual tokens foundation | — |
 | 1 | Build / edit / save / export in one workspace | Start winning on create + offs |
 | 2 | Whole-day pattern switch | Clear win on moving a day’s pattern |
 | 3 | Prefs + import + explainability | Less “black box” |
@@ -363,30 +364,45 @@ Do not open the next phase to external users until the current phase **exit crit
 
 **Deliverables**
 
-- Timeslot `date` migration + sch ISO dates (`YYYY-MM-DD`)
-- Structured solver status (kill false success empty sheets)
-- Design tokens + new shell layout (may not be full Workspace yet)
+- Structured solver status on arrange / modify (kill false-success empty sheets); **breaking API, no backward compat**
+- Return **`OPTIMAL` | `FEASIBLE` | `INFEASIBLE`** (and transport/engine errors as typed failure) — FEASIBLE = usable approximate; UI must label it, never treat as silent empty success
+- Design tokens applied in-place (`globals.css` + existing shell) — no parallel unused design-system tree
+- Test skeleton: Vitest (web) + pytest (sch) with contract coverage for status
+
+**Not in Phase 0**
+
+- No `RosterTimeslot.name` → `date` migration (locked — see §5.1)
+- No full Roster Workspace / off matrix / day swap
 
 **Expectations**
 
-- Engineering: old localized `name` values migrate or have an explicit repair list; client never celebrates `INFEASIBLE` / errors as success
-- User-facing: no promise of new editor UX yet — backend / data correctness first
+- Engineering: client never celebrates `INFEASIBLE` / errors as success; empty `posts` without failure `status` is invalid; `FEASIBLE` shows grid **with** an approximate warning
+- User-facing: existing wizard/edit may only get clearer failure messaging + token/shell refresh — no promise of new editor UX yet
+
+**Design token strategy (avoid dead code)**
+
+- **Do:** rewrite CSS variables in `app/globals.css` (and `@theme`) to the new palette / type; point existing private layout / shell at them in the **same** change set
+- **Do:** delete unused token names / dead animations / unused font CSS vars when nothing references them
+- **Don’t:** scaffold an empty `design-system/` with unused Button/Overlay wrappers “for later”
+- **Don’t:** keep old + new token systems side by side
+- New headless / custom components arrive when a Phase 1+ screen needs them — not as orphan files
 
 **Test plan**
 
-- Migration: seed old display-string names + already-ISO rows; both load correctly
 - Contract: mock `INFEASIBLE` and transport errors → failure UI / typed error (no empty “success” grid)
-- Regression: feasible arrange still fills the grid
+- Regression: `OPTIMAL` arrange still fills the grid
+- Skeleton scripts run green in CI or local `yarn test` / `pytest`
 
 **Exit criteria**
 
 - [ ] False-success empty sheet count = 0 in automated + manual checks
-- [ ] Sample of existing rosters: 100% parse to `date`, or documented repair list with owners
-- [ ] sch and web agree on ISO timeslot keys in the same release
+- [ ] sch and web agree on structured `{ status, posts?, meta? }` in the same release (breaking OK)
+- [ ] No orphan unused design-token / design-system files introduced by this phase
+- [ ] Vitest + pytest skeletons exist with at least the contract cases above
 
 **Out of scope until later**
 
-- Off matrix, day swap, affinity UI, import, visual polish of the editor
+- Off matrix, day swap, affinity UI, import, editor visual polish beyond tokens/shell
 
 ---
 
@@ -549,10 +565,10 @@ From Phase 1, “edit roster enhancement” is **not** a separate app — it is 
 
 ## 10. Migration notes
 
-- Existing Roster data must load: parse old `name` → `date`.
-- Old bookmarks `/roster/auto-new/[teamId]` → redirect to new Workspace + `?teamId=`.
-- Seed / demo data: multi-day roster story that demos **day swap**.
-- Not in production: breaking API OK; ship in lockstep with `backend/sch`.
+- Existing Roster timeslots keep `name` as-is (no date parse migration).
+- Old bookmarks `/roster/auto-new/[teamId]` → redirect to new Workspace + `?teamId=` (Phase 1+).
+- Seed / demo data: multi-day roster story that demos **day swap** (Phase 2).
+- Not in production: breaking sch response shape OK; ship web + `backend/sch` in lockstep; **no backward compat** for empty-array failures.
 
 ---
 
@@ -564,23 +580,26 @@ From Phase 1, “edit roster enhancement” is **not** a separate app — it is 
 | Fixed date headers vs moving dates | Content swap under fixed dates vs swap the date identity | **Content swap under fixed date labels** |
 | Swap with conflict | Block / warn / auto modify | Warn + offer “Re-arrange to fix” |
 | Quick date presets (“next 7 days”) | Offer / omit | Offer as convenience |
-| Show FEASIBLE to users? | OPTIMAL only vs approximate | Approximate + label |
+| Show FEASIBLE to users? | OPTIMAL only vs approximate | **Approximate + label** (Phase 0 returns FEASIBLE) |
+| Day vs timeslot column copy | User “day” vs domain “timeslot” | **Locked: UI 日欄 this round; code/API/store = timeslot column** |
 | Keep cell drag-and-drop? | Yes / no | Keep as secondary; day-header swap is primary batch gesture |
 | UI kit | Custom vs new package | Custom grid; forms can use headless |
 | English i18n this round? | Yes / no | zh-Hant-HK only first is fine |
+| Timeslot DB shape | `name` vs `date` column | **Keep `name`** — not date-bound forever (§5.1) |
+| sch API compat | Compat shim vs break | **Break** — structured status only; no empty-array failure |
 
 ---
 
 ## 12. Backend change checklist (for `sch` / API)
 
 - [ ] Arrange / Modify responses include `status`; never use empty array for failure
-- [ ] Timeslot keys become `YYYY-MM-DD`
+- [ ] Timeslot keys remain opaque `name` strings (no forced ISO date)
 - [ ] Document modify preserve semantics for full (or scoped) roster after client-side day swap
 - [ ] Keep / document `maxWorkerAssignPerRoster`
-- [ ] (Optional) FEASIBLE returns, infeasible hints, solve duration; optional `scopeDates[]` for partial re-solve
-- [ ] Agree error code table with frontend
+- [ ] (Optional) FEASIBLE returns, infeasible hints, solve duration; optional scoped re-solve
+- [ ] Agree `status` / error code table with frontend
 
-Frontend can adapt early; **false-success empty sheets must die in the same release.**
+Frontend adapts in the **same** release; **false-success empty sheets must die together with sch.**
 
 ---
 
@@ -605,10 +624,10 @@ Final ship bar (all phases). Use **§9 exit criteria** as per-phase gates before
 
 This revamp is not “add buttons on the old three-step wizard.”
 
-1. Make the **day column** the batch unit (select, swap, clear) under fixed dates.
+1. Make the **day / timeslot column** the batch unit (select, swap, clear) under fixed column identities (near-term: calendar days in the UI; storage stays opaque `name`).
 2. Build a **shell** better suited than Excel for offs + constraints + re-arrange + day switch.
 3. Surface the **core** (OR-Tools) status and preferences; kill empty-array false success.
-4. Allow a full **visual** redo — professional, quiet, grid-first — not tied to shadcn.
+4. Allow a full **visual** redo — professional, quiet, grid-first — not tied to shadcn; tokens applied in-place (no orphan DS code).
 5. Ship by phase gates (§9): test layers, expectations, exit criteria — create and edit share one Workspace.
 
-Priority order: **date model + failure semantics → Roster Workspace + off matrix → day-column swap → prefs UI / import → visual polish.**
+Priority order: **failure semantics (+ tokens / test skeleton) → Roster Workspace + off matrix → day-column swap → prefs UI / import → visual polish.**

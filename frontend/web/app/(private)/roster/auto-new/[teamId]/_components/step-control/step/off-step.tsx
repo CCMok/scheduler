@@ -14,6 +14,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/external/shadcn/compo
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/external/shadcn/components/ui/dialog"
 import LoadingButton from "@/components/_general/_custom/button/loading-button"
 import { autoCreateRosterAction } from "@/libs/roster/create/auto/auto-create-roster-action"
+import { Message } from "@/libs/_general/service/message"
 import { toast } from "sonner"
 import { useParams } from "next/navigation"
 import { useAutoNewRosterStore } from "./store/auto-new-roster-store-provider"
@@ -58,9 +59,13 @@ export default function OffStep({
       return
     }
 
-    setInitialRoster(response.data)
-    setModifiedRoster(response.data)
-    toast.success('編排成功')
+    setInitialRoster(response.data.items)
+    setModifiedRoster(response.data.items)
+    if (response.data.status === 'FEASIBLE') {
+      toast.warning(Message.ROSTER_FEASIBLE_APPROXIMATE)
+    } else {
+      toast.success('編排成功')
+    }
     nextStep()
   }
 

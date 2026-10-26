@@ -4,17 +4,18 @@ import { tryCatch } from '@/libs/_general/service/try-catch';
 import { Message } from '@/libs/_general/service/message';
 import { checkCanAccessTeam } from '@/libs/auth/general/access-utils';
 import { isNil } from 'lodash';
-import { RosterItem, RosterJoin } from '../../roster';
+import { RosterJoin } from '../../roster';
 import { AutoModifyRosterRequest, autoModifyRosterRequestSchema } from './auto-modify-roster-request';
 import { SchModifyRosterRequest } from './sch-modify-roster-request';
-import { SchArrangeRosterResponse, schArrangeRosterResponseSchema } from '../../create/auto/sch-arrange-roster-response';
-import { convertToServiceResponse } from '../../create/auto/auto-create-roster-service';
+import { interpretSchArrangeResponse } from '../../create/auto/sch-arrange-roster-response';
+import { mapSchPostsToRosterItems } from '../../create/auto/map-sch-posts-to-roster-items';
 import { getRosterById } from '../../read/get-roster-service';
+import { AutoArrangeResult } from '../../create/auto/auto-arrange-result';
 
 const SCH_HOST = process.env.SCH_HOST ?? '';
 const SCH_API_KEY = process.env.SCH_API_KEY ?? '';
 
-export const autoModifyRoster = tryCatch(async (request: AutoModifyRosterRequest): Promise<ServiceResponse<RosterItem[]>> => {
+export const autoModifyRoster = tryCatch(async (request: AutoModifyRosterRequest): Promise<ServiceResponse<AutoArrangeResult>> => {
   const parsedRequest = autoModifyRosterRequestSchema.parse(request)
 
   const roster = await getRosterById(parsedRequest.rosterId)
@@ -37,15 +38,25 @@ export const autoModifyRoster = tryCatch(async (request: AutoModifyRosterRequest
     message: Message.SYSTEM_ERROR,
   }
 
-  const serviceResponse = await convertToServiceResponse(modifyResponse, roster.timeslots)
+  if (modifyResponse.kind === 'failure') {
+    return {
+      isSuccess: false,
+      message: modifyResponse.status === 'INFEASIBLE'
+        ? Message.ROSTER_INFEASIBLE
+        : Message.ROSTER_SOLVER_ERROR,
+    }
+  }
 
   return {
     isSuccess: true,
-    data: serviceResponse,
+    data: {
+      status: modifyResponse.status,
+      items: mapSchPostsToRosterItems(modifyResponse.posts, roster.timeslots),
+    },
   }
 })
 
-const sendModifyRosterRequest = async (request: SchModifyRosterRequest): Promise<SchArrangeRosterResponse | undefined> => {
+const sendModifyRosterRequest = async (request: SchModifyRosterRequest) => {
   try {
     const response = await fetch(`${SCH_HOST}/roster/modify`, {
       method: 'POST',
@@ -62,7 +73,7 @@ const sendModifyRosterRequest = async (request: SchModifyRosterRequest): Promise
     }
 
     const responseBody = await response.json()
-    return schArrangeRosterResponseSchema.parse(responseBody)
+    return interpretSchArrangeResponse(responseBody)
   } catch (e) {
     console.error('Fail to send SCH modify roster request');
     console.error(e);
@@ -71,10 +82,8 @@ const sendModifyRosterRequest = async (request: SchModifyRosterRequest): Promise
 }
 
 const convertToModifyRosterRequest = (request: AutoModifyRosterRequest, roster: RosterJoin): SchModifyRosterRequest => {
-  // id -> name
   const timeslotMap = new Map(roster.timeslots.map(t => [t.id, t.name]))
 
-  // Original roster is built from db data, not user modified data
   const originalRosterMap = new Map<number, SchModifyRosterRequest['originalRoster'][number]>()
   for (const timeslot of roster.timeslots) {
     for (const assignment of timeslot.assignments) {
