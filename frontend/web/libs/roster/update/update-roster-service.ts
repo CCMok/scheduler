@@ -1,6 +1,6 @@
 import { tryCatch } from '@/libs/_general/service/try-catch'
 import 'server-only'
-import { ServiceResponse } from '@/libs/_general/service/response'
+import { ServiceResponse, UpdateRosterResponseData } from '@/libs/_general/service/response'
 import { checkCanAccessTeam } from '@/libs/auth/general/access-utils'
 import { Message } from '@/libs/_general/service/message'
 import prisma from '@/libs/_general/database/database-manager'
@@ -9,7 +9,7 @@ import { isNil } from 'lodash'
 import { UpdateRosterRequest, updateRosterRequestSchema } from './update-roster-request'
 import { handlePersistError } from '@/libs/_general/database/database-utils'
 
-export const updateRoster = tryCatch(async (request: UpdateRosterRequest): Promise<ServiceResponse> => {
+export const updateRoster = tryCatch(async (request: UpdateRosterRequest): Promise<ServiceResponse<UpdateRosterResponseData>> => {
   const parsedRequest = updateRosterRequestSchema.parse(request)
 
   const teamId = await getTeamId(parsedRequest.id)
@@ -41,47 +41,41 @@ const getTeamId = async (rosterId: number): Promise<number | undefined> => {
 
 export const saveEntity = async (
   request: UpdateRosterRequest,
-): Promise<ServiceResponse> => {
+): Promise<ServiceResponse<UpdateRosterResponseData>> => {
   try {
-    await prisma.$transaction(async (tx) => {
-      await tx.roster.update({
+    const updated = await prisma.$transaction(async (tx) => {
+      await tx.rosterTimeslot.deleteMany({
+        where: { rosterId: request.id },
+      })
+
+      return await tx.roster.update({
         where: { id: request.id },
         data: {
           name: request.name,
+          timeslots: {
+            create: request.timeslots.map(timeslot => ({
+              name: timeslot.name,
+              assignments: {
+                create: timeslot.assignments.map(post => ({
+                  postId: post.postId,
+                  workerId: isNil(post.workerId) ? null : post.workerId,
+                })),
+              },
+              offWorkers: {
+                create: timeslot.offWorkerIds.map(workerId => ({
+                  workerId,
+                })),
+              },
+            })),
+          },
         },
       })
-
-      for (const timeslot of request.timeslots) {
-        await tx.rosterTimeslotAssignment.deleteMany({
-          where: {
-            rosterTimeslotId: timeslot.id,
-          },
-        })
-
-        await tx.rosterTimeslotAssignment.createMany({
-          data: timeslot.assignments.map(assignment => ({
-            rosterTimeslotId: timeslot.id,
-            postId: assignment.postId,
-            workerId: assignment.workerId,
-          })),
-          skipDuplicates: true,
-        })
-
-        await tx.rosterTimeslotOffWorker.deleteMany({
-          where: {
-            rosterTimeslotId: timeslot.id,
-          },
-        })
-
-        await tx.rosterTimeslotOffWorker.createMany({
-          data: timeslot.offWorkerIds.map(workerId => ({
-            rosterTimeslotId: timeslot.id,
-            workerId,
-          })),
-          skipDuplicates: true,
-        })
-      }
     })
+
+    return {
+      isSuccess: true,
+      data: { updatedAt: updated.updatedAt.toISOString() },
+    }
   } catch (e) {
     return handlePersistError(e, new Map([
       [PrismaErrorCode.UNIQUE_CONSTRAINT_VIOLATION, () => ({
@@ -89,9 +83,5 @@ export const saveEntity = async (
         message: Message.ALREADY_USED.replaceAll('{0}', '名稱'),
       })],
     ]))
-  }
-
-  return {
-    isSuccess: true,
   }
 }

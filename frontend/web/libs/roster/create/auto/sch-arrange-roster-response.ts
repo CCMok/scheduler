@@ -26,8 +26,9 @@ export const schArrangeRosterResponseSchema = z.object({
   posts: schArrangePostSchema.array().nullish(),
   meta: z
     .object({
-      solveMs: z.number().optional(),
-      hints: z.array(z.string()).optional(),
+      solveMs: z.number().nullish(),
+      // sch Pydantic dumps None as null — optional() alone rejects null
+      hints: z.array(z.string()).nullish(),
     })
     .nullish(),
 });

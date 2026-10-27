@@ -4,7 +4,6 @@ import { tryCatch } from '@/libs/_general/service/try-catch';
 import { Message } from '@/libs/_general/service/message';
 import { checkCanAccessTeam } from '@/libs/auth/general/access-utils';
 import { isNil } from 'lodash';
-import { RosterJoin } from '../../roster';
 import { AutoModifyRosterRequest, autoModifyRosterRequestSchema } from './auto-modify-roster-request';
 import { SchModifyRosterRequest } from './sch-modify-roster-request';
 import { interpretSchArrangeResponse } from '../../create/auto/sch-arrange-roster-response';
@@ -18,19 +17,25 @@ const SCH_API_KEY = process.env.SCH_API_KEY ?? '';
 export const autoModifyRoster = tryCatch(async (request: AutoModifyRosterRequest): Promise<ServiceResponse<AutoArrangeResult>> => {
   const parsedRequest = autoModifyRosterRequestSchema.parse(request)
 
-  const roster = await getRosterById(parsedRequest.rosterId)
-  if (isNil(roster)) return {
-    isSuccess: false,
-    message: Message.NOT_FOUND.replaceAll('{0}', '值班表'),
+  if (!isNil(parsedRequest.rosterId)) {
+    const roster = await getRosterById(parsedRequest.rosterId)
+    if (isNil(roster)) return {
+      isSuccess: false,
+      message: Message.NOT_FOUND.replaceAll('{0}', '值班表'),
+    }
+    if (roster.teamId !== parsedRequest.teamId) return {
+      isSuccess: false,
+      message: Message.UNAUTHORIZED,
+    }
   }
 
-  const canAccess = await checkCanAccessTeam(roster.teamId)
+  const canAccess = await checkCanAccessTeam(parsedRequest.teamId)
   if (!canAccess) return {
     isSuccess: false,
     message: Message.UNAUTHORIZED,
   }
 
-  const modifyRequest = convertToModifyRosterRequest(parsedRequest, roster)
+  const modifyRequest = convertToModifyRosterRequest(parsedRequest)
 
   const modifyResponse = await sendModifyRosterRequest(modifyRequest)
   if (!modifyResponse) return {
@@ -51,7 +56,7 @@ export const autoModifyRoster = tryCatch(async (request: AutoModifyRosterRequest
     isSuccess: true,
     data: {
       status: modifyResponse.status,
-      items: mapSchPostsToRosterItems(modifyResponse.posts, roster.timeslots),
+      items: mapSchPostsToRosterItems(modifyResponse.posts, parsedRequest.timeslots),
     },
   }
 })
@@ -81,33 +86,22 @@ const sendModifyRosterRequest = async (request: SchModifyRosterRequest) => {
   }
 }
 
-const convertToModifyRosterRequest = (request: AutoModifyRosterRequest, roster: RosterJoin): SchModifyRosterRequest => {
-  const timeslotMap = new Map(roster.timeslots.map(t => [t.id, t.name]))
-
-  const originalRosterMap = new Map<number, SchModifyRosterRequest['originalRoster'][number]>()
-  for (const timeslot of roster.timeslots) {
-    for (const assignment of timeslot.assignments) {
-      if (!originalRosterMap.has(assignment.postId)) {
-        originalRosterMap.set(assignment.postId, {
-          postId: assignment.postId,
-          timeslots: [],
-        })
-      }
-
-      originalRosterMap.get(assignment.postId)!.timeslots.push({
-        timeslot: timeslot.name,
-        workerId: assignment.workerId,
-      })
-    }
-  }
+const convertToModifyRosterRequest = (request: AutoModifyRosterRequest): SchModifyRosterRequest => {
+  const timeslotMap = new Map(request.timeslots.map(t => [t.id, t.name]))
 
   return {
-    teamId: roster.teamId,
-    timeslots: roster.timeslots.map(t => t.name),
+    teamId: request.teamId,
+    timeslots: request.timeslots.map(t => t.name),
     offs: request.offs.map(off => ({
       workerId: off.workerId,
       timeslots: off.timeslotIds.map(timeslotId => timeslotMap.get(timeslotId) ?? ''),
     })),
-    originalRoster: Array.from(originalRosterMap.values()),
+    originalRoster: request.originalRoster.map((post) => ({
+      postId: post.postId,
+      timeslots: post.timeslots.map((slot) => ({
+        timeslot: slot.timeslot,
+        workerId: slot.workerId ?? null,
+      })),
+    })),
   }
 }

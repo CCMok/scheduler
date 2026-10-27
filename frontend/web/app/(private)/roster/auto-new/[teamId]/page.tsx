@@ -1,58 +1,20 @@
-import HeaderLayout from "@/components/_general/header/header-layout";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/external/shadcn/components/ui/breadcrumb";
-import TeamTitle from "./_components/team-title";
-import { notFound } from "next/navigation";
-import { Suspense } from "react";
-import TitleSkeleton from "@/components/_general/_custom/skeleton/title-skeleton";
-import { Separator } from "@/external/shadcn/components/ui/separator";
-import StepControl from "./_components/step-control/step-control";
-import { getWorkers } from "@/libs/worker/read/get-worker-service";
-import { AutoNewRosterStoreProvider } from "./_components/step-control/step/store/auto-new-roster-store-provider";
-import { getPosts } from "@/libs/post/read/get-post-service";
-import { Param } from "./_components/param";
+import { redirect } from "next/navigation";
 import { ROUTE } from "@/libs/_general/route/route-config";
+import { searchParamKey } from "../../_components/param";
 
-export default async function RosterAutoNewPage({
+type Param = { teamId: string };
+
+/** Legacy wizard URL → Workspace create. */
+export default async function AutoNewRedirectPage({
   params,
 }: Readonly<{
   params: Promise<Param>;
 }>) {
-  const { teamId } = await params
-  const teamIdNum = Number.parseInt(teamId)
-  if (Number.isNaN(teamIdNum)) notFound()
-
-  const workersPromise = getWorkers(teamIdNum, true)
-  const postsPromise = getPosts(teamIdNum, true)
-
-  return (
-    <HeaderLayout
-      title={(
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href={ROUTE.private.roster.base()}>值班表</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>自動編排</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      )}
-    >
-      <div className='flex flex-col'>
-        <Suspense fallback={<TitleSkeleton />}>
-          <TeamTitle id={teamIdNum} />
-        </Suspense>
-        <Separator className="mt-2 mb-4" />
-        <AutoNewRosterStoreProvider>
-          <StepControl
-            className='flex-1'
-            postPromise={postsPromise}
-            workersPromise={workersPromise}
-          />
-        </AutoNewRosterStoreProvider>
-      </div>
-    </HeaderLayout>
-  )
+  const { teamId } = await params;
+  redirect(
+    ROUTE.private.roster.base({
+      [searchParamKey.TEAM_ID]: teamId,
+      [searchParamKey.ROSTER_ID]: "new",
+    }),
+  );
 }

@@ -56,3 +56,17 @@ def test_feasible_response_includes_posts():
     payload = response.model_dump(by_alias=True)
     assert payload["status"] == "FEASIBLE"
     assert payload["posts"][0]["postId"] == 2
+
+
+def test_error_response_omits_posts_and_is_not_bare_list():
+    response = ArrangeRosterResponse(
+        status=SolverStatus.ERROR,
+        posts=None,
+        meta=ArrangeRosterMeta(hints=["engine_timeout"]),
+    )
+
+    payload = response.model_dump(by_alias=True)
+    assert payload["status"] == "ERROR"
+    assert payload["posts"] is None
+    assert payload["meta"]["hints"] == ["engine_timeout"]
+    assert isinstance(payload, dict)

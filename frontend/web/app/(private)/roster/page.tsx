@@ -6,7 +6,7 @@ import {
   BreadcrumbPage,
 } from "@/external/shadcn/components/ui/breadcrumb";
 import { getTeams } from "@/libs/team/read/get-team-service";
-import RosterPageContent from "./_components/roster-page-content";
+import WorkspaceShell from "./_components/workspace/workspace-shell";
 import {
   getRosterById,
   getRosters,
@@ -23,17 +23,29 @@ export default async function RosterPage({
   searchParams: Promise<SearchParam>;
 }>) {
   const params = await searchParams;
-  const teamIdParam = Number.parseInt(params.teamId ?? '');
-  const rosterIdParam = Number.parseInt(params.rosterId ?? '');
+  const teamIdParam = Number.parseInt(params.teamId ?? "");
+  const isNewRoster = params.rosterId === "new";
+  const rosterIdParam = Number.parseInt(params.rosterId ?? "");
 
   const teams = await getTeams();
-  const teamId = teams.some((t) => t.id === teamIdParam) ? teamIdParam : teams[0]?.id;
+  const teamId = teams.some((t) => t.id === teamIdParam)
+    ? teamIdParam
+    : teams[0]?.id;
 
   const [rosters, posts, workers] = isNil(teamId)
-    ? [[], [], []] as [Roster[], Post[], Worker[]]
-    : await Promise.all([getRosters(teamId), getPosts(teamId), getWorkers(teamId)]);
+    ? ([[], [], []] as [Roster[], Post[], Worker[]])
+    : await Promise.all([
+        getRosters(teamId),
+        getPosts(teamId),
+        getWorkers(teamId),
+      ]);
 
-  const rosterId = rosters.some((r) => r.id === rosterIdParam) ? rosterIdParam : rosters[0]?.id;
+  const rosterId = isNewRoster
+    ? undefined
+    : rosters.some((r) => r.id === rosterIdParam)
+      ? rosterIdParam
+      : rosters[0]?.id;
+
   const roster = isNil(rosterId) ? undefined : await getRosterById(rosterId);
 
   return (
@@ -48,7 +60,7 @@ export default async function RosterPage({
         </Breadcrumb>
       }
     >
-      <RosterPageContent
+      <WorkspaceShell
         teams={teams}
         rosters={rosters}
         roster={roster}

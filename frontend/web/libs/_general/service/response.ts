@@ -18,4 +18,9 @@ export type ServiceResponse<T = void> = FailResponse | SuccessResponse<T>
 
 export type CreateResponseData = {
   id: number;
+  updatedAt: string;
+}
+
+export type UpdateRosterResponseData = {
+  updatedAt: string;
 }

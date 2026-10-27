@@ -24,6 +24,20 @@ describe("interpretSchArrangeResponse", () => {
     });
   });
 
+  it("accepts sch meta with null hints (Pydantic None dump)", () => {
+    const result = interpretSchArrangeResponse({
+      status: "OPTIMAL",
+      posts: samplePosts,
+      meta: { solveMs: 42, hints: null },
+    });
+
+    expect(result).toEqual({
+      kind: "success",
+      status: "OPTIMAL",
+      posts: samplePosts,
+    });
+  });
+
   it("maps FEASIBLE with posts to success (approximate)", () => {
     const result = interpretSchArrangeResponse({
       status: "FEASIBLE",

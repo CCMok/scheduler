@@ -1,20 +1,11 @@
 import { z } from "zod";
+import { timeslotRequestSchema } from "../create/create-roster-request";
 
-export const timeslotRequestSchema = z.object({
-  id: z.number(),
-  assignments: z.object({
-    postId: z.number(),
-    workerId: z.number().optional(),
-  }).array(),
-  offWorkerIds: z.number().array(),
-})
-
-export type TimeslotRequest = z.infer<typeof timeslotRequestSchema>;
-
+/** Same timeslot payload as create — Save replaces all timeslots for the roster. */
 export const updateRosterRequestSchema = z.object({
   id: z.number(),
   name: z.string(),
   timeslots: timeslotRequestSchema.array(),
-})
+});
 
 export type UpdateRosterRequest = z.infer<typeof updateRosterRequestSchema>;

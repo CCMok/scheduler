@@ -31,16 +31,18 @@ enum Segment {
 
   // Function
   NEW = '/new',
-  AUTO_NEW = '/auto-new',
-  EDIT = '/edit',
 }
 
 export const ROUTE = {
   private: {
     roster: {
       base: (searchParam?: SearchParam) => buildSearchParam(Segment.ROSTER, searchParam) as Route,
-      autoNew: (teamId: string | number) => `${Segment.ROSTER}${Segment.AUTO_NEW}/${teamId}` as Route,
-      edit: (rosterId: string | number) => `${Segment.ROSTER}${Segment.EDIT}/${rosterId}` as Route,
+      /** @deprecated Phase 1 — use base({ teamId, rosterId: 'new' }) */
+      autoNew: (teamId: string | number) =>
+        buildSearchParam(Segment.ROSTER, { teamId, rosterId: 'new' }) as Route,
+      /** @deprecated Phase 1 — use base({ rosterId }) */
+      edit: (rosterId: string | number) =>
+        buildSearchParam(Segment.ROSTER, { rosterId }) as Route,
     },
     setting: {
       team: {

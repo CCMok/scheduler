@@ -60,6 +60,9 @@ export const saveEntity = async (
 
   return {
     isSuccess: true,
-    data: { id: roster.id },
+    data: {
+      id: roster.id,
+      updatedAt: roster.updatedAt.toISOString(),
+    },
   }
 }
