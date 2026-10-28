@@ -11,6 +11,7 @@ import {
   TableRow,
 } from '@/external/shadcn/components/ui/table'
 import { useWorkspaceStore } from './workspace-store-provider'
+import DayColumnHeader from './day-column-header'
 import { offKey, offSetFromOffs } from '@/libs/roster/workspace/build-persist-request'
 import { cn } from '@/external/shadcn/libs/utils'
 
@@ -22,6 +23,7 @@ export default function OffMatrix({
   const timeslots = useWorkspaceStore((s) => s.timeslots)
   const offs = useWorkspaceStore((s) => s.offs)
   const toggleOff = useWorkspaceStore((s) => s.toggleOff)
+  const selectedTimeslotId = useWorkspaceStore((s) => s.selectedTimeslotId)
   const offSet = offSetFromOffs(offs)
 
   const [focus, setFocus] = useState({ row: 0, col: 0 })
@@ -85,8 +87,8 @@ export default function OffMatrix({
           <TableRow>
             <TableHead>職員</TableHead>
             {timeslots.map((t) => (
-              <TableHead key={t.id} className="text-center text-xs">
-                {t.name}
+              <TableHead key={t.id} className="p-1 align-bottom">
+                <DayColumnHeader timeslotId={t.id} label={t.name} />
               </TableHead>
             ))}
           </TableRow>
@@ -98,8 +100,15 @@ export default function OffMatrix({
               {timeslots.map((timeslot, col) => {
                 const isOff = offSet.has(offKey(worker.id, timeslot.id))
                 const focused = focus.row === row && focus.col === col
+                const columnSelected = selectedTimeslotId === timeslot.id
                 return (
-                  <TableCell key={timeslot.id} className="p-1 text-center">
+                  <TableCell
+                    key={timeslot.id}
+                    className={cn(
+                      'p-1 text-center',
+                      columnSelected && 'bg-primary/5',
+                    )}
+                  >
                     <button
                       type="button"
                       className={cn(
@@ -127,7 +136,7 @@ export default function OffMatrix({
         </TableBody>
       </Table>
       <p className="mt-2 text-xs text-muted-foreground">
-        方向鍵移動；Space 切換；Y 標記休假；N 取消。
+        方向鍵移動；Space 切換；Y 標記休假；N 取消。拖曳日期標題可交換整日休假標記。
       </p>
     </div>
   )

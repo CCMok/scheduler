@@ -12,8 +12,13 @@ import {
 } from '@/external/shadcn/components/ui/table'
 import Combobox from '@/components/_general/_custom/combobox/combobox'
 import { useWorkspaceStore } from './workspace-store-provider'
+import DayColumnHeader from './day-column-header'
+import { swapCellWorkers } from '@/libs/roster/workspace/day-ops'
 import { cn } from '@/external/shadcn/libs/utils'
+import { X } from 'lucide-react'
 import { isNil } from 'lodash'
+
+const CELL_DRAG_TYPE = 'application/x-roster-cell'
 
 export default function AssignGrid({
   posts,
@@ -26,6 +31,16 @@ export default function AssignGrid({
   const workingRoster = useWorkspaceStore((s) => s.workingRoster)
   const initialRoster = useWorkspaceStore((s) => s.initialRoster)
   const setWorkingRoster = useWorkspaceStore((s) => s.setWorkingRoster)
+  const selectedTimeslotId = useWorkspaceStore((s) => s.selectedTimeslotId)
+  const assignOnOffConflicts = useWorkspaceStore((s) => s.assignOnOffConflicts)
+
+  const conflictKeys = useMemo(() => {
+    const set = new Set<string>()
+    for (const c of assignOnOffConflicts) {
+      set.add(`${c.postId}-${c.timeslotId}`)
+    }
+    return set
+  }, [assignOnOffConflicts])
 
   const postMap = useMemo(() => new Map(posts.map((p) => [p.id, p])), [posts])
   const workerMap = useMemo(() => new Map(workers.map((w) => [w.id, w])), [workers])
@@ -64,6 +79,21 @@ export default function AssignGrid({
             a.timeslotId === timeslotId ? { ...a, workerId } : a,
           ),
         }
+      }),
+    )
+  }
+
+  const swapCells = (
+    from: { postId: number; timeslotId: number },
+    to: { postId: number; timeslotId: number },
+  ) => {
+    setWorkingRoster(
+      swapCellWorkers({
+        workingRoster,
+        postIdA: from.postId,
+        timeslotIdA: from.timeslotId,
+        postIdB: to.postId,
+        timeslotIdB: to.timeslotId,
       }),
     )
   }
@@ -125,8 +155,8 @@ export default function AssignGrid({
           <TableRow>
             <TableHead>職位</TableHead>
             {timeslots.map((t) => (
-              <TableHead key={t.id} className="text-center text-xs">
-                {t.name}
+              <TableHead key={t.id} className="p-1 align-bottom">
+                <DayColumnHeader timeslotId={t.id} label={t.name} />
               </TableHead>
             ))}
           </TableRow>
@@ -141,15 +171,23 @@ export default function AssignGrid({
                 const changed =
                   originalWorkerMap.get(`${item.postId}-${timeslot.id}`) !== assignment?.workerId
                 const isEditingCell = editing && focused
+                const columnSelected = selectedTimeslotId === timeslot.id
+                const hasAssignOnOff = conflictKeys.has(
+                  `${item.postId}-${timeslot.id}`,
+                )
 
                 return (
                   <TableCell
                     key={timeslot.id}
                     className={cn(
-                      'min-w-28 p-1 text-center',
+                      'group relative min-w-28 p-1 text-center',
                       changed && 'bg-accent/40',
+                      columnSelected && 'bg-primary/5',
+                      hasAssignOnOff && 'bg-destructive/15 text-destructive',
                       focused && !isEditingCell && 'ring-2 ring-ring ring-inset',
+                      !isEditingCell && 'cursor-grab active:cursor-grabbing',
                     )}
+                    draggable={!isEditingCell}
                     onClick={() => {
                       setFocus({ row, col })
                       setEditing(false)
@@ -157,6 +195,54 @@ export default function AssignGrid({
                     onDoubleClick={() => {
                       setFocus({ row, col })
                       setEditing(true)
+                    }}
+                    onDragStart={(e) => {
+                      if (isEditingCell) {
+                        e.preventDefault()
+                        return
+                      }
+                      e.dataTransfer.setData(
+                        CELL_DRAG_TYPE,
+                        JSON.stringify({
+                          postId: item.postId,
+                          timeslotId: timeslot.id,
+                        }),
+                      )
+                      e.dataTransfer.effectAllowed = 'move'
+                      setFocus({ row, col })
+                      setEditing(false)
+                    }}
+                    onDragOver={(e) => {
+                      if (![...e.dataTransfer.types].includes(CELL_DRAG_TYPE)) {
+                        return
+                      }
+                      e.preventDefault()
+                      e.dataTransfer.dropEffect = 'move'
+                    }}
+                    onDrop={(e) => {
+                      e.preventDefault()
+                      const raw = e.dataTransfer.getData(CELL_DRAG_TYPE)
+                      if (!raw) return
+                      let from: { postId: number; timeslotId: number }
+                      try {
+                        from = JSON.parse(raw) as {
+                          postId: number
+                          timeslotId: number
+                        }
+                      } catch {
+                        return
+                      }
+                      if (
+                        from.postId === item.postId &&
+                        from.timeslotId === timeslot.id
+                      ) {
+                        return
+                      }
+                      swapCells(from, {
+                        postId: item.postId,
+                        timeslotId: timeslot.id,
+                      })
+                      setFocus({ row, col })
                     }}
                   >
                     {isEditingCell ? (
@@ -174,11 +260,40 @@ export default function AssignGrid({
                         defaultIsOpen
                       />
                     ) : (
-                      <span>
-                        {isNil(assignment?.workerId)
-                          ? '—'
-                          : (workerMap.get(assignment.workerId)?.name ?? '—')}
-                      </span>
+                      <div className="relative flex min-h-8 items-center justify-center px-5">
+                        <span className="truncate">
+                          {isNil(assignment?.workerId)
+                            ? '—'
+                            : (workerMap.get(assignment.workerId)?.name ?? '—')}
+                        </span>
+                        {!isNil(assignment?.workerId) ? (
+                          <button
+                            type="button"
+                            className={cn(
+                              'absolute right-0 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-sm',
+                              'text-muted-foreground hover:bg-destructive/15 hover:text-destructive',
+                              'opacity-0 transition-opacity focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                              'group-hover:opacity-100',
+                              focused && 'opacity-100',
+                            )}
+                            aria-label="清除指派"
+                            title="清除指派"
+                            draggable={false}
+                            onMouseDown={(e) => {
+                              e.stopPropagation()
+                              e.preventDefault()
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setFocus({ row, col })
+                              setCellWorker(item.postId, timeslot.id, undefined)
+                              setEditing(false)
+                            }}
+                          >
+                            <X className="size-3.5" aria-hidden />
+                          </button>
+                        ) : null}
+                      </div>
                     )}
                   </TableCell>
                 )
@@ -188,7 +303,7 @@ export default function AssignGrid({
         </TableBody>
       </Table>
       <p className="mt-2 text-xs text-muted-foreground">
-        方向鍵／Tab 移動；Enter 開啟選擇；Esc 關閉。
+        方向鍵／Tab 移動；Enter 開啟選擇；Esc 關閉。懸停或選中格子按 × 清除指派；拖曳格子可對調職員；拖曳日期標題可交換整日編排。
       </p>
     </div>
   )

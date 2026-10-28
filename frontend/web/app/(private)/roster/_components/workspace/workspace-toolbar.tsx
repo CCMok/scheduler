@@ -4,7 +4,7 @@ import { useEffect, useState, useTransition } from 'react'
 import { Post, Worker } from '@/external/prisma/generated/client'
 import CustomButton from '@/components/_general/_custom/button/custom-button'
 import LoadingButton from '@/components/_general/_custom/button/loading-button'
-import { FileDown, Save, WandSparkles } from 'lucide-react'
+import { Eraser, FileDown, Save, Undo2, WandSparkles } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { useWorkspaceStore } from './workspace-store-provider'
@@ -45,6 +45,27 @@ export default function WorkspaceToolbar({
   const setArrangeResult = useWorkspaceStore((s) => s.setArrangeResult)
   const markSaved = useWorkspaceStore((s) => s.markSaved)
   const persistDraft = useWorkspaceStore((s) => s.persistDraft)
+  const selectedTimeslotId = useWorkspaceStore((s) => s.selectedTimeslotId)
+  const dayUndoStack = useWorkspaceStore((s) => s.dayUndoStack)
+  const assignOnOffConflicts = useWorkspaceStore((s) => s.assignOnOffConflicts)
+  const clearSelectedDay = useWorkspaceStore((s) => s.clearSelectedDay)
+  const undoDayOp = useWorkspaceStore((s) => s.undoDayOp)
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 'z') return
+      if (dayUndoStack.length === 0) return
+      const target = e.target as HTMLElement | null
+      const tag = target?.tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || target?.isContentEditable) {
+        return
+      }
+      e.preventDefault()
+      undoDayOp()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [dayUndoStack.length, undoDayOp])
 
   useEffect(() => {
     const handle = window.setTimeout(() => {
@@ -247,7 +268,46 @@ export default function WorkspaceToolbar({
           <FileDown />
           匯出
         </CustomButton>
+        <CustomButton
+          type="button"
+          variant="outline"
+          disabled={selectedTimeslotId == null}
+          onClick={() => clearSelectedDay()}
+        >
+          <Eraser />
+          清空選中日
+        </CustomButton>
+        <CustomButton
+          type="button"
+          variant="outline"
+          disabled={dayUndoStack.length === 0}
+          onClick={() => undoDayOp()}
+        >
+          <Undo2 />
+          復原日操作
+        </CustomButton>
       </div>
+      {assignOnOffConflicts.length > 0 ? (
+        <div
+          role="status"
+          className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+        >
+          <p>
+            警告：有 {assignOnOffConflicts.length}{' '}
+            格為休假日仍被指派（儲存仍可用）。可按「再排」嘗試修正。
+          </p>
+          <CustomButton
+            type="button"
+            variant="outline"
+            className="mt-2"
+            disabled={isPending}
+            onClick={runArrange}
+          >
+            <WandSparkles />
+            再排修好
+          </CustomButton>
+        </div>
+      ) : null}
     </div>
   )
 }

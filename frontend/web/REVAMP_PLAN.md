@@ -147,14 +147,15 @@ Vs old flow: two fewer forced step pages, fewer confirms, off-entry effort drops
 | Action | Behavior |
 |--------|----------|
 | Select day | Click column header; entire day highlighted |
-| Swap days A ↔ B | All post assignments for A and B exchange. Default: offs for A and B also exchange with the columns so workers stay attached to the day they were off. After swap, run eligibility / off validation; block or warn if a worker is assigned on a day they are off. |
+| Swap days A ↔ B | All post assignments for A and B exchange. Offs for A and B also exchange with the columns (off stays attached to the shifted pattern). After swap, run eligibility / off validation; **warn** on assign-on-off (Save still allowed); offer “Re-arrange to fix”. |
 | Swap then re-arrange (optional) | After swap, user can run `modify` to fix conflicts while preserving as much as possible |
-| Move / reorder | Drag header to new position among dates; if grid is always date-sorted, “move” = swap with neighbor until target order matches dates — or allow free column order with date labels fixed (prefer **date-sorted columns**; swap changes **content**, not calendar identity — see decisions) |
-| Clear day | Clear assignments for selected day |
-| Copy day pattern | Copy assignments from day A onto day B (offs unchanged unless user opts in); validate |
+| Move / reorder | **Day-header drag-and-drop.** Columns stay **date-sorted** (labels fixed). Drop header A onto B = **direct content swap** A↔B (assignments + offs; not bubble through neighbors). Same validation as swap. |
+| Clear day | Clear **assignments only** for selected day: every post’s worker on that timeslot → empty. Offs for that day are **kept** (see §11 if changed). |
+| Copy day pattern | **Out of Phase 2** — defer |
 
 **Important semantic choice (see §11):**  
-Prefer **content swap on fixed date headers** (date 10/27 and 10/28 stay labeled; who works which post swaps) — matches “switch day shifts,” not “rename days.”
+Prefer **content swap on fixed date headers** (date 10/27 and 10/28 stay labeled; who works which post swaps) — matches “switch day shifts,” not “rename days.”  
+**Gesture (locked):** day-header **drag-and-drop** is primary for swap / reorder (not click-A-then-B toolbar).
 
 ### 4.4 Grid editing (must beat “I’d rather use Excel”)
 
@@ -470,34 +471,39 @@ Do **not** add Playwright / full E2E in Phase 0 (no Workspace yet). Wire `yarn t
 
 **Deliverables**
 
-- Select day column; swap two days (assignments + offs per §11); clear day; Undo as **one** step
-- Post-swap validation + optional “re-arrange to fix”
-- Copy day pattern (optional)
+- Finish Phase 1 cleanup if still open: **delete** unused `auto-new/**` and `edit/**` routes + dead wizard code
+- Select day column; **drag-and-drop** day headers → **direct content swap** drop target (assignments + offs; fixed date labels per §11) — not bubble reorder
+- Clear day (assignments only; offs kept)
+- Undo stack covers **day ops only** (swap / clear) — each as **one** undo step; cell/off edits not on this stack
+- Post-swap validation: **warn** on assign-on-off (Save still allowed) + optional “re-arrange to fix”
+- **No** copy day pattern this phase
 
 **Expectations**
 
-- User: moving a whole day’s pattern is faster than editing cell-by-cell
-- User: conflicts after swap are visible; no silent invalid assign-on-off
-- Eng: swap is client/persist-first; sch `modify` only when user chooses fix / re-arrange
+- User: moving a whole day’s pattern via header drag is faster than editing cell-by-cell
+- User: conflicts after swap/reorder are visible; no silent invalid assign-on-off
+- Eng: swap/reorder is client/persist-first; sch `modify` only when user chooses fix / re-arrange
 
 **Test plan**
 
 - Unit: after A↔B swap, every post’s workers exchanged; offs follow agreed rule
-- Case: swap creates assign-on-off → warn (or block); never silent bad save
-- Undo: swap → Undo → bit-identical to pre-swap working state
+- Unit: drag A onto C under fixed dates = direct A↔C content swap (B untouched); date labels unchanged
+- Case: swap creates assign-on-off → warn; Save still succeeds; never silent bad UI
+- Undo: swap / clear → Undo → bit-identical to pre-op working state
 - E2E: swap → save → reload consistent
-- Optional: copy day pattern A → B + validation
 - Edit regression: day swap on an existing saved roster, save, reload
+- Routes: `auto-new` / `edit` gone (or one-shot redirect removed)
 
 **Exit criteria**
 
-- [ ] Swap / Undo property tests green
-- [ ] Manual “swap two days” preferred over per-cell rebuild in smoke UX check
-- [ ] Conflict after swap always surfaced
+- [x] Swap / clear + Undo property tests green
+- [ ] Manual “drag day header” preferred over per-cell rebuild in smoke UX check
+- [x] Conflict after swap always surfaced (warn); Save not blocked
+- [x] Dead `auto-new` / `edit` code deleted
 
 **Out of scope until later**
 
-- Affinity UI, import, rectangular paste, heavy motion
+- Copy day pattern, bubble reorder, affinity UI, import, rectangular paste, heavy motion, Undo for cell/off edits
 
 ---
 
@@ -601,11 +607,16 @@ From Phase 1, “edit roster enhancement” is **not** a separate app — it is 
 |----------|---------|----------------|
 | What does “swap days” move? | Assignments only vs assignments + offs | **Both** — keep off attached to the day column content being swapped; then validate |
 | Fixed date headers vs moving dates | Content swap under fixed dates vs swap the date identity | **Content swap under fixed date labels** |
-| Swap with conflict | Block / warn / auto modify | Warn + offer “Re-arrange to fix” |
+| Swap with conflict | Block / warn / auto modify | **Locked: warn + offer “Re-arrange to fix”; Save still allowed** |
+| Clear day vs offs | Clear assignments only vs clear offs too | **Locked: assignments only; offs kept** |
+| Day-header gesture | Click-A-then-B / toolbar / drag | **Locked: day-header drag-and-drop** (swap + reorder) |
+| Day-header drag drop | Bubble path vs direct swap vs free column order | **Locked: date-sorted labels fixed; drop A on B = direct content swap A↔B** |
+| Copy day pattern | Phase 2 / later | **Locked: out of Phase 2** (later) |
+| Undo scope (Phase 2) | All edits vs day ops only | **Locked: day ops only** (swap / clear); no cell/off undo yet |
 | Quick date presets (“next 7 days”) | Offer / omit | **Locked: omit** (calendar multi-select only) |
 | Show FEASIBLE to users? | OPTIMAL only vs approximate | **Approximate + label** (Phase 0 returns FEASIBLE) |
 | Day vs timeslot column copy | User “day” vs domain “timeslot” | **Locked: UI 日欄 this round; code/API/store = timeslot column** |
-| Keep cell drag-and-drop? | Yes / no | Keep as secondary; day-header swap is primary batch gesture |
+| Keep cell drag-and-drop? | Yes / no | **Done (secondary):** cell DnD swaps workers; day-header drag remains primary batch gesture |
 | UI kit | Custom vs new package | Custom grid; forms can use headless |
 | English i18n this round? | Yes / no | zh-Hant-HK only first is fine |
 | Timeslot DB shape | `name` vs `date` column | **Keep `name`** — not date-bound forever (§5.1) |

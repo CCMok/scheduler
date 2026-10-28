@@ -18,8 +18,17 @@ import {
   clearRosterDraft,
 } from "@/libs/roster/draft/roster-draft";
 import { datesToTimeslots } from "./date-presets";
+import {
+  AssignOnOffConflict,
+  DayOpSnapshot,
+  clearDayAssignments,
+  findAssignOnOffConflicts,
+  swapDayContent,
+} from "./day-ops";
 
 export type WorkspaceMode = "off" | "assign";
+
+const DAY_UNDO_LIMIT = 40;
 
 export type WorkspaceState = {
   teamId: number;
@@ -35,6 +44,9 @@ export type WorkspaceState = {
   conflictDraft: RosterDraft | null;
   /** false until client reads localStorage after mount — keeps SSR/hydration matched */
   localDraftReady: boolean;
+  selectedTimeslotId: number | null;
+  dayUndoStack: DayOpSnapshot[];
+  assignOnOffConflicts: AssignOnOffConflict[];
 };
 
 export type WorkspaceActions = {
@@ -54,6 +66,10 @@ export type WorkspaceActions = {
   resolveConflictUseServer: (roster: RosterJoin) => void;
   persistDraft: () => void;
   clearDraft: () => void;
+  selectTimeslot: (timeslotId: number | null) => void;
+  swapDays: (timeslotIdA: number, timeslotIdB: number) => void;
+  clearSelectedDay: () => void;
+  undoDayOp: () => void;
 };
 
 export type WorkspaceStore = WorkspaceState & WorkspaceActions;
@@ -110,6 +126,12 @@ function applyDraft(draft: RosterDraft): Partial<WorkspaceState> {
     serverUpdatedAt: draft.serverUpdatedAt,
     dirty: draft.dirty,
     conflictDraft: null,
+    selectedTimeslotId: null,
+    dayUndoStack: [],
+    assignOnOffConflicts: findAssignOnOffConflicts({
+      workingRoster: draft.workingRoster,
+      offs: draft.offs,
+    }),
   };
 }
 
@@ -135,6 +157,12 @@ function stateFromServer(teamId: number, server: RosterJoin): WorkspaceState {
     mode: "assign",
     conflictDraft: null,
     localDraftReady: false,
+    selectedTimeslotId: null,
+    dayUndoStack: [],
+    assignOnOffConflicts: findAssignOnOffConflicts({
+      workingRoster: items,
+      offs,
+    }),
   };
 }
 
@@ -144,7 +172,38 @@ function stateForNew(teamId: number): WorkspaceState {
     mode: "off",
     conflictDraft: null,
     localDraftReady: false,
+    selectedTimeslotId: null,
+    dayUndoStack: [],
+    assignOnOffConflicts: [],
   };
+}
+
+function snapshotOf(state: WorkspaceState): DayOpSnapshot {
+  return {
+    workingRoster: state.workingRoster,
+    offs: state.offs,
+  };
+}
+
+function withDayConflicts(
+  workingRoster: RosterItem[],
+  offs: OffPerWorker[],
+): Pick<WorkspaceState, "workingRoster" | "offs" | "assignOnOffConflicts" | "dirty"> {
+  return {
+    workingRoster,
+    offs,
+    assignOnOffConflicts: findAssignOnOffConflicts({ workingRoster, offs }),
+    dirty: true,
+  };
+}
+
+function pushDayUndo(
+  stack: DayOpSnapshot[],
+  snapshot: DayOpSnapshot,
+): DayOpSnapshot[] {
+  const next = [...stack, snapshot];
+  if (next.length <= DAY_UNDO_LIMIT) return next;
+  return next.slice(next.length - DAY_UNDO_LIMIT);
 }
 
 export function createWorkspaceStore(init: {
@@ -173,48 +232,60 @@ export function createWorkspaceStore(init: {
           ...init.postIds,
         ]),
       ];
+      const workingRoster = emptyGridForPosts(postIds, timeslots);
       set({
         timeslots,
         offs,
-        workingRoster: emptyGridForPosts(postIds, timeslots),
+        workingRoster,
         initialRoster: [],
         dirty: true,
+        selectedTimeslotId: null,
+        dayUndoStack: [],
+        assignOnOffConflicts: findAssignOnOffConflicts({
+          workingRoster,
+          offs,
+        }),
       });
     },
 
-    setOffs: (offs) => set({ offs, dirty: true }),
+    setOffs: (offs) => {
+      const { workingRoster } = get();
+      set(withDayConflicts(workingRoster, offs));
+    },
 
     toggleOff: (workerId, timeslotId) => {
-      const offs = get().offs;
+      const state = get();
+      const offs = state.offs;
       const existing = offs.find((o) => o.workerId === workerId);
+      let nextOffs: OffPerWorker[];
       if (!existing) {
-        set({
-          offs: [...offs, { workerId, timeslotIds: [timeslotId] }],
-          dirty: true,
-        });
-        return;
-      }
-      const has = existing.timeslotIds.includes(timeslotId);
-      const timeslotIds = has
-        ? existing.timeslotIds.filter((id) => id !== timeslotId)
-        : [...existing.timeslotIds, timeslotId];
-      set({
-        offs: offs
+        nextOffs = [...offs, { workerId, timeslotIds: [timeslotId] }];
+      } else {
+        const has = existing.timeslotIds.includes(timeslotId);
+        const timeslotIds = has
+          ? existing.timeslotIds.filter((id) => id !== timeslotId)
+          : [...existing.timeslotIds, timeslotId];
+        nextOffs = offs
           .map((o) => (o.workerId === workerId ? { ...o, timeslotIds } : o))
-          .filter((o) => o.timeslotIds.length > 0),
-        dirty: true,
-      });
+          .filter((o) => o.timeslotIds.length > 0);
+      }
+      set(withDayConflicts(state.workingRoster, nextOffs));
     },
 
-    setWorkingRoster: (workingRoster) => set({ workingRoster, dirty: true }),
+    setWorkingRoster: (workingRoster) => {
+      const { offs } = get();
+      set(withDayConflicts(workingRoster, offs));
+    },
 
-    setArrangeResult: (items) =>
+    setArrangeResult: (items) => {
+      const { offs } = get();
       set({
-        workingRoster: items,
+        ...withDayConflicts(items, offs),
         initialRoster: items,
-        dirty: true,
         mode: "assign",
-      }),
+        dayUndoStack: [],
+      });
+    },
 
     markSaved: ({ rosterId, serverUpdatedAt }) => {
       const state = get();
@@ -326,6 +397,49 @@ export function createWorkspaceStore(init: {
           ? draftKeyForNew(state.teamId)
           : draftKeyForRoster(state.rosterId);
       clearRosterDraft(key);
+    },
+
+    selectTimeslot: (timeslotId) => set({ selectedTimeslotId: timeslotId }),
+
+    swapDays: (timeslotIdA, timeslotIdB) => {
+      if (timeslotIdA === timeslotIdB) return;
+      const state = get();
+      const next = swapDayContent({
+        workingRoster: state.workingRoster,
+        offs: state.offs,
+        timeslotIdA,
+        timeslotIdB,
+      });
+      set({
+        ...withDayConflicts(next.workingRoster, next.offs),
+        dayUndoStack: pushDayUndo(state.dayUndoStack, snapshotOf(state)),
+        selectedTimeslotId: timeslotIdB,
+      });
+    },
+
+    clearSelectedDay: () => {
+      const state = get();
+      if (state.selectedTimeslotId == null) return;
+      const timeslotId = state.selectedTimeslotId;
+      const workingRoster = clearDayAssignments(
+        state.workingRoster,
+        timeslotId,
+      );
+      set({
+        ...withDayConflicts(workingRoster, state.offs),
+        dayUndoStack: pushDayUndo(state.dayUndoStack, snapshotOf(state)),
+      });
+    },
+
+    undoDayOp: () => {
+      const state = get();
+      if (state.dayUndoStack.length === 0) return;
+      const stack = [...state.dayUndoStack];
+      const prev = stack.pop()!;
+      set({
+        ...withDayConflicts(prev.workingRoster, prev.offs),
+        dayUndoStack: stack,
+      });
     },
   }));
 }
