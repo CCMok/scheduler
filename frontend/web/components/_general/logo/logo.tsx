@@ -1,32 +1,59 @@
 import { cn } from "@/external/shadcn/libs/utils";
-import { Leckerli_One } from "next/font/google";
 import CustomLink from "../_custom/link/custom-link";
 import { ROUTE } from "@/libs/_general/route/route-config";
 
-const leckerliOne = Leckerli_One({ weight: '400', subsets: ["latin"] });
+function BrandMark({
+  size,
+  className,
+}: Readonly<{
+  size: "sm" | "md" | "lg" | "hero";
+  className?: string;
+}>) {
+  const markClass =
+    size === "hero"
+      ? "text-5xl sm:text-6xl tracking-tight"
+      : size === "lg"
+        ? "text-3xl tracking-tight"
+        : size === "sm"
+          ? "text-lg tracking-tight"
+          : "text-2xl tracking-tight";
+
+  return (
+    <span
+      className={cn(
+        "font-display font-semibold text-primary",
+        markClass,
+        className,
+      )}
+    >
+      Scheduler
+    </span>
+  );
+}
 
 export default function Logo({
   className,
   isRedirectHome = true,
+  size = "md",
 }: Readonly<{
   className?: string;
   isRedirectHome?: boolean;
+  size?: "sm" | "md" | "lg" | "hero";
 }>) {
+  if (!isRedirectHome) {
+    return (
+      <div className={cn("inline-flex items-baseline", className)}>
+        <BrandMark size={size} />
+      </div>
+    );
+  }
+
   return (
     <CustomLink
       href={ROUTE.public.home}
-      isDisabled={!isRedirectHome}
-      className={cn(
-        'space-x-2 flex items-center',
-        className,
-      )}
+      className={cn("inline-flex items-baseline text-foreground", className)}
     >
-      <span className={`${leckerliOne.className} text-2xl`}>
-        S
-      </span>
-      <span className={`font-medium text-lg`}>
-        Scheduler
-      </span>
+      <BrandMark size={size} />
     </CustomLink>
-  )
+  );
 }

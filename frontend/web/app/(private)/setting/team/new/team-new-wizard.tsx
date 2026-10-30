@@ -172,10 +172,10 @@ export default function TeamNewWizard() {
         </Breadcrumb>
       }
     >
-      <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
+      <div className="grid min-h-0 flex-1 gap-2 lg:grid-cols-[260px_minmax(0,1fr)]">
         <Card className="h-fit">
           <CardHeader>
-            <CardTitle>新增團隊</CardTitle>
+            <CardTitle className="text-base">新增團隊</CardTitle>
             <CardDescription>完成後會直接前往自動建立更表</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">

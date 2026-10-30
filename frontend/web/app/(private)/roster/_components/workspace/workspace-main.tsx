@@ -11,7 +11,6 @@ import OffMatrix from './off-matrix'
 import AssignGrid from './assign-grid'
 import ConfirmLeaveDialog from './confirm-leave-dialog'
 import CustomButton from '@/components/_general/_custom/button/custom-button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/external/shadcn/components/ui/card'
 import { Separator } from '@/external/shadcn/components/ui/separator'
 import { cn } from '@/external/shadcn/libs/utils'
 import { Pencil, X } from 'lucide-react'
@@ -42,18 +41,19 @@ export default function WorkspaceMain({
 
   return (
     <>
-      <Card
+      <section
         className={cn(
-          isEditing && variant === 'edit' && 'border-primary/40 ring-1 ring-primary/20',
+          'tool-panel',
+          isEditing && variant === 'edit' && 'border-primary/45 ring-1 ring-primary/20',
         )}
       >
-        <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3 space-y-0">
-          <div className="space-y-1">
-            <CardTitle>
+        <div className="tool-panel-header">
+          <div className="min-w-0 space-y-0.5">
+            <h2 className="truncate text-sm font-semibold">
               {showViewEditToggle && isEditing ? `編輯中 · ${title}` : title}
-            </CardTitle>
+            </h2>
             {showViewEditToggle ? (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 {isEditing
                   ? '可修改名稱、日期、休假與編排。儲存後回到檢視；取消則丟棄變更。'
                   : '檢視模式。按「編輯」後才可修改。'}
@@ -65,20 +65,21 @@ export default function WorkspaceMain({
               <CustomButton
                 type="button"
                 variant="outline"
+                size="sm"
                 onClick={() => setCancelOpen(true)}
               >
                 <X />
                 取消編輯
               </CustomButton>
             ) : (
-              <CustomButton type="button" onClick={() => enterEdit()}>
+              <CustomButton type="button" size="sm" onClick={() => enterEdit()}>
                 <Pencil />
                 編輯
               </CustomButton>
             )
           ) : null}
-        </CardHeader>
-        <CardContent className="space-y-4">
+        </div>
+        <div className="tool-panel-body">
           {guidance}
           {isEditing ? (
             <>
@@ -101,8 +102,8 @@ export default function WorkspaceMain({
           ) : (
             <AssignGrid posts={posts} workers={workers} readOnly={!isEditing} />
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </section>
       {serverRoster ? (
         <ConfirmLeaveDialog
           open={cancelOpen}

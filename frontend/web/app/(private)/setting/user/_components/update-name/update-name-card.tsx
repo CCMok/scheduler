@@ -52,7 +52,7 @@ export default function UpdateNameCard({
     >
       <Card>
         <CardHeader>
-          <CardTitle className='text-xl'>更改名稱</CardTitle>
+          <CardTitle className="text-base">更改名稱</CardTitle>
           <CardDescription>請輸入您的新名稱</CardDescription>
         </CardHeader>
         <CardContent>

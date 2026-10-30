@@ -14,8 +14,8 @@ export default function WorkspaceModeTabs() {
   const setMode = useWorkspaceStore((s) => s.setMode)
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <span className="text-sm text-muted-foreground" id="workspace-mode-label">
+    <div className="toolbar-row">
+      <span className="text-xs text-muted-foreground" id="workspace-mode-label">
         模式
       </span>
       <Tabs
@@ -23,12 +23,12 @@ export default function WorkspaceModeTabs() {
         onValueChange={(value) => setMode(value as WorkspaceMode)}
         aria-labelledby="workspace-mode-label"
       >
-        <TabsList>
-          <TabsTrigger value="off" className="gap-1.5 px-3">
+        <TabsList className="h-8">
+          <TabsTrigger value="off" className="gap-1.5 px-2.5 text-xs">
             <CalendarOff />
             休假
           </TabsTrigger>
-          <TabsTrigger value="assign" className="gap-1.5 px-3">
+          <TabsTrigger value="assign" className="gap-1.5 px-2.5 text-xs">
             <Grid2x2 />
             編排
           </TabsTrigger>

@@ -86,11 +86,13 @@ export default function WorkspaceToolbar({
 
   if (viewOnly) {
     return (
-      <div className="flex flex-wrap gap-2">
-        <CustomButton type="button" variant="outline" onClick={exportXlsx}>
-          <FileDown />
-          匯出
-        </CustomButton>
+      <div className="toolbar-row">
+        <div className="toolbar-row-end">
+          <CustomButton type="button" variant="outline" size="sm" onClick={exportXlsx}>
+            <FileDown />
+            匯出
+          </CustomButton>
+        </div>
       </div>
     )
   }
@@ -201,68 +203,72 @@ export default function WorkspaceToolbar({
     }
   }
 
+  const hasAssignments = workingRoster.some((item) =>
+    item.assignments.some((a) => a.workerId != null),
+  )
+
   return (
-    <div className="flex flex-col gap-3">
-      <div className="min-w-48 max-w-md space-y-1">
-        <label className="text-sm text-muted-foreground" htmlFor="roster-name">
-          名稱
-        </label>
-        <Input
-          id="roster-name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="值班表名稱"
-        />
-      </div>
-      <div className="flex flex-wrap gap-2">
-        <LoadingButton
-          type="button"
-          isLoading={isPending}
-          onClick={runArrange}
-        >
-          <WandSparkles />
-          {workingRoster.some((item) =>
-            item.assignments.some((a) => a.workerId != null),
-          )
-            ? '再排'
-            : '自動編排'}
-        </LoadingButton>
-        <LoadingButton
-          type="button"
-          isLoading={isSaving}
-          onClick={save}
-          variant={variant === 'create' ? 'outline' : undefined}
-        >
-          <Save />
-          儲存
-        </LoadingButton>
-        {variant === 'edit' ||
-        workingRoster.some((item) =>
-          item.assignments.some((a) => a.workerId != null),
-        ) ? (
-          <CustomButton type="button" variant="outline" onClick={exportXlsx}>
-            <FileDown />
-            匯出
+    <div className="flex flex-col gap-2.5">
+      <div className="toolbar-row items-end">
+        <div className="min-w-48 max-w-md flex-1 space-y-1">
+          <label className="text-xs text-muted-foreground" htmlFor="roster-name">
+            名稱
+          </label>
+          <Input
+            id="roster-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="值班表名稱"
+            className="h-8"
+          />
+        </div>
+        <div className="toolbar-row-end">
+          <CustomButton
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={dayUndoStack.length === 0}
+            onClick={() => undoDayOp()}
+          >
+            <Undo2 />
+            復原
           </CustomButton>
-        ) : null}
-        <CustomButton
-          type="button"
-          variant="outline"
-          disabled={dayUndoStack.length === 0}
-          onClick={() => undoDayOp()}
-        >
-          <Undo2 />
-          復原
-        </CustomButton>
-        <CustomButton
-          type="button"
-          variant="outline"
-          disabled={!canReset}
-          onClick={() => resetToOriginal()}
-        >
-          <RotateCcw />
-          重設
-        </CustomButton>
+          <CustomButton
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={!canReset}
+            onClick={() => resetToOriginal()}
+          >
+            <RotateCcw />
+            重設
+          </CustomButton>
+          {variant === 'edit' || hasAssignments ? (
+            <CustomButton type="button" variant="outline" size="sm" onClick={exportXlsx}>
+              <FileDown />
+              匯出
+            </CustomButton>
+          ) : null}
+          <LoadingButton
+            type="button"
+            size="sm"
+            isLoading={isSaving}
+            onClick={save}
+            variant={variant === 'create' ? 'outline' : undefined}
+          >
+            <Save />
+            儲存
+          </LoadingButton>
+          <LoadingButton
+            type="button"
+            size="sm"
+            isLoading={isPending}
+            onClick={runArrange}
+          >
+            <WandSparkles />
+            {hasAssignments ? '再排' : '自動編排'}
+          </LoadingButton>
+        </div>
       </div>
       {assignOnOffConflicts.length > 0 ? (
         <div
@@ -276,6 +282,7 @@ export default function WorkspaceToolbar({
           <CustomButton
             type="button"
             variant="outline"
+            size="sm"
             className="mt-2"
             disabled={isPending}
             onClick={runArrange}

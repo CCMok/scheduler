@@ -1,21 +1,17 @@
 import ThemeToggle from "@/components/_general/theme/theme-toggle";
-import { Meteors } from "@/external/shadcn/components/ui/meteors"
 import { ReactNode } from "react";
 
-export default function HomeLayout({
-  children
+export default function PublicLayout({
+  children,
 }: Readonly<{
   children: ReactNode;
 }>) {
   return (
-    <div className="relative">
-      <div className="absolute h-[500px] w-full overflow-hidden pointer-events-none z-[-50]">
-        <Meteors />
-      </div>
-      <div className='fixed bottom-4 left-4'>
+    <div className="app-shell relative min-h-svh">
+      <div className="fixed top-4 right-4 z-50">
         <ThemeToggle />
       </div>
       {children}
     </div>
-  )
+  );
 }

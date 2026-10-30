@@ -13,7 +13,6 @@ import { useRouter } from 'next/navigation'
 import { isNil } from 'lodash'
 import { ROUTE } from '@/libs/_general/route/route-config'
 import { searchParamKey } from '../param'
-import { Card, CardContent } from '@/external/shadcn/components/ui/card'
 
 const TEAM_SELECT_ID = 'create-team-select'
 
@@ -31,7 +30,7 @@ function CreateGuidance() {
   return (
     <div
       role="status"
-      className="rounded-md border border-border bg-muted/40 px-3 py-2 text-sm text-muted-foreground"
+      className="rounded-md border border-border bg-muted/50 px-3 py-2 text-sm text-muted-foreground"
     >
       {step === 1 ? (
         <p>
@@ -87,9 +86,9 @@ export default function CreateWorkspaceShell({
 
   return (
     <div className="space-y-2">
-      <Card>
-        <CardContent className="space-y-3">
-          <div className="flex flex-wrap items-end gap-3">
+      <section className="tool-panel">
+        <div className="tool-panel-body">
+          <div className="toolbar-row items-end">
             <CustomButton
               type="button"
               variant="outline"
@@ -111,13 +110,13 @@ export default function CreateWorkspaceShell({
               />
             </FieldLayout>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </section>
 
       {!isNil(teamId) ? (
         posts.length === 0 || workers.length === 0 ? (
-          <Card>
-            <CardContent className="space-y-3 py-8 text-sm text-muted-foreground">
+          <section className="tool-panel">
+            <div className="tool-panel-body space-y-3 py-8 text-sm text-muted-foreground">
               <p>
                 {posts.length === 0 && workers.length === 0
                   ? '此團隊尚未設定崗位與人員，無法新建值班表。'
@@ -138,8 +137,8 @@ export default function CreateWorkspaceShell({
               >
                 前往團隊設定
               </CustomButton>
-            </CardContent>
-          </Card>
+            </div>
+          </section>
         ) : (
           <WorkspaceStoreProvider
             key={`${teamId}-new`}
@@ -156,11 +155,11 @@ export default function CreateWorkspaceShell({
           </WorkspaceStoreProvider>
         )
       ) : (
-        <Card>
-          <CardContent className="py-8 text-sm text-muted-foreground">
+        <section className="tool-panel">
+          <div className="tool-panel-body py-8 text-sm text-muted-foreground">
             請選擇團隊以新建值班表。
-          </CardContent>
-        </Card>
+          </div>
+        </section>
       )}
 
       <ConfirmLeaveDialog

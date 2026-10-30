@@ -1,24 +1,27 @@
-import { Separator } from "@/external/shadcn/components/ui/separator";
 import { SidebarTrigger } from "@/external/shadcn/components/ui/sidebar";
 import { ReactNode } from "react";
 
 export default function HeaderLayout({
   children,
   title,
+  actions,
 }: Readonly<{
   children?: ReactNode;
   title?: ReactNode;
+  actions?: ReactNode;
 }>) {
   return (
     <>
-      <header className="flex h-12 p-4 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
-        <SidebarTrigger />
-        {title}
+      <header className="flex h-11 shrink-0 items-center gap-2 border-b border-border bg-card/70 px-3 backdrop-blur-sm">
+        <SidebarTrigger className="-ml-1" />
+        <div className="min-w-0 flex-1 truncate text-sm font-medium">
+          {title}
+        </div>
+        {actions ? (
+          <div className="flex shrink-0 items-center gap-2">{actions}</div>
+        ) : null}
       </header>
-      <Separator />
-      <main className='p-4 flex-1 overflow-auto'>
-        {children}
-      </main>
+      <main className="flex-1 overflow-auto p-3">{children}</main>
     </>
-  )
+  );
 }

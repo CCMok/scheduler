@@ -19,8 +19,6 @@ import { isNil } from 'lodash'
 import { ROUTE } from '@/libs/_general/route/route-config'
 import { searchParamKey } from '../param'
 import DeleteRosterDialog from '../delete-roster-dialog'
-import { Card, CardContent } from '@/external/shadcn/components/ui/card'
-import { Separator } from '@/external/shadcn/components/ui/separator'
 
 const TEAM_SELECT_ID = 'team-select'
 const ROSTER_SELECT_ID = 'roster-select'
@@ -73,9 +71,9 @@ export default function WorkspaceShell({
 
   return (
     <div className="space-y-2">
-      <Card>
-        <CardContent className="space-y-3">
-          <div className="flex flex-row flex-wrap gap-3">
+      <section className="tool-panel">
+        <div className="tool-panel-body">
+          <div className="toolbar-row items-end">
             <FieldLayout label="團隊" id={TEAM_SELECT_ID} className="w-(--input-width)">
               <Combobox
                 id={TEAM_SELECT_ID}
@@ -88,8 +86,8 @@ export default function WorkspaceShell({
                 icon={<UsersRound />}
               />
             </FieldLayout>
-            <FieldLayout label="值班表" id={ROSTER_SELECT_ID} className="w-(--input-width)">
-              <div className="flex items-center gap-2">
+            <FieldLayout label="值班表" id={ROSTER_SELECT_ID} className="min-w-0 flex-1 sm:max-w-md">
+              <div className="flex items-center gap-1.5">
                 <CustomButton
                   variant="outline"
                   size="icon"
@@ -107,7 +105,7 @@ export default function WorkspaceShell({
                 >
                   <ChevronLeft />
                 </CustomButton>
-                <div className="flex-1">
+                <div className="min-w-0 flex-1">
                   <Combobox
                     placeHolder="請選擇值班表"
                     value={rosterId}
@@ -137,21 +135,20 @@ export default function WorkspaceShell({
                 </CustomButton>
               </div>
             </FieldLayout>
+            <div className="toolbar-row-end">
+              <CustomButton type="button" onClick={startNew} disabled={isNil(teamId)}>
+                <Plus />
+                新建值班表
+              </CustomButton>
+              <DeleteRosterDialog
+                id={rosterId}
+                teamId={teamId}
+                rosterName={roster?.name}
+              />
+            </div>
           </div>
-          <Separator />
-          <div className="flex flex-wrap gap-3">
-            <CustomButton type="button" onClick={startNew} disabled={isNil(teamId)}>
-              <Plus />
-              新建值班表
-            </CustomButton>
-            <DeleteRosterDialog
-              id={rosterId}
-              teamId={teamId}
-              rosterName={roster?.name}
-            />
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </section>
 
       {!isNil(teamId) && !isNil(roster) ? (
         <WorkspaceStoreProvider
@@ -169,8 +166,8 @@ export default function WorkspaceShell({
           />
         </WorkspaceStoreProvider>
       ) : (
-        <Card>
-          <CardContent className="space-y-3 py-8 text-sm text-muted-foreground">
+        <section className="tool-panel">
+          <div className="tool-panel-body space-y-3 py-8 text-sm text-muted-foreground">
             {isNil(teamId) ? (
               <p>請選擇團隊以開始編輯值班表。</p>
             ) : (
@@ -182,8 +179,8 @@ export default function WorkspaceShell({
                 </CustomButton>
               </>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </section>
       )}
     </div>
   )

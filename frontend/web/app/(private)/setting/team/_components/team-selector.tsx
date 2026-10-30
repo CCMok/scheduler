@@ -3,14 +3,11 @@
 import Combobox from "@/components/_general/_custom/combobox/combobox";
 import FieldLayout from "@/components/_general/form/field/field-layout";
 import { Team } from "@/external/prisma/generated/client";
-import { Card, CardContent } from "@/external/shadcn/components/ui/card";
-import { FieldGroup } from "@/external/shadcn/components/ui/field";
 import { Plus, UsersRound } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { use } from "react";
 import { searchParamKey } from "./param";
 import { ROUTE } from "@/libs/_general/route/route-config";
-import { Separator } from "@/external/shadcn/components/ui/separator";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
 import CustomLink from "@/components/_general/_custom/link/custom-link";
 
@@ -35,9 +32,9 @@ export default function TeamSelector({
   }
 
   return (
-    <Card>
-      <CardContent className='space-y-3'>
-        <FieldGroup className='flex-row flex-wrap'>
+    <section className="tool-panel">
+      <div className="tool-panel-body">
+        <div className="toolbar-row items-end">
           <FieldLayout label="團隊" id={TEAM_SELECT_ID} className="w-(--input-width)">
             <Combobox
               id={TEAM_SELECT_ID}
@@ -51,19 +48,16 @@ export default function TeamSelector({
               isOptional
             />
           </FieldLayout>
-        </FieldGroup>
-        <Separator />
-        <div className="flex flex-wrap gap-3">
-          <CustomButton asChild variant="outline">
-            <CustomLink
-              href={ROUTE.private.setting.team.new}
-            >
-              <Plus />
-              新增
-            </CustomLink>
-          </CustomButton>
+          <div className="toolbar-row-end">
+            <CustomButton asChild size="sm">
+              <CustomLink href={ROUTE.private.setting.team.new}>
+                <Plus />
+                新增
+              </CustomLink>
+            </CustomButton>
+          </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   )
 }

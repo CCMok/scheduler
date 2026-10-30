@@ -51,7 +51,7 @@ export default function LoginCard({
     >
       <Card>
         <CardHeader className='text-center'>
-          <CardTitle className='text-xl'>登入</CardTitle>
+          <CardTitle className="text-lg">登入</CardTitle>
           <CardDescription>輸入您的登入資訊</CardDescription>
         </CardHeader>
         <CardContent>

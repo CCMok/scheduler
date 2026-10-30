@@ -162,7 +162,7 @@ export default function AssignGrid({
       ref={wrapRef}
       tabIndex={readOnly ? undefined : 0}
       className={cn(
-        'outline-none',
+        'overflow-auto rounded-md border border-border bg-background/60 outline-none',
         !readOnly && 'focus-visible:ring-2 focus-visible:ring-ring',
       )}
       aria-label={readOnly ? '值班表' : '值班編輯格'}

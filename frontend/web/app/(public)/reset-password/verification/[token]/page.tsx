@@ -1,6 +1,7 @@
 'use client'
 
-import Logo from "@/components/_general/logo/logo";
+import AuthPageShell from "@/components/_general/auth/auth-page-shell";
+import AuthMessageShell from "@/components/_general/auth/auth-message-shell";
 import { notFound, useParams } from "next/navigation";
 import { Param } from "./_components/param";
 import { useEffect, useRef, useState } from "react";
@@ -38,22 +39,20 @@ export default function ResetPasswordVerificationTokenPage() {
     })()
   }, [token])
 
+  if (verifyState === VerifyState.SUCCESS && user) {
+    return (
+      <AuthPageShell>
+        <UpdatePasswordCard user={user} token={token} />
+      </AuthPageShell>
+    );
+  }
+
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen'>
-      <Logo />
-      {verifyState !== VerifyState.SUCCESS && (
-        <VerifyResultSection
-          verifyState={verifyState}
-          verifyMessage={verifyMessage}
-        />
-      )}
-      {verifyState === VerifyState.SUCCESS && user && (
-        <UpdatePasswordCard
-          className='w-full max-w-sm mt-2'
-          user={user}
-          token={token}
-        />
-      )}
-    </div>
-  )
+    <AuthMessageShell title="密碼重設">
+      <VerifyResultSection
+        verifyState={verifyState}
+        verifyMessage={verifyMessage}
+      />
+    </AuthMessageShell>
+  );
 }

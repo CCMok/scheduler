@@ -83,7 +83,7 @@ export default function OffMatrix({
       ref={tableRef}
       tabIndex={readOnly ? undefined : 0}
       className={cn(
-        'outline-none',
+        'overflow-auto rounded-md border border-border bg-background/60 outline-none',
         !readOnly && 'focus-visible:ring-2 focus-visible:ring-ring',
       )}
       aria-label="休假矩陣"

@@ -1,12 +1,20 @@
 import type { Metadata } from "next";
-import { Noto_Sans_HK } from "next/font/google";
+import { Fraunces, Noto_Sans_HK } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/_general/theme/theme-provider";
 import { cn } from "@/external/shadcn/libs/utils";
 import FormDevtools from "@/components/_general/form/devtools/form-devtools";
-import { Toaster } from "sonner";
+import { Toaster } from "@/external/shadcn/components/ui/sonner";
 
-const noto = Noto_Sans_HK({ subsets: ['latin'] });
+const noto = Noto_Sans_HK({
+  subsets: ["latin"],
+  variable: "--font-noto-sans-hk",
+});
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+});
 
 export const metadata: Metadata = {
   title: "Scheduler",
@@ -21,7 +29,12 @@ export default function RootLayout({
   return (
     <html lang="zh-Hant-HK" suppressHydrationWarning>
       <body
-        className={cn(noto.className, 'antialiased h-screen')}
+        className={cn(
+          noto.variable,
+          fraunces.variable,
+          noto.className,
+          "antialiased h-screen",
+        )}
       >
         <ThemeProvider
           attribute="class"
