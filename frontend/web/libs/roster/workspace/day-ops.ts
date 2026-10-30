@@ -1,8 +1,12 @@
-import { OffPerWorker, RosterItem } from "@/libs/roster/roster";
+import { OffPerWorker, RosterItem, Timeslot } from "@/libs/roster/roster";
 
-/** Undo entry — roster assignments only; offs never restored. */
+/** Undo entry — full day/date working slice (assignments + offs + timeslots). */
 export type DayOpSnapshot = {
+  timeslots: Timeslot[];
+  offs: OffPerWorker[];
   workingRoster: RosterItem[];
+  initialRoster: RosterItem[];
+  selectedTimeslotId: number | null;
 };
 
 export type AssignOnOffConflict = {

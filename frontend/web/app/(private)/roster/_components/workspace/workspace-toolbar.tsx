@@ -4,7 +4,7 @@ import { useEffect, useState, useTransition } from 'react'
 import { Post, Worker } from '@/external/prisma/generated/client'
 import CustomButton from '@/components/_general/_custom/button/custom-button'
 import LoadingButton from '@/components/_general/_custom/button/loading-button'
-import { Eraser, FileDown, Save, Undo2, WandSparkles } from 'lucide-react'
+import { FileDown, RotateCcw, Save, Undo2, WandSparkles } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { useWorkspaceStore } from './workspace-store-provider'
@@ -14,6 +14,7 @@ import { workingRosterToOriginalSchPosts } from '@/libs/roster/update/auto/worki
 import { createRosterAction } from '@/libs/roster/create/create-roster-action'
 import { updateRosterAction } from '@/libs/roster/update/update-roster-action'
 import { buildTimeslotPersistPayload } from '@/libs/roster/workspace/build-persist-request'
+import { isAwayFromBaseline } from '@/libs/roster/workspace/workspace-store'
 import { Message } from '@/libs/_general/service/message'
 import { exportWorkingToXLSX } from '../export-utils'
 import { ROUTE } from '@/libs/_general/route/route-config'
@@ -45,11 +46,11 @@ export default function WorkspaceToolbar({
   const workingRoster = useWorkspaceStore((s) => s.workingRoster)
   const setArrangeResult = useWorkspaceStore((s) => s.setArrangeResult)
   const markSaved = useWorkspaceStore((s) => s.markSaved)
-  const selectedTimeslotId = useWorkspaceStore((s) => s.selectedTimeslotId)
   const dayUndoStack = useWorkspaceStore((s) => s.dayUndoStack)
   const assignOnOffConflicts = useWorkspaceStore((s) => s.assignOnOffConflicts)
-  const clearSelectedDay = useWorkspaceStore((s) => s.clearSelectedDay)
+  const canReset = useWorkspaceStore((s) => isAwayFromBaseline(s))
   const undoDayOp = useWorkspaceStore((s) => s.undoDayOp)
+  const resetToOriginal = useWorkspaceStore((s) => s.resetToOriginal)
 
   useEffect(() => {
     if (viewOnly) return
@@ -247,20 +248,20 @@ export default function WorkspaceToolbar({
         <CustomButton
           type="button"
           variant="outline"
-          disabled={selectedTimeslotId == null}
-          onClick={() => clearSelectedDay()}
-        >
-          <Eraser />
-          清空選中日
-        </CustomButton>
-        <CustomButton
-          type="button"
-          variant="outline"
           disabled={dayUndoStack.length === 0}
           onClick={() => undoDayOp()}
         >
           <Undo2 />
           復原
+        </CustomButton>
+        <CustomButton
+          type="button"
+          variant="outline"
+          disabled={!canReset}
+          onClick={() => resetToOriginal()}
+        >
+          <RotateCcw />
+          重設
         </CustomButton>
       </div>
       {assignOnOffConflicts.length > 0 ? (

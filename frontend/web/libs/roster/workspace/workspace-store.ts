@@ -11,7 +11,6 @@ import { datesToTimeslots } from "./date-presets";
 import {
   AssignOnOffConflict,
   DayOpSnapshot,
-  clearDayAssignments,
   findAssignOnOffConflicts,
   swapDayContent,
 } from "./day-ops";
@@ -21,6 +20,15 @@ export type WorkspaceMode = "off" | "assign";
 export type WorkspaceInteraction = "view" | "edit";
 
 const DAY_UNDO_LIMIT = 40;
+
+/** Last hydrate / save — target for resetToOriginal. */
+export type WorkspaceBaseline = {
+  name: string;
+  timeslots: Timeslot[];
+  offs: OffPerWorker[];
+  workingRoster: RosterItem[];
+  initialRoster: RosterItem[];
+};
 
 export type WorkspaceState = {
   teamId: number;
@@ -36,6 +44,7 @@ export type WorkspaceState = {
   selectedTimeslotId: number | null;
   dayUndoStack: DayOpSnapshot[];
   assignOnOffConflicts: AssignOnOffConflict[];
+  baseline: WorkspaceBaseline;
 };
 
 export type WorkspaceActions = {
@@ -53,8 +62,8 @@ export type WorkspaceActions = {
   hydrateNew: (teamId: number) => void;
   selectTimeslot: (timeslotId: number | null) => void;
   swapDays: (timeslotIdA: number, timeslotIdB: number) => void;
-  clearSelectedDay: () => void;
   undoDayOp: () => void;
+  resetToOriginal: () => void;
 };
 
 export type WorkspaceStore = WorkspaceState & WorkspaceActions;
@@ -71,16 +80,74 @@ function remapOffsToTimeslots(offs: OffPerWorker[], timeslots: Timeslot[]): OffP
     .filter((off) => off.timeslotIds.length > 0);
 }
 
-function emptyGridForPosts(postIds: number[], timeslots: Timeslot[]): RosterItem[] {
+/** Reuse timeslot ids for surviving date names; allocate only for new days. */
+function reconcileTimeslots(
+  prev: Timeslot[],
+  dates: Date[],
+  nextIdStart: number,
+): { timeslots: Timeslot[]; nextClientTimeslotId: number } {
+  const byName = new Map(prev.map((t) => [t.name, t]));
+  const orderedNames = datesToTimeslots(dates, 1).map((t) => t.name);
+  let nextId = nextIdStart;
+  const timeslots = orderedNames.map((name) => {
+    const keep = byName.get(name);
+    if (keep) return keep;
+    nextId -= 1;
+    return { id: nextId, name };
+  });
+  return { timeslots, nextClientTimeslotId: nextId };
+}
+
+/** Keep assignments for surviving timeslot ids; empty cells for new days. */
+function remapRosterToTimeslots(
+  roster: RosterItem[],
+  timeslots: Timeslot[],
+  postIds: number[],
+): RosterItem[] {
   let assignmentId = 1;
-  return postIds.map((postId) => ({
-    postId,
-    assignments: timeslots.map((t) => ({
-      id: assignmentId++,
-      timeslotId: t.id,
-      workerId: undefined as number | undefined,
-    })),
-  }));
+  for (const item of roster) {
+    for (const a of item.assignments) {
+      if (a.id >= assignmentId) assignmentId = a.id + 1;
+    }
+  }
+
+  const ids = [...new Set([...roster.map((r) => r.postId), ...postIds])];
+  return ids.map((postId) => {
+    const existing = roster.find((r) => r.postId === postId);
+    const byTimeslotId = new Map(
+      (existing?.assignments ?? []).map((a) => [a.timeslotId, a]),
+    );
+    return {
+      postId,
+      assignments: timeslots.map((t) => {
+        const prev = byTimeslotId.get(t.id);
+        if (prev) {
+          return { id: prev.id, timeslotId: t.id, workerId: prev.workerId };
+        }
+        return {
+          id: assignmentId++,
+          timeslotId: t.id,
+          workerId: undefined as number | undefined,
+        };
+      }),
+    };
+  });
+}
+
+function baselineOf(slice: {
+  name: string;
+  timeslots: Timeslot[];
+  offs: OffPerWorker[];
+  workingRoster: RosterItem[];
+  initialRoster: RosterItem[];
+}): WorkspaceBaseline {
+  return {
+    name: slice.name,
+    timeslots: slice.timeslots,
+    offs: slice.offs,
+    workingRoster: slice.workingRoster,
+    initialRoster: slice.initialRoster,
+  };
 }
 
 function stateFromServer(teamId: number, server: RosterJoin): WorkspaceState {
@@ -92,14 +159,17 @@ function stateFromServer(teamId: number, server: RosterJoin): WorkspaceState {
     })),
   );
   const items = parseRosterItems(server);
-  return {
-    teamId,
-    rosterId: server.id,
+  const core = {
     name: server.name,
     timeslots,
     offs,
     workingRoster: items,
     initialRoster: items,
+  };
+  return {
+    teamId,
+    rosterId: server.id,
+    ...core,
     serverUpdatedAt: server.updatedAt.toISOString(),
     mode: "assign",
     interaction: "view",
@@ -109,29 +179,48 @@ function stateFromServer(teamId: number, server: RosterJoin): WorkspaceState {
       workingRoster: items,
       offs,
     }),
+    baseline: baselineOf(core),
   };
 }
 
 function stateForNew(teamId: number): WorkspaceState {
+  const core = {
+    name: "新值班表",
+    timeslots: [] as Timeslot[],
+    offs: [] as OffPerWorker[],
+    workingRoster: [] as RosterItem[],
+    initialRoster: [] as RosterItem[],
+  };
   return {
     teamId,
     rosterId: null,
-    name: "新值班表",
-    timeslots: [],
-    offs: [],
-    workingRoster: [],
-    initialRoster: [],
+    ...core,
     serverUpdatedAt: null,
     mode: "off",
     interaction: "edit",
     selectedTimeslotId: null,
     dayUndoStack: [],
     assignOnOffConflicts: [],
+    baseline: baselineOf(core),
   };
 }
 
 function snapshotOf(state: WorkspaceState): DayOpSnapshot {
-  return { workingRoster: state.workingRoster };
+  return {
+    timeslots: state.timeslots,
+    offs: state.offs,
+    workingRoster: state.workingRoster,
+    initialRoster: state.initialRoster,
+    selectedTimeslotId: state.selectedTimeslotId,
+  };
+}
+
+function sameTimeslotNames(a: Timeslot[], b: Timeslot[]): boolean {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i]!.name !== b[i]!.name) return false;
+  }
+  return true;
 }
 
 /** True when every post/timeslot workerId matches (order-sensitive). */
@@ -152,6 +241,32 @@ function sameAssignmentWorkers(a: RosterItem[], b: RosterItem[]): boolean {
     }
   }
   return true;
+}
+
+function sameOffs(a: OffPerWorker[], b: OffPerWorker[]): boolean {
+  if (a === b) return true;
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    const left = a[i]!;
+    const right = b[i]!;
+    if (left.workerId !== right.workerId) return false;
+    if (left.timeslotIds.length !== right.timeslotIds.length) return false;
+    for (let j = 0; j < left.timeslotIds.length; j++) {
+      if (left.timeslotIds[j] !== right.timeslotIds[j]) return false;
+    }
+  }
+  return true;
+}
+
+export function isAwayFromBaseline(state: WorkspaceState): boolean {
+  const { baseline } = state;
+  if (state.name !== baseline.name) return true;
+  if (!sameTimeslotNames(state.timeslots, baseline.timeslots)) return true;
+  if (!sameOffs(state.offs, baseline.offs)) return true;
+  if (!sameAssignmentWorkers(state.workingRoster, baseline.workingRoster)) {
+    return true;
+  }
+  return false;
 }
 
 function withDayConflicts(
@@ -196,23 +311,45 @@ export function createWorkspaceStore(init: {
       }),
 
     setTimeslotsFromDates: (dates) => {
-      nextClientTimeslotId -= dates.length;
-      const timeslots = datesToTimeslots(dates, nextClientTimeslotId);
-      const offs = remapOffsToTimeslots(get().offs, timeslots);
+      const state = get();
+      const preview = datesToTimeslots(dates, 1);
+      if (sameTimeslotNames(state.timeslots, preview)) return;
+
+      const reconciled = reconcileTimeslots(
+        state.timeslots,
+        dates,
+        nextClientTimeslotId,
+      );
+      nextClientTimeslotId = reconciled.nextClientTimeslotId;
+      const { timeslots } = reconciled;
+      const offs = remapOffsToTimeslots(state.offs, timeslots);
       const postIds = [
         ...new Set([
-          ...get().workingRoster.map((r) => r.postId),
+          ...state.workingRoster.map((r) => r.postId),
           ...init.postIds,
         ]),
       ];
-      const workingRoster = emptyGridForPosts(postIds, timeslots);
+      const workingRoster = remapRosterToTimeslots(
+        state.workingRoster,
+        timeslots,
+        postIds,
+      );
+      const initialRoster =
+        state.initialRoster.length === 0
+          ? []
+          : remapRosterToTimeslots(state.initialRoster, timeslots, postIds);
+      const selectedTimeslotId =
+        state.selectedTimeslotId != null &&
+        timeslots.some((t) => t.id === state.selectedTimeslotId)
+          ? state.selectedTimeslotId
+          : null;
       set({
         timeslots,
         offs,
         workingRoster,
-        initialRoster: [],
-        selectedTimeslotId: null,
-        dayUndoStack: [],
+        initialRoster,
+        selectedTimeslotId,
+        dayUndoStack: pushDayUndo(state.dayUndoStack, snapshotOf(state)),
         assignOnOffConflicts: findAssignOnOffConflicts({
           workingRoster,
           offs,
@@ -264,12 +401,14 @@ export function createWorkspaceStore(init: {
     },
 
     markSaved: ({ rosterId, serverUpdatedAt }) => {
+      const state = get();
       set({
         rosterId,
         serverUpdatedAt,
         interaction: "view",
         selectedTimeslotId: null,
         dayUndoStack: [],
+        baseline: baselineOf(state),
       });
     },
 
@@ -299,29 +438,29 @@ export function createWorkspaceStore(init: {
       });
     },
 
-    clearSelectedDay: () => {
-      const state = get();
-      if (state.selectedTimeslotId == null) return;
-      const timeslotId = state.selectedTimeslotId;
-      const workingRoster = clearDayAssignments(
-        state.workingRoster,
-        timeslotId,
-      );
-      if (sameAssignmentWorkers(state.workingRoster, workingRoster)) return;
-      set({
-        ...withDayConflicts(workingRoster, state.offs),
-        dayUndoStack: pushDayUndo(state.dayUndoStack, snapshotOf(state)),
-      });
-    },
-
     undoDayOp: () => {
       const state = get();
       if (state.dayUndoStack.length === 0) return;
       const stack = [...state.dayUndoStack];
       const prev = stack.pop()!;
       set({
-        ...withDayConflicts(prev.workingRoster, state.offs),
+        timeslots: prev.timeslots,
+        initialRoster: prev.initialRoster,
+        selectedTimeslotId: prev.selectedTimeslotId,
+        ...withDayConflicts(prev.workingRoster, prev.offs),
         dayUndoStack: stack,
+      });
+    },
+
+    resetToOriginal: () => {
+      const { baseline } = get();
+      set({
+        name: baseline.name,
+        timeslots: baseline.timeslots,
+        initialRoster: baseline.initialRoster,
+        selectedTimeslotId: null,
+        dayUndoStack: [],
+        ...withDayConflicts(baseline.workingRoster, baseline.offs),
       });
     },
   }));
