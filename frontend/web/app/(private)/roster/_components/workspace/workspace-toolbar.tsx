@@ -23,9 +23,11 @@ import { Input } from '@/external/shadcn/components/ui/input'
 export default function WorkspaceToolbar({
   posts,
   workers,
+  variant = 'edit',
 }: Readonly<{
   posts: Post[]
   workers: Worker[]
+  variant?: 'create' | 'edit'
 }>) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -163,7 +165,7 @@ export default function WorkspaceToolbar({
           rosterId: response.data.id,
           serverUpdatedAt: response.data.updatedAt,
         })
-        toast.success('已儲存')
+        toast.success('已儲存，進入編輯')
         router.replace(
           ROUTE.private.roster.base({
             [searchParamKey.TEAM_ID]: teamId,
@@ -260,14 +262,24 @@ export default function WorkspaceToolbar({
             ? '再排'
             : '自動編排'}
         </LoadingButton>
-        <LoadingButton type="button" isLoading={isSaving} onClick={save}>
+        <LoadingButton
+          type="button"
+          isLoading={isSaving}
+          onClick={save}
+          variant={variant === 'create' ? 'outline' : undefined}
+        >
           <Save />
-          儲存
+          {variant === 'create' ? '儲存並進入編輯' : '儲存'}
         </LoadingButton>
-        <CustomButton type="button" variant="outline" onClick={exportXlsx}>
-          <FileDown />
-          匯出
-        </CustomButton>
+        {variant === 'edit' ||
+        workingRoster.some((item) =>
+          item.assignments.some((a) => a.workerId != null),
+        ) ? (
+          <CustomButton type="button" variant="outline" onClick={exportXlsx}>
+            <FileDown />
+            匯出
+          </CustomButton>
+        ) : null}
         <CustomButton
           type="button"
           variant="outline"
@@ -284,7 +296,7 @@ export default function WorkspaceToolbar({
           onClick={() => undoDayOp()}
         >
           <Undo2 />
-          復原日操作
+          復原
         </CustomButton>
       </div>
       {assignOnOffConflicts.length > 0 ? (

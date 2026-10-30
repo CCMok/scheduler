@@ -143,9 +143,8 @@ export default function TeamNewWizard() {
 
       toast.success('團隊建立成功');
       router.push(
-        ROUTE.private.roster.base({
+        ROUTE.private.roster.new({
           teamId: response.data,
-          rosterId: "new",
         }),
       );
     });

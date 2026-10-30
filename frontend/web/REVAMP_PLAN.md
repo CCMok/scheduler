@@ -100,36 +100,37 @@ Manual `/roster/new` and history already removed; create is locked to the auto w
 
 ### 4.1 Information architecture
 
-**Locked:** `/roster` = Roster Workspace home (not a separate `/app`). Roster list lives in top bar / sidebar switcher; opening a roster edits in place.
+**Locked:** Create and edit are **separate routes** (shared store / grid / offs / draft engine — not one mixed page). `/roster` = edit home; `/roster/new` = create-only. (Not a separate `/app`.)
 
 ```
 /login, /sign-up, …          # auth (keep logic, restyle)
-/roster                      # Workspace home (team switcher + roster switcher + grid)
+/roster                      # Edit Workspace (team + roster switcher + grid)
+/roster/new                  # Create Workspace (team + guided empty → arrange → first Save)
   ├─ Team settings (workers / posts / prefs / caps)
   └─ Account settings
 ```
 
-**Drop** `auto-new/**` and `edit/**` routes in Phase 1 (delete, not long-lived redirect-only). Bookmarks to those paths may 404 or one-shot redirect then remove.
+**Drop** `auto-new/**` and `edit/**` routes in Phase 1 (delete, not long-lived redirect-only). Legacy `?rosterId=new` redirects to `/roster/new`.
 
-| Region | Content |
-|--------|---------|
-| Top bar | Team, roster switcher (list), roster name, unsaved / saved indicator, theme |
-| Date bar | Selected dates; add / remove; jump / calendar |
-| Left or top toolbar | Off mode / assign mode, **Auto-arrange**, **再排 (Auto-modify)**, export, Undo |
-| Main | **Day grid** (post × date) or Off matrix (worker × date) |
-| Bottom / side | Solver status, conflict notes, stats (days worked per worker) |
+| Region | Create (`/roster/new`) | Edit (`/roster`) |
+|--------|------------------------|------------------|
+| Top bar | Back to list, team, “本機未存” | Team, roster switcher, name, unsaved / saved, delete, “新建” → `/roster/new` |
+| Date bar | Selected dates; add / remove | Same |
+| Toolbar | Off / assign, **Auto-arrange** (primary), Save → replace to edit | Off / assign, **再排**, Save, export, Undo |
+| Main | Day grid or Off matrix + step guidance | Day grid or Off matrix; conflict prompt |
+| Bottom / side | Solver status | Solver status, conflict notes, stats |
 
-Opening a roster = editable. Working state lives in **localStorage** until explicit **Save** writes the DB (see §5.4).
+Working state lives in **localStorage** until explicit **Save** writes the DB (see §5.4). First successful Save on create inserts then navigates to edit URL.
 
 ### 4.2 Primary happy path (new roster)
 
-1. Pick team (if no roster yet) → “New roster” → name (editable).
+1. Pick team → “New roster” opens `/roster/new` → name (editable).
 2. Pick dates (multi calendar).
 3. Switch to **Off** mode → Worker × date matrix (click / keyboard toggle — see phase split below).
 4. Hit **Auto-arrange** (primary CTA — not buried in dialog chains).
 5. Solver returns: grid filled; diffs highlighted; side panel briefly “balanced load / respected offs.”
 6. Keyboard cell tweaks; **swap whole day columns** when the pattern should move (Phase 2).
-7. Save / export XLSX.
+7. **Save** inserts DB row → land on edit Workspace; export XLSX from edit (or after arrange on create).
 
 **Off entry phase split (locked):**
 
@@ -343,7 +344,7 @@ Acceptance questions: with the logo removed, does the first screen still clearly
 
 ## 9. Phased delivery
 
-Do not open the next phase to external users until the current phase **exit criteria** pass. Create and edit share one Workspace from Phase 1 onward — every phase that touches the grid includes an **edit regression** path (open saved roster → change → save → reload).
+Do not open the next phase to external users until the current phase **exit criteria** pass. Create and edit share one **engine** (store / grid / offs / draft) from Phase 1 onward, on **separate routes** — every phase that touches the grid includes an **edit regression** path (open saved roster → change → save → reload).
 
 ### 9.0 Shared test layers
 
@@ -426,11 +427,11 @@ Do **not** add Playwright / full E2E in Phase 0 (no Workspace yet). Wire `yarn t
 
 **Deliverables**
 
-- `/roster` = unified Workspace (create + edit); roster list in top bar / sidebar
+- `/roster` = edit Workspace; `/roster/new` = create Workspace (shared engine, separate chrome)
 - Date pick + Off matrix (click + keyboard toggle; **no** paste/import yet)
 - **Auto-arrange** (create) + **再排 / Auto-modify** (edit — uses **working** grid + offs, not stale DB snapshot)
 - Keyboard cell tweak (arrows / Enter / Esc / Tab)
-- Explicit Save + XLSX export (Save = only DB write; create inserts on first Save)
+- Explicit Save + XLSX export (Save = only DB write; create inserts on first Save then replace to edit)
 - Debounced **localStorage** working draft (same browser; no DB `DRAFT` status)
 - Edit conflict prompt when local draft ≠ server
 - Zustand workspace store
@@ -439,7 +440,7 @@ Do **not** add Playwright / full E2E in Phase 0 (no Workspace yet). Wire `yarn t
 **Expectations**
 
 - User: ≤ 3 clear actions from “new roster” to editable grid (pick dates, mark offs, arrange)
-- User: open an **existing** roster in the same Workspace; rename, edit cells / offs, **再排**, save, reload — data sticks
+- User: open an **existing** roster on `/roster`; rename, edit cells / offs, **再排**, save, reload — data sticks; create never mixed into edit chrome
 - Product: already **beats the old wizard**; ready for external trials
 - Eng: unsaved work survives refresh / tab close **in same browser**; Save is the only persist-to-DB path
 
@@ -459,7 +460,7 @@ Do **not** add Playwright / full E2E in Phase 0 (no Workspace yet). Wire `yarn t
 - [ ] Draft / false-success incidents = 0 in trial
 - [ ] Majority of trial users say create flow is faster than old wizard
 - [ ] Keyboard-only single-cell reassignment works
-- [ ] `auto-new` / `edit` routes gone; Workspace is only create/edit path
+- [ ] `auto-new` / `edit` routes gone; create = `/roster/new`, edit = `/roster`
 
 **Out of scope until later**
 
@@ -581,7 +582,7 @@ Do **not** add Playwright / full E2E in Phase 0 (no Workspace yet). Wire `yarn t
 
 ### 9.2 Edit path (explicit)
 
-From Phase 1, “edit roster enhancement” is **not** a separate app — it is the Workspace loaded with an existing `rosterId`. Minimum edit regression every relevant phase:
+From Phase 1, “edit roster enhancement” is **not** a separate app — it is `/roster` loaded with an existing `rosterId` (create stays on `/roster/new`). Minimum edit regression every relevant phase:
 
 1. Open saved roster  
 2. Edit name and/or offs and/or cells (and day swap from Phase 2+)  
@@ -623,7 +624,7 @@ From Phase 1, “edit roster enhancement” is **not** a separate app — it is 
 | English i18n this round? | Yes / no | zh-Hant-HK only first is fine |
 | Timeslot DB shape | `name` vs `date` column | **Keep `name`** — not date-bound forever (§5.1) |
 | sch API compat | Compat shim vs break | **Break** — structured status only; no empty-array failure |
-| Workspace route | `/app` vs `/roster` | **Locked: `/roster` = Workspace**; list in top/sidebar; delete `auto-new`/`edit` |
+| Workspace route | `/app` vs `/roster` vs split create | **Locked: `/roster` = edit; `/roster/new` = create**; shared store/grid; delete `auto-new`/`edit` |
 | Draft storage | localStorage vs DB status vs draft table | **Locked: localStorage until Save**; same browser only; no DB draft status |
 | Edit local vs server conflict | Silent / always local / always server / prompt | **Locked: prompt choose** (local unsaved vs server) |
 | Conflict fingerprint | Content hash vs `updatedAt` | **Locked: add `Roster.updatedAt`**; draft stores `serverUpdatedAt` |
@@ -652,7 +653,7 @@ Frontend adapts in the **same** release; **false-success empty sheets must die t
 Final ship bar (all phases). Use **§9 exit criteria** as per-phase gates before this full list.
 
 - [ ] New roster reaches editable grid in ≤ 3 clear actions (pick dates, mark offs, arrange)
-- [ ] Edit existing roster in same Workspace (name / offs / cells / save / reload) — see §9.2
+- [ ] Edit existing roster on `/roster` (name / offs / cells / save / reload); create on `/roster/new` — see §9.2
 - [ ] Off matrix for ~10 workers × N days is not slower than Excel checking
 - [ ] Grid can reassign workers keyboard-only
 - [ ] Day ops: select column, swap two days, undo swap, clear day
@@ -672,6 +673,6 @@ This revamp is not “add buttons on the old three-step wizard.”
 2. Build a **shell** better suited than Excel for offs + constraints + re-arrange + day switch.
 3. Surface the **core** (OR-Tools) status and preferences; kill empty-array false success.
 4. Allow a full **visual** redo — professional, quiet, grid-first — not tied to shadcn; tokens applied in-place (no orphan DS code).
-5. Ship by phase gates (§9): test layers, expectations, exit criteria — create and edit share one Workspace.
+5. Ship by phase gates (§9): test layers, expectations, exit criteria — create and edit share one engine, **separate pages**.
 
 Priority order: **failure semantics (+ tokens / test skeleton) → Roster Workspace + off matrix → day-column swap → prefs UI (affinity / ranked priority / max assign) → visual polish.**

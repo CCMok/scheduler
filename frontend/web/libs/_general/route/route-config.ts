@@ -37,6 +37,8 @@ export const ROUTE = {
   private: {
     roster: {
       base: (searchParam?: SearchParam) => buildSearchParam(Segment.ROSTER, searchParam) as Route,
+      new: (searchParam?: SearchParam) =>
+        buildSearchParam(`${Segment.ROSTER}${Segment.NEW}`, searchParam) as Route,
     },
     setting: {
       team: {

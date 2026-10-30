@@ -14,8 +14,10 @@ import {
 import { getPosts } from "@/libs/post/read/get-post-service";
 import { getWorkers } from "@/libs/worker/read/get-worker-service";
 import type { Post, Roster, Worker } from "@/external/prisma/generated/client";
-import { SearchParam } from "./_components/param";
+import { SearchParam, searchParamKey } from "./_components/param";
 import { isNil } from "lodash";
+import { redirect } from "next/navigation";
+import { ROUTE } from "@/libs/_general/route/route-config";
 
 export default async function RosterPage({
   searchParams,
@@ -24,7 +26,18 @@ export default async function RosterPage({
 }>) {
   const params = await searchParams;
   const teamIdParam = Number.parseInt(params.teamId ?? "");
-  const isNewRoster = params.rosterId === "new";
+
+  // Legacy create URL → dedicated create page
+  if (params.rosterId === "new") {
+    redirect(
+      ROUTE.private.roster.new(
+        Number.isFinite(teamIdParam)
+          ? { [searchParamKey.TEAM_ID]: teamIdParam }
+          : undefined,
+      ),
+    );
+  }
+
   const rosterIdParam = Number.parseInt(params.rosterId ?? "");
 
   const teams = await getTeams();
@@ -40,11 +53,9 @@ export default async function RosterPage({
         getWorkers(teamId),
       ]);
 
-  const rosterId = isNewRoster
-    ? undefined
-    : rosters.some((r) => r.id === rosterIdParam)
-      ? rosterIdParam
-      : rosters[0]?.id;
+  const rosterId = rosters.some((r) => r.id === rosterIdParam)
+    ? rosterIdParam
+    : rosters[0]?.id;
 
   const roster = isNil(rosterId) ? undefined : await getRosterById(rosterId);
 
@@ -68,7 +79,6 @@ export default async function RosterPage({
         workers={workers}
         teamId={teamId}
         rosterId={rosterId}
-        isNewRoster={isNewRoster}
       />
     </HeaderLayout>
   );
