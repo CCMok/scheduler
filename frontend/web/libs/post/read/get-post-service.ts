@@ -40,6 +40,11 @@ export const getPosts = cache(async (teamId: number, activeOnly: boolean = false
 
   return posts.map(p => ({
     ...p,
-    workers: p.workers.map(w => w.worker),
+    workers: p.workers
+      .map(w => ({
+        ...w.worker,
+        priority: w.priority,
+      }))
+      .toSorted((a, b) => b.priority - a.priority || a.name.localeCompare(b.name)),
   }))
 })

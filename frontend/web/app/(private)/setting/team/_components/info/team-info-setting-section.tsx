@@ -10,6 +10,7 @@ import { Team } from "@/external/prisma/generated/client";
 import { updateTeamNameAction } from "@/libs/team/update/update-team-name-action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import UpdateTeamMaxAssignSection from "./update-team-max-assign-section";
 
 export default function TeamInfoSettingSection({
   team,
@@ -42,40 +43,43 @@ export default function TeamInfoSettingSection({
   })
 
   return (
-    <form
-      id={FORM_ID}
-      onSubmit={(e) => {
-        e.preventDefault();
-        form.handleSubmit();
-      }}
-    >
-      <Card>
-        <CardHeader>
-          <CardTitle>更改名稱</CardTitle>
-          <CardDescription>請輸入團隊的新名稱</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <FieldGroup className='lg:w-(--input-width)'>
-            <form.AppField name={FORM_FIELD.NAME}>
-              {(field) => (
-                <field.TextField
-                  label="名稱"
-                  autoComplete="name"
-                />
-              )}
-            </form.AppField>
-          </FieldGroup>
-        </CardContent>
-        <CardFooter>
-          <form.AppForm>
-            <Field className="[&>*]:w-full lg:[&>*]:w-fit">
-              <form.SubmitButton icon={<Check />}>
-                確定
-              </form.SubmitButton>
-            </Field>
-          </form.AppForm>
-        </CardFooter>
-      </Card>
-    </form>
+    <div className="space-y-2">
+      <form
+        id={FORM_ID}
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit();
+        }}
+      >
+        <Card>
+          <CardHeader>
+            <CardTitle>更改名稱</CardTitle>
+            <CardDescription>請輸入團隊的新名稱</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FieldGroup className='lg:w-(--input-width)'>
+              <form.AppField name={FORM_FIELD.NAME}>
+                {(field) => (
+                  <field.TextField
+                    label="名稱"
+                    autoComplete="name"
+                  />
+                )}
+              </form.AppField>
+            </FieldGroup>
+          </CardContent>
+          <CardFooter>
+            <form.AppForm>
+              <Field className="[&>*]:w-full lg:[&>*]:w-fit">
+                <form.SubmitButton icon={<Check />}>
+                  確定
+                </form.SubmitButton>
+              </Field>
+            </form.AppForm>
+          </CardFooter>
+        </Card>
+      </form>
+      <UpdateTeamMaxAssignSection team={team} />
+    </div>
   )
 }

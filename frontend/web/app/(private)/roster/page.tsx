@@ -68,6 +68,7 @@ export default async function RosterPage({
         workers={workers}
         teamId={teamId}
         rosterId={rosterId}
+        isNewRoster={isNewRoster}
       />
     </HeaderLayout>
   );

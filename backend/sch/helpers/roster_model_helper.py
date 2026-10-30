@@ -34,7 +34,10 @@ class RosterModelHelper:
 
     @staticmethod
     def __define_each_worker_max_assign_per_roster(material: RosterMaterial) -> None:
-        max_worker_assign_per_roster = material.team.max_worker_assign_per_roster if material.team.max_worker_assign_per_roster is not None else 2
+        # None = unlimited (no per-roster cap). Explicit int = hard upper bound.
+        max_worker_assign_per_roster = material.team.max_worker_assign_per_roster
+        if max_worker_assign_per_roster is None:
+            return
 
         for worker in material.workers:
             material.model.add(

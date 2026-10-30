@@ -57,7 +57,9 @@ export default function UpdateWorkerPostsSection({
       <Card>
         <CardHeader>
           <CardTitle>職位</CardTitle>
-          <CardDescription>將會依照設定，自動編排值班表。可選多於一個職位。</CardDescription>
+          <CardDescription>
+            此職員可擔任的職位。優先順序請到各「職位」詳情以拖曳排序設定。
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <FieldGroup className='lg:w-(--input-width)'>

@@ -5,6 +5,7 @@ import { Message } from '@/libs/_general/service/message'
 import prisma from '@/libs/_general/database/database-manager'
 import { UpdatePostWorkersRequest, updatePostWorkersRequestSchema } from './update-post-workers-request'
 import { checkCanAccessTeam } from '@/libs/auth/general/access-utils'
+import { prioritiesFromRankOrder } from '@/libs/post/post'
 
 export const updatePostWorkers = tryCatch(async (request: UpdatePostWorkersRequest): Promise<ServiceResponse> => {
   const parsedRequest = updatePostWorkersRequestSchema.parse(request)
@@ -40,6 +41,14 @@ const getTeamId = async (request: UpdatePostWorkersRequest): Promise<ServiceResp
     message: Message.NOT_FOUND.replaceAll('{0}', '職位'),
   }
 
+  const uniqueWorkerIds = [...new Set(request.workers)]
+  if (uniqueWorkerIds.length !== request.workers.length) {
+    return {
+      isSuccess: false,
+      message: '職員清單不可重複',
+    }
+  }
+
   const workers = await prisma.worker.findMany({
     where: {
       id: { in: request.workers },
@@ -67,6 +76,8 @@ const getTeamId = async (request: UpdatePostWorkersRequest): Promise<ServiceResp
 }
 
 const saveEntity = async (request: UpdatePostWorkersRequest): Promise<ServiceResponse> => {
+  const priorityByWorkerId = prioritiesFromRankOrder(request.workers)
+
   await prisma.$transaction(async (tx) => {
     const existingPostWorkers = await tx.postWorker.findMany({
       where: { postId: request.id },
@@ -96,6 +107,7 @@ const saveEntity = async (request: UpdatePostWorkersRequest): Promise<ServiceRes
         data: workerIdsToCreate.map(workerId => ({
           postId: request.id,
           workerId,
+          priority: priorityByWorkerId.get(workerId) ?? 0,
         })),
         skipDuplicates: true,
       })
@@ -106,6 +118,21 @@ const saveEntity = async (request: UpdatePostWorkersRequest): Promise<ServiceRes
         where: {
           postId: request.id,
           workerId: { in: workerIdsToDelete },
+        },
+      })
+    }
+
+    for (const workerId of request.workers) {
+      if (workerIdsToCreate.includes(workerId)) continue
+      await tx.postWorker.update({
+        where: {
+          postId_workerId: {
+            postId: request.id,
+            workerId,
+          },
+        },
+        data: {
+          priority: priorityByWorkerId.get(workerId) ?? 0,
         },
       })
     }

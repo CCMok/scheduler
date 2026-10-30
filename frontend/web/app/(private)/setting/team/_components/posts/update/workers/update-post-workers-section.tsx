@@ -4,13 +4,14 @@ import { useAppForm } from "@/components/_general/form/utils/form-utils";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
 import { FORM_FIELD, FORM_ID, formSchema } from "./update-post-workers-form-utils"
 import { revalidateLogic } from "@tanstack/react-form";
-import { Field, FieldGroup } from "@/external/shadcn/components/ui/field";
+import { Field } from "@/external/shadcn/components/ui/field";
 import { Check } from "lucide-react";
 import { Worker } from "@/external/prisma/generated/client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { PostWorker } from "@/libs/post/post";
 import { updatePostWorkersAction } from "@/libs/post/update/workers/update-post-workers-action";
+import RankedWorkerList from "./ranked-worker-list";
 
 export default function UpdatePostWorkersSection({
   className,
@@ -22,6 +23,8 @@ export default function UpdatePostWorkersSection({
   workers: Worker[];
 }>) {
   const router = useRouter();
+  const workerById = new Map(workers.map((w) => [w.id, w]));
+
   const form = useAppForm({
     defaultValues: {
       [FORM_FIELD.WORKERS]: post.workers.map((w) => w.id),
@@ -39,8 +42,7 @@ export default function UpdatePostWorkersSection({
         toast.error(response.message)
         return;
       }
-      toast.success('更改職位的職員成功')
-      // refresh with new data
+      toast.success('更改職位的職員優先順序成功')
       router.refresh();
     },
   })
@@ -56,23 +58,27 @@ export default function UpdatePostWorkersSection({
     >
       <Card>
         <CardHeader>
-          <CardTitle>職員</CardTitle>
-          <CardDescription>將會依照設定，自動編排值班表。可選多於一個職員。</CardDescription>
+          <CardTitle>職員優先順序</CardTitle>
+          <CardDescription>
+            可擔任此職位的職員。越上方越優先被自動編排（類似值班偏好排序，無需輸入數字）。
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <FieldGroup className='lg:w-(--input-width)'>
-            <form.AppField name={FORM_FIELD.WORKERS}>
-              {(field) => (
-                <field.MultipleComboboxField
-                  options={workers}
-                  getOptionValue={(w) => w.id}
-                  getOptionDisplay={(w) => w.name}
-                  placeholder="請選擇職員"
-                  showLabel={false}
+          <form.AppField name={FORM_FIELD.WORKERS}>
+            {(field) => {
+              const orderedWorkers = field.state.value
+                .map((id) => workerById.get(id) ?? post.workers.find((w) => w.id === id))
+                .filter((w): w is Worker => w != null);
+
+              return (
+                <RankedWorkerList
+                  orderedWorkers={orderedWorkers}
+                  pool={workers}
+                  onChange={(next) => field.handleChange(next.map((w) => w.id))}
                 />
-              )}
-            </form.AppField>
-          </FieldGroup>
+              );
+            }}
+          </form.AppField>
         </CardContent>
         <CardFooter>
           <form.AppForm>

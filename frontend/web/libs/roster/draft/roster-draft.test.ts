@@ -35,6 +35,32 @@ describe("roster draft keys", () => {
   });
 });
 
+describe("explicit new clears create draft", () => {
+  it("removes dirty create draft so next hydrate starts blank", () => {
+    const storage = memoryStorage();
+    const key = draftKeyForNew(3);
+    writeRosterDraft(
+      {
+        ...createEmptyDraft({ teamId: 3 }),
+        dirty: true,
+        timeslots: [{ id: 1, name: "2026年10月30日" }],
+        workingRoster: [
+          {
+            postId: 1,
+            assignments: [{ id: 1, timeslotId: 1, workerId: 9 }],
+          },
+        ],
+      },
+      storage,
+    );
+    expect(readRosterDraft(key, storage)?.dirty).toBe(true);
+
+    clearRosterDraft(key, storage);
+
+    expect(readRosterDraft(key, storage)).toBeNull();
+  });
+});
+
 describe("hasDraftConflict", () => {
   const base: RosterDraft = {
     ...createEmptyDraft({ teamId: 1, rosterId: 10, serverUpdatedAt: "2026-01-01T00:00:00.000Z" }),

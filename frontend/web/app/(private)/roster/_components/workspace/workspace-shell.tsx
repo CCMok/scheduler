@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Post, Roster, Team, Worker } from '@/external/prisma/generated/client'
 import { RosterJoin } from '@/libs/roster/roster'
 import { WorkspaceStoreProvider, useWorkspaceStore } from './workspace-store-provider'
@@ -25,6 +26,7 @@ import { searchParamKey } from '../param'
 import DeleteRosterDialog from '../delete-roster-dialog'
 import { Card, CardContent, CardHeader, CardTitle } from '@/external/shadcn/components/ui/card'
 import { Separator } from '@/external/shadcn/components/ui/separator'
+import { clearRosterDraft, draftKeyForNew } from '@/libs/roster/draft/roster-draft'
 
 const TEAM_SELECT_ID = 'team-select'
 const ROSTER_SELECT_ID = 'roster-select'
@@ -71,6 +73,7 @@ export default function WorkspaceShell({
   workers,
   teamId,
   rosterId,
+  isNewRoster = false,
 }: Readonly<{
   teams: Team[]
   rosters: Roster[]
@@ -79,8 +82,12 @@ export default function WorkspaceShell({
   workers: Worker[]
   teamId?: number
   rosterId?: number
+  /** True when URL is `rosterId=new` — distinct from “no roster selected”. */
+  isNewRoster?: boolean
 }>) {
   const router = useRouter()
+  /** Bumped on explicit「新建」so provider remounts even if already on create URL. */
+  const [newWorkspaceEpoch, setNewWorkspaceEpoch] = useState(0)
 
   const setTeamId = (id?: number) => {
     if (isNil(id) || teamId === id) return
@@ -99,6 +106,9 @@ export default function WorkspaceShell({
 
   const startNew = () => {
     if (isNil(teamId)) return
+    // Explicit new = blank sheet. Refresh while on create still restores draft.
+    clearRosterDraft(draftKeyForNew(teamId))
+    setNewWorkspaceEpoch((n) => n + 1)
     router.push(
       ROUTE.private.roster.base({
         [searchParamKey.TEAM_ID]: teamId,
@@ -152,7 +162,7 @@ export default function WorkspaceShell({
                 </CustomButton>
                 <div className="flex-1">
                   <Combobox
-                    placeHolder={isNil(rosterId) ? '新建（未存）' : '請選擇值班表'}
+                    placeHolder={isNewRoster ? '新建（未存）' : '請選擇值班表'}
                     value={rosterId}
                     setValue={setRosterId}
                     options={rosters}
@@ -198,12 +208,20 @@ export default function WorkspaceShell({
 
       {!isNil(teamId) ? (
         <WorkspaceStoreProvider
-          key={`${teamId}-${roster?.id ?? 'new'}`}
+          key={
+            isNewRoster
+              ? `${teamId}-new-${newWorkspaceEpoch}`
+              : `${teamId}-${roster?.id ?? 'none'}`
+          }
           teamId={teamId}
-          roster={roster}
+          roster={isNewRoster ? undefined : roster}
           postIds={posts.map((p) => p.id)}
         >
-          <WorkspaceMain posts={posts} workers={workers} serverRoster={roster} />
+          <WorkspaceMain
+            posts={posts}
+            workers={workers}
+            serverRoster={isNewRoster ? undefined : roster}
+          />
         </WorkspaceStoreProvider>
       ) : (
         <Card>

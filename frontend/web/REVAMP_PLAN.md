@@ -136,7 +136,7 @@ Opening a roster = editable. Working state lives in **localStorage** until expli
 | Capability | Phase |
 |------------|-------|
 | Off matrix (worker × date), click + keyboard `Y`/`N`/Space | **Phase 1** |
-| Ctrl+V / rectangular paste offs; XLSX offs import | **Phase 3** |
+| Ctrl+V / rectangular paste offs; XLSX offs import | **Out of scope** (no product intent this revamp) |
 
 Vs old flow: two fewer forced step pages, fewer confirms, off-entry effort drops sharply; day-level ops remove “rebuild the day by hand.”
 
@@ -259,7 +259,7 @@ On `INFEASIBLE`, omit `posts` (or leave empty) **and** set `status`; never rely 
 
 | Item | Notes |
 |------|-------|
-| **Expose / clarify `maxWorkerAssignPerRoster`** | Keep roster-scoped; show in team UI so users know the cap. |
+| **Expose / clarify `maxWorkerAssignPerRoster`** | Team-scoped field; show in team UI. `null` = unlimited (no hard cap in sch). |
 | **Accept FEASIBLE** | On timeout / non-optimal, return FEASIBLE + solution instead of empty; UI labels “approximate.” |
 | **Modify after day swap** | Existing `modify` is enough if client sends full roster (or edited scope) + offs; document preserve semantics. Optional later: `scopeDates[]` if partial re-solve is useful after swapping two days only. |
 
@@ -313,9 +313,9 @@ Mark old `app/(private)/roster/auto-new/**`, `edit/**`, and the split list/edit 
 
 1. **Roster Workspace (core)** — date selection, dual-mode grid, auto-arrange, **day-column swap**, save, export  
 2. **New roster light dialog** — name + initial dates (not a three-step wizard)  
-3. **Team settings** — workers, posts, eligibility, priority, affinity, max assign per roster  
-4. **Import offs** — paste or upload xlsx  
-5. **Solver result / conflict panel**  
+3. **Team settings** — workers, posts, eligibility, **ranked priority**, affinity, max assign per roster  
+4. ~~**Import offs**~~ — **out of scope** this revamp  
+5. **Solver status** — structured OPTIMAL / FEASIBLE / INFEASIBLE (deep hints UI out of scope)  
 6. **Auth & account** — restyle is enough  
 7. **Empty states / first-run** — no team / no workers / no posts → guide to settings (never dump into a broken arrange)
 
@@ -463,7 +463,7 @@ Do **not** add Playwright / full E2E in Phase 0 (no Workspace yet). Wire `yarn t
 
 **Out of scope until later**
 
-- Day-column swap (Phase 2), affinity / priority UI, offs paste/import (Phase 3), conflict explain depth, motion polish
+- Day-column swap (Phase 2), affinity / ranked priority / max-assign UI (Phase 3), motion polish
 
 ---
 
@@ -503,7 +503,7 @@ Do **not** add Playwright / full E2E in Phase 0 (no Workspace yet). Wire `yarn t
 
 **Out of scope until later**
 
-- Copy day pattern, bubble reorder, affinity UI, import, rectangular paste, heavy motion, Undo for cell/off edits
+- Copy day pattern, bubble reorder, rectangular paste, heavy motion, Undo for cell/off edits
 
 ---
 
@@ -511,37 +511,39 @@ Do **not** add Playwright / full E2E in Phase 0 (no Workspace yet). Wire `yarn t
 
 **Deliverables**
 
-- Affinity / priority UI
-- Stronger conflict explanation (hints when sch provides them)
-- Import offs / import roster seed
+- Affinity UI in team settings (post affinity groups + worker affinity groups)
+- Priority UX on post↔worker eligibility: **ranked drag list** (top = preferred; no numeric priority field)
+- Expose `maxWorkerAssignPerRoster` in team info (`null` = no cap / unlimited)
+
+**Not in this phase (explicitly dropped)**
+
+- Import offs / import roster seed / Ctrl+V rectangular paste / XLSX offs import
 - Diff / restore auto result
-- Expose `maxWorkerAssignPerRoster`
+- Stronger conflict explanation / sch hints UI
 
 **Expectations**
 
-- User: can see and edit preferences that README already promised
-- User: import offs without silent misalignment; can restore auto result after manual edits
-- Eng: preference changes persist and are visible on next arrange / modify input path
-- User: infeasible still fails clearly when hints absent
+- User: can see and edit preferences that README already promised (priority, affinity, max assign)
+- Eng: preference changes persist and are visible on next arrange / modify (sch reads DB)
+- UX: priority feels like a preference ranking (staffing / bid-list pattern), not a raw integer
 
 **Test plan**
 
-- Change priority / affinity / max assign → persist → next arrange uses updated data (assert DB or request payload)
-- Import fixture XLSX → off matrix matches expected cells
-- Diff: after manual edits, “Show changes”; “Restore auto” returns to `initialRoster`
-- sch hints present → shown in UI; absent → still explicit failure (no empty success)
+- Change priority / affinity / max assign → persist → next arrange uses updated data (assert DB)
+- Drag reorder on a post’s eligible workers → saved `PostWorker.priority` order matches list (top highest)
+- Affinity CRUD: create / edit members / delete; next arrange still succeeds
 - Edit regression: prefs change mid-edit of existing roster does not corrupt grid without user action
 
 **Exit criteria**
 
 - [ ] Trial users can name at least one preference they changed and why it matters
-- [ ] Offs import: no silent row/column shift on fixture set
-- [ ] Restore auto verified in E2E
-- [ ] `maxWorkerAssignPerRoster` editable in team settings
+- [ ] `maxWorkerAssignPerRoster` editable in team settings (`null` = unlimited)
+- [ ] Post eligible workers editable as ranked list; affinity groups editable in team settings
 
 **Out of scope until later**
 
 - Perf hardening for huge grids, motion system, empty-state copy polish (light empty states OK)
+- Offs paste / XLSX import, Diff / restore, sch hints UI
 
 ---
 
@@ -625,7 +627,8 @@ From Phase 1, “edit roster enhancement” is **not** a separate app — it is 
 | Draft storage | localStorage vs DB status vs draft table | **Locked: localStorage until Save**; same browser only; no DB draft status |
 | Edit local vs server conflict | Silent / always local / always server / prompt | **Locked: prompt choose** (local unsaved vs server) |
 | Conflict fingerprint | Content hash vs `updatedAt` | **Locked: add `Roster.updatedAt`**; draft stores `serverUpdatedAt` |
-| Off paste / import | Phase 1 vs later | **Locked: Phase 1 = matrix+keyboard only; paste/XLSX import = Phase 3** |
+| Off paste / import | Phase 1 vs later | **Locked: Phase 1 = matrix+keyboard only; paste/XLSX import = out of scope this revamp** |
+| Phase 3 prefs scope | Full trust layer vs prefs only | **Locked: affinity + ranked priority + max assign only; no import / diff / hints** |
 | Workspace client store | Zustand vs other | **Locked: Zustand** |
 | Auto-modify / 再排 | Which phase? | **Locked: Phase 1** (edit path toolbar); post-swap “fix with solver” = Phase 2 |
 
@@ -656,7 +659,7 @@ Final ship bar (all phases). Use **§9 exit criteria** as per-phase gates before
 - [ ] After swap, conflicts are visible; false success never shown for infeasible arrange
 - [ ] `modify` / re-arrange uses working grid + offs (not stale saved snapshot ignoring unsaved edits)
 - [ ] Draft survives leave and return
-- [ ] Export includes dates and workers; at least offs import works
+- [ ] Export includes dates and workers; team prefs (priority / affinity / max assign) editable
 - [ ] Visual: Workspace passes brand / grid-hero check; day-column affordance obvious; light + dark usable
 
 ---
@@ -671,4 +674,4 @@ This revamp is not “add buttons on the old three-step wizard.”
 4. Allow a full **visual** redo — professional, quiet, grid-first — not tied to shadcn; tokens applied in-place (no orphan DS code).
 5. Ship by phase gates (§9): test layers, expectations, exit criteria — create and edit share one Workspace.
 
-Priority order: **failure semantics (+ tokens / test skeleton) → Roster Workspace + off matrix → day-column swap → prefs UI / import → visual polish.**
+Priority order: **failure semantics (+ tokens / test skeleton) → Roster Workspace + off matrix → day-column swap → prefs UI (affinity / ranked priority / max assign) → visual polish.**
