@@ -5,6 +5,7 @@ import { Post, Worker } from '@/external/prisma/generated/client'
 import { RosterJoin } from '@/libs/roster/roster'
 import { useWorkspaceStore } from './workspace-store-provider'
 import WorkspaceToolbar from './workspace-toolbar'
+import WorkspaceModeTabs from './workspace-mode-tabs'
 import DateBar from './date-bar'
 import OffMatrix from './off-matrix'
 import AssignGrid from './assign-grid'
@@ -42,6 +43,7 @@ export default function WorkspaceMain({
           <Separator />
           <DateBar />
           <Separator />
+          <WorkspaceModeTabs />
           {mode === 'off' ? (
             <OffMatrix workers={workers} />
           ) : (

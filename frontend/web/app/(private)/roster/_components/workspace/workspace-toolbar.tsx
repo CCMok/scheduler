@@ -37,8 +37,6 @@ export default function WorkspaceToolbar({
   const rosterId = useWorkspaceStore((s) => s.rosterId)
   const name = useWorkspaceStore((s) => s.name)
   const setName = useWorkspaceStore((s) => s.setName)
-  const mode = useWorkspaceStore((s) => s.mode)
-  const setMode = useWorkspaceStore((s) => s.setMode)
   const timeslots = useWorkspaceStore((s) => s.timeslots)
   const offs = useWorkspaceStore((s) => s.offs)
   const workingRoster = useWorkspaceStore((s) => s.workingRoster)
@@ -236,20 +234,6 @@ export default function WorkspaceToolbar({
         </div>
       </div>
       <div className="flex flex-wrap gap-2">
-        <CustomButton
-          type="button"
-          variant={mode === 'off' ? 'default' : 'outline'}
-          onClick={() => setMode('off')}
-        >
-          休假
-        </CustomButton>
-        <CustomButton
-          type="button"
-          variant={mode === 'assign' ? 'default' : 'outline'}
-          onClick={() => setMode('assign')}
-        >
-          編排
-        </CustomButton>
         <LoadingButton
           type="button"
           isLoading={isPending}
