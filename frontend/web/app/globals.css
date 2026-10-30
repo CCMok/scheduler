@@ -238,6 +238,156 @@
   @apply ml-auto flex flex-wrap items-center gap-2;
 }
 
+/* Public home — brand-first full-bleed hero */
+.home-hero {
+  @apply relative flex min-h-svh w-full flex-col overflow-hidden;
+}
+
+.home-hero-atmosphere {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      120% 70% at 50% -10%,
+      color-mix(in oklch, var(--primary) 18%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      80% 50% at 80% 100%,
+      color-mix(in oklch, var(--accent) 35%, transparent),
+      transparent 60%
+    );
+}
+
+.home-hero-content {
+  @apply relative z-10 mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center px-4 pb-8 pt-20 text-center sm:pt-24;
+}
+
+.home-hero-brand {
+  @apply mb-5;
+}
+
+.home-hero-headline {
+  @apply font-display text-balance text-3xl font-semibold tracking-tight text-foreground sm:text-4xl;
+}
+
+.home-hero-support {
+  @apply mt-3 max-w-md text-pretty text-base text-muted-foreground sm:text-lg;
+}
+
+.home-hero-actions {
+  @apply mt-8 flex flex-col items-center gap-3;
+}
+
+.home-hero-visual {
+  @apply relative z-10 w-full;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 18%,
+    black 72%,
+    transparent 100%
+  );
+}
+
+.home-hero-grid {
+  @apply relative mx-auto grid w-full max-w-5xl gap-px px-2 pb-10 sm:px-6;
+  grid-template-columns: 4.5rem repeat(7, minmax(0, 1fr));
+  opacity: 0.88;
+}
+
+.home-hero-grid-head,
+.home-hero-grid-row {
+  display: contents;
+}
+
+.home-hero-grid-corner,
+.home-hero-grid-day,
+.home-hero-grid-name,
+.home-hero-grid-cell {
+  @apply min-h-9;
+}
+
+.home-hero-grid-day,
+.home-hero-grid-name {
+  @apply flex items-center justify-center text-xs font-medium text-muted-foreground;
+}
+
+.home-hero-grid-name {
+  @apply justify-end pr-2 text-foreground/70;
+}
+
+.home-hero-grid-cell {
+  @apply rounded-sm border border-border/40 bg-card/40;
+}
+
+.home-hero-grid-cell.is-filled {
+  background-color: color-mix(in oklch, var(--primary) 28%, transparent);
+  border-color: color-mix(in oklch, var(--primary) 40%, var(--border));
+}
+
+.home-hero-grid-sweep {
+  pointer-events: none;
+  position: absolute;
+  inset-block: 12% 18%;
+  inset-inline: 4.5rem 0;
+  width: calc(100% / 8);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklch, var(--primary) 22%, transparent),
+    transparent
+  );
+  animation: home-hero-sweep 4.5s ease-in-out infinite;
+}
+
+@keyframes home-hero-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.6rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes home-hero-sweep {
+  0%,
+  12% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  88%,
+  100% {
+    transform: translateX(700%);
+    opacity: 0;
+  }
+}
+
+.home-hero-enter {
+  animation: home-hero-enter 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.home-hero-enter-delay-1 {
+  animation-delay: 80ms;
+}
+
+.home-hero-enter-delay-2 {
+  animation-delay: 140ms;
+}
+
+.home-hero-enter-delay-3 {
+  animation-delay: 200ms;
+}
+
 /* Auth / public — same calm family as workspace */
 .auth-shell {
   @apply relative mx-auto flex min-h-svh w-full max-w-md flex-col items-center justify-center gap-6 px-4 py-12;
@@ -372,7 +522,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .roster-flash {
+  .roster-flash,
+  .home-hero-enter,
+  .home-hero-grid-sweep {
     animation: none;
+  }
+
+  .home-hero-enter {
+    opacity: 1;
+    transform: none;
   }
 }
