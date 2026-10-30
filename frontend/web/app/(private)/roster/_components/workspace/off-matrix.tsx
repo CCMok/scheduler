@@ -41,19 +41,16 @@ export default function OffMatrix({
     return workers.filter((w) => w.name.toLowerCase().includes(q))
   }, [workers, query])
 
-  useEffect(() => {
-    setFocus((f) => ({ row: 0, col: f.col }))
-  }, [query])
+  const focusRow =
+    filteredWorkers.length === 0
+      ? 0
+      : Math.min(focus.row, filteredWorkers.length - 1)
+  const focusCol = focus.col
 
-  useEffect(() => {
-    setFocus((f) => {
-      if (filteredWorkers.length === 0) return { row: 0, col: f.col }
-      if (f.row >= filteredWorkers.length) {
-        return { row: filteredWorkers.length - 1, col: f.col }
-      }
-      return f
-    })
-  }, [filteredWorkers.length])
+  const resetQuery = (next: string) => {
+    setQuery(next)
+    setFocus((f) => ({ row: 0, col: f.col }))
+  }
 
   useEffect(() => {
     if (readOnly) return
@@ -64,6 +61,7 @@ export default function OffMatrix({
       if (e.key === 'Escape' && query) {
         e.preventDefault()
         setQuery('')
+        setFocus((f) => ({ row: 0, col: f.col }))
         return
       }
       const maxRow = filteredWorkers.length - 1
@@ -72,20 +70,20 @@ export default function OffMatrix({
 
       if (e.key === 'ArrowDown') {
         e.preventDefault()
-        setFocus((f) => ({ ...f, row: Math.min(maxRow, f.row + 1) }))
+        setFocus({ row: Math.min(maxRow, focusRow + 1), col: focusCol })
       } else if (e.key === 'ArrowUp') {
         e.preventDefault()
-        setFocus((f) => ({ ...f, row: Math.max(0, f.row - 1) }))
+        setFocus({ row: Math.max(0, focusRow - 1), col: focusCol })
       } else if (e.key === 'ArrowRight' || e.key === 'Tab') {
         e.preventDefault()
-        setFocus((f) => ({ ...f, col: Math.min(maxCol, f.col + 1) }))
+        setFocus({ row: focusRow, col: Math.min(maxCol, focusCol + 1) })
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault()
-        setFocus((f) => ({ ...f, col: Math.max(0, f.col - 1) }))
+        setFocus({ row: focusRow, col: Math.max(0, focusCol - 1) })
       } else if (e.key === ' ' || e.key === 'y' || e.key === 'Y' || e.key === 'n' || e.key === 'N') {
         e.preventDefault()
-        const worker = filteredWorkers[focus.row]
-        const timeslot = timeslots[focus.col]
+        const worker = filteredWorkers[focusRow]
+        const timeslot = timeslots[focusCol]
         if (!worker || !timeslot) return
         const isOff = offSet.has(offKey(worker.id, timeslot.id))
         if (e.key === 'n' || e.key === 'N') {
@@ -101,7 +99,7 @@ export default function OffMatrix({
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [filteredWorkers, timeslots, focus, offSet, toggleOff, readOnly, query])
+  }, [filteredWorkers, timeslots, focusRow, focusCol, offSet, toggleOff, readOnly, query])
 
   if (timeslots.length === 0) {
     return <p className="text-sm text-muted-foreground">請先選擇日期。</p>
@@ -113,11 +111,11 @@ export default function OffMatrix({
         id={WORKER_SEARCH_ID}
         name={WORKER_SEARCH_ID}
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => resetQuery(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === 'Escape' && query) {
             e.preventDefault()
-            setQuery('')
+            resetQuery('')
           }
         }}
         placeholder="搜尋職員…"
@@ -169,7 +167,8 @@ export default function OffMatrix({
                   </TableCell>
                   {timeslots.map((timeslot, col) => {
                     const isOff = offSet.has(offKey(worker.id, timeslot.id))
-                    const focused = !readOnly && focus.row === row && focus.col === col
+                    const focused =
+                      !readOnly && focusRow === row && focusCol === col
                     const columnSelected =
                       !readOnly && selectedTimeslotId === timeslot.id
                     return (

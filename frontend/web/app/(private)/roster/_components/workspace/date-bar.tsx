@@ -83,21 +83,17 @@ function WeekdaysRow({
   children,
   ...props
 }: { children?: ReactNode } & ComponentProps<'tr'>) {
-  let columnIndex = 0
+  // DayPicker may pass a falsy week-number placeholder as the first child;
+  // only count real weekday elements so column index matches the visible headers.
+  const weekdays = Children.toArray(children).filter(isValidElement)
   return (
     <thead>
       <tr {...props}>
-        {Children.map(children, (child) => {
-          if (!isValidElement(child)) return child
-          // Week number header (unused here) has no weekday aria-label pattern from DayPicker weekdays
-          const index = columnIndex
-          columnIndex += 1
-          return (
-            <WeekdayColumnContext key={index} value={index}>
-              {child}
-            </WeekdayColumnContext>
-          )
-        })}
+        {weekdays.map((child, index) => (
+          <WeekdayColumnContext key={index} value={index}>
+            {child}
+          </WeekdayColumnContext>
+        ))}
       </tr>
     </thead>
   )
@@ -133,8 +129,8 @@ export default function DateBar() {
           ),
         }}
         components={{
-          Month: ({ calendarMonth, displayIndex: _displayIndex, ...props }) => (
-            <MonthDateContext value={calendarMonth.date}>
+          Month: ({ calendarMonth, displayIndex, ...props }) => (
+            <MonthDateContext key={displayIndex} value={calendarMonth.date}>
               <div {...props} />
             </MonthDateContext>
           ),

@@ -102,13 +102,12 @@ export default function AssignGrid({
     )
   }
 
+  const isEditing = !readOnly && editing
+
   useEffect(() => {
-    if (readOnly) {
-      setEditing(false)
-      return
-    }
+    if (readOnly) return
     const onKey = (e: KeyboardEvent) => {
-      if (editing) {
+      if (isEditing) {
         if (e.key === 'Escape') {
           e.preventDefault()
           setEditing(false)
@@ -141,7 +140,7 @@ export default function AssignGrid({
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [editing, sortedRoster.length, timeslots.length, readOnly])
+  }, [isEditing, sortedRoster.length, timeslots.length, readOnly])
 
   if (timeslots.length === 0) {
     return <p className="text-sm text-muted-foreground">請先選擇日期並自動編排。</p>
@@ -192,16 +191,17 @@ export default function AssignGrid({
               </TableCell>
               {timeslots.map((timeslot, col) => {
                 const assignment = item.assignments.find((a) => a.timeslotId === timeslot.id)
+                const workerId = assignment?.workerId
                 const focused = !readOnly && focus.row === row && focus.col === col
                 const changed =
-                  originalWorkerMap.get(`${item.postId}-${timeslot.id}`) !== assignment?.workerId
-                const isEditingCell = !readOnly && editing && focused
+                  originalWorkerMap.get(`${item.postId}-${timeslot.id}`) !== workerId
+                const isEditingCell = isEditing && focused
                 const columnSelected =
                   !readOnly && selectedTimeslotId === timeslot.id
                 const hasAssignOnOff = conflictKeys.has(
                   `${item.postId}-${timeslot.id}`,
                 )
-                const isEmpty = isNil(assignment?.workerId)
+                const isEmpty = isNil(workerId)
 
                 return (
                   <TableCell
@@ -294,9 +294,9 @@ export default function AssignGrid({
                   >
                     {isEditingCell ? (
                       <Combobox
-                        value={assignment?.workerId}
-                        setValue={(workerId) => {
-                          setCellWorker(item.postId, timeslot.id, workerId)
+                        value={workerId}
+                        setValue={(nextWorkerId) => {
+                          setCellWorker(item.postId, timeslot.id, nextWorkerId)
                           setEditing(false)
                         }}
                         options={workers}
@@ -319,11 +319,11 @@ export default function AssignGrid({
                             isEmpty && 'roster-cell-empty',
                           )}
                         >
-                          {isEmpty
+                          {workerId == null
                             ? '—'
-                            : (workerMap.get(assignment.workerId)?.name ?? '—')}
+                            : (workerMap.get(workerId)?.name ?? '—')}
                         </span>
-                        {!readOnly && !isNil(assignment?.workerId) ? (
+                        {!readOnly && workerId != null ? (
                           <button
                             type="button"
                             className={cn(

@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useRef, type ReactNode } from 'react'
+import { createContext, useContext, useState, type ReactNode } from 'react'
 import { useStore } from 'zustand'
 import { RosterJoin } from '@/libs/roster/roster'
 import {
@@ -23,13 +23,12 @@ export function WorkspaceStoreProvider({
   postIds: number[]
   children: ReactNode
 }>) {
-  const storeRef = useRef<WorkspaceStoreApi | null>(null)
-  if (!storeRef.current) {
-    storeRef.current = createWorkspaceStore({ teamId, roster, postIds })
-  }
+  const [store] = useState(() =>
+    createWorkspaceStore({ teamId, roster, postIds }),
+  )
 
   return (
-    <WorkspaceStoreContext.Provider value={storeRef.current}>
+    <WorkspaceStoreContext.Provider value={store}>
       {children}
     </WorkspaceStoreContext.Provider>
   )
