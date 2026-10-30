@@ -4,10 +4,12 @@ import SubmitVerifyButton from "./_components/submit-verify-button";
 export default async function SignUpVerificationTokenPage() {
   return (
     <AuthMessageShell
-      title="確認您的電子郵件"
-      description="請按確認按鈕以完成註冊。"
+      title="確認電郵"
+      description="按確認以完成註冊。"
     >
-      <SubmitVerifyButton />
+      <div className="flex justify-center">
+        <SubmitVerifyButton />
+      </div>
     </AuthMessageShell>
   );
 }

@@ -41,14 +41,21 @@ export default function ResetPasswordVerificationTokenPage() {
 
   if (verifyState === VerifyState.SUCCESS && user) {
     return (
-      <AuthPageShell>
+      <AuthPageShell title="設定新密碼" description="驗證成功，請輸入新密碼。">
         <UpdatePasswordCard user={user} token={token} />
       </AuthPageShell>
     );
   }
 
   return (
-    <AuthMessageShell title="密碼重設">
+    <AuthMessageShell
+      title="密碼重設"
+      description={
+        verifyState === VerifyState.VERIFYING
+          ? "正在驗證連結…"
+          : verifyMessage || undefined
+      }
+    >
       <VerifyResultSection
         verifyState={verifyState}
         verifyMessage={verifyMessage}

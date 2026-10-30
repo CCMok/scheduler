@@ -3,7 +3,7 @@
 import { Field, FieldGroup } from "@/external/shadcn/components/ui/field";
 import { revalidateLogic } from "@tanstack/react-form";
 import { useAppForm } from "@/components/_general/form/utils/form-utils";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/external/shadcn/components/ui/card";
 import { Mail } from "lucide-react";
 import { FORM_FIELD, FORM_ID, formSchema } from "./reset-password-form-utils";
 import { useRouter } from "next/navigation";
@@ -48,10 +48,6 @@ export default function ResetPasswordCard({
       className={className}
     >
       <Card>
-        <CardHeader className="text-center">
-          <CardTitle>密碼重設</CardTitle>
-          <CardDescription>輸入電郵，我們會寄送重設連結。</CardDescription>
-        </CardHeader>
         <CardContent>
           <FieldGroup>
             <form.AppField name={FORM_FIELD.EMAIL}>

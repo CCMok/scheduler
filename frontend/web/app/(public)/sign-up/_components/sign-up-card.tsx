@@ -5,7 +5,7 @@ import { revalidateLogic } from "@tanstack/react-form";
 import { FORM_FIELD, FORM_ID, formSchema } from "./sign-up-form-utils";
 import { useAppForm } from "@/components/_general/form/utils/form-utils";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/external/shadcn/components/ui/card";
 import { UserPen } from "lucide-react";
 import CustomLink from "@/components/_general/_custom/link/custom-link";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
@@ -53,10 +53,6 @@ export default function SignUpCard({
       className={className}
     >
       <Card>
-        <CardHeader className="text-center">
-          <CardTitle>註冊</CardTitle>
-          <CardDescription>輸入帳號資訊</CardDescription>
-        </CardHeader>
         <CardContent>
           <FieldGroup>
             <form.AppField name={FORM_FIELD.EMAIL}>

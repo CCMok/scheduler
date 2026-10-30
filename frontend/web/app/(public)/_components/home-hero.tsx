@@ -44,18 +44,17 @@ function HeroRosterGrid() {
 export default function HomeHero() {
   return (
     <section className="home-hero">
-      <div className="home-hero-atmosphere" aria-hidden="true" />
       <div className="home-hero-content">
-        <div className="home-hero-brand home-hero-enter">
+        <div className="home-hero-brand public-enter">
           <Logo size="hero" className="justify-center" />
         </div>
-        <h1 className="home-hero-headline home-hero-enter home-hero-enter-delay-1">
+        <h1 className="home-hero-headline public-enter public-enter-delay-1">
           一週班表，一次排好
         </h1>
-        <p className="home-hero-support home-hero-enter home-hero-enter-delay-2">
+        <p className="home-hero-support public-enter public-enter-delay-2">
           簡化日程安排，有效率管理團隊。
         </p>
-        <div className="home-hero-actions home-hero-enter home-hero-enter-delay-3">
+        <div className="home-hero-actions public-enter public-enter-delay-3">
           <CustomButton className="min-w-40" size="lg" asChild>
             <CustomLink href={ROUTE.public.login}>開始使用</CustomLink>
           </CustomButton>

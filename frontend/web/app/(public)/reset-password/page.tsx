@@ -3,7 +3,7 @@ import ResetPasswordCard from "./_components/reset-password-card";
 
 export default function ResetPasswordPage() {
   return (
-    <AuthPageShell tagline="我們會寄送重設密碼連結到您的電郵。">
+    <AuthPageShell title="重設密碼" description="連結會寄到你的電郵。">
       <ResetPasswordCard />
     </AuthPageShell>
   );

@@ -238,15 +238,12 @@
   @apply ml-auto flex flex-wrap items-center gap-2;
 }
 
-/* Public home — brand-first full-bleed hero */
-.home-hero {
-  @apply relative flex min-h-svh w-full flex-col overflow-hidden;
-}
-
-.home-hero-atmosphere {
+/* Public surfaces — shared atmosphere + enter motion */
+.public-atmosphere {
   pointer-events: none;
   position: absolute;
   inset: 0;
+  z-index: 0;
   background:
     radial-gradient(
       120% 70% at 50% -10%,
@@ -258,6 +255,38 @@
       color-mix(in oklch, var(--accent) 35%, transparent),
       transparent 60%
     );
+}
+
+@keyframes public-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.6rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.public-enter {
+  animation: public-enter 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.public-enter-delay-1 {
+  animation-delay: 80ms;
+}
+
+.public-enter-delay-2 {
+  animation-delay: 140ms;
+}
+
+.public-enter-delay-3 {
+  animation-delay: 200ms;
+}
+
+/* Public home — brand-first full-bleed hero */
+.home-hero {
+  @apply relative z-10 flex min-h-svh w-full flex-col overflow-hidden;
 }
 
 .home-hero-content {
@@ -342,17 +371,6 @@
   animation: home-hero-sweep 4.5s ease-in-out infinite;
 }
 
-@keyframes home-hero-enter {
-  from {
-    opacity: 0;
-    transform: translateY(0.6rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 @keyframes home-hero-sweep {
   0%,
   12% {
@@ -372,41 +390,75 @@
   }
 }
 
-.home-hero-enter {
-  animation: home-hero-enter 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.home-hero-enter-delay-1 {
-  animation-delay: 80ms;
-}
-
-.home-hero-enter-delay-2 {
-  animation-delay: 140ms;
-}
-
-.home-hero-enter-delay-3 {
-  animation-delay: 200ms;
-}
-
-/* Auth / public — same calm family as workspace */
+/* Auth / public — split brand + form, same family as home */
 .auth-shell {
-  @apply relative mx-auto flex min-h-svh w-full max-w-md flex-col items-center justify-center gap-6 px-4 py-12;
+  @apply relative z-10 mx-auto grid min-h-svh w-full max-w-5xl items-center gap-8 px-4 py-16 sm:gap-10 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:py-12;
 }
 
-.auth-brand {
-  @apply flex flex-col items-center gap-3 text-center;
+.auth-shell--message {
+  @apply max-w-lg grid-cols-1 justify-items-center text-center;
 }
 
-.auth-brand-tagline {
-  @apply max-w-sm text-sm text-muted-foreground;
+.auth-brand-rail {
+  @apply flex w-full max-w-md flex-col items-center gap-3 text-center lg:items-start lg:text-left;
+}
+
+.auth-shell--message .auth-brand-rail {
+  @apply items-center text-center;
+}
+
+.auth-brand-title {
+  @apply font-display text-balance text-2xl font-semibold tracking-tight text-foreground sm:text-3xl;
+}
+
+.auth-brand-support {
+  @apply max-w-sm text-pretty text-sm text-muted-foreground sm:text-base;
 }
 
 .auth-panel {
-  @apply w-full;
+  @apply w-full max-w-md justify-self-center lg:justify-self-stretch;
+}
+
+.auth-shell--message .auth-panel {
+  @apply justify-self-center;
 }
 
 .auth-panel [data-slot="card"] {
-  @apply border-border/70 bg-card/85 backdrop-blur-sm;
+  @apply border-border/50 bg-card/80 shadow-xs backdrop-blur-sm;
+}
+
+.auth-quiet-grid {
+  @apply relative mt-6 hidden w-full max-w-sm grid-cols-[3.25rem_repeat(7,minmax(0,1fr))] gap-px opacity-55 lg:grid;
+}
+
+.auth-quiet-grid-head,
+.auth-quiet-grid-row {
+  display: contents;
+}
+
+.auth-quiet-grid-corner,
+.auth-quiet-grid-day,
+.auth-quiet-grid-name,
+.auth-quiet-grid-cell {
+  @apply min-h-7;
+}
+
+.auth-quiet-grid-day,
+.auth-quiet-grid-name {
+  @apply flex items-center justify-center text-[10px] font-medium text-muted-foreground;
+}
+
+.auth-quiet-grid-name {
+  @apply justify-end pr-1.5 text-foreground/60;
+}
+
+.auth-quiet-grid-cell {
+  @apply rounded-sm border border-border/35 bg-card/35;
+}
+
+.auth-quiet-grid-cell.is-filled {
+  background-color: color-mix(in oklch, var(--primary) 22%, transparent);
+  border-color: color-mix(in oklch, var(--primary) 32%, var(--border));
 }
 
 .setting-stack {
@@ -523,12 +575,12 @@
 
 @media (prefers-reduced-motion: reduce) {
   .roster-flash,
-  .home-hero-enter,
+  .public-enter,
   .home-hero-grid-sweep {
     animation: none;
   }
 
-  .home-hero-enter {
+  .public-enter {
     opacity: 1;
     transform: none;
   }

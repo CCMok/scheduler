@@ -11,19 +11,19 @@ export default function AuthMessageShell({
   children?: ReactNode;
 }>) {
   return (
-    <div className="auth-shell text-center">
-      <div className="auth-brand">
+    <div className="auth-shell auth-shell--message">
+      <div className="auth-brand-rail public-enter">
         <Logo size="lg" />
-        <div className="space-y-1.5">
-          <h1 className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">
-            {title}
-          </h1>
-          {description ? (
-            <p className="auth-brand-tagline">{description}</p>
-          ) : null}
-        </div>
+        <h1 className="auth-brand-title">{title}</h1>
+        {description ? (
+          <p className="auth-brand-support">{description}</p>
+        ) : null}
       </div>
-      {children ? <div className="auth-panel">{children}</div> : null}
+      {children ? (
+        <div className="auth-panel public-enter public-enter-delay-1">
+          {children}
+        </div>
+      ) : null}
     </div>
   );
 }

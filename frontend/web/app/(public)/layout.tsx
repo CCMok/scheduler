@@ -8,6 +8,7 @@ export default function PublicLayout({
 }>) {
   return (
     <div className="app-shell relative min-h-svh">
+      <div className="public-atmosphere" aria-hidden="true" />
       <div className="fixed top-4 right-4 z-50">
         <ThemeToggle />
       </div>

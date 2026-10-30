@@ -7,7 +7,7 @@ import { useAppForm } from "@/components/_general/form/utils/form-utils";
 import { loginAction } from "@/libs/auth/login/login-action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/external/shadcn/components/ui/card";
 import { LogIn } from "lucide-react";
 import CustomLink from "@/components/_general/_custom/link/custom-link";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
@@ -50,10 +50,6 @@ export default function LoginCard({
       className={className}
     >
       <Card>
-        <CardHeader className="text-center">
-          <CardTitle>登入</CardTitle>
-          <CardDescription>輸入電郵與密碼</CardDescription>
-        </CardHeader>
         <CardContent>
           <FieldGroup>
             <form.AppField name={FORM_FIELD.EMAIL}>
