@@ -39,7 +39,7 @@ function CreateGuidance() {
       ) : (
         <p>
           <span className="font-medium text-foreground">② 標休假 → ③ 自動編排</span>
-          {' — '}切到「休假」標記休息日，再按「自動編排」。完成後可微調，再「儲存並進入編輯」。
+          {' — '}切到「休假」標記休息日，再按「自動編排」。完成後可微調，再「儲存」。
         </p>
       )}
     </div>

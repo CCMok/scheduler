@@ -18,6 +18,7 @@ import { Message } from '@/libs/_general/service/message'
 import { exportWorkingToXLSX } from '../export-utils'
 import { ROUTE } from '@/libs/_general/route/route-config'
 import { searchParamKey } from '../param'
+import { clearRosterDraft, draftKeyForNew } from '@/libs/roster/draft/roster-draft'
 import { Input } from '@/external/shadcn/components/ui/input'
 
 export default function WorkspaceToolbar({
@@ -159,18 +160,14 @@ export default function WorkspaceToolbar({
           toast.error(response.message)
           return
         }
-        markSaved({
-          rosterId: response.data.id,
-          serverUpdatedAt: response.data.updatedAt,
-        })
-        toast.success('已儲存，進入編輯')
+        clearRosterDraft(draftKeyForNew(teamId))
+        toast.success('已儲存')
         router.replace(
           ROUTE.private.roster.base({
             [searchParamKey.TEAM_ID]: teamId,
             [searchParamKey.ROSTER_ID]: response.data.id,
           }),
         )
-        router.refresh()
         return
       }
 
@@ -253,7 +250,7 @@ export default function WorkspaceToolbar({
           variant={variant === 'create' ? 'outline' : undefined}
         >
           <Save />
-          {variant === 'create' ? '儲存並進入編輯' : '儲存'}
+          儲存
         </LoadingButton>
         {variant === 'edit' ||
         workingRoster.some((item) =>

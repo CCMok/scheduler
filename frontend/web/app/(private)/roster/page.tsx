@@ -53,11 +53,22 @@ export default async function RosterPage({
         getWorkers(teamId),
       ]);
 
-  const rosterId = rosters.some((r) => r.id === rosterIdParam)
-    ? rosterIdParam
-    : rosters[0]?.id;
-
-  const roster = isNil(rosterId) ? undefined : await getRosterById(rosterId);
+  // Prefer URL rosterId (list may lag right after create); require same team.
+  const urlRosterId =
+    Number.isFinite(rosterIdParam) && rosterIdParam > 0
+      ? rosterIdParam
+      : undefined;
+  const urlRoster = isNil(urlRosterId)
+    ? undefined
+    : await getRosterById(urlRosterId);
+  const rosterFromUrl =
+    urlRoster && !isNil(teamId) && urlRoster.teamId === teamId
+      ? urlRoster
+      : undefined;
+  const roster =
+    rosterFromUrl ??
+    (isNil(rosters[0]?.id) ? undefined : await getRosterById(rosters[0].id));
+  const rosterId = roster?.id;
 
   return (
     <HeaderLayout
