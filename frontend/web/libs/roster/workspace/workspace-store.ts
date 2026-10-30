@@ -179,10 +179,27 @@ function stateForNew(teamId: number): WorkspaceState {
 }
 
 function snapshotOf(state: WorkspaceState): DayOpSnapshot {
-  return {
-    workingRoster: state.workingRoster,
-    offs: state.offs,
-  };
+  return { workingRoster: state.workingRoster };
+}
+
+/** True when every post/timeslot workerId matches (order-sensitive). */
+function sameAssignmentWorkers(a: RosterItem[], b: RosterItem[]): boolean {
+  if (a === b) return true;
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    const left = a[i]!;
+    const right = b[i]!;
+    if (left.postId !== right.postId) return false;
+    if (left.assignments.length !== right.assignments.length) return false;
+    for (let j = 0; j < left.assignments.length; j++) {
+      const la = left.assignments[j]!;
+      const ra = right.assignments[j]!;
+      if (la.timeslotId !== ra.timeslotId || la.workerId !== ra.workerId) {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 function withDayConflicts(
@@ -273,8 +290,12 @@ export function createWorkspaceStore(init: {
     },
 
     setWorkingRoster: (workingRoster) => {
-      const { offs } = get();
-      set(withDayConflicts(workingRoster, offs));
+      const state = get();
+      if (sameAssignmentWorkers(state.workingRoster, workingRoster)) return;
+      set({
+        ...withDayConflicts(workingRoster, state.offs),
+        dayUndoStack: pushDayUndo(state.dayUndoStack, snapshotOf(state)),
+      });
     },
 
     setArrangeResult: (items) => {
@@ -404,14 +425,14 @@ export function createWorkspaceStore(init: {
     swapDays: (timeslotIdA, timeslotIdB) => {
       if (timeslotIdA === timeslotIdB) return;
       const state = get();
-      const next = swapDayContent({
+      const workingRoster = swapDayContent({
         workingRoster: state.workingRoster,
-        offs: state.offs,
         timeslotIdA,
         timeslotIdB,
       });
+      if (sameAssignmentWorkers(state.workingRoster, workingRoster)) return;
       set({
-        ...withDayConflicts(next.workingRoster, next.offs),
+        ...withDayConflicts(workingRoster, state.offs),
         dayUndoStack: pushDayUndo(state.dayUndoStack, snapshotOf(state)),
         selectedTimeslotId: timeslotIdB,
       });
@@ -425,6 +446,7 @@ export function createWorkspaceStore(init: {
         state.workingRoster,
         timeslotId,
       );
+      if (sameAssignmentWorkers(state.workingRoster, workingRoster)) return;
       set({
         ...withDayConflicts(workingRoster, state.offs),
         dayUndoStack: pushDayUndo(state.dayUndoStack, snapshotOf(state)),
@@ -437,7 +459,7 @@ export function createWorkspaceStore(init: {
       const stack = [...state.dayUndoStack];
       const prev = stack.pop()!;
       set({
-        ...withDayConflicts(prev.workingRoster, prev.offs),
+        ...withDayConflicts(prev.workingRoster, state.offs),
         dayUndoStack: stack,
       });
     },

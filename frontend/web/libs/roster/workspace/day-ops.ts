@@ -1,8 +1,8 @@
 import { OffPerWorker, RosterItem } from "@/libs/roster/roster";
 
+/** Undo entry — roster assignments only; offs never restored. */
 export type DayOpSnapshot = {
   workingRoster: RosterItem[];
-  offs: OffPerWorker[];
 };
 
 export type AssignOnOffConflict = {
@@ -11,19 +11,18 @@ export type AssignOnOffConflict = {
   workerId: number;
 };
 
-/** Content swap under fixed timeslot ids: workers (and offs) move; labels stay. */
+/** Content swap under fixed timeslot ids: workers move; labels and offs stay. */
 export function swapDayContent(params: {
   workingRoster: RosterItem[];
-  offs: OffPerWorker[];
   timeslotIdA: number;
   timeslotIdB: number;
-}): DayOpSnapshot {
-  const { workingRoster, offs, timeslotIdA, timeslotIdB } = params;
+}): RosterItem[] {
+  const { workingRoster, timeslotIdA, timeslotIdB } = params;
   if (timeslotIdA === timeslotIdB) {
-    return { workingRoster, offs };
+    return workingRoster;
   }
 
-  const nextRoster = workingRoster.map((item) => {
+  return workingRoster.map((item) => {
     const a = item.assignments.find((x) => x.timeslotId === timeslotIdA);
     const b = item.assignments.find((x) => x.timeslotId === timeslotIdB);
     if (!a && !b) return item;
@@ -41,23 +40,6 @@ export function swapDayContent(params: {
       }),
     };
   });
-
-  const nextOffs = offs.map((off) => {
-    const hasA = off.timeslotIds.includes(timeslotIdA);
-    const hasB = off.timeslotIds.includes(timeslotIdB);
-    if (!hasA && !hasB) return off;
-
-    return {
-      ...off,
-      timeslotIds: off.timeslotIds.map((id) => {
-        if (id === timeslotIdA) return timeslotIdB;
-        if (id === timeslotIdB) return timeslotIdA;
-        return id;
-      }),
-    };
-  });
-
-  return { workingRoster: nextRoster, offs: nextOffs };
 }
 
 function workerAt(

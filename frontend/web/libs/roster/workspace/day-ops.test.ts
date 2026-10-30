@@ -33,65 +33,47 @@ const offs: OffPerWorker[] = [
 
 describe("swapDayContent", () => {
   it("exchanges workers on every post; timeslot ids stay fixed", () => {
-    const result = swapDayContent({
+    const next = swapDayContent({
       workingRoster: roster,
-      offs,
       timeslotIdA: 10,
       timeslotIdB: 20,
     });
 
-    expect(result.workingRoster[0]?.assignments).toEqual([
+    expect(next[0]?.assignments).toEqual([
       { id: 1, timeslotId: 10, workerId: 200 },
       { id: 2, timeslotId: 20, workerId: 100 },
       { id: 3, timeslotId: 30, workerId: 300 },
     ]);
-    expect(result.workingRoster[1]?.assignments).toEqual([
+    expect(next[1]?.assignments).toEqual([
       { id: 4, timeslotId: 10, workerId: 201 },
       { id: 5, timeslotId: 20, workerId: 101 },
       { id: 6, timeslotId: 30, workerId: 301 },
     ]);
   });
 
-  it("swaps offs with the day content", () => {
-    const result = swapDayContent({
-      workingRoster: roster,
-      offs,
-      timeslotIdA: 10,
-      timeslotIdB: 20,
-    });
-
-    expect(result.offs).toEqual([
-      { workerId: 100, timeslotIds: [20] },
-      { workerId: 201, timeslotIds: [10, 30] },
-    ]);
-  });
-
   it("direct A↔C leaves middle day untouched", () => {
-    const result = swapDayContent({
+    const next = swapDayContent({
       workingRoster: roster,
-      offs: [],
       timeslotIdA: 10,
       timeslotIdB: 30,
     });
 
-    expect(result.workingRoster[0]?.assignments[1]).toEqual({
+    expect(next[0]?.assignments[1]).toEqual({
       id: 2,
       timeslotId: 20,
       workerId: 200,
     });
-    expect(result.workingRoster[0]?.assignments[0]?.workerId).toBe(300);
-    expect(result.workingRoster[0]?.assignments[2]?.workerId).toBe(100);
+    expect(next[0]?.assignments[0]?.workerId).toBe(300);
+    expect(next[0]?.assignments[2]?.workerId).toBe(100);
   });
 
   it("no-op when same timeslot", () => {
-    const result = swapDayContent({
+    const next = swapDayContent({
       workingRoster: roster,
-      offs,
       timeslotIdA: 10,
       timeslotIdB: 10,
     });
-    expect(result.workingRoster).toBe(roster);
-    expect(result.offs).toBe(offs);
+    expect(next).toBe(roster);
   });
 });
 
@@ -176,20 +158,17 @@ function workerIds(items: RosterItem[], postId: number) {
 }
 
 describe("undo property: swap then reverse", () => {
-  it("second swap restores bit-identical roster + offs", () => {
+  it("second swap restores bit-identical roster", () => {
     const once = swapDayContent({
       workingRoster: roster,
-      offs,
       timeslotIdA: 10,
       timeslotIdB: 20,
     });
     const twice = swapDayContent({
-      workingRoster: once.workingRoster,
-      offs: once.offs,
+      workingRoster: once,
       timeslotIdA: 10,
       timeslotIdB: 20,
     });
-    expect(twice.workingRoster).toEqual(roster);
-    expect(twice.offs).toEqual(offs);
+    expect(twice).toEqual(roster);
   });
 });
