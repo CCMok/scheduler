@@ -1,7 +1,6 @@
 'use client'
 
 import { useWorkspaceStore } from './workspace-store-provider'
-import { cn } from '@/external/shadcn/libs/utils'
 
 const DRAG_TYPE = 'application/x-roster-timeslot-id'
 
@@ -21,7 +20,7 @@ export default function DayColumnHeader({
 
   if (readOnly) {
     return (
-      <span className="block w-full px-1 py-1 text-center text-xs font-medium">
+      <span className="block w-full px-1 py-1.5 text-center text-xs font-medium tracking-tight">
         {label}
       </span>
     )
@@ -31,12 +30,7 @@ export default function DayColumnHeader({
     <button
       type="button"
       draggable
-      className={cn(
-        'w-full cursor-grab select-none rounded-sm px-1 py-1 text-center text-xs font-medium outline-none',
-        'hover:bg-accent/60 active:cursor-grabbing',
-        'focus-visible:ring-2 focus-visible:ring-ring',
-        selected && 'bg-primary/15 ring-2 ring-primary ring-inset',
-      )}
+      className="roster-day-header"
       aria-pressed={selected}
       aria-label={`日欄 ${label}${selected ? '（已選）' : ''}，拖曳至其他日交換`}
       onClick={() => selectTimeslot(selected ? null : timeslotId)}
@@ -55,6 +49,10 @@ export default function DayColumnHeader({
         const fromId = Number.parseInt(raw, 10)
         if (Number.isNaN(fromId) || fromId === timeslotId) return
         swapDays(fromId, timeslotId)
+        const el = e.currentTarget
+        el.classList.remove('roster-flash')
+        void el.offsetWidth
+        el.classList.add('roster-flash')
       }}
     >
       {label}

@@ -161,18 +161,20 @@ export default function AssignGrid({
     <div
       ref={wrapRef}
       tabIndex={readOnly ? undefined : 0}
-      className={cn(
-        'overflow-auto rounded-md border border-border bg-background/60 outline-none',
-        !readOnly && 'focus-visible:ring-2 focus-visible:ring-ring',
-      )}
+      className="roster-grid"
       aria-label={readOnly ? '值班表' : '值班編輯格'}
     >
       <Table>
         <TableHeader>
-          <TableRow>
-            <TableHead>職位</TableHead>
+          <TableRow className="hover:bg-transparent">
+            <TableHead className="roster-sticky-col h-9 min-w-24 px-2 text-xs">
+              職位
+            </TableHead>
             {timeslots.map((t) => (
-              <TableHead key={t.id} className="p-1 align-bottom">
+              <TableHead
+                key={t.id}
+                className="roster-day-col h-9 p-0.5 align-bottom"
+              >
                 <DayColumnHeader
                   timeslotId={t.id}
                   label={t.name}
@@ -184,8 +186,10 @@ export default function AssignGrid({
         </TableHeader>
         <TableBody>
           {sortedRoster.map((item, row) => (
-            <TableRow key={item.postId}>
-              <TableCell>{postMap.get(item.postId)?.name}</TableCell>
+            <TableRow key={item.postId} className="hover:bg-transparent">
+              <TableCell className="roster-sticky-col px-2 py-1 text-xs font-medium">
+                {postMap.get(item.postId)?.name}
+              </TableCell>
               {timeslots.map((timeslot, col) => {
                 const assignment = item.assignments.find((a) => a.timeslotId === timeslot.id)
                 const focused = !readOnly && focus.row === row && focus.col === col
@@ -197,15 +201,16 @@ export default function AssignGrid({
                 const hasAssignOnOff = conflictKeys.has(
                   `${item.postId}-${timeslot.id}`,
                 )
+                const isEmpty = isNil(assignment?.workerId)
 
                 return (
                   <TableCell
                     key={timeslot.id}
                     className={cn(
-                      'group relative min-w-28 p-1 text-center',
-                      changed && 'bg-accent/40',
-                      columnSelected && 'bg-primary/5',
-                      hasAssignOnOff && 'bg-destructive/15 text-destructive',
+                      'group relative roster-day-col p-0.5 text-center text-xs',
+                      changed && !hasAssignOnOff && 'roster-cell-changed',
+                      columnSelected && 'roster-cell-day-selected',
+                      hasAssignOnOff && 'roster-cell-conflict',
                       focused && !isEditingCell && 'ring-2 ring-ring ring-inset',
                       !readOnly && !isEditingCell && 'cursor-grab active:cursor-grabbing',
                     )}
@@ -308,8 +313,13 @@ export default function AssignGrid({
                           !readOnly && 'px-5',
                         )}
                       >
-                        <span className="truncate">
-                          {isNil(assignment?.workerId)
+                        <span
+                          className={cn(
+                            'truncate',
+                            isEmpty && 'roster-cell-empty',
+                          )}
+                        >
+                          {isEmpty
                             ? '—'
                             : (workerMap.get(assignment.workerId)?.name ?? '—')}
                         </span>
@@ -350,8 +360,8 @@ export default function AssignGrid({
         </TableBody>
       </Table>
       {!readOnly ? (
-        <p className="mt-2 text-xs text-muted-foreground">
-          方向鍵／Tab 移動；Enter 開啟選擇；Esc 關閉。懸停或選中格子按 × 清除指派；拖曳格子可對調職員；拖曳日期標題可交換整日編排。
+        <p className="border-t border-border/60 bg-muted/20 px-2 py-1.5 text-[11px] text-muted-foreground">
+          ←↑↓→／Tab 移動 · Enter 選人 · Esc 關閉 · × 清除 · 拖格子對調 · 拖日欄換整日
         </p>
       ) : null}
     </div>

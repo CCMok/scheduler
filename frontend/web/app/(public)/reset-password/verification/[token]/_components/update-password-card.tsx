@@ -59,9 +59,9 @@ export default function UpdatePasswordCard({
       className={className}
     >
       <Card>
-        <CardHeader className='text-center'>
-          <CardTitle className="text-lg">密碼重設</CardTitle>
-          <CardDescription>電郵驗證成功，請輸入您的新密碼</CardDescription>
+        <CardHeader className="text-center">
+          <CardTitle>密碼重設</CardTitle>
+          <CardDescription>驗證成功，請設定新密碼</CardDescription>
         </CardHeader>
         <CardContent>
           <FieldGroup>

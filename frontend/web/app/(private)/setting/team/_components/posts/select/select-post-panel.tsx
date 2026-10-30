@@ -46,7 +46,7 @@ export default function SelectPostPanel({
             <Plus />
           </CustomButton>
         </div>
-        <ScrollArea className='flex-1 min-h-0 border rounded-md'>
+        <ScrollArea className="min-h-0 flex-1 rounded-md border border-border/70">
           <ItemGroup>
             {filteredPosts.map((post, index) => (
               <Fragment key={post.id}>

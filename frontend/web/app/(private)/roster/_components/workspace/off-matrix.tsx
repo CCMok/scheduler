@@ -82,18 +82,20 @@ export default function OffMatrix({
     <div
       ref={tableRef}
       tabIndex={readOnly ? undefined : 0}
-      className={cn(
-        'overflow-auto rounded-md border border-border bg-background/60 outline-none',
-        !readOnly && 'focus-visible:ring-2 focus-visible:ring-ring',
-      )}
+      className="roster-grid"
       aria-label="休假矩陣"
     >
       <Table>
         <TableHeader>
-          <TableRow>
-            <TableHead>職員</TableHead>
+          <TableRow className="hover:bg-transparent">
+            <TableHead className="roster-sticky-col h-9 min-w-24 px-2 text-xs">
+              職員
+            </TableHead>
             {timeslots.map((t) => (
-              <TableHead key={t.id} className="p-1 align-bottom">
+              <TableHead
+                key={t.id}
+                className="roster-day-col h-9 p-0.5 align-bottom"
+              >
                 <DayColumnHeader
                   timeslotId={t.id}
                   label={t.name}
@@ -105,8 +107,10 @@ export default function OffMatrix({
         </TableHeader>
         <TableBody>
           {workers.map((worker, row) => (
-            <TableRow key={worker.id}>
-              <TableCell>{worker.name}</TableCell>
+            <TableRow key={worker.id} className="hover:bg-transparent">
+              <TableCell className="roster-sticky-col px-2 py-1 text-xs font-medium">
+                {worker.name}
+              </TableCell>
               {timeslots.map((timeslot, col) => {
                 const isOff = offSet.has(offKey(worker.id, timeslot.id))
                 const focused = !readOnly && focus.row === row && focus.col === col
@@ -116,17 +120,17 @@ export default function OffMatrix({
                   <TableCell
                     key={timeslot.id}
                     className={cn(
-                      'p-1 text-center',
-                      columnSelected && 'bg-primary/5',
+                      'roster-day-col p-0.5 text-center',
+                      columnSelected && 'roster-cell-day-selected',
                     )}
                   >
                     {readOnly ? (
                       <span
                         className={cn(
-                          'inline-flex h-8 w-full items-center justify-center rounded border text-xs',
+                          'inline-flex h-8 w-full items-center justify-center rounded-sm text-xs',
                           isOff
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-background text-muted-foreground',
+                            ? 'roster-off-on'
+                            : 'roster-cell-empty bg-transparent',
                         )}
                         aria-label={`${worker.name} ${timeslot.name} ${isOff ? '休假' : '非休假'}`}
                       >
@@ -136,11 +140,11 @@ export default function OffMatrix({
                       <button
                         type="button"
                         className={cn(
-                          'h-8 w-full rounded border text-xs',
+                          'h-8 w-full rounded-sm text-xs transition-colors',
                           isOff
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-background',
-                          focused && 'ring-2 ring-ring',
+                            ? 'roster-off-on'
+                            : 'bg-transparent text-muted-foreground hover:bg-muted/60',
+                          focused && 'ring-2 ring-ring ring-inset',
                         )}
                         aria-pressed={isOff}
                         aria-label={`${worker.name} ${timeslot.name} 休假`}
@@ -161,8 +165,8 @@ export default function OffMatrix({
         </TableBody>
       </Table>
       {!readOnly ? (
-        <p className="mt-2 text-xs text-muted-foreground">
-          方向鍵移動；Space 切換；Y 標記休假；N 取消。拖曳日期標題可交換整日休假標記。
+        <p className="border-t border-border/60 bg-muted/20 px-2 py-1.5 text-[11px] text-muted-foreground">
+          ←↑↓→ 移動 · Space 切換 · Y 休假 · N 取消 · 拖日欄換整日
         </p>
       ) : null}
     </div>

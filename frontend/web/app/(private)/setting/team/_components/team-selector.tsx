@@ -32,30 +32,28 @@ export default function TeamSelector({
   }
 
   return (
-    <section className="tool-panel">
-      <div className="tool-panel-body">
-        <div className="toolbar-row items-end">
-          <FieldLayout label="團隊" id={TEAM_SELECT_ID} className="w-(--input-width)">
-            <Combobox
-              id={TEAM_SELECT_ID}
-              placeHolder="請選擇團隊"
-              value={teamId ?? undefined}
-              setValue={setTeamId}
-              options={teams}
-              getOptionValue={(team) => team.id}
-              getOptionDisplay={(team) => team.name}
-              icon={<UsersRound />}
-              isOptional
-            />
-          </FieldLayout>
-          <div className="toolbar-row-end">
-            <CustomButton asChild size="sm">
-              <CustomLink href={ROUTE.private.setting.team.new}>
-                <Plus />
-                新增
-              </CustomLink>
-            </CustomButton>
-          </div>
+    <section className="workspace-nav">
+      <div className="toolbar-row items-end">
+        <FieldLayout label="團隊" id={TEAM_SELECT_ID} className="w-(--input-width)">
+          <Combobox
+            id={TEAM_SELECT_ID}
+            placeHolder="請選擇團隊"
+            value={teamId ?? undefined}
+            setValue={setTeamId}
+            options={teams}
+            getOptionValue={(team) => team.id}
+            getOptionDisplay={(team) => team.name}
+            icon={<UsersRound />}
+            isOptional
+          />
+        </FieldLayout>
+        <div className="toolbar-row-end">
+          <CustomButton asChild size="sm">
+            <CustomLink href={ROUTE.private.setting.team.new}>
+              <Plus />
+              新增
+            </CustomLink>
+          </CustomButton>
         </div>
       </div>
     </section>

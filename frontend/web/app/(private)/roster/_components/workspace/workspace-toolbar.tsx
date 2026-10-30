@@ -86,7 +86,7 @@ export default function WorkspaceToolbar({
 
   if (viewOnly) {
     return (
-      <div className="toolbar-row">
+      <div className="toolbar-row min-h-10">
         <div className="toolbar-row-end">
           <CustomButton type="button" variant="outline" size="sm" onClick={exportXlsx}>
             <FileDown />
@@ -208,24 +208,20 @@ export default function WorkspaceToolbar({
   )
 
   return (
-    <div className="flex flex-col gap-2.5">
-      <div className="toolbar-row items-end">
-        <div className="min-w-48 max-w-md flex-1 space-y-1">
-          <label className="text-xs text-muted-foreground" htmlFor="roster-name">
-            名稱
-          </label>
-          <Input
-            id="roster-name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="值班表名稱"
-            className="h-8"
-          />
-        </div>
+    <div className="flex flex-col gap-1.5">
+      <div className="toolbar-row min-h-10 items-center">
+        <Input
+          id="roster-name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="值班表名稱"
+          aria-label="值班表名稱"
+          className="h-8 min-w-40 max-w-xs flex-1 border-transparent bg-muted/40 shadow-none focus-visible:border-input focus-visible:bg-background"
+        />
         <div className="toolbar-row-end">
           <CustomButton
             type="button"
-            variant="outline"
+            variant="ghost"
             size="sm"
             disabled={dayUndoStack.length === 0}
             onClick={() => undoDayOp()}
@@ -235,7 +231,7 @@ export default function WorkspaceToolbar({
           </CustomButton>
           <CustomButton
             type="button"
-            variant="outline"
+            variant="ghost"
             size="sm"
             disabled={!canReset}
             onClick={() => resetToOriginal()}
@@ -244,7 +240,7 @@ export default function WorkspaceToolbar({
             重設
           </CustomButton>
           {variant === 'edit' || hasAssignments ? (
-            <CustomButton type="button" variant="outline" size="sm" onClick={exportXlsx}>
+            <CustomButton type="button" variant="ghost" size="sm" onClick={exportXlsx}>
               <FileDown />
               匯出
             </CustomButton>
@@ -273,17 +269,17 @@ export default function WorkspaceToolbar({
       {assignOnOffConflicts.length > 0 ? (
         <div
           role="status"
-          className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+          className="flex flex-wrap items-center gap-2 rounded-md border border-destructive/35 bg-destructive/8 px-2.5 py-1.5 text-xs text-destructive"
         >
-          <p>
-            警告：有 {assignOnOffConflicts.length}{' '}
-            格為休假日仍被指派（儲存仍可用）。可按「再排」嘗試修正。
+          <p className="min-w-0 flex-1">
+            {assignOnOffConflicts.length}{' '}
+            格休假日仍被指派（可儲存）。按「再排」嘗試修正。
           </p>
           <CustomButton
             type="button"
             variant="outline"
             size="sm"
-            className="mt-2"
+            className="h-7"
             disabled={isPending}
             onClick={runArrange}
           >

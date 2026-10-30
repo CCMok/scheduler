@@ -4,14 +4,19 @@ import { ReactNode } from "react";
 export default function AuthPageShell({
   children,
   brandSize = "lg",
+  tagline,
 }: Readonly<{
   children: ReactNode;
   brandSize?: "md" | "lg";
+  tagline?: string;
 }>) {
   return (
-    <div className="mx-2 flex min-h-svh flex-col items-center justify-center gap-5 py-10">
-      <Logo size={brandSize} />
-      <div className="w-full max-w-sm">{children}</div>
+    <div className="auth-shell">
+      <div className="auth-brand">
+        <Logo size={brandSize} />
+        {tagline ? <p className="auth-brand-tagline">{tagline}</p> : null}
+      </div>
+      <div className="auth-panel">{children}</div>
     </div>
   );
 }

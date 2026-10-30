@@ -11,8 +11,6 @@ import OffMatrix from './off-matrix'
 import AssignGrid from './assign-grid'
 import ConfirmLeaveDialog from './confirm-leave-dialog'
 import CustomButton from '@/components/_general/_custom/button/custom-button'
-import { Separator } from '@/external/shadcn/components/ui/separator'
-import { cn } from '@/external/shadcn/libs/utils'
 import { Pencil, X } from 'lucide-react'
 
 export default function WorkspaceMain({
@@ -42,51 +40,50 @@ export default function WorkspaceMain({
   return (
     <>
       <section
-        className={cn(
-          'tool-panel',
-          isEditing && variant === 'edit' && 'border-primary/45 ring-1 ring-primary/20',
-        )}
+        className="workspace-panel"
+        data-editing={isEditing && variant === 'edit' ? 'true' : undefined}
       >
-        <div className="tool-panel-header">
-          <div className="min-w-0 space-y-0.5">
-            <h2 className="truncate text-sm font-semibold">
+        <div className="workspace-chrome">
+          <div className="min-w-0">
+            <h2 className="truncate text-sm font-semibold tracking-tight">
               {showViewEditToggle && isEditing ? `編輯中 · ${title}` : title}
             </h2>
-            {showViewEditToggle ? (
-              <p className="text-xs text-muted-foreground">
-                {isEditing
-                  ? '可修改名稱、日期、休假與編排。儲存後回到檢視；取消則丟棄變更。'
-                  : '檢視模式。按「編輯」後才可修改。'}
+            {showViewEditToggle && !isEditing ? (
+              <p className="truncate text-[11px] text-muted-foreground">
+                檢視模式 · 按「編輯」後才可修改
               </p>
             ) : null}
           </div>
-          {showViewEditToggle ? (
-            isEditing ? (
-              <CustomButton
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setCancelOpen(true)}
-              >
-                <X />
-                取消編輯
-              </CustomButton>
-            ) : (
-              <CustomButton type="button" size="sm" onClick={() => enterEdit()}>
-                <Pencil />
-                編輯
-              </CustomButton>
-            )
-          ) : null}
+          <div className="workspace-chrome-end">
+            <WorkspaceModeTabs />
+            {showViewEditToggle ? (
+              isEditing ? (
+                <CustomButton
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setCancelOpen(true)}
+                >
+                  <X />
+                  取消
+                </CustomButton>
+              ) : (
+                <CustomButton type="button" size="sm" onClick={() => enterEdit()}>
+                  <Pencil />
+                  編輯
+                </CustomButton>
+              )
+            ) : null}
+          </div>
         </div>
-        <div className="tool-panel-body">
-          {guidance}
+
+        {guidance ? <div className="workspace-hint">{guidance}</div> : null}
+
+        <div className="workspace-body">
           {isEditing ? (
             <>
               <WorkspaceToolbar posts={posts} workers={workers} variant={variant} />
-              <Separator />
               <DateBar />
-              <Separator />
             </>
           ) : (
             <WorkspaceToolbar
@@ -96,7 +93,6 @@ export default function WorkspaceMain({
               viewOnly
             />
           )}
-          <WorkspaceModeTabs />
           {mode === 'off' ? (
             <OffMatrix workers={workers} readOnly={!isEditing} />
           ) : (

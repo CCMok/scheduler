@@ -53,9 +53,9 @@ export default function SignUpCard({
       className={className}
     >
       <Card>
-        <CardHeader className='text-center'>
-          <CardTitle className="text-lg">註冊</CardTitle>
-          <CardDescription>輸入您的帳號資訊</CardDescription>
+        <CardHeader className="text-center">
+          <CardTitle>註冊</CardTitle>
+          <CardDescription>輸入帳號資訊</CardDescription>
         </CardHeader>
         <CardContent>
           <FieldGroup>

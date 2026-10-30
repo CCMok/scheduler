@@ -28,22 +28,19 @@ function CreateGuidance() {
   const step = timeslots.length === 0 ? 1 : 2
 
   return (
-    <div
-      role="status"
-      className="rounded-md border border-border bg-muted/50 px-3 py-2 text-sm text-muted-foreground"
-    >
+    <p role="status">
       {step === 1 ? (
-        <p>
+        <>
           <span className="font-medium text-foreground">① 選日期</span>
-          {' — '}在下方日期列揀值班日，再標休假、自動編排。
-        </p>
+          {' — '}下方揀值班日，再標休假、自動編排。
+        </>
       ) : (
-        <p>
-          <span className="font-medium text-foreground">② 標休假 → ③ 自動編排</span>
-          {' — '}切到「休假」標記休息日，再按「自動編排」。完成後可微調，再「儲存」。
-        </p>
+        <>
+          <span className="font-medium text-foreground">② 標休假 · ③ 自動編排</span>
+          {' — '}切「休假」標休息日，再按「自動編排」；微調後「儲存」。
+        </>
       )}
-    </div>
+    </p>
   )
 }
 
@@ -86,37 +83,36 @@ export default function CreateWorkspaceShell({
 
   return (
     <div className="space-y-2">
-      <section className="tool-panel">
-        <div className="tool-panel-body">
-          <div className="toolbar-row items-end">
-            <CustomButton
-              type="button"
-              variant="outline"
-              onClick={() => setCancelCreateOpen(true)}
-            >
-              <ArrowLeft />
-              返回列表
-            </CustomButton>
-            <FieldLayout label="團隊" id={TEAM_SELECT_ID} className="w-(--input-width)">
-              <Combobox
-                id={TEAM_SELECT_ID}
-                placeHolder="請選擇團隊"
-                value={teamId}
-                setValue={requestTeamChange}
-                options={teams}
-                getOptionValue={(team) => team.id}
-                getOptionDisplay={(team) => team.name}
-                icon={<UsersRound />}
-              />
-            </FieldLayout>
-          </div>
+      <section className="workspace-nav">
+        <div className="toolbar-row items-end">
+          <CustomButton
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => setCancelCreateOpen(true)}
+          >
+            <ArrowLeft />
+            返回列表
+          </CustomButton>
+          <FieldLayout label="團隊" id={TEAM_SELECT_ID} className="w-(--input-width)">
+            <Combobox
+              id={TEAM_SELECT_ID}
+              placeHolder="請選擇團隊"
+              value={teamId}
+              setValue={requestTeamChange}
+              options={teams}
+              getOptionValue={(team) => team.id}
+              getOptionDisplay={(team) => team.name}
+              icon={<UsersRound />}
+            />
+          </FieldLayout>
         </div>
       </section>
 
       {!isNil(teamId) ? (
         posts.length === 0 || workers.length === 0 ? (
-          <section className="tool-panel">
-            <div className="tool-panel-body space-y-3 py-8 text-sm text-muted-foreground">
+          <section className="workspace-panel">
+            <div className="workspace-body space-y-3 py-8 text-sm text-muted-foreground">
               <p>
                 {posts.length === 0 && workers.length === 0
                   ? '此團隊尚未設定崗位與人員，無法新建值班表。'
@@ -155,8 +151,8 @@ export default function CreateWorkspaceShell({
           </WorkspaceStoreProvider>
         )
       ) : (
-        <section className="tool-panel">
-          <div className="tool-panel-body py-8 text-sm text-muted-foreground">
+        <section className="workspace-panel">
+          <div className="workspace-body py-8 text-sm text-muted-foreground">
             請選擇團隊以新建值班表。
           </div>
         </section>

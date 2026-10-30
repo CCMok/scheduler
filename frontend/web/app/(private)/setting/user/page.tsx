@@ -21,7 +21,7 @@ export default function UserSettingPage() {
         </Breadcrumb>
       }
     >
-      <div className="mx-auto w-full max-w-xl space-y-2">
+      <div className="setting-stack">
         <UpdateNameCard userNamePromise={getUserName()} />
         <UpdatePasswordCard />
       </div>

@@ -14,26 +14,21 @@ export default function WorkspaceModeTabs() {
   const setMode = useWorkspaceStore((s) => s.setMode)
 
   return (
-    <div className="toolbar-row">
-      <span className="text-xs text-muted-foreground" id="workspace-mode-label">
-        模式
-      </span>
-      <Tabs
-        value={mode}
-        onValueChange={(value) => setMode(value as WorkspaceMode)}
-        aria-labelledby="workspace-mode-label"
-      >
-        <TabsList className="h-8">
-          <TabsTrigger value="off" className="gap-1.5 px-2.5 text-xs">
-            <CalendarOff />
-            休假
-          </TabsTrigger>
-          <TabsTrigger value="assign" className="gap-1.5 px-2.5 text-xs">
-            <Grid2x2 />
-            編排
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
-    </div>
+    <Tabs
+      value={mode}
+      onValueChange={(value) => setMode(value as WorkspaceMode)}
+      aria-label="工作區模式"
+    >
+      <TabsList>
+        <TabsTrigger value="off" className="gap-1 px-2.5">
+          <CalendarOff className="size-3.5" />
+          休假
+        </TabsTrigger>
+        <TabsTrigger value="assign" className="gap-1 px-2.5">
+          <Grid2x2 className="size-3.5" />
+          編排
+        </TabsTrigger>
+      </TabsList>
+    </Tabs>
   )
 }

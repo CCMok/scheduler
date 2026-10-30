@@ -116,11 +116,11 @@ export default function DateBar() {
   }
 
   return (
-    <div className="flex flex-col gap-3 lg:flex-row lg:items-stretch">
+    <div className="flex flex-col gap-2 lg:flex-row lg:items-stretch">
       <Calendar
         mode="multiple"
         numberOfMonths={2}
-        className="rounded-lg border bg-card shadow-sm"
+        className="rounded-md border border-border/80 bg-background/50"
         selected={selected}
         onSelect={(dates) => {
           setTimeslotsFromDates(dates ?? [])
@@ -144,12 +144,12 @@ export default function DateBar() {
       />
       <div
         className={cn(
-          'flex min-h-48 min-w-56 flex-1 flex-col gap-2 rounded-lg border bg-card p-3 shadow-sm',
+          'flex min-h-40 min-w-52 flex-1 flex-col gap-1.5 rounded-md border border-border/80 bg-background/50 p-2.5',
           'lg:max-w-xs',
         )}
       >
         <div className="flex items-center justify-between gap-2">
-          <p className="text-sm font-medium">
+          <p className="text-xs font-medium text-muted-foreground">
             已選{' '}
             <span className="tabular-nums text-foreground">
               {timeslots.length}
@@ -159,21 +159,23 @@ export default function DateBar() {
           <CustomButton
             type="button"
             variant="ghost"
+            size="sm"
+            className="h-7 text-xs"
             disabled={timeslots.length === 0}
             onClick={() => setTimeslotsFromDates([])}
           >
-            清除全部
+            清除
           </CustomButton>
         </div>
 
         {timeslots.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            點日曆選日；點星期標題可選／取消該月全部該日。
+          <p className="text-xs text-muted-foreground">
+            點日曆選日；點星期標題可整月選／取消該曜日。
           </p>
         ) : (
           <ul
             role="list"
-            className="flex max-h-64 flex-1 flex-col gap-1 overflow-auto pr-0.5"
+            className="flex max-h-56 flex-1 flex-col gap-0.5 overflow-auto pr-0.5"
           >
             {timeslots.map((t) => {
               const date = timeslotToDate(t.name)
@@ -184,18 +186,20 @@ export default function DateBar() {
               return (
                 <li
                   key={t.id}
-                  className="flex items-center gap-2 rounded-md border border-border/80 bg-background px-2 py-1.5"
+                  className="flex items-center gap-1.5 rounded-sm px-1.5 py-1 hover:bg-muted/50"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{t.name}</p>
+                    <p className="truncate text-xs font-medium">{t.name}</p>
                     {weekday ? (
-                      <p className="text-xs text-muted-foreground">{weekday}</p>
+                      <p className="text-[11px] text-muted-foreground">
+                        {weekday}
+                      </p>
                     ) : null}
                   </div>
                   <button
                     type="button"
                     className={cn(
-                      'inline-flex size-7 shrink-0 items-center justify-center rounded-md',
+                      'inline-flex size-6 shrink-0 items-center justify-center rounded-sm',
                       'text-muted-foreground hover:bg-accent hover:text-foreground',
                       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                     )}

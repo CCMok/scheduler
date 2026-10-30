@@ -34,13 +34,16 @@ export default async function TeamDetailPanel({
   ]);
 
   return (
-    <Tabs className={cn('tool-panel min-h-0 gap-0 overflow-hidden p-0', className)} defaultValue={TabId.WORKERS}>
-      <div className="border-b border-border px-2 py-1.5">
-        <TabsList className="h-8">
-          <TabsTrigger value={TabId.WORKERS} className="text-xs">職員</TabsTrigger>
-          <TabsTrigger value={TabId.POSTS} className="text-xs">職位</TabsTrigger>
-          <TabsTrigger value={TabId.AFFINITY} className="text-xs">偏好</TabsTrigger>
-          <TabsTrigger value={TabId.INFO} className="text-xs">基本資料</TabsTrigger>
+    <Tabs
+      className={cn('workspace-panel min-h-0 gap-0', className)}
+      defaultValue={TabId.WORKERS}
+    >
+      <div className="workspace-chrome min-h-10 border-border/80">
+        <TabsList>
+          <TabsTrigger value={TabId.WORKERS}>職員</TabsTrigger>
+          <TabsTrigger value={TabId.POSTS}>職位</TabsTrigger>
+          <TabsTrigger value={TabId.AFFINITY}>偏好</TabsTrigger>
+          <TabsTrigger value={TabId.INFO}>基本資料</TabsTrigger>
         </TabsList>
       </div>
       <TabsContent value={TabId.WORKERS} className="min-h-0 p-2">

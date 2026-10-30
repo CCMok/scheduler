@@ -3,7 +3,7 @@ import LoginCard from "./_components/login-card";
 
 export default function LoginPage() {
   return (
-    <AuthPageShell>
+    <AuthPageShell tagline="登入以管理值班表與團隊。">
       <LoginCard />
     </AuthPageShell>
   );

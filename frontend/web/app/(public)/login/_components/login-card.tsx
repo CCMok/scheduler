@@ -50,9 +50,9 @@ export default function LoginCard({
       className={className}
     >
       <Card>
-        <CardHeader className='text-center'>
-          <CardTitle className="text-lg">登入</CardTitle>
-          <CardDescription>輸入您的登入資訊</CardDescription>
+        <CardHeader className="text-center">
+          <CardTitle>登入</CardTitle>
+          <CardDescription>輸入電郵與密碼</CardDescription>
         </CardHeader>
         <CardContent>
           <FieldGroup>

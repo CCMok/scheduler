@@ -45,8 +45,8 @@ export default function UpdatePasswordCard() {
     >
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">更改密碼</CardTitle>
-          <CardDescription>請輸入您的新密碼</CardDescription>
+          <CardTitle>更改密碼</CardTitle>
+          <CardDescription>更新登入密碼</CardDescription>
         </CardHeader>
         <CardContent>
           <FieldGroup className='lg:w-(--input-width)'>

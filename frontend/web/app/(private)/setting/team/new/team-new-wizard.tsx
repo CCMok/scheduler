@@ -175,10 +175,10 @@ export default function TeamNewWizard() {
       <div className="grid min-h-0 flex-1 gap-2 lg:grid-cols-[260px_minmax(0,1fr)]">
         <Card className="h-fit">
           <CardHeader>
-            <CardTitle className="text-base">新增團隊</CardTitle>
-            <CardDescription>完成後會直接前往自動建立更表</CardDescription>
+            <CardTitle>新增團隊</CardTitle>
+            <CardDescription>完成後前往自動建立值班表</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="space-y-1">
             {steps.map((step, index) => {
               const Icon = step.icon;
               const isActive = currentStep === index;
@@ -189,22 +189,23 @@ export default function TeamNewWizard() {
                   key={step.title}
                   type="button"
                   className={cn(
-                    'flex w-full items-center gap-3 rounded-md border p-3 text-left transition-colors',
-                    isActive && 'border-primary bg-primary/5',
-                    isDone && 'bg-muted/50'
+                    'flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-left transition-colors',
+                    'hover:bg-muted/50',
+                    isActive && 'bg-primary/8 ring-1 ring-primary/35',
+                    isDone && !isActive && 'text-muted-foreground',
                   )}
                   onClick={() => setCurrentStep(index)}
                 >
                   <span className={cn(
-                    'flex size-9 items-center justify-center rounded-md border bg-background',
-                    isActive && 'border-primary text-primary',
-                    isDone && 'bg-primary text-primary-foreground'
+                    'flex size-8 items-center justify-center rounded-md border border-border/70 bg-background text-xs',
+                    isActive && 'border-primary/50 text-primary',
+                    isDone && !isActive && 'bg-primary text-primary-foreground border-primary',
                   )}>
-                    {isDone ? <Check className="size-4" /> : <Icon className="size-4" />}
+                    {isDone ? <Check className="size-3.5" /> : <Icon className="size-3.5" />}
                   </span>
                   <span className="min-w-0">
-                    <span className="block font-medium">{step.title}</span>
-                    <span className="block truncate text-sm text-muted-foreground">{step.description}</span>
+                    <span className="block text-sm font-medium tracking-tight">{step.title}</span>
+                    <span className="block truncate text-xs text-muted-foreground">{step.description}</span>
                   </span>
                 </button>
               )
@@ -327,7 +328,7 @@ function BasicInfoStep({
 }>) {
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-4 py-8">
-      <div className="rounded-lg border bg-muted/30 p-4">
+      <div className="rounded-md border border-border/70 bg-muted/25 p-3 text-sm">
         <div className="mb-3 flex items-center gap-2 font-medium">
           <UsersRound className="size-4" />
           團隊名稱

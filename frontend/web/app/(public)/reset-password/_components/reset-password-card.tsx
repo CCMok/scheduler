@@ -48,9 +48,9 @@ export default function ResetPasswordCard({
       className={className}
     >
       <Card>
-        <CardHeader className='text-center'>
-          <CardTitle className="text-lg">密碼重設</CardTitle>
-          <CardDescription>輸入您的電郵地址，我們將發送一封密碼重設的電郵到您的郵箱。</CardDescription>
+        <CardHeader className="text-center">
+          <CardTitle>密碼重設</CardTitle>
+          <CardDescription>輸入電郵，我們會寄送重設連結。</CardDescription>
         </CardHeader>
         <CardContent>
           <FieldGroup>

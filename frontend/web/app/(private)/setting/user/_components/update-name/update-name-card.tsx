@@ -52,8 +52,8 @@ export default function UpdateNameCard({
     >
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">更改名稱</CardTitle>
-          <CardDescription>請輸入您的新名稱</CardDescription>
+          <CardTitle>更改名稱</CardTitle>
+          <CardDescription>顯示於帳號與介面</CardDescription>
         </CardHeader>
         <CardContent>
           <FieldGroup className='lg:w-(--input-width)'>

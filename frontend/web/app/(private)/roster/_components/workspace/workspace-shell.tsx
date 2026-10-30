@@ -71,81 +71,84 @@ export default function WorkspaceShell({
 
   return (
     <div className="space-y-2">
-      <section className="tool-panel">
-        <div className="tool-panel-body">
-          <div className="toolbar-row items-end">
-            <FieldLayout label="團隊" id={TEAM_SELECT_ID} className="w-(--input-width)">
-              <Combobox
-                id={TEAM_SELECT_ID}
-                placeHolder="請選擇團隊"
-                value={teamId}
-                setValue={setTeamId}
-                options={teams}
-                getOptionValue={(team) => team.id}
-                getOptionDisplay={(team) => team.name}
-                icon={<UsersRound />}
-              />
-            </FieldLayout>
-            <FieldLayout label="值班表" id={ROSTER_SELECT_ID} className="min-w-0 flex-1 sm:max-w-md">
-              <div className="flex items-center gap-1.5">
-                <CustomButton
-                  variant="outline"
-                  size="icon"
-                  disabled={isNil(prevRosterId)}
-                  onClick={() => {
-                    if (isNil(teamId) || isNil(prevRosterId)) return
-                    router.replace(
-                      ROUTE.private.roster.base({
-                        [searchParamKey.TEAM_ID]: teamId,
-                        [searchParamKey.ROSTER_ID]: prevRosterId,
-                      }),
-                    )
-                  }}
-                  aria-label="上一個值班表"
-                >
-                  <ChevronLeft />
-                </CustomButton>
-                <div className="min-w-0 flex-1">
-                  <Combobox
-                    placeHolder="請選擇值班表"
-                    value={rosterId}
-                    setValue={setRosterId}
-                    options={rosters}
-                    getOptionValue={(r) => r.id}
-                    getOptionDisplay={(r) => r.name}
-                    icon={<Calendar />}
-                  />
-                </div>
-                <CustomButton
-                  variant="outline"
-                  size="icon"
-                  disabled={isNil(nextRosterId)}
-                  onClick={() => {
-                    if (isNil(teamId) || isNil(nextRosterId)) return
-                    router.replace(
-                      ROUTE.private.roster.base({
-                        [searchParamKey.TEAM_ID]: teamId,
-                        [searchParamKey.ROSTER_ID]: nextRosterId,
-                      }),
-                    )
-                  }}
-                  aria-label="下一個值班表"
-                >
-                  <ChevronRight />
-                </CustomButton>
-              </div>
-            </FieldLayout>
-            <div className="toolbar-row-end">
-              <CustomButton type="button" onClick={startNew} disabled={isNil(teamId)}>
-                <Plus />
-                新建值班表
+      <section className="workspace-nav">
+        <div className="toolbar-row items-end">
+          <FieldLayout label="團隊" id={TEAM_SELECT_ID} className="w-(--input-width)">
+            <Combobox
+              id={TEAM_SELECT_ID}
+              placeHolder="請選擇團隊"
+              value={teamId}
+              setValue={setTeamId}
+              options={teams}
+              getOptionValue={(team) => team.id}
+              getOptionDisplay={(team) => team.name}
+              icon={<UsersRound />}
+            />
+          </FieldLayout>
+          <FieldLayout label="值班表" id={ROSTER_SELECT_ID} className="min-w-0 flex-1 sm:max-w-md">
+            <div className="flex items-center gap-1">
+              <CustomButton
+                variant="ghost"
+                size="icon"
+                disabled={isNil(prevRosterId)}
+                onClick={() => {
+                  if (isNil(teamId) || isNil(prevRosterId)) return
+                  router.replace(
+                    ROUTE.private.roster.base({
+                      [searchParamKey.TEAM_ID]: teamId,
+                      [searchParamKey.ROSTER_ID]: prevRosterId,
+                    }),
+                  )
+                }}
+                aria-label="上一個值班表"
+              >
+                <ChevronLeft />
               </CustomButton>
-              <DeleteRosterDialog
-                id={rosterId}
-                teamId={teamId}
-                rosterName={roster?.name}
-              />
+              <div className="min-w-0 flex-1">
+                <Combobox
+                  placeHolder="請選擇值班表"
+                  value={rosterId}
+                  setValue={setRosterId}
+                  options={rosters}
+                  getOptionValue={(r) => r.id}
+                  getOptionDisplay={(r) => r.name}
+                  icon={<Calendar />}
+                />
+              </div>
+              <CustomButton
+                variant="ghost"
+                size="icon"
+                disabled={isNil(nextRosterId)}
+                onClick={() => {
+                  if (isNil(teamId) || isNil(nextRosterId)) return
+                  router.replace(
+                    ROUTE.private.roster.base({
+                      [searchParamKey.TEAM_ID]: teamId,
+                      [searchParamKey.ROSTER_ID]: nextRosterId,
+                    }),
+                  )
+                }}
+                aria-label="下一個值班表"
+              >
+                <ChevronRight />
+              </CustomButton>
             </div>
+          </FieldLayout>
+          <div className="toolbar-row-end">
+            <CustomButton
+              type="button"
+              size="sm"
+              onClick={startNew}
+              disabled={isNil(teamId)}
+            >
+              <Plus />
+              新建
+            </CustomButton>
+            <DeleteRosterDialog
+              id={rosterId}
+              teamId={teamId}
+              rosterName={roster?.name}
+            />
           </div>
         </div>
       </section>
@@ -166,8 +169,8 @@ export default function WorkspaceShell({
           />
         </WorkspaceStoreProvider>
       ) : (
-        <section className="tool-panel">
-          <div className="tool-panel-body space-y-3 py-8 text-sm text-muted-foreground">
+        <section className="workspace-panel">
+          <div className="workspace-body space-y-3 py-8 text-sm text-muted-foreground">
             {isNil(teamId) ? (
               <p>請選擇團隊以開始編輯值班表。</p>
             ) : (

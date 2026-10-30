@@ -104,6 +104,16 @@
   --shadow-2xl: 0 12px 28px 0 hsl(215 20% 10% / 0.12);
   --tracking-normal: 0em;
   --shell-stripe: oklch(0.42 0.08 215 / 0.045);
+  /* Roster status — one accent family, semantic fills only */
+  --roster-day-stripe: oklch(0.42 0.08 215 / 0.04);
+  --roster-day-selected: oklch(0.42 0.08 215 / 0.1);
+  --roster-day-selected-border: oklch(0.42 0.08 215 / 0.55);
+  --roster-changed: oklch(0.55 0.07 195 / 0.14);
+  --roster-conflict: oklch(0.50 0.19 25 / 0.16);
+  --roster-off: oklch(0.42 0.08 215);
+  --roster-off-fg: oklch(0.985 0.004 215);
+  --roster-empty: oklch(0.50 0.02 220 / 0.45);
+  --roster-col-min: 7rem;
 }
 
 .dark {
@@ -156,6 +166,15 @@
   --shadow-xl: 0 8px 20px 0 hsl(0 0% 0% / 0.3), 0 2px 6px 0 hsl(0 0% 0% / 0.15);
   --shadow-2xl: 0 12px 28px 0 hsl(0 0% 0% / 0.4);
   --shell-stripe: oklch(0.78 0.07 210 / 0.08);
+  --roster-day-stripe: oklch(0.78 0.07 210 / 0.06);
+  --roster-day-selected: oklch(0.78 0.07 210 / 0.12);
+  --roster-day-selected-border: oklch(0.78 0.07 210 / 0.55);
+  --roster-changed: oklch(0.68 0.07 195 / 0.18);
+  --roster-conflict: oklch(0.68 0.17 22 / 0.2);
+  --roster-off: oklch(0.78 0.07 210);
+  --roster-off-fg: oklch(0.18 0.02 220);
+  --roster-empty: oklch(0.70 0.02 215 / 0.5);
+  --roster-col-min: 7rem;
 }
 
 @layer base {
@@ -200,15 +219,15 @@
 
 /* Dense tool panel — roster / settings chrome */
 .tool-panel {
-  @apply rounded-lg border border-border bg-card text-card-foreground shadow-xs;
+  @apply rounded-lg border border-border/80 bg-card/90 text-card-foreground;
 }
 
 .tool-panel-header {
-  @apply flex flex-wrap items-center justify-between gap-2 border-b border-border px-3 py-2;
+  @apply flex flex-wrap items-center justify-between gap-2 border-b border-border/80 px-3 py-2;
 }
 
 .tool-panel-body {
-  @apply space-y-3 p-3;
+  @apply space-y-2.5 p-2.5;
 }
 
 .toolbar-row {
@@ -217,4 +236,143 @@
 
 .toolbar-row-end {
   @apply ml-auto flex flex-wrap items-center gap-2;
+}
+
+/* Auth / public — same calm family as workspace */
+.auth-shell {
+  @apply relative mx-auto flex min-h-svh w-full max-w-md flex-col items-center justify-center gap-6 px-4 py-12;
+}
+
+.auth-brand {
+  @apply flex flex-col items-center gap-3 text-center;
+}
+
+.auth-brand-tagline {
+  @apply max-w-sm text-sm text-muted-foreground;
+}
+
+.auth-panel {
+  @apply w-full;
+}
+
+.auth-panel [data-slot="card"] {
+  @apply border-border/70 bg-card/85 backdrop-blur-sm;
+}
+
+.setting-stack {
+  @apply mx-auto flex w-full max-w-xl flex-col gap-2;
+}
+
+/* Roster workspace — calm density, grid-first */
+.workspace-panel {
+  @apply overflow-hidden rounded-lg border border-border/80 bg-card/90 text-card-foreground;
+}
+
+.workspace-panel[data-editing="true"] {
+  border-color: color-mix(in oklch, var(--primary) 45%, var(--border));
+  box-shadow:
+    0 0 0 1px color-mix(in oklch, var(--primary) 20%, transparent),
+    var(--shadow-xs);
+}
+
+.workspace-chrome {
+  @apply flex min-h-12 flex-wrap items-center gap-x-3 gap-y-2 border-b border-border px-3 py-2;
+}
+
+.workspace-chrome-end {
+  @apply ml-auto flex flex-wrap items-center gap-1.5;
+}
+
+.workspace-body {
+  @apply flex flex-col gap-2 p-2 sm:p-2.5;
+}
+
+.workspace-hint {
+  @apply border-b border-border/70 bg-muted/35 px-3 py-1.5 text-xs text-muted-foreground;
+}
+
+.workspace-nav {
+  @apply rounded-lg border border-border/80 bg-card/90 px-2.5 py-2 backdrop-blur-sm;
+}
+
+.roster-grid {
+  @apply overflow-auto rounded-md border border-border bg-background outline-none;
+}
+
+.roster-grid:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.roster-grid table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.roster-sticky-col {
+  @apply sticky left-0 z-10 bg-card;
+  box-shadow: 1px 0 0 var(--border);
+}
+
+.roster-day-col {
+  min-width: var(--roster-col-min);
+}
+
+/* Day-column rhythm — skip sticky first col (nth starts at 2) */
+.roster-grid th.roster-day-col:nth-child(even),
+.roster-grid td.roster-day-col:nth-child(even):not(.roster-cell-changed):not(
+    .roster-cell-conflict
+  ):not(.roster-cell-day-selected) {
+  background-color: var(--roster-day-stripe);
+}
+
+.roster-cell-changed {
+  background-color: var(--roster-changed);
+}
+
+.roster-cell-conflict {
+  background-color: var(--roster-conflict);
+  color: var(--destructive);
+}
+
+.roster-cell-day-selected {
+  background-color: var(--roster-day-selected);
+}
+
+.roster-cell-empty {
+  color: var(--roster-empty);
+}
+
+.roster-off-on {
+  background-color: var(--roster-off);
+  color: var(--roster-off-fg);
+}
+
+.roster-day-header {
+  @apply w-full cursor-grab select-none rounded-sm px-1 py-1.5 text-center text-xs font-medium outline-none;
+  @apply hover:bg-accent/50 active:cursor-grabbing;
+  @apply focus-visible:ring-2 focus-visible:ring-ring;
+}
+
+.roster-day-header[aria-pressed="true"] {
+  background-color: var(--roster-day-selected);
+  box-shadow: inset 0 -2px 0 var(--roster-day-selected-border);
+}
+
+@keyframes roster-flash {
+  0% {
+    background-color: color-mix(in oklch, var(--primary) 22%, transparent);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.roster-flash {
+  animation: roster-flash 520ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roster-flash {
+    animation: none;
+  }
 }
