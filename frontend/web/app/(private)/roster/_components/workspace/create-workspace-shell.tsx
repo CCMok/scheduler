@@ -1,8 +1,10 @@
 'use client'
 
+import { useState } from 'react'
 import { Post, Team, Worker } from '@/external/prisma/generated/client'
 import { WorkspaceStoreProvider, useWorkspaceStore } from './workspace-store-provider'
 import WorkspaceMain from './workspace-main'
+import ConfirmLeaveDialog from './confirm-leave-dialog'
 import FieldLayout from '@/components/_general/form/field/field-layout'
 import Combobox from '@/components/_general/_custom/combobox/combobox'
 import CustomButton from '@/components/_general/_custom/button/custom-button'
@@ -58,13 +60,24 @@ export default function CreateWorkspaceShell({
   teamId?: number
 }>) {
   const router = useRouter()
+  const [cancelCreateOpen, setCancelCreateOpen] = useState(false)
+  const [switchTeamOpen, setSwitchTeamOpen] = useState(false)
+  const [pendingTeamId, setPendingTeamId] = useState<number | null>(null)
 
-  const setTeamId = (id?: number) => {
+  const requestTeamChange = (id?: number) => {
     if (isNil(id) || teamId === id) return
-    router.push(ROUTE.private.roster.new({ [searchParamKey.TEAM_ID]: id }))
+    setPendingTeamId(id)
+    setSwitchTeamOpen(true)
   }
 
-  const goBack = () => {
+  const confirmSwitchTeam = () => {
+    if (pendingTeamId == null) return
+    router.push(
+      ROUTE.private.roster.new({ [searchParamKey.TEAM_ID]: pendingTeamId }),
+    )
+  }
+
+  const confirmCancelCreate = () => {
     router.push(
       isNil(teamId)
         ? ROUTE.private.roster.base()
@@ -77,7 +90,11 @@ export default function CreateWorkspaceShell({
       <Card>
         <CardContent className="space-y-3">
           <div className="flex flex-wrap items-end gap-3">
-            <CustomButton type="button" variant="outline" onClick={goBack}>
+            <CustomButton
+              type="button"
+              variant="outline"
+              onClick={() => setCancelCreateOpen(true)}
+            >
               <ArrowLeft />
               返回列表
             </CustomButton>
@@ -86,7 +103,7 @@ export default function CreateWorkspaceShell({
                 id={TEAM_SELECT_ID}
                 placeHolder="請選擇團隊"
                 value={teamId}
-                setValue={setTeamId}
+                setValue={requestTeamChange}
                 options={teams}
                 getOptionValue={(team) => team.id}
                 getOptionDisplay={(team) => team.name}
@@ -145,6 +162,26 @@ export default function CreateWorkspaceShell({
           </CardContent>
         </Card>
       )}
+
+      <ConfirmLeaveDialog
+        open={cancelCreateOpen}
+        onOpenChange={setCancelCreateOpen}
+        title="取消新建"
+        description="未存變更會丟失。確定取消新建？"
+        confirmLabel="確定"
+        onConfirm={confirmCancelCreate}
+      />
+      <ConfirmLeaveDialog
+        open={switchTeamOpen}
+        onOpenChange={(open) => {
+          setSwitchTeamOpen(open)
+          if (!open) setPendingTeamId(null)
+        }}
+        title="更換團隊"
+        description="未存變更會丟失。確定更換團隊？"
+        confirmLabel="確定"
+        onConfirm={confirmSwitchTeam}
+      />
     </div>
   )
 }

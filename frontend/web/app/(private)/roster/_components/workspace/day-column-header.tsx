@@ -8,14 +8,24 @@ const DRAG_TYPE = 'application/x-roster-timeslot-id'
 export default function DayColumnHeader({
   timeslotId,
   label,
+  readOnly = false,
 }: Readonly<{
   timeslotId: number
   label: string
+  readOnly?: boolean
 }>) {
   const selectedTimeslotId = useWorkspaceStore((s) => s.selectedTimeslotId)
   const selectTimeslot = useWorkspaceStore((s) => s.selectTimeslot)
   const swapDays = useWorkspaceStore((s) => s.swapDays)
   const selected = selectedTimeslotId === timeslotId
+
+  if (readOnly) {
+    return (
+      <span className="block w-full px-1 py-1 text-center text-xs font-medium">
+        {label}
+      </span>
+    )
+  }
 
   return (
     <button

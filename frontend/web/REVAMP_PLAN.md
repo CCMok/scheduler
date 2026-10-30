@@ -100,11 +100,11 @@ Manual `/roster/new` and history already removed; create is locked to the auto w
 
 ### 4.1 Information architecture
 
-**Locked:** Create and edit are **separate routes** (shared store / grid / offs / draft engine — not one mixed page). `/roster` = edit home; `/roster/new` = create-only. (Not a separate `/app`.)
+**Locked:** Create and edit are **separate routes** (shared store / grid / offs engine — not one mixed page). `/roster` = roster home (default **view**, enter **edit** to mutate); `/roster/new` = create-only (always edit). (Not a separate `/app`.)
 
 ```
 /login, /sign-up, …          # auth (keep logic, restyle)
-/roster                      # Edit Workspace (team + roster switcher + grid)
+/roster                      # Roster Workspace (team + switcher; view by default, edit on demand)
 /roster/new                  # Create Workspace (team + guided empty → arrange → first Save)
   ├─ Team settings (workers / posts / prefs / caps)
   └─ Account settings
@@ -112,15 +112,16 @@ Manual `/roster/new` and history already removed; create is locked to the auto w
 
 **Drop** `auto-new/**` and `edit/**` routes in Phase 1 (delete, not long-lived redirect-only). Legacy `?rosterId=new` redirects to `/roster/new`.
 
-| Region | Create (`/roster/new`) | Edit (`/roster`) |
+| Region | Create (`/roster/new`) | Roster home (`/roster`) |
 |--------|------------------------|------------------|
-| Top bar | Back to list, team, “本機未存” | Team, roster switcher, name, unsaved / saved, delete, “新建” → `/roster/new` |
-| Date bar | Selected dates; add / remove | Same |
-| Toolbar | Off / assign, **Auto-arrange** (primary), Save → replace to edit | Off / assign, **再排**, Save, export, Undo |
-| Main | Day grid or Off matrix + step guidance | Day grid or Off matrix; conflict prompt |
-| Bottom / side | Solver status | Solver status, conflict notes, stats |
+| Top bar | Back to list, team | Team, roster switcher, delete, “新建” → `/roster/new` |
+| Interaction | Always edit | **View** default: off / assign grids + export + “編輯”. **Edit**: name, dates, arrange / 再排, Save, Undo, “取消編輯” |
+| Date bar | Selected dates; add / remove | Edit only (hidden in view) |
+| Toolbar | Off / assign, **Auto-arrange** (primary), Save → replace to `/roster` | View: export. Edit: **再排**, Save (success → back to view), Undo |
+| Main | Day grid or Off matrix + step guidance | Day grid or Off matrix (read-only in view) |
+| Bottom / side | Solver status | Solver status, assign-on-off conflict notes |
 
-Working state lives in **localStorage** until explicit **Save** writes the DB (see §5.4). First successful Save on create inserts then navigates to edit URL.
+Working state lives **in memory** until explicit **Save** writes the DB (see §5.4). Refresh / leave discards unsaved work. First successful Save on create inserts then navigates to `/roster` (**view**).
 
 ### 4.2 Primary happy path (new roster)
 
@@ -130,7 +131,7 @@ Working state lives in **localStorage** until explicit **Save** writes the DB (s
 4. Hit **Auto-arrange** (primary CTA — not buried in dialog chains).
 5. Solver returns: grid filled; diffs highlighted; side panel briefly “balanced load / respected offs.”
 6. Keyboard cell tweaks; **swap whole day columns** when the pattern should move (Phase 2).
-7. **Save** inserts DB row → land on edit Workspace; export XLSX from edit (or after arrange on create).
+7. **Save** inserts DB row → land on `/roster` in **view**; export XLSX from view or edit (or after arrange on create).
 
 **Off entry phase split (locked):**
 
@@ -138,8 +139,6 @@ Working state lives in **localStorage** until explicit **Save** writes the DB (s
 |------------|-------|
 | Off matrix (worker × date), click + keyboard `Y`/`N`/Space | **Phase 1** |
 | Ctrl+V / rectangular paste offs; XLSX offs import | **Out of scope** (no product intent this revamp) |
-
-Vs old flow: two fewer forced step pages, fewer confirms, off-entry effort drops sharply; day-level ops remove “rebuild the day by hand.”
 
 Vs old flow: two fewer forced step pages, fewer confirms, off-entry effort drops sharply; day-level ops remove “rebuild the day by hand.”
 
@@ -210,16 +209,15 @@ Frontend must edit:
 
 Otherwise README “preferences” stay fake for users.
 
-### 5.4 Drafts (**locked**)
+### 5.4 Working state (**locked** — no localStorage draft)
 
-- **No** `Roster.status` / DB draft row. Create and edit share one rule: working state stays in **localStorage** until explicit **Save** persists to the database.
-- **Scope:** same browser only (no cross-device draft). Clearing site data / private mode loses unsaved work — acceptable.
-- Debounced auto-write to localStorage (grid + offs + name + dates) — kill “leave preview and it’s gone” on refresh / tab close **in that browser**.
-- **Create:** no DB row until first successful Save (insert). Show “本機未存” in UI; optional local draft switcher for unfinished creates.
-- **Edit:** load server roster into workspace; edits auto-save to local key keyed by `rosterId`. Save updates DB then clears that local key.
-- **Conflict (edit):** if local draft exists and server was saved since that draft’s baseline, **prompt choose**: keep local unsaved **or** discard local and use server. Never silently overwrite.
-- Fingerprint (**locked**): add `Roster.updatedAt` (Timestamptz; bump on every successful Save / persist). Local draft stores `serverUpdatedAt` from load time. On open: if local dirty **and** `draft.serverUpdatedAt !== roster.updatedAt` → conflict prompt. (Content hash not required.)
-- Key convention (suggested): versioned `rosterDraft:v1:new:{teamId}` / `rosterDraft:v1:{rosterId}` (+ `serverUpdatedAt`).
+- **No** `Roster.status` / DB draft row. **No** localStorage working draft (create or edit).
+- Working grid / offs / name / dates live **in memory** only until explicit **Save** writes the DB.
+- **Create (`/roster/new`):** always brand-new empty workspace. Refresh / leave = lose unsaved work (expected). No DB row until first successful Save (insert) → navigate to `/roster` in view.
+- **Roster home (`/roster`):** open saved roster in **view** (read-only grids). **編輯** unlocks mutations. **儲存** success → stay on page in **view**. **取消編輯** always confirms, then discards in-memory changes (`hydrateFromServer`) and returns to view.
+- **Create leave:** **返回列表** (and team switch on create) always confirms; discard = navigate away (no restore).
+- No `dirty` flag — cancel / leave always asks confirm.
+- `Roster.updatedAt` (Timestamptz; bump on every successful Save) remains for audit / future concurrency — **not** for local-vs-server draft conflict prompts (removed).
 
 ### 5.5 Day swap — where it lives
 
@@ -344,16 +342,16 @@ Acceptance questions: with the logo removed, does the first screen still clearly
 
 ## 9. Phased delivery
 
-Do not open the next phase to external users until the current phase **exit criteria** pass. Create and edit share one **engine** (store / grid / offs / draft) from Phase 1 onward, on **separate routes** — every phase that touches the grid includes an **edit regression** path (open saved roster → change → save → reload).
+Do not open the next phase to external users until the current phase **exit criteria** pass. Create and edit share one **engine** (store / grid / offs) from Phase 1 onward, on **separate routes** — every phase that touches the grid includes an **edit regression** path (open saved roster → enter edit → change → save → reload).
 
 ### 9.0 Shared test layers
 
 | Layer | Use for |
 |-------|---------|
-| Unit | Day-swap pure functions, off-matrix helpers, undo stack, status→UI mapping |
+| Unit | Day-swap pure functions, off-matrix helpers, undo stack, status→UI mapping, view/edit interaction |
 | Contract | sch arrange / modify response shape (`status`; never treat bare `[]` as success) |
-| Integration | Prisma save / load; localStorage draft + conflict prompt |
-| E2E / scripted manual | Workspace happy path; keyboard; day swap; edit existing |
+| Integration | Prisma save / load |
+| E2E / scripted manual | Workspace happy path; keyboard; day swap; view → edit → save → view; cancel edit discards |
 | UX trial | Real users: time and willingness vs Excel / old wizard |
 
 **Phase 0 test skeleton (recommended):**
@@ -427,29 +425,29 @@ Do **not** add Playwright / full E2E in Phase 0 (no Workspace yet). Wire `yarn t
 
 **Deliverables**
 
-- `/roster` = edit Workspace; `/roster/new` = create Workspace (shared engine, separate chrome)
-- Date pick + Off matrix (click + keyboard toggle; **no** paste/import yet)
+- `/roster` = roster Workspace (**view** default; enter **edit** to mutate); `/roster/new` = create Workspace (shared engine, separate chrome; always edit)
+- Date pick + Off matrix (click + keyboard toggle; **no** paste/import yet) — date bar only while editing / creating
 - **Auto-arrange** (create) + **再排 / Auto-modify** (edit — uses **working** grid + offs, not stale DB snapshot)
-- Keyboard cell tweak (arrows / Enter / Esc / Tab)
-- Explicit Save + XLSX export (Save = only DB write; create inserts on first Save then replace to edit)
-- Debounced **localStorage** working draft (same browser; no DB `DRAFT` status)
-- Edit conflict prompt when local draft ≠ server
+- Keyboard cell tweak (arrows / Enter / Esc / Tab) in edit
+- Explicit Save + XLSX export (Save = only DB write; create inserts on first Save then replace to `/roster` view; edit Save success → view)
+- **Cancel edit** discards in-memory changes and returns to view
+- **No** localStorage draft / conflict prompt
 - Zustand workspace store
 - **Delete** unused `auto-new/**` and `edit/**` routes (and dead wizard components)
 
 **Expectations**
 
 - User: ≤ 3 clear actions from “new roster” to editable grid (pick dates, mark offs, arrange)
-- User: open an **existing** roster on `/roster`; rename, edit cells / offs, **再排**, save, reload — data sticks; create never mixed into edit chrome
+- User: open an **existing** roster on `/roster` in **view**; enter edit → rename / cells / offs / **再排** → save → back to view; reload matches DB; create never mixed into roster-home chrome
 - Product: already **beats the old wizard**; ready for external trials
-- Eng: unsaved work survives refresh / tab close **in same browser**; Save is the only persist-to-DB path
+- Eng: unsaved work is memory-only (refresh loses it); Save is the only persist-to-DB path; create always starts blank
 
 **Test plan**
 
-- E2E create: pick dates → offs → arrange → edit one cell → save → reopen from DB
-- E2E **edit regression**: open saved roster → change off → **再排** and/or manual cell → save → reload matches
-- Draft: edit → hard refresh → local draft restored; Save → local key cleared → reopen = DB
-- Conflict: plant divergent local + server → open roster → prompt; both choices behave correctly
+- E2E create: pick dates → offs → arrange → edit one cell → save → reopen from DB in view
+- E2E **edit regression**: open saved roster (view) → 編輯 → change off → **再排** and/or manual cell → save → view → reload matches
+- Cancel: enter edit → change → 取消編輯 → confirm → grids match server again
+- Hard refresh mid-edit: unsaved changes gone (expected); create refresh = blank sheet
 - Keyboard: arrow move, Enter open picker, Esc close; complete at least one reassignment without mouse
 - Export: open XLSX; dates + worker names correct
 - UX trial (5–10 people): time to build a ~7-day roster vs old wizard and vs Excel offs+fill
@@ -457,10 +455,10 @@ Do **not** add Playwright / full E2E in Phase 0 (no Workspace yet). Wire `yarn t
 **Exit criteria**
 
 - [ ] Create happy path and edit regression both green
-- [ ] Draft / false-success incidents = 0 in trial
+- [ ] View / edit distinction clear; false-success incidents = 0 in trial
 - [ ] Majority of trial users say create flow is faster than old wizard
 - [ ] Keyboard-only single-cell reassignment works
-- [ ] `auto-new` / `edit` routes gone; create = `/roster/new`, edit = `/roster`
+- [ ] `auto-new` / `edit` routes gone; create = `/roster/new`, roster home = `/roster`
 
 **Out of scope until later**
 
@@ -584,11 +582,11 @@ Do **not** add Playwright / full E2E in Phase 0 (no Workspace yet). Wire `yarn t
 
 From Phase 1, “edit roster enhancement” is **not** a separate app — it is `/roster` loaded with an existing `rosterId` (create stays on `/roster/new`). Minimum edit regression every relevant phase:
 
-1. Open saved roster  
-2. Edit name and/or offs and/or cells (and day swap from Phase 2+)  
+1. Open saved roster (**view**)  
+2. Enter **edit** → change name and/or offs and/or cells (and day swap from Phase 2+)  
 3. Auto-modify / re-arrange only when user opts in; must use **working** grid + offs as input to `modify`, not a stale DB snapshot that ignores unsaved cell edits  
-4. Save → reload → matches  
-5. Draft behavior consistent with create  
+4. Save → return to **view** → reload → matches  
+5. Cancel edit discards unsaved memory state; create has no draft restore  
 
 ---
 
@@ -596,8 +594,8 @@ From Phase 1, “edit roster enhancement” is **not** a separate app — it is 
 ## 10. Migration notes
 
 - Existing Roster timeslots keep `name` as-is (no date parse migration).
-- Phase 1: **no** `Roster.status` — drafts are localStorage-only until Save.
-- Phase 1: add `Roster.updatedAt` (backfill `createdAt` or `now()`); bump on every Save for local-vs-server conflict checks.
+- Phase 1: **no** `Roster.status`; **no** localStorage working draft (create or edit).
+- Phase 1: add `Roster.updatedAt` (backfill `createdAt` or `now()`); bump on every Save (audit / future concurrency — not draft conflict).
 - Phase 1: **delete** `app/(private)/roster/auto-new/**` and `edit/**` (optional short-lived redirect to `/roster?teamId=` only if needed during cutover).
 - Seed / demo data: multi-day roster story that demos **day swap** (Phase 2).
 - Not in production: breaking sch response shape OK; ship web + `backend/sch` in lockstep; **no backward compat** for empty-array failures.
@@ -624,10 +622,11 @@ From Phase 1, “edit roster enhancement” is **not** a separate app — it is 
 | English i18n this round? | Yes / no | zh-Hant-HK only first is fine |
 | Timeslot DB shape | `name` vs `date` column | **Keep `name`** — not date-bound forever (§5.1) |
 | sch API compat | Compat shim vs break | **Break** — structured status only; no empty-array failure |
-| Workspace route | `/app` vs `/roster` vs split create | **Locked: `/roster` = edit; `/roster/new` = create**; shared store/grid; delete `auto-new`/`edit` |
-| Draft storage | localStorage vs DB status vs draft table | **Locked: localStorage until Save**; same browser only; no DB draft status |
-| Edit local vs server conflict | Silent / always local / always server / prompt | **Locked: prompt choose** (local unsaved vs server) |
-| Conflict fingerprint | Content hash vs `updatedAt` | **Locked: add `Roster.updatedAt`**; draft stores `serverUpdatedAt` |
+| Workspace route | `/app` vs `/roster` vs split create | **Locked: `/roster` = roster home (view default); `/roster/new` = create**; shared store/grid; delete `auto-new`/`edit` |
+| View vs edit on `/roster` | Always edit vs explicit enter-edit | **Locked: view default; 編輯 / 取消編輯; Save success → view** |
+| Draft storage | localStorage vs DB status vs draft table vs memory-only | **Locked: memory-only until Save**; no localStorage draft; create always blank |
+| Edit local vs server conflict | Silent / always local / always server / prompt | **Locked: N/A** — no local draft; cancel reloads server snapshot in memory |
+| `Roster.updatedAt` | Skip / for draft conflict / audit | **Locked: keep**; bump on Save; not used for draft conflict prompts |
 | Off paste / import | Phase 1 vs later | **Locked: Phase 1 = matrix+keyboard only; paste/XLSX import = out of scope this revamp** |
 | Phase 3 prefs scope | Full trust layer vs prefs only | **Locked: affinity + ranked priority + max assign only; no import / diff / hints** |
 | Workspace client store | Zustand vs other | **Locked: Zustand** |
@@ -653,13 +652,13 @@ Frontend adapts in the **same** release; **false-success empty sheets must die t
 Final ship bar (all phases). Use **§9 exit criteria** as per-phase gates before this full list.
 
 - [ ] New roster reaches editable grid in ≤ 3 clear actions (pick dates, mark offs, arrange)
-- [ ] Edit existing roster on `/roster` (name / offs / cells / save / reload); create on `/roster/new` — see §9.2
+- [ ] Edit existing roster on `/roster` (view → edit → name / offs / cells / save → view → reload); create on `/roster/new` — see §9.2
 - [ ] Off matrix for ~10 workers × N days is not slower than Excel checking
 - [ ] Grid can reassign workers keyboard-only
 - [ ] Day ops: select column, swap two days, undo swap, clear day
 - [ ] After swap, conflicts are visible; false success never shown for infeasible arrange
 - [ ] `modify` / re-arrange uses working grid + offs (not stale saved snapshot ignoring unsaved edits)
-- [ ] Draft survives leave and return
+- [ ] Unsaved work is memory-only; cancel edit / leave create always confirm then discard; create refresh = blank
 - [ ] Export includes dates and workers; team prefs (priority / affinity / max assign) editable
 - [ ] Visual: Workspace passes brand / grid-hero check; day-column affordance obvious; light + dark usable
 

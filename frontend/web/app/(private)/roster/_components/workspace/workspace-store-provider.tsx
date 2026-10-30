@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useRef, type ReactNode } from 'react'
+import { createContext, useContext, useRef, type ReactNode } from 'react'
 import { useStore } from 'zustand'
 import { RosterJoin } from '@/libs/roster/roster'
 import {
@@ -27,10 +27,6 @@ export function WorkspaceStoreProvider({
   if (!storeRef.current) {
     storeRef.current = createWorkspaceStore({ teamId, roster, postIds })
   }
-
-  useEffect(() => {
-    storeRef.current?.getState().hydrateFromLocalDraft()
-  }, [teamId, roster?.id])
 
   return (
     <WorkspaceStoreContext.Provider value={storeRef.current}>

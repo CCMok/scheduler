@@ -17,8 +17,10 @@ import { cn } from '@/external/shadcn/libs/utils'
 
 export default function OffMatrix({
   workers,
+  readOnly = false,
 }: Readonly<{
   workers: Worker[]
+  readOnly?: boolean
 }>) {
   const timeslots = useWorkspaceStore((s) => s.timeslots)
   const offs = useWorkspaceStore((s) => s.offs)
@@ -30,6 +32,7 @@ export default function OffMatrix({
   const tableRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    if (readOnly) return
     const onKey = (e: KeyboardEvent) => {
       if (!tableRef.current?.contains(document.activeElement) && document.activeElement !== tableRef.current) {
         return
@@ -69,7 +72,7 @@ export default function OffMatrix({
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [workers, timeslots, focus, offSet, toggleOff])
+  }, [workers, timeslots, focus, offSet, toggleOff, readOnly])
 
   if (timeslots.length === 0) {
     return <p className="text-sm text-muted-foreground">請先選擇日期。</p>
@@ -78,8 +81,11 @@ export default function OffMatrix({
   return (
     <div
       ref={tableRef}
-      tabIndex={0}
-      className="outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      tabIndex={readOnly ? undefined : 0}
+      className={cn(
+        'outline-none',
+        !readOnly && 'focus-visible:ring-2 focus-visible:ring-ring',
+      )}
       aria-label="休假矩陣"
     >
       <Table>
@@ -88,7 +94,11 @@ export default function OffMatrix({
             <TableHead>職員</TableHead>
             {timeslots.map((t) => (
               <TableHead key={t.id} className="p-1 align-bottom">
-                <DayColumnHeader timeslotId={t.id} label={t.name} />
+                <DayColumnHeader
+                  timeslotId={t.id}
+                  label={t.name}
+                  readOnly={readOnly}
+                />
               </TableHead>
             ))}
           </TableRow>
@@ -99,8 +109,9 @@ export default function OffMatrix({
               <TableCell>{worker.name}</TableCell>
               {timeslots.map((timeslot, col) => {
                 const isOff = offSet.has(offKey(worker.id, timeslot.id))
-                const focused = focus.row === row && focus.col === col
-                const columnSelected = selectedTimeslotId === timeslot.id
+                const focused = !readOnly && focus.row === row && focus.col === col
+                const columnSelected =
+                  !readOnly && selectedTimeslotId === timeslot.id
                 return (
                   <TableCell
                     key={timeslot.id}
@@ -109,25 +120,39 @@ export default function OffMatrix({
                       columnSelected && 'bg-primary/5',
                     )}
                   >
-                    <button
-                      type="button"
-                      className={cn(
-                        'h-8 w-full rounded border text-xs',
-                        isOff
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-background',
-                        focused && 'ring-2 ring-ring',
-                      )}
-                      aria-pressed={isOff}
-                      aria-label={`${worker.name} ${timeslot.name} 休假`}
-                      onClick={() => {
-                        setFocus({ row, col })
-                        toggleOff(worker.id, timeslot.id)
-                      }}
-                      onFocus={() => setFocus({ row, col })}
-                    >
-                      {isOff ? '休' : '—'}
-                    </button>
+                    {readOnly ? (
+                      <span
+                        className={cn(
+                          'inline-flex h-8 w-full items-center justify-center rounded border text-xs',
+                          isOff
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-background text-muted-foreground',
+                        )}
+                        aria-label={`${worker.name} ${timeslot.name} ${isOff ? '休假' : '非休假'}`}
+                      >
+                        {isOff ? '休' : '—'}
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        className={cn(
+                          'h-8 w-full rounded border text-xs',
+                          isOff
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-background',
+                          focused && 'ring-2 ring-ring',
+                        )}
+                        aria-pressed={isOff}
+                        aria-label={`${worker.name} ${timeslot.name} 休假`}
+                        onClick={() => {
+                          setFocus({ row, col })
+                          toggleOff(worker.id, timeslot.id)
+                        }}
+                        onFocus={() => setFocus({ row, col })}
+                      >
+                        {isOff ? '休' : '—'}
+                      </button>
+                    )}
                   </TableCell>
                 )
               })}
@@ -135,9 +160,11 @@ export default function OffMatrix({
           ))}
         </TableBody>
       </Table>
-      <p className="mt-2 text-xs text-muted-foreground">
-        方向鍵移動；Space 切換；Y 標記休假；N 取消。拖曳日期標題可交換整日休假標記。
-      </p>
+      {!readOnly ? (
+        <p className="mt-2 text-xs text-muted-foreground">
+          方向鍵移動；Space 切換；Y 標記休假；N 取消。拖曳日期標題可交換整日休假標記。
+        </p>
+      ) : null}
     </div>
   )
 }

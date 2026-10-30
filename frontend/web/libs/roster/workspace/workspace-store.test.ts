@@ -109,3 +109,14 @@ describe("workspace undo", () => {
     expect(store.getState().dayUndoStack).toHaveLength(0);
   });
 });
+
+describe("workspace interaction", () => {
+  it("create starts in edit; enter/exit toggles", () => {
+    const store = createWorkspaceStore({ teamId: 1, postIds: [1] });
+    expect(store.getState().interaction).toBe("edit");
+    store.getState().exitEdit();
+    expect(store.getState().interaction).toBe("view");
+    store.getState().enterEdit();
+    expect(store.getState().interaction).toBe("edit");
+  });
+});

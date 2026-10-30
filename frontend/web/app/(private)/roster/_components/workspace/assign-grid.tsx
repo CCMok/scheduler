@@ -23,9 +23,11 @@ const CELL_DRAG_TYPE = 'application/x-roster-cell'
 export default function AssignGrid({
   posts,
   workers,
+  readOnly = false,
 }: Readonly<{
   posts: Post[]
   workers: Worker[]
+  readOnly?: boolean
 }>) {
   const timeslots = useWorkspaceStore((s) => s.timeslots)
   const workingRoster = useWorkspaceStore((s) => s.workingRoster)
@@ -70,6 +72,7 @@ export default function AssignGrid({
   const wrapRef = useRef<HTMLDivElement>(null)
 
   const setCellWorker = (postId: number, timeslotId: number, workerId?: number) => {
+    if (readOnly) return
     setWorkingRoster(
       workingRoster.map((item) => {
         if (item.postId !== postId) return item
@@ -87,6 +90,7 @@ export default function AssignGrid({
     from: { postId: number; timeslotId: number },
     to: { postId: number; timeslotId: number },
   ) => {
+    if (readOnly) return
     setWorkingRoster(
       swapCellWorkers({
         workingRoster,
@@ -99,6 +103,10 @@ export default function AssignGrid({
   }
 
   useEffect(() => {
+    if (readOnly) {
+      setEditing(false)
+      return
+    }
     const onKey = (e: KeyboardEvent) => {
       if (editing) {
         if (e.key === 'Escape') {
@@ -133,22 +141,31 @@ export default function AssignGrid({
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [editing, sortedRoster.length, timeslots.length])
+  }, [editing, sortedRoster.length, timeslots.length, readOnly])
 
   if (timeslots.length === 0) {
     return <p className="text-sm text-muted-foreground">請先選擇日期並自動編排。</p>
   }
 
   if (workingRoster.length === 0) {
-    return <p className="text-sm text-muted-foreground">尚未有編排結果。請先按「自動編排」。</p>
+    return (
+      <p className="text-sm text-muted-foreground">
+        {readOnly
+          ? '尚未有編排結果。'
+          : '尚未有編排結果。請先按「自動編排」。'}
+      </p>
+    )
   }
 
   return (
     <div
       ref={wrapRef}
-      tabIndex={0}
-      className="outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      aria-label="值班編輯格"
+      tabIndex={readOnly ? undefined : 0}
+      className={cn(
+        'outline-none',
+        !readOnly && 'focus-visible:ring-2 focus-visible:ring-ring',
+      )}
+      aria-label={readOnly ? '值班表' : '值班編輯格'}
     >
       <Table>
         <TableHeader>
@@ -156,7 +173,11 @@ export default function AssignGrid({
             <TableHead>職位</TableHead>
             {timeslots.map((t) => (
               <TableHead key={t.id} className="p-1 align-bottom">
-                <DayColumnHeader timeslotId={t.id} label={t.name} />
+                <DayColumnHeader
+                  timeslotId={t.id}
+                  label={t.name}
+                  readOnly={readOnly}
+                />
               </TableHead>
             ))}
           </TableRow>
@@ -167,11 +188,12 @@ export default function AssignGrid({
               <TableCell>{postMap.get(item.postId)?.name}</TableCell>
               {timeslots.map((timeslot, col) => {
                 const assignment = item.assignments.find((a) => a.timeslotId === timeslot.id)
-                const focused = focus.row === row && focus.col === col
+                const focused = !readOnly && focus.row === row && focus.col === col
                 const changed =
                   originalWorkerMap.get(`${item.postId}-${timeslot.id}`) !== assignment?.workerId
-                const isEditingCell = editing && focused
-                const columnSelected = selectedTimeslotId === timeslot.id
+                const isEditingCell = !readOnly && editing && focused
+                const columnSelected =
+                  !readOnly && selectedTimeslotId === timeslot.id
                 const hasAssignOnOff = conflictKeys.has(
                   `${item.postId}-${timeslot.id}`,
                 )
@@ -185,65 +207,85 @@ export default function AssignGrid({
                       columnSelected && 'bg-primary/5',
                       hasAssignOnOff && 'bg-destructive/15 text-destructive',
                       focused && !isEditingCell && 'ring-2 ring-ring ring-inset',
-                      !isEditingCell && 'cursor-grab active:cursor-grabbing',
+                      !readOnly && !isEditingCell && 'cursor-grab active:cursor-grabbing',
                     )}
-                    draggable={!isEditingCell}
-                    onClick={() => {
-                      setFocus({ row, col })
-                      setEditing(false)
-                    }}
-                    onDoubleClick={() => {
-                      setFocus({ row, col })
-                      setEditing(true)
-                    }}
-                    onDragStart={(e) => {
-                      if (isEditingCell) {
-                        e.preventDefault()
-                        return
-                      }
-                      e.dataTransfer.setData(
-                        CELL_DRAG_TYPE,
-                        JSON.stringify({
-                          postId: item.postId,
-                          timeslotId: timeslot.id,
-                        }),
-                      )
-                      e.dataTransfer.effectAllowed = 'move'
-                      setFocus({ row, col })
-                      setEditing(false)
-                    }}
-                    onDragOver={(e) => {
-                      if (![...e.dataTransfer.types].includes(CELL_DRAG_TYPE)) {
-                        return
-                      }
-                      e.preventDefault()
-                      e.dataTransfer.dropEffect = 'move'
-                    }}
-                    onDrop={(e) => {
-                      e.preventDefault()
-                      const raw = e.dataTransfer.getData(CELL_DRAG_TYPE)
-                      if (!raw) return
-                      let from: { postId: number; timeslotId: number }
-                      try {
-                        from = JSON.parse(raw) as {
-                          postId: number
-                          timeslotId: number
-                        }
-                      } catch {
-                        return
-                      }
-                      if (
-                        from.postId === item.postId &&
-                        from.timeslotId === timeslot.id
-                      ) {
-                        return
-                      }
-                      swapCells(from, {
-                        postId: item.postId,
-                        timeslotId: timeslot.id,
-                      })
-                      setFocus({ row, col })
-                    }}
+                    draggable={!readOnly && !isEditingCell}
+                    onClick={
+                      readOnly
+                        ? undefined
+                        : () => {
+                            setFocus({ row, col })
+                            setEditing(false)
+                          }
+                    }
+                    onDoubleClick={
+                      readOnly
+                        ? undefined
+                        : () => {
+                            setFocus({ row, col })
+                            setEditing(true)
+                          }
+                    }
+                    onDragStart={
+                      readOnly
+                        ? undefined
+                        : (e) => {
+                            if (isEditingCell) {
+                              e.preventDefault()
+                              return
+                            }
+                            e.dataTransfer.setData(
+                              CELL_DRAG_TYPE,
+                              JSON.stringify({
+                                postId: item.postId,
+                                timeslotId: timeslot.id,
+                              }),
+                            )
+                            e.dataTransfer.effectAllowed = 'move'
+                            setFocus({ row, col })
+                            setEditing(false)
+                          }
+                    }
+                    onDragOver={
+                      readOnly
+                        ? undefined
+                        : (e) => {
+                            if (![...e.dataTransfer.types].includes(CELL_DRAG_TYPE)) {
+                              return
+                            }
+                            e.preventDefault()
+                            e.dataTransfer.dropEffect = 'move'
+                          }
+                    }
+                    onDrop={
+                      readOnly
+                        ? undefined
+                        : (e) => {
+                            e.preventDefault()
+                            const raw = e.dataTransfer.getData(CELL_DRAG_TYPE)
+                            if (!raw) return
+                            let from: { postId: number; timeslotId: number }
+                            try {
+                              from = JSON.parse(raw) as {
+                                postId: number
+                                timeslotId: number
+                              }
+                            } catch {
+                              return
+                            }
+                            if (
+                              from.postId === item.postId &&
+                              from.timeslotId === timeslot.id
+                            ) {
+                              return
+                            }
+                            swapCells(from, {
+                              postId: item.postId,
+                              timeslotId: timeslot.id,
+                            })
+                            setFocus({ row, col })
+                          }
+                    }
                   >
                     {isEditingCell ? (
                       <Combobox
@@ -260,13 +302,18 @@ export default function AssignGrid({
                         defaultIsOpen
                       />
                     ) : (
-                      <div className="relative flex min-h-8 items-center justify-center px-5">
+                      <div
+                        className={cn(
+                          'relative flex min-h-8 items-center justify-center',
+                          !readOnly && 'px-5',
+                        )}
+                      >
                         <span className="truncate">
                           {isNil(assignment?.workerId)
                             ? '—'
                             : (workerMap.get(assignment.workerId)?.name ?? '—')}
                         </span>
-                        {!isNil(assignment?.workerId) ? (
+                        {!readOnly && !isNil(assignment?.workerId) ? (
                           <button
                             type="button"
                             className={cn(
@@ -302,9 +349,11 @@ export default function AssignGrid({
           ))}
         </TableBody>
       </Table>
-      <p className="mt-2 text-xs text-muted-foreground">
-        方向鍵／Tab 移動；Enter 開啟選擇；Esc 關閉。懸停或選中格子按 × 清除指派；拖曳格子可對調職員；拖曳日期標題可交換整日編排。
-      </p>
+      {!readOnly ? (
+        <p className="mt-2 text-xs text-muted-foreground">
+          方向鍵／Tab 移動；Enter 開啟選擇；Esc 關閉。懸停或選中格子按 × 清除指派；拖曳格子可對調職員；拖曳日期標題可交換整日編排。
+        </p>
+      ) : null}
     </div>
   )
 }

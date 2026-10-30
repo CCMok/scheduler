@@ -21,7 +21,6 @@ import { searchParamKey } from '../param'
 import DeleteRosterDialog from '../delete-roster-dialog'
 import { Card, CardContent } from '@/external/shadcn/components/ui/card'
 import { Separator } from '@/external/shadcn/components/ui/separator'
-import { clearRosterDraft, draftKeyForNew } from '@/libs/roster/draft/roster-draft'
 
 const TEAM_SELECT_ID = 'team-select'
 const ROSTER_SELECT_ID = 'roster-select'
@@ -62,8 +61,6 @@ export default function WorkspaceShell({
 
   const startNew = () => {
     if (isNil(teamId)) return
-    // Explicit new = blank sheet. Refresh on create page still restores draft.
-    clearRosterDraft(draftKeyForNew(teamId))
     router.push(ROUTE.private.roster.new({ [searchParamKey.TEAM_ID]: teamId }))
   }
 
@@ -167,7 +164,7 @@ export default function WorkspaceShell({
             posts={posts}
             workers={workers}
             serverRoster={roster}
-            title={roster.name || '編輯值班表'}
+            title={roster.name || '值班表'}
             variant="edit"
           />
         </WorkspaceStoreProvider>

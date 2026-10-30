@@ -18,17 +18,19 @@ import { Message } from '@/libs/_general/service/message'
 import { exportWorkingToXLSX } from '../export-utils'
 import { ROUTE } from '@/libs/_general/route/route-config'
 import { searchParamKey } from '../param'
-import { clearRosterDraft, draftKeyForNew } from '@/libs/roster/draft/roster-draft'
 import { Input } from '@/external/shadcn/components/ui/input'
 
 export default function WorkspaceToolbar({
   posts,
   workers,
   variant = 'edit',
+  viewOnly = false,
 }: Readonly<{
   posts: Post[]
   workers: Worker[]
   variant?: 'create' | 'edit'
+  /** View mode: export only, no name / mutate actions */
+  viewOnly?: boolean
 }>) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -41,11 +43,8 @@ export default function WorkspaceToolbar({
   const timeslots = useWorkspaceStore((s) => s.timeslots)
   const offs = useWorkspaceStore((s) => s.offs)
   const workingRoster = useWorkspaceStore((s) => s.workingRoster)
-  const dirty = useWorkspaceStore((s) => s.dirty)
-  const localDraftReady = useWorkspaceStore((s) => s.localDraftReady)
   const setArrangeResult = useWorkspaceStore((s) => s.setArrangeResult)
   const markSaved = useWorkspaceStore((s) => s.markSaved)
-  const persistDraft = useWorkspaceStore((s) => s.persistDraft)
   const selectedTimeslotId = useWorkspaceStore((s) => s.selectedTimeslotId)
   const dayUndoStack = useWorkspaceStore((s) => s.dayUndoStack)
   const assignOnOffConflicts = useWorkspaceStore((s) => s.assignOnOffConflicts)
@@ -53,6 +52,7 @@ export default function WorkspaceToolbar({
   const undoDayOp = useWorkspaceStore((s) => s.undoDayOp)
 
   useEffect(() => {
+    if (viewOnly) return
     const onKey = (e: KeyboardEvent) => {
       if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 'z') return
       if (dayUndoStack.length === 0) return
@@ -66,23 +66,33 @@ export default function WorkspaceToolbar({
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [dayUndoStack.length, undoDayOp])
+  }, [dayUndoStack.length, undoDayOp, viewOnly])
 
-  useEffect(() => {
-    const handle = window.setTimeout(() => {
-      persistDraft()
-    }, 500)
-    return () => window.clearTimeout(handle)
-  }, [
-    name,
-    timeslots,
-    offs,
-    workingRoster,
-    dirty,
-    rosterId,
-    teamId,
-    persistDraft,
-  ])
+  const exportXlsx = async () => {
+    if (workingRoster.length === 0) {
+      toast.error('尚無可匯出的編排')
+      return
+    }
+    await exportWorkingToXLSX({
+      name: name || '值班表',
+      timeslotNames: timeslots.map((t) => t.name),
+      rosterItems: workingRoster,
+      posts,
+      workers,
+    })
+    toast.success('匯出值班表成功')
+  }
+
+  if (viewOnly) {
+    return (
+      <div className="flex flex-wrap gap-2">
+        <CustomButton type="button" variant="outline" onClick={exportXlsx}>
+          <FileDown />
+          匯出
+        </CustomButton>
+      </div>
+    )
+  }
 
   const runArrange = () => {
     if (timeslots.length === 0) {
@@ -160,7 +170,6 @@ export default function WorkspaceToolbar({
           toast.error(response.message)
           return
         }
-        clearRosterDraft(draftKeyForNew(teamId))
         toast.success('已儲存')
         router.replace(
           ROUTE.private.roster.base({
@@ -191,44 +200,18 @@ export default function WorkspaceToolbar({
     }
   }
 
-  const exportXlsx = async () => {
-    if (workingRoster.length === 0) {
-      toast.error('尚無可匯出的編排')
-      return
-    }
-    await exportWorkingToXLSX({
-      name: name || '值班表',
-      timeslotNames: timeslots.map((t) => t.name),
-      rosterItems: workingRoster,
-      posts,
-      workers,
-    })
-    toast.success('匯出值班表成功')
-  }
-
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex flex-wrap items-end gap-3">
-        <div className="min-w-48 flex-1 space-y-1">
-          <label className="text-sm text-muted-foreground" htmlFor="roster-name">
-            名稱
-          </label>
-          <Input
-            id="roster-name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="值班表名稱"
-          />
-        </div>
-        <div className="text-sm text-muted-foreground">
-          {!localDraftReady
-            ? '\u00a0'
-            : rosterId == null
-              ? '本機未存'
-              : dirty
-                ? '有未存變更'
-                : '已與伺服器同步'}
-        </div>
+      <div className="min-w-48 max-w-md space-y-1">
+        <label className="text-sm text-muted-foreground" htmlFor="roster-name">
+          名稱
+        </label>
+        <Input
+          id="roster-name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="值班表名稱"
+        />
       </div>
       <div className="flex flex-wrap gap-2">
         <LoadingButton
