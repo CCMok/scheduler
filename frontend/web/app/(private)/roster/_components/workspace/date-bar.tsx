@@ -1,19 +1,106 @@
 'use client'
 
-import { format, parse } from 'date-fns'
+import {
+  Children,
+  createContext,
+  isValidElement,
+  use,
+  type ComponentProps,
+  type ReactNode,
+  type ThHTMLAttributes,
+} from 'react'
+import { addDays, format, getDay, parse, startOfWeek } from 'date-fns'
 import { zhHK } from 'date-fns/locale'
 import { X } from 'lucide-react'
 import { Calendar } from '@/external/shadcn/components/ui/calendar'
 import CustomButton from '@/components/_general/_custom/button/custom-button'
 import { cn } from '@/external/shadcn/libs/utils'
 import { useWorkspaceStore } from './workspace-store-provider'
-import { timeslotsToDates } from '@/libs/roster/workspace/date-presets'
+import {
+  timeslotsToDates,
+  toggleWeekdayInMonth,
+} from '@/libs/roster/workspace/date-presets'
+
+const MonthDateContext = createContext<Date | null>(null)
+const WeekdayColumnContext = createContext(0)
 
 function timeslotToDate(name: string): Date | null {
   const parsed = parse(name, 'PP', new Date(), { locale: zhHK })
   if (!Number.isNaN(parsed.getTime())) return parsed
   const fallback = new Date(name)
   return Number.isNaN(fallback.getTime()) ? null : fallback
+}
+
+function columnIndexToWeekday(columnIndex: number): number {
+  return getDay(addDays(startOfWeek(new Date(), { locale: zhHK }), columnIndex))
+}
+
+function WeekdayHeader({
+  children,
+  className,
+  style,
+  'aria-label': weekdayLabel,
+  ...props
+}: ThHTMLAttributes<HTMLTableCellElement>) {
+  const month = use(MonthDateContext)
+  const columnIndex = use(WeekdayColumnContext)
+  const timeslots = useWorkspaceStore((s) => s.timeslots)
+  const setTimeslotsFromDates = useWorkspaceStore((s) => s.setTimeslotsFromDates)
+
+  return (
+    <th className={className} style={style} scope="col" {...props}>
+      <button
+        type="button"
+        className={cn(
+          'inline-flex size-full items-center justify-center rounded-md px-0.5 py-1',
+          'hover:bg-accent hover:text-accent-foreground',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        )}
+        aria-label={
+          weekdayLabel
+            ? `選取或取消本月全部${weekdayLabel}`
+            : '選取或取消本月該星期'
+        }
+        disabled={month == null}
+        onClick={() => {
+          if (month == null) return
+          setTimeslotsFromDates(
+            toggleWeekdayInMonth(
+              timeslotsToDates(timeslots),
+              month,
+              columnIndexToWeekday(columnIndex),
+            ),
+          )
+        }}
+      >
+        {children}
+      </button>
+    </th>
+  )
+}
+
+function WeekdaysRow({
+  children,
+  ...props
+}: { children?: ReactNode } & ComponentProps<'tr'>) {
+  let columnIndex = 0
+  return (
+    <thead>
+      <tr {...props}>
+        {Children.map(children, (child) => {
+          if (!isValidElement(child)) return child
+          // Week number header (unused here) has no weekday aria-label pattern from DayPicker weekdays
+          const index = columnIndex
+          columnIndex += 1
+          return (
+            <WeekdayColumnContext key={index} value={index}>
+              {child}
+            </WeekdayColumnContext>
+          )
+        })}
+      </tr>
+    </thead>
+  )
 }
 
 export default function DateBar() {
@@ -39,6 +126,21 @@ export default function DateBar() {
           setTimeslotsFromDates(dates ?? [])
         }}
         locale={zhHK}
+        classNames={{
+          weekday: cn(
+            'text-muted-foreground rounded-md flex-1 font-normal text-[0.8rem] select-none',
+            'p-0',
+          ),
+        }}
+        components={{
+          Month: ({ calendarMonth, displayIndex: _displayIndex, ...props }) => (
+            <MonthDateContext value={calendarMonth.date}>
+              <div {...props} />
+            </MonthDateContext>
+          ),
+          Weekdays: WeekdaysRow,
+          Weekday: WeekdayHeader,
+        }}
       />
       <div
         className={cn(
@@ -66,7 +168,7 @@ export default function DateBar() {
 
         {timeslots.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            點左方日曆加入值班日。
+            點日曆選日；點星期標題可選／取消該月全部該日。
           </p>
         ) : (
           <ul
