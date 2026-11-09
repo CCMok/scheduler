@@ -13,12 +13,12 @@ import {
   SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/external/shadcn/components/ui/sidebar";
 import { Calendar, UserPen, UsersRound } from "lucide-react";
 import { ComponentProps } from "react";
 import LogoutDropdownMenuItem from "./logout-dropdown-menu-item";
+import SidebarNavItem from "./sidebar-nav-item";
 import SidebarNavLink from "./sidebar-nav-link";
 import UserDropdownMenuTrigger from "./user-dropdown-menu-trigger";
 import {
@@ -74,22 +74,14 @@ export default async function AppSidebar(
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <SidebarNavLink href={ROUTE.private.roster.base()}>
-                    <Calendar />
-                    <span>值班表</span>
-                  </SidebarNavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <SidebarNavLink href={ROUTE.private.setting.team.base()}>
-                    <UsersRound />
-                    <span>團隊</span>
-                  </SidebarNavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              <SidebarNavItem href={ROUTE.private.roster.base()}>
+                <Calendar />
+                <span>值班表</span>
+              </SidebarNavItem>
+              <SidebarNavItem href={ROUTE.private.setting.team.base()}>
+                <UsersRound />
+                <span>團隊</span>
+              </SidebarNavItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
