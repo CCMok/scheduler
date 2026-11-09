@@ -85,7 +85,7 @@ export default function WorkspaceShell({
               icon={<UsersRound />}
             />
           </FieldLayout>
-          <FieldLayout label="值班表" id={ROSTER_SELECT_ID} className="min-w-0 flex-1 sm:max-w-md">
+          <FieldLayout label="值班表" id={ROSTER_SELECT_ID} className="w-fit [&>*]:w-auto">
             <div className="flex items-center gap-1">
               <CustomButton
                 variant="ghost"
@@ -104,17 +104,15 @@ export default function WorkspaceShell({
               >
                 <ChevronLeft />
               </CustomButton>
-              <div className="min-w-0 flex-1">
-                <Combobox
-                  placeHolder="請選擇值班表"
-                  value={rosterId}
-                  setValue={setRosterId}
-                  options={rosters}
-                  getOptionValue={(r) => r.id}
-                  getOptionDisplay={(r) => r.name}
-                  icon={<Calendar />}
-                />
-              </div>
+              <Combobox
+                placeHolder="請選擇值班表"
+                value={rosterId}
+                setValue={setRosterId}
+                options={rosters}
+                getOptionValue={(r) => r.id}
+                getOptionDisplay={(r) => r.name}
+                icon={<Calendar />}
+              />
               <CustomButton
                 variant="ghost"
                 size="icon"

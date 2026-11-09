@@ -18,6 +18,7 @@ export default function Combobox<T, V extends Key>({
   placeHolder,
   icon,
   defaultIsOpen = false,
+  className,
 }: Readonly<{
   id?: string;
   value: V | undefined;
@@ -29,6 +30,7 @@ export default function Combobox<T, V extends Key>({
   placeHolder?: string;
   icon?: ReactNode;
   defaultIsOpen?: boolean;
+  className?: string;
 }>) {
   const [open, setOpen] = useState(defaultIsOpen)
   const selectedItem = options.find((option) => getOptionValue(option) === value)
@@ -41,7 +43,7 @@ export default function Combobox<T, V extends Key>({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-(--input-width)"
+          className={cn("w-(--input-width)", className)}
         >
           {icon}
           <span className={cn("truncate", !value && "text-muted-foreground")}>
@@ -53,7 +55,7 @@ export default function Combobox<T, V extends Key>({
           <ChevronDown className='ml-auto' />
         </CustomButton>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-(--radix-popover-trigger-width) p-0">
         <Command>
           <CommandInput placeholder="搜尋..." />
           <CommandList>
