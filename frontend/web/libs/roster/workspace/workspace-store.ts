@@ -425,6 +425,7 @@ export function createWorkspaceStore(init: {
     swapDays: (timeslotIdA, timeslotIdB) => {
       if (timeslotIdA === timeslotIdB) return;
       const state = get();
+      if (state.mode === "off") return;
       const workingRoster = swapDayContent({
         workingRoster: state.workingRoster,
         timeslotIdA,

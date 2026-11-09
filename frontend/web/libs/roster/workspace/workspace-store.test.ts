@@ -85,6 +85,7 @@ describe("workspace undo", () => {
     store.getState().toggleOff(10, a!.id);
     expect(store.getState().dayUndoStack).toHaveLength(2);
 
+    store.getState().setMode("assign");
     store.getState().swapDays(a!.id, b!.id);
     expect(store.getState().offs[0]?.timeslotIds).toEqual([a!.id]);
     expect(
@@ -103,6 +104,35 @@ describe("workspace undo", () => {
         .workingRoster[0]?.assignments.find((x) => x.timeslotId === a!.id)
         ?.workerId,
     ).toBe(10);
+  });
+
+  it("swapDays no-op in off mode", () => {
+    const store = createWorkspaceStore({ teamId: 1, postIds: [1] });
+    store.getState().setTimeslotsFromDates([
+      new Date("2026-03-01T00:00:00"),
+      new Date("2026-03-02T00:00:00"),
+    ]);
+    const [a, b] = store.getState().timeslots;
+    store.getState().setWorkingRoster([
+      {
+        postId: 1,
+        assignments: [
+          { id: 1, timeslotId: a!.id, workerId: 10 },
+          { id: 2, timeslotId: b!.id, workerId: 20 },
+        ],
+      },
+    ]);
+    const stackLen = store.getState().dayUndoStack.length;
+    expect(store.getState().mode).toBe("off");
+
+    store.getState().swapDays(a!.id, b!.id);
+    expect(
+      store
+        .getState()
+        .workingRoster[0]?.assignments.find((x) => x.timeslotId === a!.id)
+        ?.workerId,
+    ).toBe(10);
+    expect(store.getState().dayUndoStack).toHaveLength(stackLen);
   });
 
   it("undoes add / remove / clear dates", () => {

@@ -144,6 +144,7 @@ export default function OffMatrix({
                     timeslotId={t.id}
                     label={t.name}
                     readOnly={readOnly}
+                    allowSwap={false}
                   />
                 </TableHead>
               ))}
