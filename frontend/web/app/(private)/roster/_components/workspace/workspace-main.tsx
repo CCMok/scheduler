@@ -45,7 +45,7 @@ export default function WorkspaceMain({
       >
         <div className="workspace-chrome">
           <div className="min-w-0">
-            <h2 className="truncate text-sm font-semibold tracking-tight">
+            <h2 className="workspace-title">
               {showViewEditToggle && isEditing ? `編輯中 · ${title}` : title}
             </h2>
             {showViewEditToggle && !isEditing ? (

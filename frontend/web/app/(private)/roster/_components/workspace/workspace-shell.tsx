@@ -70,7 +70,7 @@ export default function WorkspaceShell({
   const nextRosterId = currentIndex > 0 ? rosters[currentIndex - 1]?.id : undefined
 
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-3">
       <section className="workspace-nav">
         <div className="toolbar-row items-end">
           <FieldLayout label="團隊" id={TEAM_SELECT_ID} className="w-(--input-width)">

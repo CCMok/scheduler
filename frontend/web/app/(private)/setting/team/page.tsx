@@ -1,4 +1,5 @@
 import HeaderLayout from "@/components/_general/header/header-layout";
+import SettingPageIntro from "@/components/_general/setting/setting-page-intro";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/external/shadcn/components/ui/breadcrumb";
 import TeamSelector from "./_components/team-selector";
 import TeamDetailPanel from "./_components/team-detail-panel";
@@ -35,9 +36,13 @@ export default async function TeamSettingPage({
         </Breadcrumb>
       }
     >
-      <div className='space-y-2 h-full flex flex-col'>
+      <div className="flex h-full min-h-0 flex-col gap-3">
+        <SettingPageIntro
+          title="團隊設定"
+          support="管理職員、職位、偏好與基本資料。"
+        />
         <TeamSelector teamsPromise={getTeams()} />
-        {team && <TeamDetailPanel team={team} className="flex-1" />}
+        {team ? <TeamDetailPanel team={team} className="min-h-0 flex-1" /> : null}
       </div>
     </HeaderLayout>
   )

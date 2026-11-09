@@ -1,4 +1,5 @@
 import HeaderLayout from "@/components/_general/header/header-layout";
+import SettingPageIntro from "@/components/_general/setting/setting-page-intro";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/external/shadcn/components/ui/breadcrumb";
 import UpdatePasswordCard from "./_components/update-password/update-password-card";
 import UpdateNameCard from "./_components/update-name/update-name-card";
@@ -22,6 +23,10 @@ export default function UserSettingPage() {
       }
     >
       <div className="setting-stack">
+        <SettingPageIntro
+          title="帳號設定"
+          support="管理顯示名稱與登入密碼。"
+        />
         <UpdateNameCard userNamePromise={getUserName()} />
         <UpdatePasswordCard />
       </div>

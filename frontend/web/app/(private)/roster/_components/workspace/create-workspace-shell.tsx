@@ -82,7 +82,7 @@ export default function CreateWorkspaceShell({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-3">
       <section className="workspace-nav">
         <div className="toolbar-row items-end">
           <CustomButton

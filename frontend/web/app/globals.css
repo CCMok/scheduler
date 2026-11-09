@@ -203,14 +203,46 @@
 }
 
 .app-shell-main {
+  position: relative;
   background-color: var(--background);
-  background-image: repeating-linear-gradient(
-    90deg,
-    transparent,
-    transparent calc(4.5rem - 1px),
-    var(--shell-stripe) calc(4.5rem - 1px),
-    var(--shell-stripe) 4.5rem
-  );
+  background-image:
+    radial-gradient(
+      90% 45% at 50% -15%,
+      color-mix(in oklch, var(--primary) 8%, transparent),
+      transparent 55%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent calc(4.5rem - 1px),
+      var(--shell-stripe) calc(4.5rem - 1px),
+      var(--shell-stripe) 4.5rem
+    );
+}
+
+/* Private page chrome */
+.private-page {
+  @apply relative z-10 flex min-h-0 flex-1 flex-col;
+}
+
+.private-header {
+  @apply flex h-11 shrink-0 items-center gap-2 border-b border-border/60 bg-card/55 px-3 backdrop-blur-sm;
+}
+
+.private-main {
+  @apply relative z-10 flex min-h-0 flex-1 flex-col overflow-auto p-2.5 sm:p-3;
+}
+
+.setting-page-intro {
+  @apply mb-3 space-y-1;
+}
+
+.setting-page-title {
+  @apply text-xl font-semibold tracking-tight text-foreground sm:text-2xl;
+}
+
+.setting-page-support {
+  @apply text-sm text-muted-foreground;
 }
 
 .font-display {
@@ -219,11 +251,11 @@
 
 /* Dense tool panel — roster / settings chrome */
 .tool-panel {
-  @apply rounded-lg border border-border/80 bg-card/90 text-card-foreground;
+  @apply rounded-lg border border-border/50 bg-card/80 text-card-foreground shadow-xs backdrop-blur-sm;
 }
 
 .tool-panel-header {
-  @apply flex flex-wrap items-center justify-between gap-2 border-b border-border/80 px-3 py-2;
+  @apply flex flex-wrap items-center justify-between gap-2 border-b border-border/60 px-3 py-2;
 }
 
 .tool-panel-body {
@@ -462,12 +494,30 @@
 }
 
 .setting-stack {
-  @apply mx-auto flex w-full max-w-xl flex-col gap-2;
+  @apply mx-auto flex w-full max-w-xl flex-col gap-3;
+}
+
+.setting-stack [data-slot="card"],
+.workspace-panel [data-slot="card"],
+.setting-wizard [data-slot="card"] {
+  @apply border-border/50 bg-card/80 shadow-xs backdrop-blur-sm;
+}
+
+.setting-stack [data-slot="card-title"],
+.workspace-panel [data-slot="card-title"],
+.setting-wizard [data-slot="card-title"] {
+  @apply text-base font-semibold tracking-tight;
+}
+
+.setting-stack [data-slot="card-description"],
+.workspace-panel [data-slot="card-description"],
+.setting-wizard [data-slot="card-description"] {
+  @apply text-xs text-muted-foreground;
 }
 
 /* Roster workspace — calm density, grid-first */
 .workspace-panel {
-  @apply overflow-hidden rounded-lg border border-border/80 bg-card/90 text-card-foreground;
+  @apply overflow-hidden rounded-lg border border-border/50 bg-card/80 text-card-foreground shadow-xs backdrop-blur-sm;
 }
 
 .workspace-panel[data-editing="true"] {
@@ -478,11 +528,15 @@
 }
 
 .workspace-chrome {
-  @apply flex min-h-12 flex-wrap items-center gap-x-3 gap-y-2 border-b border-border px-3 py-2;
+  @apply flex min-h-12 flex-wrap items-center gap-x-3 gap-y-2 border-b border-border/60 bg-card/40 px-3 py-2;
 }
 
 .workspace-chrome-end {
   @apply ml-auto flex flex-wrap items-center gap-1.5;
+}
+
+.workspace-title {
+  @apply truncate text-sm font-semibold tracking-tight;
 }
 
 .workspace-body {
@@ -490,11 +544,11 @@
 }
 
 .workspace-hint {
-  @apply border-b border-border/70 bg-muted/35 px-3 py-1.5 text-xs text-muted-foreground;
+  @apply border-b border-border/60 bg-muted/30 px-3 py-1.5 text-xs text-muted-foreground;
 }
 
 .workspace-nav {
-  @apply rounded-lg border border-border/80 bg-card/90 px-2.5 py-2 backdrop-blur-sm;
+  @apply rounded-lg border border-border/50 bg-card/80 px-2.5 py-2 shadow-xs backdrop-blur-sm;
 }
 
 .roster-grid {

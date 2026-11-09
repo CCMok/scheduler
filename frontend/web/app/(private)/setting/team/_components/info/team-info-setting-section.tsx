@@ -43,7 +43,7 @@ export default function TeamInfoSettingSection({
   })
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <form
         id={FORM_ID}
         onSubmit={(e) => {

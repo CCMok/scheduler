@@ -2,6 +2,7 @@
 
 import CustomButton from "@/components/_general/_custom/button/custom-button";
 import HeaderLayout from "@/components/_general/header/header-layout";
+import SettingPageIntro from "@/components/_general/setting/setting-page-intro";
 import { Badge } from "@/external/shadcn/components/ui/badge";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/external/shadcn/components/ui/breadcrumb";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
@@ -172,11 +173,16 @@ export default function TeamNewWizard() {
         </Breadcrumb>
       }
     >
-      <div className="grid min-h-0 flex-1 gap-2 lg:grid-cols-[260px_minmax(0,1fr)]">
+      <div className="setting-wizard flex min-h-0 flex-1 flex-col gap-3">
+        <SettingPageIntro
+          title="新增團隊"
+          support="完成後可前往建立值班表。"
+        />
+        <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[260px_minmax(0,1fr)]">
         <Card className="h-fit">
           <CardHeader>
-            <CardTitle>新增團隊</CardTitle>
-            <CardDescription>完成後前往自動建立值班表</CardDescription>
+            <CardTitle>步驟</CardTitle>
+            <CardDescription>依序完成基本資料與成員</CardDescription>
           </CardHeader>
           <CardContent className="space-y-1">
             {steps.map((step, index) => {
@@ -291,6 +297,7 @@ export default function TeamNewWizard() {
             </div>
           </CardFooter>
         </Card>
+        </div>
       </div>
 
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>

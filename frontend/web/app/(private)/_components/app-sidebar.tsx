@@ -41,7 +41,7 @@ export default async function AppSidebar(
 ) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="border-b border-sidebar-border">
+      <SidebarHeader className="border-b border-sidebar-border/70 bg-sidebar/80 backdrop-blur-sm">
         <SidebarMenu>
           <SidebarMenuItem>
             <div className="flex h-10 items-center px-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">

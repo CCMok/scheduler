@@ -11,8 +11,8 @@ export default function HeaderLayout({
   actions?: ReactNode;
 }>) {
   return (
-    <>
-      <header className="flex h-11 shrink-0 items-center gap-2 border-b border-border/80 bg-card/60 px-3 backdrop-blur-sm">
+    <div className="private-page">
+      <header className="private-header">
         <SidebarTrigger className="-ml-1" />
         <div className="min-w-0 flex-1 truncate text-sm font-medium tracking-tight">
           {title}
@@ -21,7 +21,7 @@ export default function HeaderLayout({
           <div className="flex shrink-0 items-center gap-1.5">{actions}</div>
         ) : null}
       </header>
-      <main className="flex-1 overflow-auto p-2.5 sm:p-3">{children}</main>
-    </>
+      <main className="private-main">{children}</main>
+    </div>
   );
 }
