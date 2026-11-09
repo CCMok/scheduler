@@ -5,7 +5,7 @@ import TeamSelector from "./_components/team-selector";
 import TeamDetailPanel from "./_components/team-detail-panel";
 import { getTeamById, getTeams } from "@/libs/team/read/get-team-service";
 import { SearchParam } from "./_components/param";
-import { Team } from "@/external/prisma/generated/client";
+import { isNil } from "lodash";
 
 export default async function TeamSettingPage({
   searchParams,
@@ -13,12 +13,14 @@ export default async function TeamSettingPage({
   searchParams: Promise<SearchParam>;
 }>) {
   const awaitedParams = await searchParams;
-  const teamId = Number.parseInt(awaitedParams.teamId ?? '');
+  const teamIdParam = Number.parseInt(awaitedParams.teamId ?? "");
 
-  let team: Team | undefined;
-  if (!Number.isNaN(teamId)) {
-    team = await getTeamById(teamId);
-  }
+  const teams = await getTeams();
+  const teamId = teams.some((t) => t.id === teamIdParam)
+    ? teamIdParam
+    : teams[0]?.id;
+
+  const team = isNil(teamId) ? undefined : await getTeamById(teamId);
 
   return (
     <HeaderLayout
@@ -41,7 +43,7 @@ export default async function TeamSettingPage({
           title="團隊設定"
           support="管理職員、職位、偏好與基本資料。"
         />
-        <TeamSelector teamsPromise={getTeams()} />
+        <TeamSelector teams={teams} teamId={teamId} />
         {team ? <TeamDetailPanel team={team} className="min-h-0 flex-1" /> : null}
       </div>
     </HeaderLayout>
