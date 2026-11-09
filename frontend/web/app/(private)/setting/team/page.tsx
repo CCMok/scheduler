@@ -1,6 +1,6 @@
 import HeaderLayout from "@/components/_general/header/header-layout";
 import SettingPageIntro from "@/components/_general/setting/setting-page-intro";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/external/shadcn/components/ui/breadcrumb";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/external/shadcn/components/ui/breadcrumb";
 import TeamSelector from "./_components/team-selector";
 import TeamDetailPanel from "./_components/team-detail-panel";
 import { getTeamById, getTeams } from "@/libs/team/read/get-team-service";
@@ -27,10 +27,6 @@ export default async function TeamSettingPage({
       title={
         <Breadcrumb>
           <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbPage>設定</BreadcrumbPage>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbPage>團隊</BreadcrumbPage>
             </BreadcrumbItem>
