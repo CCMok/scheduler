@@ -1,14 +1,14 @@
 import CustomLink from "@/components/_general/_custom/link/custom-link";
 import Logo from "@/components/_general/logo/logo";
-import ThemeMenuItems from "@/components/_general/theme/theme-menu-items";
+import ThemeToggle from "@/components/_general/theme/theme-toggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuSeparator,
 } from "@/external/shadcn/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -62,8 +62,6 @@ export default async function AppSidebar(
                 className="w-(--radix-popper-anchor-width)"
                 align="start"
               >
-                <ThemeMenuItems />
-                <DropdownMenuSeparator />
                 <LogoutDropdownMenuItem />
               </DropdownMenuContent>
             </DropdownMenu>
@@ -117,6 +115,13 @@ export default async function AppSidebar(
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className="border-t border-sidebar-border/70">
+        <SidebarMenu>
+          <SidebarMenuItem className="flex justify-start group-data-[collapsible=icon]:justify-center">
+            <ThemeToggle />
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }
