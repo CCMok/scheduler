@@ -24,7 +24,7 @@ export default function UserSettingPage() {
     >
       <div className="setting-stack">
         <SettingPageIntro
-          title="帳號設定"
+          title="用戶設定"
           support="管理顯示名稱與登入密碼。"
         />
         <UpdateNameCard userNamePromise={getUserName()} />

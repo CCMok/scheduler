@@ -4,6 +4,7 @@ import ThemeToggle from "@/components/_general/theme/theme-toggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
 } from "@/external/shadcn/components/ui/dropdown-menu";
 import {
   Sidebar,
@@ -15,17 +16,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
 } from "@/external/shadcn/components/ui/sidebar";
-import {
-  Calendar,
-  ChevronRight,
-  Settings,
-  UserPen,
-  UsersRound,
-} from "lucide-react";
+import { Calendar, UserPen, UsersRound } from "lucide-react";
 import { ComponentProps } from "react";
 import LogoutDropdownMenuItem from "./logout-dropdown-menu-item";
 import UserDropdownMenuTrigger from "./user-dropdown-menu-trigger";
@@ -33,11 +25,6 @@ import {
   REDIRECT_PRIVATE_ROUTE,
   ROUTE,
 } from "@/libs/_general/route/route-config";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/external/shadcn/components/ui/collapsible";
 
 export default async function AppSidebar(
   props: Readonly<ComponentProps<typeof Sidebar>>,
@@ -71,6 +58,12 @@ export default async function AppSidebar(
                 className="w-(--radix-popper-anchor-width)"
                 align="start"
               >
+                <DropdownMenuItem asChild>
+                  <CustomLink href={ROUTE.private.setting.user}>
+                    <UserPen />
+                    <span>用戶設定</span>
+                  </CustomLink>
+                </DropdownMenuItem>
                 <LogoutDropdownMenuItem />
               </DropdownMenuContent>
             </DropdownMenu>
@@ -89,37 +82,14 @@ export default async function AppSidebar(
                   </CustomLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <Collapsible>
-                <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton className="group">
-                      <Settings />
-                      <span>設定</span>
-                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]:rotate-90" />
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild>
-                          <CustomLink href={ROUTE.private.setting.user}>
-                            <UserPen />
-                            <span>用戶</span>
-                          </CustomLink>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                      <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild>
-                          <CustomLink href={ROUTE.private.setting.team.base()}>
-                            <UsersRound />
-                            <span>團隊</span>
-                          </CustomLink>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </SidebarMenuItem>
-              </Collapsible>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <CustomLink href={ROUTE.private.setting.team.base()}>
+                    <UsersRound />
+                    <span>團隊</span>
+                  </CustomLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
