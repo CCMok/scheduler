@@ -29,7 +29,10 @@ import {
 import { ComponentProps } from "react";
 import LogoutDropdownMenuItem from "./logout-dropdown-menu-item";
 import UserDropdownMenuTrigger from "./user-dropdown-menu-trigger";
-import { ROUTE } from "@/libs/_general/route/route-config";
+import {
+  REDIRECT_PRIVATE_ROUTE,
+  ROUTE,
+} from "@/libs/_general/route/route-config";
 import {
   Collapsible,
   CollapsibleContent,
@@ -45,14 +48,20 @@ export default async function AppSidebar(
         <SidebarMenu>
           <SidebarMenuItem>
             <div className="flex h-10 items-center px-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
-              <Logo
-                size="sm"
-                isRedirectHome={false}
-                className="group-data-[collapsible=icon]:hidden"
-              />
-              <span className="font-display hidden text-base font-semibold text-primary group-data-[collapsible=icon]:inline">
-                S
-              </span>
+              <CustomLink
+                href={REDIRECT_PRIVATE_ROUTE}
+                className="inline-flex items-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+                aria-label="回到首頁"
+              >
+                <Logo
+                  size="sm"
+                  isRedirectHome={false}
+                  className="group-data-[collapsible=icon]:hidden"
+                />
+                <span className="font-display hidden text-base font-semibold text-primary group-data-[collapsible=icon]:inline">
+                  S
+                </span>
+              </CustomLink>
             </div>
           </SidebarMenuItem>
           <SidebarMenuItem>
