@@ -1,7 +1,6 @@
 'use client'
 
 import CustomButton from "@/components/_general/_custom/button/custom-button";
-import LoadingButton from "@/components/_general/_custom/button/loading-button";
 import ToolbarButton from "@/components/_general/_custom/button/toolbar-button";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/external/shadcn/components/ui/dialog";
@@ -69,7 +68,7 @@ export default function DeletePostSection({
             <DialogClose asChild>
               <CustomButton variant="outline">返回</CustomButton>
             </DialogClose>
-            <LoadingButton
+            <CustomButton
               variant='destructive'
               isLoading={isSubmitting}
               onClick={async (e) => {
@@ -80,7 +79,7 @@ export default function DeletePostSection({
               }}
             >
               確定
-            </LoadingButton>
+            </CustomButton>
           </DialogFooter>
         </DialogContent>
       </Dialog>

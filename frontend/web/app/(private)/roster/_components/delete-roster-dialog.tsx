@@ -1,7 +1,6 @@
 'use client'
 
 import CustomButton from "@/components/_general/_custom/button/custom-button";
-import LoadingButton from "@/components/_general/_custom/button/loading-button";
 import ToolbarButton from "@/components/_general/_custom/button/toolbar-button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/external/shadcn/components/ui/dialog";
 import { deleteRosterAction } from "@/libs/roster/delete/delete-roster-action";
@@ -62,7 +61,7 @@ export default function DeleteRosterDialog({
           <DialogClose asChild>
             <CustomButton variant="outline">返回</CustomButton>
           </DialogClose>
-          <LoadingButton
+          <CustomButton
             variant='destructive'
             isLoading={isLoading}
             onClick={async () => {
@@ -72,7 +71,7 @@ export default function DeleteRosterDialog({
             }}
           >
             確定
-          </LoadingButton>
+          </CustomButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

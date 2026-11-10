@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/external/shadcn/components/ui/badge";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
 import ToolbarButton from "@/components/_general/_custom/button/toolbar-button";
-import ToolbarLoadingButton from "@/components/_general/_custom/button/toolbar-loading-button";
 import MultipleCombobox from "@/components/_general/_custom/combobox/multiple-combobox";
 import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
@@ -112,7 +111,7 @@ export default function AffinityGroupEditor<TOption>({
                     placeHolder="選擇"
                   />
                   <div className="flex flex-wrap gap-2">
-                    <ToolbarLoadingButton
+                    <ToolbarButton
                       type="button"
                       isLoading={isPending}
                       icon={<Check />}
@@ -129,7 +128,7 @@ export default function AffinityGroupEditor<TOption>({
                       }}
                     >
                       儲存
-                    </ToolbarLoadingButton>
+                    </ToolbarButton>
                     <ToolbarButton
                       type="button"
                       variant="ghost"
@@ -194,7 +193,7 @@ export default function AffinityGroupEditor<TOption>({
               placeHolder="選擇"
             />
             <div className="flex flex-wrap gap-2">
-              <ToolbarLoadingButton
+              <ToolbarButton
                 type="button"
                 isLoading={isPending}
                 icon={<Check />}
@@ -214,7 +213,7 @@ export default function AffinityGroupEditor<TOption>({
                 }}
               >
                 建立
-              </ToolbarLoadingButton>
+              </ToolbarButton>
               <ToolbarButton
                 type="button"
                 variant="ghost"

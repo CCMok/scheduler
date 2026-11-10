@@ -3,7 +3,6 @@
 import { useEffect, useState, useTransition } from 'react'
 import { Post, Worker } from '@/external/prisma/generated/client'
 import ToolbarButton from '@/components/_general/_custom/button/toolbar-button'
-import ToolbarLoadingButton from '@/components/_general/_custom/button/toolbar-loading-button'
 import { FileDown, RotateCcw, Save, Undo2, WandSparkles } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
@@ -243,7 +242,7 @@ export default function WorkspaceToolbar({
               匯出
             </ToolbarButton>
           ) : null}
-          <ToolbarLoadingButton
+          <ToolbarButton
             type="button"
             isLoading={isSaving}
             onClick={save}
@@ -251,15 +250,15 @@ export default function WorkspaceToolbar({
           >
             <Save />
             儲存
-          </ToolbarLoadingButton>
-          <ToolbarLoadingButton
+          </ToolbarButton>
+          <ToolbarButton
             type="button"
             isLoading={isPending}
             onClick={runArrange}
           >
             <WandSparkles />
             {hasAssignments ? '再排' : '自動編排'}
-          </ToolbarLoadingButton>
+          </ToolbarButton>
         </div>
       </div>
       {assignOnOffConflicts.length > 0 ? (

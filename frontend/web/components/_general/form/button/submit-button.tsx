@@ -1,6 +1,6 @@
 import { ComponentProps, ReactNode } from "react"
 import { useFormContext } from "../utils/form-utils"
-import LoadingButton from "../../_custom/button/loading-button";
+import CustomButton from "../../_custom/button/custom-button";
 
 export default function SubmitButton({
   children,
@@ -13,13 +13,13 @@ export default function SubmitButton({
   className?: string;
   icon?: ReactNode;
   formId?: string;
-  size?: ComponentProps<typeof LoadingButton>["size"];
+  size?: ComponentProps<typeof CustomButton>["size"];
 }>) {
   const form = useFormContext()
   return (
     <form.Subscribe selector={(state) => state.isSubmitting}>
       {(isSubmitting) => (
-        <LoadingButton
+        <CustomButton
           type="submit"
           isLoading={isSubmitting}
           className={className}
@@ -28,7 +28,7 @@ export default function SubmitButton({
           size={size}
         >
           {children}
-        </LoadingButton>
+        </CustomButton>
       )}
     </form.Subscribe>
   )
