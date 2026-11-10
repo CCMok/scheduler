@@ -4,7 +4,8 @@ import { useState, useTransition } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
 import { Badge } from "@/external/shadcn/components/ui/badge";
 import CustomButton from "@/components/_general/_custom/button/custom-button";
-import LoadingButton from "@/components/_general/_custom/button/loading-button";
+import ToolbarButton from "@/components/_general/_custom/button/toolbar-button";
+import ToolbarLoadingButton from "@/components/_general/_custom/button/toolbar-loading-button";
 import MultipleCombobox from "@/components/_general/_custom/combobox/multiple-combobox";
 import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
@@ -74,10 +75,9 @@ export default function AffinityGroupEditor<TOption>({
           <CardDescription>{description}</CardDescription>
         </div>
         {!creating ? (
-          <CustomButton
+          <ToolbarButton
             type="button"
             variant="outline"
-            size="sm"
             onClick={() => {
               setCreating(true);
               setDraftIds([]);
@@ -86,7 +86,7 @@ export default function AffinityGroupEditor<TOption>({
           >
             <Plus />
             新增組別
-          </CustomButton>
+          </ToolbarButton>
         ) : null}
       </CardHeader>
       <CardContent className="space-y-3">
@@ -112,9 +112,8 @@ export default function AffinityGroupEditor<TOption>({
                     placeHolder="選擇"
                   />
                   <div className="flex flex-wrap gap-2">
-                    <LoadingButton
+                    <ToolbarLoadingButton
                       type="button"
-                      size="sm"
                       isLoading={isPending}
                       icon={<Check />}
                       onClick={() => {
@@ -130,17 +129,16 @@ export default function AffinityGroupEditor<TOption>({
                       }}
                     >
                       儲存
-                    </LoadingButton>
-                    <CustomButton
+                    </ToolbarLoadingButton>
+                    <ToolbarButton
                       type="button"
                       variant="ghost"
-                      size="sm"
                       disabled={isPending}
                       onClick={() => setEditingId(null)}
                     >
                       <X />
                       取消
-                    </CustomButton>
+                    </ToolbarButton>
                   </div>
                 </>
               ) : (
@@ -196,9 +194,8 @@ export default function AffinityGroupEditor<TOption>({
               placeHolder="選擇"
             />
             <div className="flex flex-wrap gap-2">
-              <LoadingButton
+              <ToolbarLoadingButton
                 type="button"
-                size="sm"
                 isLoading={isPending}
                 icon={<Check />}
                 onClick={() => {
@@ -217,11 +214,10 @@ export default function AffinityGroupEditor<TOption>({
                 }}
               >
                 建立
-              </LoadingButton>
-              <CustomButton
+              </ToolbarLoadingButton>
+              <ToolbarButton
                 type="button"
                 variant="ghost"
-                size="sm"
                 disabled={isPending}
                 onClick={() => {
                   setCreating(false);
@@ -230,7 +226,7 @@ export default function AffinityGroupEditor<TOption>({
               >
                 <X />
                 取消
-              </CustomButton>
+              </ToolbarButton>
             </div>
           </div>
         ) : null}

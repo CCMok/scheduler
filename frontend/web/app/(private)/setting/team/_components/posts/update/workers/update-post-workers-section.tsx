@@ -83,7 +83,7 @@ export default function UpdatePostWorkersSection({
         <CardFooter>
           <form.AppForm>
             <Field className="[&>*]:w-full lg:[&>*]:w-fit">
-              <form.SubmitButton icon={<Check />}>
+              <form.SubmitButton size="sm" icon={<Check />}>
                 確定
               </form.SubmitButton>
             </Field>

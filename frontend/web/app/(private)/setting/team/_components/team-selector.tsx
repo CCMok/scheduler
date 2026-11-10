@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { isNil } from "lodash";
 import { searchParamKey } from "./param";
 import { ROUTE } from "@/libs/_general/route/route-config";
-import CustomButton from "@/components/_general/_custom/button/custom-button";
+import ToolbarButton from "@/components/_general/_custom/button/toolbar-button";
 import CustomLink from "@/components/_general/_custom/link/custom-link";
 
 const TEAM_SELECT_ID = 'team-select';
@@ -43,12 +43,12 @@ export default function TeamSelector({
           />
         </FieldLayout>
         <div className="toolbar-row-end">
-          <CustomButton asChild size="sm">
+          <ToolbarButton asChild>
             <CustomLink href={ROUTE.private.setting.team.new}>
               <Plus />
               新增
             </CustomLink>
-          </CustomButton>
+          </ToolbarButton>
         </div>
       </div>
     </section>

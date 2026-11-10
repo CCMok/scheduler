@@ -2,6 +2,7 @@
 
 import CustomButton from "@/components/_general/_custom/button/custom-button";
 import LoadingButton from "@/components/_general/_custom/button/loading-button";
+import ToolbarButton from "@/components/_general/_custom/button/toolbar-button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/external/shadcn/components/ui/dialog";
 import { deleteRosterAction } from "@/libs/roster/delete/delete-roster-action";
 import { isNil } from "lodash";
@@ -42,13 +43,13 @@ export default function DeleteRosterDialog({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <CustomButton
+        <ToolbarButton
           variant="destructive"
           disabled={isNil(id)}
         >
           <Trash />
           刪除
-        </CustomButton>
+        </ToolbarButton>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

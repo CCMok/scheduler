@@ -1,4 +1,4 @@
-import { ReactNode } from "react"
+import { ComponentProps, ReactNode } from "react"
 import { useFormContext } from "../utils/form-utils"
 import LoadingButton from "../../_custom/button/loading-button";
 
@@ -7,11 +7,13 @@ export default function SubmitButton({
   className,
   icon,
   formId,
+  size,
 }: Readonly<{
   children?: ReactNode;
   className?: string;
   icon?: ReactNode;
   formId?: string;
+  size?: ComponentProps<typeof LoadingButton>["size"];
 }>) {
   const form = useFormContext()
   return (
@@ -23,6 +25,7 @@ export default function SubmitButton({
           className={className}
           icon={icon}
           form={formId}
+          size={size}
         >
           {children}
         </LoadingButton>

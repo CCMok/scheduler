@@ -2,8 +2,8 @@
 
 import { useEffect, useState, useTransition } from 'react'
 import { Post, Worker } from '@/external/prisma/generated/client'
-import CustomButton from '@/components/_general/_custom/button/custom-button'
-import LoadingButton from '@/components/_general/_custom/button/loading-button'
+import ToolbarButton from '@/components/_general/_custom/button/toolbar-button'
+import ToolbarLoadingButton from '@/components/_general/_custom/button/toolbar-loading-button'
 import { FileDown, RotateCcw, Save, Undo2, WandSparkles } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
@@ -88,10 +88,10 @@ export default function WorkspaceToolbar({
     return (
       <div className="toolbar-row min-h-10">
         <div className="toolbar-row-end">
-          <CustomButton type="button" variant="outline" size="sm" onClick={exportXlsx}>
+          <ToolbarButton type="button" variant="outline" onClick={exportXlsx}>
             <FileDown />
             匯出
-          </CustomButton>
+          </ToolbarButton>
         </div>
       </div>
     )
@@ -219,51 +219,47 @@ export default function WorkspaceToolbar({
           className="h-8 min-w-40 max-w-xs flex-1 border-transparent bg-muted/40 shadow-none focus-visible:border-input focus-visible:bg-background"
         />
         <div className="toolbar-row-end">
-          <CustomButton
+          <ToolbarButton
             type="button"
             variant="ghost"
-            size="sm"
             disabled={dayUndoStack.length === 0}
             onClick={() => undoDayOp()}
           >
             <Undo2 />
             復原
-          </CustomButton>
-          <CustomButton
+          </ToolbarButton>
+          <ToolbarButton
             type="button"
             variant="ghost"
-            size="sm"
             disabled={!canReset}
             onClick={() => resetToOriginal()}
           >
             <RotateCcw />
             重設
-          </CustomButton>
+          </ToolbarButton>
           {variant === 'edit' || hasAssignments ? (
-            <CustomButton type="button" variant="ghost" size="sm" onClick={exportXlsx}>
+            <ToolbarButton type="button" variant="ghost" onClick={exportXlsx}>
               <FileDown />
               匯出
-            </CustomButton>
+            </ToolbarButton>
           ) : null}
-          <LoadingButton
+          <ToolbarLoadingButton
             type="button"
-            size="sm"
             isLoading={isSaving}
             onClick={save}
             variant={variant === 'create' ? 'outline' : undefined}
           >
             <Save />
             儲存
-          </LoadingButton>
-          <LoadingButton
+          </ToolbarLoadingButton>
+          <ToolbarLoadingButton
             type="button"
-            size="sm"
             isLoading={isPending}
             onClick={runArrange}
           >
             <WandSparkles />
             {hasAssignments ? '再排' : '自動編排'}
-          </LoadingButton>
+          </ToolbarLoadingButton>
         </div>
       </div>
       {assignOnOffConflicts.length > 0 ? (
@@ -275,17 +271,16 @@ export default function WorkspaceToolbar({
             {assignOnOffConflicts.length}{' '}
             格休假日仍被指派（可儲存）。按「再排」嘗試修正。
           </p>
-          <CustomButton
+          <ToolbarButton
             type="button"
             variant="outline"
-            size="sm"
             className="h-7"
             disabled={isPending}
             onClick={runArrange}
           >
             <WandSparkles />
             再排修好
-          </CustomButton>
+          </ToolbarButton>
         </div>
       ) : null}
     </div>

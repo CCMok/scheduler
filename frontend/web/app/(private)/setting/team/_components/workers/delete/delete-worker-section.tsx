@@ -2,6 +2,7 @@
 
 import CustomButton from "@/components/_general/_custom/button/custom-button";
 import LoadingButton from "@/components/_general/_custom/button/loading-button";
+import ToolbarButton from "@/components/_general/_custom/button/toolbar-button";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/external/shadcn/components/ui/card";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/external/shadcn/components/ui/dialog";
 import { cn } from "@/external/shadcn/libs/utils";
@@ -47,14 +48,14 @@ export default function DeleteWorkerSection({
           <CardDescription className='text-destructive-foreground'>{description}</CardDescription>
         </CardHeader>
         <CardFooter>
-          <CustomButton
-            className="[&>*]:w-full lg:[&>*]:w-fit"
+          <ToolbarButton
+            className="w-full lg:w-fit"
             variant='destructive'
             onClick={() => setIsOpenConfirmDialog(true)}
           >
             <Trash2 />
             確定
-          </CustomButton>
+          </ToolbarButton>
         </CardFooter>
       </Card>
       <Dialog open={isOpenConfirmDialog} onOpenChange={setIsOpenConfirmDialog}>

@@ -10,7 +10,7 @@ import DateBar from './date-bar'
 import OffMatrix from './off-matrix'
 import AssignGrid from './assign-grid'
 import ConfirmLeaveDialog from './confirm-leave-dialog'
-import CustomButton from '@/components/_general/_custom/button/custom-button'
+import ToolbarButton from '@/components/_general/_custom/button/toolbar-button'
 import { Pencil, X } from 'lucide-react'
 
 export default function WorkspaceMain({
@@ -58,20 +58,19 @@ export default function WorkspaceMain({
             <WorkspaceModeTabs />
             {showViewEditToggle ? (
               isEditing ? (
-                <CustomButton
+                <ToolbarButton
                   type="button"
                   variant="ghost"
-                  size="sm"
                   onClick={() => setCancelOpen(true)}
                 >
                   <X />
                   取消
-                </CustomButton>
+                </ToolbarButton>
               ) : (
-                <CustomButton type="button" size="sm" onClick={() => enterEdit()}>
+                <ToolbarButton type="button" onClick={() => enterEdit()}>
                   <Pencil />
                   編輯
-                </CustomButton>
+                </ToolbarButton>
               )
             ) : null}
           </div>

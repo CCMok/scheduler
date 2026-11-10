@@ -8,6 +8,7 @@ import ConfirmLeaveDialog from './confirm-leave-dialog'
 import FieldLayout from '@/components/_general/form/field/field-layout'
 import Combobox from '@/components/_general/_custom/combobox/combobox'
 import CustomButton from '@/components/_general/_custom/button/custom-button'
+import ToolbarButton from '@/components/_general/_custom/button/toolbar-button'
 import { ArrowLeft, UsersRound } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { isNil } from 'lodash'
@@ -84,15 +85,14 @@ export default function CreateWorkspaceShell({
   return (
     <div className="flex flex-col gap-3">
       <div className="toolbar-row">
-        <CustomButton
+        <ToolbarButton
           type="button"
           variant="ghost"
-          size="sm"
           onClick={() => setCancelCreateOpen(true)}
         >
           <ArrowLeft />
           返回
-        </CustomButton>
+        </ToolbarButton>
       </div>
       <section className="workspace-nav">
         <div className="toolbar-row items-end">

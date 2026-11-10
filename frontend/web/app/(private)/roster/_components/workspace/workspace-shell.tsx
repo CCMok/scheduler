@@ -7,6 +7,7 @@ import WorkspaceMain from './workspace-main'
 import FieldLayout from '@/components/_general/form/field/field-layout'
 import Combobox from '@/components/_general/_custom/combobox/combobox'
 import CustomButton from '@/components/_general/_custom/button/custom-button'
+import ToolbarButton from '@/components/_general/_custom/button/toolbar-button'
 import {
   Calendar,
   ChevronLeft,
@@ -133,15 +134,14 @@ export default function WorkspaceShell({
             </div>
           </FieldLayout>
           <div className="toolbar-row-end">
-            <CustomButton
+            <ToolbarButton
               type="button"
-              size="sm"
               onClick={startNew}
               disabled={isNil(teamId)}
             >
               <Plus />
               新建
-            </CustomButton>
+            </ToolbarButton>
             <DeleteRosterDialog
               id={rosterId}
               teamId={teamId}

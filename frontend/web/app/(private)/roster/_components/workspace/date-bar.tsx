@@ -13,7 +13,7 @@ import { addDays, format, getDay, parse, startOfWeek } from 'date-fns'
 import { zhHK } from 'date-fns/locale'
 import { X } from 'lucide-react'
 import { Calendar } from '@/external/shadcn/components/ui/calendar'
-import CustomButton from '@/components/_general/_custom/button/custom-button'
+import ToolbarButton from '@/components/_general/_custom/button/toolbar-button'
 import { cn } from '@/external/shadcn/libs/utils'
 import { useWorkspaceStore } from './workspace-store-provider'
 import {
@@ -152,16 +152,15 @@ export default function DateBar() {
             </span>{' '}
             日
           </p>
-          <CustomButton
+          <ToolbarButton
             type="button"
             variant="ghost"
-            size="sm"
             className="h-7 text-xs"
             disabled={timeslots.length === 0}
             onClick={() => setTimeslotsFromDates([])}
           >
             清除
-          </CustomButton>
+          </ToolbarButton>
         </div>
 
         {timeslots.length === 0 ? (

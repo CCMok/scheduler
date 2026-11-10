@@ -1,6 +1,7 @@
 'use client'
 
 import CustomButton from "@/components/_general/_custom/button/custom-button";
+import ToolbarButton from "@/components/_general/_custom/button/toolbar-button";
 import HeaderLayout from "@/components/_general/header/header-layout";
 import SettingPageIntro from "@/components/_general/setting/setting-page-intro";
 import { Badge } from "@/external/shadcn/components/ui/badge";
@@ -175,12 +176,12 @@ export default function TeamNewWizard() {
     >
       <div className="setting-wizard flex min-h-0 flex-1 flex-col gap-3">
         <div className="toolbar-row">
-          <CustomButton asChild variant="ghost" size="sm">
+          <ToolbarButton asChild variant="ghost">
             <Link href={ROUTE.private.setting.team.base()}>
               <ArrowLeft />
               返回
             </Link>
-          </CustomButton>
+          </ToolbarButton>
         </div>
         <SettingPageIntro
           title="新增團隊"
@@ -497,8 +498,8 @@ function WorkerPostsStep({
                 ))}
               </div>
               <div className="flex gap-2">
-                <CustomButton variant="outline" size="sm" onClick={() => assignAllPosts(workerIndex)}>全選</CustomButton>
-                <CustomButton variant="ghost" size="sm" onClick={() => clearWorkerPosts(workerIndex)}>清除</CustomButton>
+                <ToolbarButton variant="outline" onClick={() => assignAllPosts(workerIndex)}>全選</ToolbarButton>
+                <ToolbarButton variant="ghost" onClick={() => clearWorkerPosts(workerIndex)}>清除</ToolbarButton>
               </div>
             </div>
           ))}
