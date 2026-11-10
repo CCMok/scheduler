@@ -83,17 +83,19 @@ export default function CreateWorkspaceShell({
 
   return (
     <div className="flex flex-col gap-3">
+      <div className="toolbar-row">
+        <CustomButton
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={() => setCancelCreateOpen(true)}
+        >
+          <ArrowLeft />
+          返回
+        </CustomButton>
+      </div>
       <section className="workspace-nav">
         <div className="toolbar-row items-end">
-          <CustomButton
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => setCancelCreateOpen(true)}
-          >
-            <ArrowLeft />
-            返回列表
-          </CustomButton>
           <FieldLayout label="團隊" id={TEAM_SELECT_ID} className="w-(--input-width)">
             <Combobox
               id={TEAM_SELECT_ID}

@@ -174,6 +174,14 @@ export default function TeamNewWizard() {
       }
     >
       <div className="setting-wizard flex min-h-0 flex-1 flex-col gap-3">
+        <div className="toolbar-row">
+          <CustomButton asChild variant="ghost" size="sm">
+            <Link href={ROUTE.private.setting.team.base()}>
+              <ArrowLeft />
+              返回
+            </Link>
+          </CustomButton>
+        </div>
         <SettingPageIntro
           title="新增團隊"
           support="完成後可前往建立值班表。"
@@ -262,39 +270,31 @@ export default function TeamNewWizard() {
             )}
           </CardContent>
           <CardFooter className="flex flex-wrap justify-between gap-3 border-t pt-4">
-            <CustomButton asChild variant="outline">
-              <Link href={ROUTE.private.setting.team.base()}>
-                <ArrowLeft />
-                返回
-              </Link>
+            <CustomButton
+              variant="outline"
+              disabled={currentStep === 0}
+              onClick={() => setCurrentStep(step => Math.max(0, step - 1))}
+            >
+              <ArrowLeft />
+              上一步
             </CustomButton>
-            <div className="flex gap-2">
+            {currentStep < steps.length - 1 ? (
               <CustomButton
-                variant="outline"
-                disabled={currentStep === 0}
-                onClick={() => setCurrentStep(step => Math.max(0, step - 1))}
+                disabled={!canGoNext}
+                onClick={() => setCurrentStep(step => Math.min(steps.length - 1, step + 1))}
               >
-                <ArrowLeft />
-                上一步
+                下一步
+                <ArrowRight />
               </CustomButton>
-              {currentStep < steps.length - 1 ? (
-                <CustomButton
-                  disabled={!canGoNext}
-                  onClick={() => setCurrentStep(step => Math.min(steps.length - 1, step + 1))}
-                >
-                  下一步
-                  <ArrowRight />
-                </CustomButton>
-              ) : (
-                <CustomButton
-                  disabled={!canGoNext || isPending}
-                  onClick={() => setIsConfirmOpen(true)}
-                >
-                  <Save />
-                  儲存
-                </CustomButton>
-              )}
-            </div>
+            ) : (
+              <CustomButton
+                disabled={!canGoNext || isPending}
+                onClick={() => setIsConfirmOpen(true)}
+              >
+                <Save />
+                儲存
+              </CustomButton>
+            )}
           </CardFooter>
         </Card>
         </div>
