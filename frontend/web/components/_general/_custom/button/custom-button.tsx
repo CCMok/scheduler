@@ -7,11 +7,25 @@ export default function CustomButton({
   isLoading = false,
   icon,
   disabled,
+  asChild,
   ...props
 }: Readonly<ComponentProps<typeof Button> & {
   isLoading?: boolean;
   icon?: ReactNode;
 }>) {
+  if (asChild) {
+    return (
+      <Button
+        type='button'
+        asChild
+        {...props}
+        disabled={isLoading || disabled}
+      >
+        {children}
+      </Button>
+    )
+  }
+
   return (
     <Button
       type='button'
